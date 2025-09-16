@@ -28,6 +28,9 @@ jobs:
       - name: Build backend with Maven
         run: mvn -f backend/pom.xml clean package
 
+      - name: Rename JAR for deployment
+        run: mv backend/target/*.jar backend/target/majetek-backend.jar
+
       # 4. Set up Node.js for the frontend
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -49,8 +52,8 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.VPS_SSH_PORT }}
-          source: "backend/target/*.jar"
-          target: "/var/www/majetek-backend/majetek-backend.jar"
+          source: "backend/target/majetek-backend.jar"
+          target: "/var/www/majetek-backend/"
 
       # 7a. Securely load the SSH key
       - name: Setup SSH Key
