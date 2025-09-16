@@ -1,50 +1,38 @@
-# This is the name of the workflow
 name: Deploy to VPS
 
-# This workflow runs on any push to the 'main' branch
 on:
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
-    # Use the latest version of Ubuntu to run the job
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Check out your repository code so the workflow can access it
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Set up Java Development Kit (JDK) 17 for the backend
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3. Build the backend Spring Boot application
       - name: Build backend with Maven
-        run: mvn -f backend/pom.xml clean package
+        run: |
+          mvn -f backend/pom.xml clean package
+          mv backend/target/*.jar backend/target/majetek-backend.jar
 
-      - name: Rename JAR for deployment
-        run: mv backend/target/*.jar backend/target/majetek-backend.jar
-
-      # 4. Set up Node.js for the frontend
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 5. Install dependencies and build the frontend
       - name: Build frontend
         run: |
           cd frontend
           npm ci
           npm run build
 
-      # 6. Copy the backend JAR file to the VPS
       - name: Deploy backend JAR
         uses: appleboy/scp-action@master
         with:
@@ -56,18 +44,15 @@ jobs:
           target: "/var/www/majetek-backend/"
           strip_components: 2
 
-      # 7a. Securely load the SSH key
       - name: Setup SSH Key
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
 
-      # 7b. Use the standard rsync command to deploy files
       - name: Deploy frontend files via rsync
         run: |
           rsync -rlvz --delete -e "ssh -p ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no" frontend/build/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/majetek/
 
-      # 8. Restart the backend service on the VPS
       - name: Restart backend service
         uses: appleboy/ssh-action@master
         with:
