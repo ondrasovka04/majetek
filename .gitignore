@@ -14,7 +14,8 @@ backend/.mvn/wrapper/maven-wrapper.jar
 ### dependencies ###
 frontend/node_modules
 
-
 ### build ###
 frontend/build
 frontend/scripts
+
+.DS_Store
