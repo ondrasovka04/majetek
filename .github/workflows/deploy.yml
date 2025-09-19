@@ -30,7 +30,7 @@ jobs:
       - name: Build frontend
         run: |
           cd frontend
-          npm ci
+          npm ci --ignore-scripts
           npm run build
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
