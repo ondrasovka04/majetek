@@ -8,6 +8,7 @@ A full-stack web application for managing company assets, built for a specific s
 
 * **Backend:** Java 17, Spring Boot 3, JPA/Hibernate, PostgreSQL, Maven
 * **Frontend:** React 19, TypeScript, Material-UI (MUI), Zustand
+* **Android:** Java 17, Android SDK 36, SQLite
 * **Deployment:** Nginx, Ubuntu VPS
 
 ---
