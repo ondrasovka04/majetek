@@ -27,7 +27,7 @@
             android:singleLine="true"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
-            android:inputType="textVisiblePassword" />
+            android:inputType="textNoSuggestions" />
 
         <View
             android:layout_width="match_parent"
@@ -44,46 +44,90 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/txt_card_id"
+        <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="ID: -"
-            android:textSize="18sp" />
-        <TextView
-            android:id="@+id/txt_card_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Název: -"
-            android:textSize="18sp" />
-        <TextView
-            android:id="@+id/txt_card_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cena: -"
-            android:textSize="18sp" />
-        <TextView
-            android:id="@+id/txt_card_quantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Množství: -"
-            android:textSize="18sp" />
-        <TextView
-            android:id="@+id/txt_card_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="OL: -"
-            android:textSize="18sp" />
+            android:shrinkColumns="1"
+            android:stretchColumns="1">
+
+            <TableRow>
+
+                <TextView
+                    android:text="ID:"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:paddingEnd="16dp" />
+
+                <TextView
+                    android:id="@+id/txt_card_id"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:text="Název:"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:paddingEnd="16dp" />
+
+                <TextView
+                    android:id="@+id/txt_card_name"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:text="Cena:"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:paddingEnd="16dp" />
+
+                <TextView
+                    android:id="@+id/txt_card_price"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:text="Množství:"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:paddingEnd="16dp" />
+
+                <TextView
+                    android:id="@+id/txt_card_quantity"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:text="OU:"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:paddingEnd="16dp" />
+
+                <TextView
+                    android:id="@+id/txt_card_location"
+                    android:textSize="18sp" />
+            </TableRow>
+
+        </TableLayout>
 
         <TextView
             android:id="@+id/txt_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:textColor="#555"
-            android:text="Připraveno."
-            android:textSize="16sp" />
+            android:layout_marginTop="30dp"
+            android:textColor="@color/statusNeutral"
+            android:text="Připraveno"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </ScrollView>

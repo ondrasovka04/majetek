@@ -6,7 +6,7 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "inventory_audit", foreignKeys = {@ForeignKey(entity = LocationEntity.class, parentColumns = "id", childColumns = "real_location_id", onDelete = ForeignKey.NO_ACTION, onUpdate = ForeignKey.CASCADE)}, indices = {@Index(value = {"real_location_id"})})
+@Entity(tableName = "inventory_audit", foreignKeys = {@ForeignKey(entity = LocationEntity.class, parentColumns = "id", childColumns = "real_location_id", onUpdate = ForeignKey.CASCADE)}, indices = {@Index(value = {"real_location_id"})})
 public class InventoryAuditEntity {
     @PrimaryKey
     @ColumnInfo(name = "card_id")

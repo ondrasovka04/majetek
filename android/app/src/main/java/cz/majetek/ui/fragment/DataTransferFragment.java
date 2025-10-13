@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import java.util.concurrent.ExecutorService;
@@ -46,6 +46,8 @@ public class DataTransferFragment extends Fragment {
         progress = v.findViewById(R.id.progress);
         txtStatus = v.findViewById(R.id.txt_status);
 
+        setStatusNeutral("Připraveno");
+
         btnDownload.setOnClickListener(view -> startDownload());
         btnUpload.setOnClickListener(view -> startUpload());
         btnClear.setOnClickListener(view -> confirmClearInventory());
@@ -53,68 +55,83 @@ public class DataTransferFragment extends Fragment {
     }
 
     private void confirmClearInventory() {
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Vymazat inventuru")
-                .setMessage("Opravdu smazat všechna inventurní data?")
-                .setPositiveButton("Ano", (d, w) -> clearInventory())
-                .setNegativeButton("Ne", null)
-                .show();
+        new AlertDialog.Builder(requireContext()).setTitle("Vymazat inventuru").setMessage("Opravdu smazat všechna nasnímaná data ve čtečce?").setPositiveButton("Ano", (d, w) -> new AlertDialog.Builder(requireContext()).setTitle("Potvrzení").setMessage("Tato akce je nevratná. Pokračovat?").setPositiveButton("Ano", (d2, w2) -> clearInventory()).setNegativeButton("Ne", null).show()).setNegativeButton("Ne", null).show();
     }
 
     private void clearInventory() {
-        setLoading(true, "Mažu inventuru...");
+        setStatusNeutral("Mažu inventuru...");
+        setLoading(true);
         io.execute(() -> {
             AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
             db.inventoryAuditDao().clear();
             if (getActivity() == null) return;
             getActivity().runOnUiThread(() -> {
-                setLoading(false, "Inventurní data vymazána");
-                Toast.makeText(getContext(), "Inventurní data vymazána", Toast.LENGTH_SHORT).show();
+                setLoading(false);
+                setStatusOk("Inventurní data vymazána");
             });
         });
     }
 
     private void startDownload() {
         if (isWifiDisconnected()) {
-            Toast.makeText(getContext(), "Není připojení k Wi‑Fi", Toast.LENGTH_SHORT).show();
+            setStatusWarn("Není připojení k Wi-Fi");
             return;
         }
-        setLoading(true, "Stahuji data...");
-        repo.downloadToDevice(requireContext().getApplicationContext(), new DataSyncRepository.Callback() {
-            @Override
-            public void onSuccess(int cardCount) {
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
-                    setLoading(false, "Staženo " + cardCount + " karet");
-                    Toast.makeText(getContext(), "Staženo: " + cardCount + " karet", Toast.LENGTH_SHORT).show();
-                });
-            }
+        setStatusNeutral("Kontroluji stav...");
+        setLoading(true);
+        io.execute(() -> {
+            AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
+            int auditCount = db.inventoryAuditDao().countCardsTotal();
+            if (getActivity() == null) return;
+            getActivity().runOnUiThread(() -> {
+                if (auditCount > 0) {
+                    setLoading(false);
+                    setStatusWarn("Ve čtečce jsou nasnímaná data, nejprve je odešlete nebo smažte.");
+                } else {
+                    setStatusNeutral("Stahuji data...");
+                    repo.downloadToDevice(requireContext().getApplicationContext(), new DataSyncRepository.Callback() {
+                        @Override
+                        public void onSuccess(int cardCount) {
+                            if (getActivity() == null) return;
+                            getActivity().runOnUiThread(() -> {
+                                setLoading(false);
+                                setStatusOk("Načteno " + cardCount + " karet");
 
-            @Override
-            public void onError(String msg) {
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
-                    setLoading(false, "Chyba: " + msg);
-                    Toast.makeText(getContext(), "Chyba: " + msg, Toast.LENGTH_LONG).show();
-                });
-            }
+                            });
+                        }
+
+                        @Override
+                        public void onError(String msg) {
+                            if (getActivity() == null) return;
+                            getActivity().runOnUiThread(() -> {
+                                setLoading(false);
+                                setStatusError("Chyba: " + msg);
+                            });
+                        }
+                    });
+                }
+            });
         });
     }
 
     private void startUpload() {
         if (isWifiDisconnected()) {
-            Toast.makeText(getContext(), "Není připojení k Wi‑Fi", Toast.LENGTH_SHORT).show();
+            setStatusWarn("Není připojení k Wi-Fi");
             return;
         }
-        setLoading(true, "Odesílám inventuru...");
+        setStatusNeutral("Odesílám inventuru...");
+        setLoading(true);
         repo.uploadInventoryAudit(requireContext().getApplicationContext(), new DataSyncRepository.AuditUploadCallback() {
             @Override
             public void onSuccess(int uploadedCount) {
                 if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
-                    String msg = uploadedCount == 0 ? "Žádná data k odeslání" : ("Odesláno " + uploadedCount + " záznamů");
-                    setLoading(false, msg);
-                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                    setLoading(false);
+                    if (uploadedCount == 0) {
+                        setStatusWarn("Žádná data k odeslání");
+                    } else {
+                        setStatusOk("Odesláno " + uploadedCount + " záznamů");
+                    }
                 });
             }
 
@@ -122,19 +139,38 @@ public class DataTransferFragment extends Fragment {
             public void onError(String msg) {
                 if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
-                    setLoading(false, "Chyba odeslání: " + msg);
-                    Toast.makeText(getContext(), "Chyba: " + msg, Toast.LENGTH_LONG).show();
+                    setLoading(false);
+                    setStatusError("Chyba odeslání: " + msg);
                 });
             }
         });
     }
 
-    private void setLoading(boolean loading, String status) {
+    private void setLoading(boolean loading) {
         progress.setVisibility(loading ? View.VISIBLE : View.GONE);
         btnDownload.setEnabled(!loading);
         btnUpload.setEnabled(!loading);
         btnClear.setEnabled(!loading);
-        txtStatus.setText(status);
+    }
+
+    private void setStatusOk(String msg) {
+        txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusOk));
+        txtStatus.setText(msg);
+    }
+
+    private void setStatusWarn(String msg) {
+        txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusWarn));
+        txtStatus.setText(msg);
+    }
+
+    private void setStatusError(String msg) {
+        txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusError));
+        txtStatus.setText(msg);
+    }
+
+    private void setStatusNeutral(String msg) {
+        txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusNeutral));
+        txtStatus.setText(msg);
     }
 
     private boolean isWifiDisconnected() {

@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 public class TokenStorage {
     private static final String PREF = "auth_pref";
     private static final String KEY_TOKEN = "token";
-    private static final String KEY_EXPIRY = "token_expiry"; // epoch millis
+    private static final String KEY_EXPIRY = "token_expiry";
 
     private static SharedPreferences sp(Context ctx) {
         return ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE);

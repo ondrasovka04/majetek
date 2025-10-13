@@ -14,9 +14,6 @@ public interface LocationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<LocationEntity> locations);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(LocationEntity location);
-
     @Query("SELECT * FROM location WHERE id = :id LIMIT 1")
     LocationEntity getById(String id);
 

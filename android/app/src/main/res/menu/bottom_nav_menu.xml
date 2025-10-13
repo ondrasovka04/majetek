@@ -6,7 +6,7 @@
         android:title="Kontrola" />
     <item
         android:id="@+id/navigation_inventory_scan"
-        android:icon="@android:drawable/ic_menu_manage"
+        android:icon="@drawable/menu_checklist"
         android:title="Inventura" />
     <item
         android:id="@+id/navigation_data_transfer"

@@ -40,6 +40,7 @@ public class DataSyncRepository {
 
     public interface AuditUploadCallback {
         void onSuccess(int uploadedCount);
+
         void onError(String msg);
     }
 
@@ -120,11 +121,11 @@ public class DataSyncRepository {
         String credentials = BuildConfig.ADMIN_USER + ":" + BuildConfig.ADMIN_PASS;
         String basic = encodeToString(credentials.getBytes(), NO_WRAP);
         LoginResult lr = api.login(basic);
-        if (lr == null || lr.token == null || lr.token.isEmpty())
+        if (lr == null || lr.token() == null || lr.token().isEmpty())
             throw new IOException("Login selhal");
-        long expiryMillis = lr.expiresAtEpochMillis;
-        TokenStorage.saveToken(ctx, lr.token, expiryMillis);
-        return lr.token;
+        long expiryMillis = lr.expiresAtEpochMillis();
+        TokenStorage.saveToken(ctx, lr.token(), expiryMillis);
+        return lr.token();
     }
 
     private String buildAuditJson(List<InventoryAuditEntity> audits) {
@@ -134,11 +135,7 @@ public class DataSyncRepository {
             InventoryAuditEntity a = audits.get(i);
             if (i > 0) sb.append(',');
             String ts = TS_FMT_BASE.format(Instant.ofEpochMilli(a.timestamp));
-            sb.append('{')
-              .append("\"cardId\":").append(a.cardId).append(',')
-              .append("\"realLocationId\":\"").append(a.realLocationId).append("\",")
-              .append("\"timestamp\":\"").append(ts).append("\"")
-              .append('}');
+            sb.append('{').append("\"cardId\":").append(a.cardId).append(',').append("\"realLocationId\":\"").append(a.realLocationId).append("\",").append("\"timestamp\":\"").append(ts).append("\"").append('}');
         }
         sb.append(']');
         return sb.toString();

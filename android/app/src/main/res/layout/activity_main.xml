@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.MainActivity">
 
-    <!-- Container pro fragmenty -->
     <FrameLayout
         android:id="@+id/nav_host_fragment_container"
         android:layout_width="0dp"
@@ -15,8 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" >
-    </FrameLayout>
+        app:layout_constraintEnd_toEndOf="parent"></FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
@@ -25,6 +23,7 @@
         android:background="?attr/colorSurface"
         app:itemIconTint="@color/selector_bottom_nav_colors"
         app:itemTextColor="@color/selector_bottom_nav_colors"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
         app:menu="@menu/bottom_nav_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -2,4 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="primaryBlue">#1976D2</color>
+    <color name="blue_ripple">#331976D2</color>
+    <color name="secondaryContainerBlue">#E3F2FD</color>
+    <color name="onSecondaryContainerBlue">#0D47A1</color>
+    <color name="statusError">#F44336</color>
+    <color name="statusWarn">#FF9800</color>
+    <color name="statusOk">#4CAF50</color>
+    <color name="statusNeutral">#455A64</color>
 </resources>
