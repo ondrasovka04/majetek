@@ -75,7 +75,7 @@ public class DataTransferFragment extends Fragment {
     }
 
     private void startDownload() {
-        if (isWifiConnected()) {
+        if (isWifiDisconnected()) {
             Toast.makeText(getContext(), "Není připojení k Wi‑Fi", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -102,7 +102,7 @@ public class DataTransferFragment extends Fragment {
     }
 
     private void startUpload() {
-        if (isWifiConnected()) {
+        if (isWifiDisconnected()) {
             Toast.makeText(getContext(), "Není připojení k Wi‑Fi", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -137,7 +137,7 @@ public class DataTransferFragment extends Fragment {
         txtStatus.setText(status);
     }
 
-    private boolean isWifiConnected() {
+    private boolean isWifiDisconnected() {
         ConnectivityManager cm = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm == null) return true;
         Network network = cm.getActiveNetwork();

@@ -22,7 +22,6 @@ public class InventoryAuditDto {
 
     @Schema(description = "Timestamp of the audit event")
     @JsonProperty("timestamp")
-    @NotNull(message = "timestamp must not be null")
     private LocalDateTime timestamp;
 }
 
