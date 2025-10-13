@@ -1,24 +1,26 @@
 package cz.majetek.ui.fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,8 +35,8 @@ import cz.majetek.ui.view.CircularInventoryProgressView;
 public class InventoryScanFragment extends Fragment {
 
     private EditText inputLocation, inputAsset;
-    private TextView txtLocationName, txtCardId, txtCardName, txtCardPrice, txtCardQuantity, txtCardOl, txtStatus;
-    private CircularInventoryProgressView progressCircle;
+    private TextView txtLocationName, txtCardId, txtCardName, txtCardPrice, txtCardQuantity, txtCardOu, txtStatus;
+    private CircularInventoryProgressView progressCircle, progressCircleTotal;
     private LinearLayout cardContainer;
     private Button btnDelete, btnLeave;
 
@@ -48,9 +50,12 @@ public class InventoryScanFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_inventory_scan, container, false);
         bindViews(v);
+        setupFocusBehavior();
         setupInputs();
         setupButtons();
-        updateProgressUI(0, 0); // initial
+        setStatusNeutral("Připraveno");
+        updateLocationProgressUI(0, 0);
+        refreshTotalProgress();
         return v;
     }
 
@@ -62,65 +67,116 @@ public class InventoryScanFragment extends Fragment {
         txtCardName = v.findViewById(R.id.txt_card_name);
         txtCardPrice = v.findViewById(R.id.txt_card_price);
         txtCardQuantity = v.findViewById(R.id.txt_card_quantity);
-        txtCardOl = v.findViewById(R.id.txt_card_ol);
+        txtCardOu = v.findViewById(R.id.txt_card_location);
         txtStatus = v.findViewById(R.id.txt_status);
         btnDelete = v.findViewById(R.id.btn_delete);
         btnLeave = v.findViewById(R.id.btn_leave);
         progressCircle = v.findViewById(R.id.progress_circle);
         cardContainer = v.findViewById(R.id.card_container);
+        progressCircleTotal = v.findViewById(R.id.progress_circle_total);
+    }
+
+    private void setupFocusBehavior() {
+        requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        inputLocation.setShowSoftInputOnFocus(false);
+        inputAsset.setShowSoftInputOnFocus(false);
+
+        inputLocation.setOnClickListener(v -> enableAndShowIme(inputLocation));
+        inputAsset.setOnClickListener(v -> enableAndShowIme(inputAsset));
+
+        inputLocation.post(() -> {
+            inputLocation.requestFocus();
+            hideIme(inputLocation);
+        });
+    }
+
+    private void enableAndShowIme(EditText et) {
+        et.setShowSoftInputOnFocus(true);
+        et.post(() -> {
+            et.requestFocus();
+            showIme(et);
+        });
+    }
+
+    private void hideIme(View v) {
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    private void showIme(View v) {
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
     }
 
     private void setupInputs() {
-        // Location input scan handling
         inputLocation.setOnEditorActionListener((tv, actionId, event) -> {
-            boolean isEnter = (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) || actionId == EditorInfo.IME_ACTION_DONE;
+            boolean isEnter = (event != null && event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB)) || actionId == EditorInfo.IME_ACTION_DONE;
             if (isEnter) {
                 handleLocationScanned(tv.getText().toString().trim());
                 return true;
             }
             return false;
         });
-        inputLocation.addTextChangedListener(new TerminalEnterWatcher(this::handleLocationScanned));
+        inputLocation.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_TAB)) {
+                handleLocationScanned(inputLocation.getText().toString().trim());
+                return true;
+            }
+            return false;
+        });
 
-        // Asset input scan handling
         inputAsset.setOnEditorActionListener((tv, actionId, event) -> {
-            boolean isEnter = (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) || actionId == EditorInfo.IME_ACTION_DONE;
+            boolean isEnter = (event != null && event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB)) || actionId == EditorInfo.IME_ACTION_DONE;
             if (isEnter) {
                 handleAssetScanned(tv.getText().toString().trim());
                 return true;
             }
             return false;
         });
-        inputAsset.addTextChangedListener(new TerminalEnterWatcher(this::handleAssetScanned));
+        inputAsset.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_TAB)) {
+                handleAssetScanned(inputAsset.getText().toString().trim());
+                return true;
+            }
+            return false;
+        });
     }
 
     private void setupButtons() {
         btnDelete.setOnClickListener(v -> {
             if (lastScannedCardId <= 0) {
-                Toast.makeText(getContext(), "Žádný majetek ke smazání", Toast.LENGTH_SHORT).show();
+                setStatusWarn("Žádný majetek k smazání");
                 return;
             }
-            new AlertDialog.Builder(requireContext()).setTitle("Smazat").setMessage("Opravdu odstranit majetek " + lastScannedCardId + " z inventury?").setPositiveButton("Ano", (d, w) -> deleteLast()).setNegativeButton("Ne", null).show();
+            new AlertDialog.Builder(requireContext()).setTitle("Smazat").setMessage("Opravdu odstranit tento majetek z inventury?").setPositiveButton("Ano", (d, w) -> deleteLast()).setNegativeButton("Ne", null).show();
         });
 
         btnLeave.setOnClickListener(v -> {
             if (currentLocationId == null) {
-                Toast.makeText(getContext(), "Nejste v místnosti", Toast.LENGTH_SHORT).show();
+                setStatusWarn("Nebylo vybráno umístění");
                 return;
             }
-            new AlertDialog.Builder(requireContext()).setTitle("Odejít z místnosti").setMessage("Smazat SL a pokračovat?").setPositiveButton("Ano", (d, w) -> clearLocation()).setNegativeButton("Ne", null).show();
+            new AlertDialog.Builder(requireContext()).setTitle("Odejít z místnosti").setMessage("Opravdu odejít z místnosti?").setPositiveButton("Ano", (d, w) -> clearLocation()).setNegativeButton("Ne", null).show();
         });
     }
 
     private void handleLocationScanned(String code) {
-        if (code.isEmpty()) return;
+        if (code.isEmpty()) {
+            requestFocusLater(inputLocation);
+            return;
+        }
+        if (currentLocationId != null) {
+            inputLocation.setText("");
+            requestFocusLater(inputAsset);
+            return;
+        }
+
         inputLocation.setText("");
 
         if (!code.startsWith("L") || code.length() == 1) {
-            String msg = "Kód lokace musí začínat 'L'";
-            txtStatus.setText(msg);
-            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-            inputLocation.requestFocus();
+            setStatusWarn("Kód umístění musí začínat 'L'");
+            requestFocusLater(inputLocation);
             return;
         }
         String locId = code.substring(1);
@@ -130,67 +186,81 @@ public class InventoryScanFragment extends Fragment {
             LocationEntity le = db.locationDao().getById(locId);
             if (le == null) {
                 postUI(() -> {
-                    String msg = "Lokace nenalezena: " + locId;
-                    txtStatus.setText(msg);
-                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                    inputLocation.requestFocus();
+                    setStatusError("Umístění nenalezeno: " + locId);
+                    requestFocusLater(inputLocation);
                 });
                 return;
             }
 
             int scannedInLoc = db.inventoryAuditDao().countCardsInLocation(locId);
             int totalInLoc = db.cardDao().countByLocation(locId);
+            int scannedTotal = db.inventoryAuditDao().countCardsTotal();
+            int totalAll = db.cardDao().countAll();
 
             postUI(() -> {
-                currentLocationId = locId; // nastavíme až po úspěšném nalezení
-                txtStatus.setText("Načtena lokace: L" + locId + " – naskenujte majetek");
-                txtLocationName.setText("SL: " + locId + " – " + (le.name != null ? le.name : "(bez názvu)"));
-                updateProgressUI(scannedInLoc, totalInLoc);
-                inputAsset.requestFocus();
-                Toast.makeText(getContext(), "Lokace nastavena", Toast.LENGTH_SHORT).show();
+                currentLocationId = locId;
+                txtLocationName.setText("SU: " + locId + " – " + (le.name != null ? le.name : ""));
+                setStatusNeutral("Načteno umístění: L" + locId + " – naskenujte majetek");
+                updateLocationProgressUI(scannedInLoc, totalInLoc);
+                updateTotalProgressUI(scannedTotal, totalAll);
+                inputLocation.setEnabled(false);
+                requestFocusLater(inputAsset);
             });
         });
     }
 
     private void handleAssetScanned(String code) {
-        if (code.isEmpty()) return;
-        inputAsset.setText("");
+        if (code.isEmpty()) {
+            requestFocusLater(inputAsset);
+            return;
+        }
         if (code.startsWith("L")) {
-            Toast.makeText(getContext(), "Načtena lokace v poli pro majetek – použijte horní pole", Toast.LENGTH_SHORT).show();
+            setStatusWarn("Sken umístění patří do horního pole");
+            inputAsset.setText("");
+            requestFocusLater(inputLocation);
             return;
         }
+
         if (currentLocationId == null) {
-            txtStatus.setText("Nejdříve naskenujte místnost (SL)");
-            Toast.makeText(getContext(), "Nejdříve naskenujte místnost (SL)", Toast.LENGTH_SHORT).show();
+            setStatusWarn("Nejdříve naskenujte umístění (SU)");
+            inputAsset.setText("");
+            requestFocusLater(inputLocation);
             return;
         }
-        int id;
+
+        inputAsset.setText("");
+
+        final int cardId;
         try {
-            id = Integer.parseInt(code);
+            cardId = Integer.parseInt(code);
         } catch (NumberFormatException e) {
             showUnknown(code);
+            refreshTotalProgress();
             return;
         }
-        final int cardId = id;
+
         io.execute(() -> {
             AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
             CardEntity card = db.cardDao().getById(cardId);
             long now = System.currentTimeMillis();
-            // Upsert do auditu i pro neznámé ID – uložíme cardId a currentLocationId
             db.inventoryAuditDao().upsert(new InventoryAuditEntity(cardId, currentLocationId, now));
 
             int scannedInLoc = db.inventoryAuditDao().countCardsInLocation(currentLocationId);
             int totalInLoc = db.cardDao().countByLocation(currentLocationId);
+            int scannedTotal = db.inventoryAuditDao().countCardsTotal();
+            int totalAll = db.cardDao().countAll();
 
             if (card == null) {
                 postUI(() -> {
                     showUnknown(String.valueOf(cardId));
-                    updateProgressUI(scannedInLoc, totalInLoc);
+                    updateLocationProgressUI(scannedInLoc, totalInLoc);
+                    updateTotalProgressUI(scannedTotal, totalAll);
                 });
             } else {
                 postUI(() -> {
                     showCard(card);
-                    updateProgressUI(scannedInLoc, totalInLoc);
+                    updateLocationProgressUI(scannedInLoc, totalInLoc);
+                    updateTotalProgressUI(scannedTotal, totalAll);
                 });
             }
         });
@@ -198,37 +268,41 @@ public class InventoryScanFragment extends Fragment {
 
     private void showCard(CardEntity c) {
         lastScannedCardId = c.id;
-        txtCardId.setText("ID: " + c.id);
-        txtCardName.setText("Název: " + c.name);
-        txtCardPrice.setText("Cena: " + c.price);
-        txtCardQuantity.setText("Množství: " + c.quantity);
-        txtCardOl.setText("OL: " + c.locationId);
+
+        String idStr = String.format(Locale.US, "%04d", c.id);
+        txtCardId.setText(idStr);
+        txtCardName.setText(c.name != null ? c.name : "");
+        txtCardPrice.setText(String.format(new Locale("cs", "CZ"), "%,.2f", c.price));
+        txtCardQuantity.setText(String.valueOf((int) c.quantity));
+        txtCardOu.setText(c.locationId != null ? c.locationId : "");
+
         if (currentLocationId != null) {
             if (c.locationId == null) {
-                cardContainer.setBackgroundColor(0xFFFFCDD2); // red missing OL
-                txtStatus.setText("Chybí OL");
+                cardContainer.setBackgroundColor(0xFFFFCDD2);
+                setStatusError("Majetek očekáván v jiném umístění");
             } else if (c.locationId.equals(currentLocationId)) {
-                cardContainer.setBackgroundColor(0xFFC8E6C9); // green
-                txtStatus.setText("OK – uloženo");
+                cardContainer.setBackgroundColor(0xFFC8E6C9);
+                setStatusOk("Uloženo");
             } else {
-                cardContainer.setBackgroundColor(0xFFFFE0B2); // orange mismatch
-                txtStatus.setText("Nesoulad OL vs SL");
+                cardContainer.setBackgroundColor(0xFFFFE0B2);
+                setStatusWarn("Majetek očekáván v jiném umístění");
             }
+        } else {
+            setStatusNeutral("Připraveno");
         }
-        inputAsset.requestFocus();
+        requestFocusLater(inputAsset);
     }
 
     private void showUnknown(String code) {
         lastScannedCardId = -1;
-        txtCardId.setText("ID: -");
-        txtCardName.setText("Název: -");
-        txtCardPrice.setText("Cena: -");
-        txtCardQuantity.setText("Množství: -");
-        txtCardOl.setText("OL: -");
-        cardContainer.setBackgroundColor(0xFFFFCDD2); // red
-        txtStatus.setText("Neznámé ID: " + code);
-        Toast.makeText(getContext(), "Neznámé ID: " + code, Toast.LENGTH_SHORT).show();
-        inputAsset.requestFocus();
+        txtCardId.setText("");
+        txtCardName.setText("");
+        txtCardPrice.setText("");
+        txtCardQuantity.setText("");
+        txtCardOu.setText("");
+        cardContainer.setBackgroundColor(0xFFFFCDD2);
+        setStatusError("Neznámé ID majetku: " + code);
+        requestFocusLater(inputAsset);
     }
 
     private void deleteLast() {
@@ -238,69 +312,88 @@ public class InventoryScanFragment extends Fragment {
             db.inventoryAuditDao().deleteByCardId(lastScannedCardId);
             int scannedInLoc = currentLocationId != null ? db.inventoryAuditDao().countCardsInLocation(currentLocationId) : 0;
             int totalInLoc = currentLocationId != null ? db.cardDao().countByLocation(currentLocationId) : 0;
+            int scannedTotal = db.inventoryAuditDao().countCardsTotal();
+            int totalAll = db.cardDao().countAll();
             postUI(() -> {
                 lastScannedCardId = -1;
                 resetCardDisplay();
-                updateProgressUI(scannedInLoc, totalInLoc);
-                txtStatus.setText("Záznam odstraněn");
+                updateLocationProgressUI(scannedInLoc, totalInLoc);
+                updateTotalProgressUI(scannedTotal, totalAll);
+                setStatusNeutral("Záznam odstraněn");
+                requestFocusLater(inputAsset);
             });
         });
     }
 
     private void clearLocation() {
         currentLocationId = null;
-        txtLocationName.setText("SL: -");
-        txtStatus.setText("SL vymazána");
-        updateProgressUI(0, 0);
+        txtLocationName.setText("SU: ");
+        updateLocationProgressUI(0, 0);
         resetCardDisplay();
-        inputLocation.requestFocus();
+        inputLocation.setEnabled(true);
+        requestFocusLater(inputLocation);
+        setStatusNeutral("Připraveno");
     }
 
-    private void updateProgressUI(int scannedInLoc, int totalInLoc) {
+    private void updateLocationProgressUI(int scannedInLoc, int totalInLoc) {
         if (progressCircle != null) {
             progressCircle.setData(scannedInLoc, totalInLoc);
         }
     }
 
+    private void updateTotalProgressUI(int scannedTotal, int totalAll) {
+        if (progressCircleTotal != null) {
+            progressCircleTotal.setData(scannedTotal, totalAll);
+        }
+    }
+
+    private void refreshTotalProgress() {
+        io.execute(() -> {
+            AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
+            int scannedTotal = db.inventoryAuditDao().countCardsTotal();
+            int totalAll = db.cardDao().countAll();
+            postUI(() -> updateTotalProgressUI(scannedTotal, totalAll));
+        });
+    }
+
     private void resetCardDisplay() {
-        txtCardId.setText("ID: -");
-        txtCardName.setText("Název: -");
-        txtCardPrice.setText("Cena: -");
-        txtCardQuantity.setText("Množství: -");
-        txtCardOl.setText("OL: -");
+        txtCardId.setText("");
+        txtCardName.setText("");
+        txtCardPrice.setText("");
+        txtCardQuantity.setText("");
+        txtCardOu.setText("");
         cardContainer.setBackgroundColor(0xFFEEEEEE);
+    }
+
+    private void requestFocusLater(EditText et) {
+        et.postDelayed(() -> {
+            et.setShowSoftInputOnFocus(false);
+            et.requestFocus();
+            hideIme(et);
+        }, 30);
     }
 
     private void postUI(Runnable r) {
         if (getActivity() != null) getActivity().runOnUiThread(r);
     }
 
-    private static class TerminalEnterWatcher implements TextWatcher {
-        interface Callback {
-            void onCode(String code);
-        }
+    private void setStatusOk(String msg) {
+        txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusOk));
+        txtStatus.setText(msg);
+    }
 
-        private final Callback callback;
+    private void setStatusWarn(String msg) {
+        txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusWarn));
+        txtStatus.setText(msg);
+    }
 
-        TerminalEnterWatcher(Callback cb) {
-            this.callback = cb;
-        }
+    private void setStatusError(String msg) {
+        txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusError));
+        txtStatus.setText(msg);
+    }
 
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s != null && s.length() > 0 && s.charAt(s.length() - 1) == '\n') {
-                String cleaned = s.toString().trim();
-                if (!cleaned.isEmpty()) callback.onCode(cleaned);
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
+    private void setStatusNeutral(String msg) {
+        txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusNeutral));
+        txtStatus.setText(msg);
     }
 }
-

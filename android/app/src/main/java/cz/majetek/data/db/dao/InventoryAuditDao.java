@@ -20,9 +20,6 @@ public interface InventoryAuditDao {
     @Query("SELECT COUNT(*) FROM inventory_audit")
     int countCardsTotal();
 
-    @Query("SELECT * FROM inventory_audit WHERE card_id = :cardId LIMIT 1")
-    InventoryAuditEntity getByCardId(int cardId);
-
     @Query("DELETE FROM inventory_audit WHERE card_id = :cardId")
     void deleteByCardId(int cardId);
 

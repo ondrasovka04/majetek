@@ -7,6 +7,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class CircularInventoryProgressView extends View {
@@ -59,14 +60,14 @@ public class CircularInventoryProgressView extends View {
     }
 
     private int chooseColor(float percent) {
-        if (percent < 25f) return 0xFFF44336; // red
-        if (percent >= 75f) return 0xFF4CAF50; // green
-        return 0xFFFF9800; // orange
+        if (percent < 25f) return 0xFFF44336;
+        if (percent >= 75f) return 0xFF4CAF50;
+        return 0xFFFF9800;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int desired = 200; // px
+        int desired = 200;
         int w = resolveSize(desired, widthMeasureSpec);
         int h = resolveSize(desired, heightMeasureSpec);
         int size = Math.min(w, h);
@@ -74,12 +75,11 @@ public class CircularInventoryProgressView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         float pad = strokeWidth / 2f + 4f;
         arcRect.set(pad, pad, getWidth() - pad, getHeight() - pad);
 
-        // Background circle
         canvas.drawOval(arcRect, bgPaint);
 
         float sweep = 0f;
@@ -90,13 +90,10 @@ public class CircularInventoryProgressView extends View {
         }
         progressPaint.setColor(chooseColor(percent));
         if (sweep > 0f) {
-            // Start at -90 (top)
             canvas.drawArc(arcRect, -90f, sweep, false, progressPaint);
         }
 
-        // Text center
         String text = scanned + "/" + total;
-        // Adjust text size to circle width roughly
         textPaint.setTextSize(getWidth() * 0.22f);
         Paint.FontMetrics fm = textPaint.getFontMetrics();
         float cy = getHeight() / 2f - (fm.ascent + fm.descent) / 2f;

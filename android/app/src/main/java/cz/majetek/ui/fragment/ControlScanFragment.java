@@ -1,5 +1,6 @@
 package cz.majetek.ui.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,15 +8,18 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -43,19 +47,31 @@ public class ControlScanFragment extends Fragment {
         txtStatus = v.findViewById(R.id.txt_status);
 
         setupInput();
+        setupFocusWithoutKeyboard();
         return v;
     }
 
-    private void setupInput() {
-        input.setOnEditorActionListener((tv, actionId, event) -> {
-            boolean isEnter = (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) || actionId == EditorInfo.IME_ACTION_DONE;
-            if (isEnter) {
-                handleScanned(tv.getText().toString().trim());
-                return true;
-            }
-            return false;
+    private void setupFocusWithoutKeyboard() {
+        requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        input.setShowSoftInputOnFocus(false);
+
+        input.post(() -> {
+            input.requestFocus();
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
         });
 
+        input.setOnClickListener(v -> {
+            input.setShowSoftInputOnFocus(true);
+            input.post(() -> {
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
+            });
+        });
+    }
+
+    private void setupInput() {
         input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -63,15 +79,29 @@ public class ControlScanFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s != null && s.length() > 0 && s.charAt(s.length() - 1) == '\n') {
-                    String cleaned = s.toString().trim();
-                    handleScanned(cleaned);
-                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
             }
+        });
+
+        input.setOnEditorActionListener((tv, actionId, event) -> {
+            boolean isEnter = (event != null && event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB)) || actionId == EditorInfo.IME_ACTION_DONE;
+
+            if (isEnter) {
+                handleScanned(tv.getText().toString().trim());
+                return true;
+            }
+            return false;
+        });
+
+        input.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_TAB)) {
+                handleScanned(input.getText().toString().trim());
+                return true;
+            }
+            return false;
         });
     }
 
@@ -79,9 +109,10 @@ public class ControlScanFragment extends Fragment {
         if (code.isEmpty()) return;
         input.setText("");
         txtStatus.setText("Zpracovávám: " + code);
+        txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusNeutral));
 
         if (code.startsWith("L")) {
-            showNotFound("Načtena lokace: " + code + " – naskenujte majetek");
+            postUI(() -> showNotFound("Načtena lokace: " + code + " – naskenujte majetek"));
             return;
         }
 
@@ -89,7 +120,7 @@ public class ControlScanFragment extends Fragment {
         try {
             id = Integer.parseInt(code);
         } catch (NumberFormatException nfe) {
-            showNotFound("Neplatný kód: " + code);
+            postUI(() -> showNotFound("Neplatný kód: " + code));
             return;
         }
 
@@ -105,24 +136,25 @@ public class ControlScanFragment extends Fragment {
     }
 
     private void showCard(CardEntity c) {
-        txtId.setText("ID: " + c.id);
-        txtName.setText("Název: " + c.name);
-        txtPrice.setText("Cena: " + c.price);
-        txtQuantity.setText("Množství: " + c.quantity);
-        txtLocation.setText("OL: " + c.locationId);
-        txtStatus.setText("Hotovo.");
+        txtId.setText(String.format(Locale.getDefault(), "%04d", c.id));
+        txtName.setText(c.name);
+        txtPrice.setText(String.format(new Locale("cs", "CZ"), "%,.2f", c.price));
+        txtQuantity.setText(String.valueOf((int) c.quantity));
+        txtLocation.setText(String.valueOf(c.locationId));
+        txtStatus.setText("V pořádku");
+        txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusOk));
 
         input.requestFocus();
     }
 
     private void showNotFound(String msg) {
-        txtId.setText("ID: -");
-        txtName.setText("Název: -");
-        txtPrice.setText("Cena: -");
-        txtQuantity.setText("Množství: -");
-        txtLocation.setText("OL: -");
+        txtId.setText("");
+        txtName.setText("");
+        txtPrice.setText("");
+        txtQuantity.setText("");
+        txtLocation.setText("");
         txtStatus.setText(msg);
-        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusError));
 
         input.requestFocus();
     }

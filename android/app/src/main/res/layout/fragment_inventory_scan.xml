@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,140 +10,179 @@
         android:orientation="vertical"
         android:padding="28dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Inventurní snímání"
-            android:textStyle="bold"
-            android:textSize="24sp" />
-
-        <!-- SL (skutečná lokace) scan input -->
         <EditText
             android:id="@+id/input_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:hint="Naskenujte místnost (SL)..."
+            android:layout_marginTop="12dp"
+            android:hint="Naskenujte umístění..."
             android:textSize="20sp"
             android:padding="12dp"
             android:singleLine="true"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
-            android:inputType="textVisiblePassword" />
+            android:inputType="textVisiblePassword"
+            android:nextFocusForward="@id/input_location"
+            android:nextFocusDown="@id/input_location"
+            android:nextFocusRight="@id/input_location" />
+
+        <EditText
+            android:id="@+id/input_asset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Naskenujte majetek..."
+            android:textSize="20sp"
+            android:padding="12dp"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="textVisiblePassword"
+            android:nextFocusForward="@id/input_asset"
+            android:nextFocusDown="@id/input_asset"
+            android:nextFocusRight="@id/input_asset" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="#CCCCCC" />
 
         <TextView
             android:id="@+id/txt_location_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="SL: -"
+            android:layout_marginTop="12dp"
+            android:text="SU: "
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:background="#CCCCCC" />
-
-        <!-- Progress section redesigned -->
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/txt_progress_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Postup"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+            android:layout_marginTop="12dp">
 
             <cz.majetek.ui.view.CircularInventoryProgressView
                 android:id="@+id/progress_circle"
-                android:layout_width="70dp"
-                android:layout_height="70dp" />
-        </LinearLayout>
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:background="#CCCCCC" />
+            <cz.majetek.ui.view.CircularInventoryProgressView
+                android:id="@+id/progress_circle_total"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Asset scan input -->
-        <EditText
-            android:id="@+id/input_asset"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:hint="Naskenujte ID majetku..."
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:singleLine="true"
-            android:imeOptions="actionDone"
-            android:importantForAutofill="no"
-            android:inputType="textVisiblePassword" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/card_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:layout_marginTop="8dp"
+            android:padding="12dp"
             android:background="#EEEEEE">
 
-            <TextView
-                android:id="@+id/txt_card_id"
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ID: -"
-                android:textSize="18sp" />
-            <TextView
-                android:id="@+id/txt_card_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Název: -"
-                android:textSize="18sp" />
-            <TextView
-                android:id="@+id/txt_card_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Cena: -"
-                android:textSize="18sp" />
-            <TextView
-                android:id="@+id/txt_card_quantity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Množství: -"
-                android:textSize="18sp" />
-            <TextView
-                android:id="@+id/txt_card_ol"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="OL: -"
-                android:textSize="18sp" />
+                android:shrinkColumns="1"
+                android:stretchColumns="1">
+
+                <TableRow>
+
+                    <TextView
+                        android:text="ID:"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingEnd="16dp" />
+
+                    <TextView
+                        android:id="@+id/txt_card_id"
+                        android:textSize="18sp" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:text="Název:"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingEnd="16dp" />
+
+                    <TextView
+                        android:id="@+id/txt_card_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="18sp"
+                        android:maxLines="4"
+                        android:scrollHorizontally="false"
+                        android:breakStrategy="balanced"
+                        android:hyphenationFrequency="normal" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:text="Cena:"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingEnd="16dp" />
+
+                    <TextView
+                        android:id="@+id/txt_card_price"
+                        android:textSize="18sp" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:text="Množství:"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingEnd="16dp" />
+
+                    <TextView
+                        android:id="@+id/txt_card_quantity"
+                        android:textSize="18sp" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:text="OU:"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingEnd="16dp" />
+
+                    <TextView
+                        android:id="@+id/txt_card_location"
+                        android:textSize="18sp" />
+                </TableRow>
+            </TableLayout>
         </LinearLayout>
 
         <TextView
             android:id="@+id/txt_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Připraveno."
-            android:textColor="#555"
-            android:textSize="16sp" />
+            android:layout_marginTop="25dp"
+            android:textColor="@color/statusNeutral"
+            android:text="Připraveno"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
 
             <Button
                 android:id="@+id/btn_delete"
@@ -152,15 +191,12 @@
                 android:layout_weight="1"
                 android:text="Smazat" />
 
-            <View
-                android:layout_width="16dp"
-                android:layout_height="wrap_content" />
-
             <Button
                 android:id="@+id/btn_leave"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="12dp"
                 android:text="Odejít" />
         </LinearLayout>
 

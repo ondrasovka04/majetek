@@ -18,11 +18,6 @@ import cz.majetek.ui.fragment.InventoryScanFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Fragment controlFragment;
-    private Fragment inventoryFragment;
-    private Fragment transferFragment;
-    private Fragment activeFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,36 +34,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        if (savedInstanceState == null) {
-            controlFragment = new ControlScanFragment();
-            inventoryFragment = new InventoryScanFragment();
-            transferFragment = new DataTransferFragment();
-
-            getSupportFragmentManager().beginTransaction().add(R.id.nav_host_fragment_container, transferFragment, "transfer").hide(transferFragment).add(R.id.nav_host_fragment_container, inventoryFragment, "inventory").hide(inventoryFragment).add(R.id.nav_host_fragment_container, controlFragment, "control").commit();
-
-            activeFragment = controlFragment;
-        } else {
-            controlFragment = getSupportFragmentManager().findFragmentByTag("control");
-            inventoryFragment = getSupportFragmentManager().findFragmentByTag("inventory");
-            transferFragment = getSupportFragmentManager().findFragmentByTag("transfer");
-
-            if (controlFragment != null && controlFragment.isVisible())
-                activeFragment = controlFragment;
-            else if (inventoryFragment != null && inventoryFragment.isVisible())
-                activeFragment = inventoryFragment;
-            else activeFragment = transferFragment;
-        }
-
         bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.navigation_control_scan) {
-                switchTo(controlFragment);
-                return true;
-            } else if (id == R.id.navigation_inventory_scan) {
-                switchTo(inventoryFragment);
-                return true;
-            } else if (id == R.id.navigation_data_transfer) {
-                switchTo(transferFragment);
+            Fragment fragment = null;
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_control_scan) {
+                fragment = new ControlScanFragment();
+            } else if (itemId == R.id.navigation_inventory_scan) {
+                fragment = new InventoryScanFragment();
+            } else if (itemId == R.id.navigation_data_transfer) {
+                fragment = new DataTransferFragment();
+            }
+            if (fragment != null) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, fragment).commit();
                 return true;
             }
             return false;
@@ -77,11 +54,5 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             bottomNav.setSelectedItemId(R.id.navigation_control_scan);
         }
-    }
-
-    private void switchTo(Fragment target) {
-        if (activeFragment == target) return;
-        getSupportFragmentManager().beginTransaction().hide(activeFragment).show(target).commit();
-        activeFragment = target;
     }
 }

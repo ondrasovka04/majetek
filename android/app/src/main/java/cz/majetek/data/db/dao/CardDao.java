@@ -14,9 +14,6 @@ public interface CardDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<CardEntity> items);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(CardEntity item);
-
     @Query("SELECT * FROM card WHERE id = :id LIMIT 1")
     CardEntity getById(int id);
 
