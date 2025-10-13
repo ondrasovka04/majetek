@@ -24,7 +24,7 @@ public class InventoryAuditService implements IInventoryAuditService {
 
     @Override
     public List<InventoryAuditDto> getAll() {
-        return repository.findAll().stream().map(this::toDto).collect(Collectors.toList());
+        return repository.findAll().stream().map(this::toDto).toList();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class InventoryAuditService implements IInventoryAuditService {
             return repository.save(entity);
         }).toList();
 
-        return saved.stream().map(this::toDto).collect(Collectors.toList());
+        return saved.stream().map(this::toDto).toList();
     }
 
     private InventoryAuditDto toDto(InventoryAudit entity) {
