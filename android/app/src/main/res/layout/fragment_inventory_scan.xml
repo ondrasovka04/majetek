@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="28dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Inventurní snímání"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+
+        <!-- SL (skutečná lokace) scan input -->
+        <EditText
+            android:id="@+id/input_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Naskenujte místnost (SL)..."
+            android:textSize="20sp"
+            android:padding="12dp"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="textVisiblePassword" />
+
+        <TextView
+            android:id="@+id/txt_location_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="SL: -"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="#CCCCCC" />
+
+        <!-- Progress section redesigned -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/txt_progress_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Postup"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <cz.majetek.ui.view.CircularInventoryProgressView
+                android:id="@+id/progress_circle"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="#CCCCCC" />
+
+        <!-- Asset scan input -->
+        <EditText
+            android:id="@+id/input_asset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Naskenujte ID majetku..."
+            android:textSize="20sp"
+            android:padding="12dp"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="textVisiblePassword" />
+
+        <LinearLayout
+            android:id="@+id/card_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="#EEEEEE">
+
+            <TextView
+                android:id="@+id/txt_card_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ID: -"
+                android:textSize="18sp" />
+            <TextView
+                android:id="@+id/txt_card_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Název: -"
+                android:textSize="18sp" />
+            <TextView
+                android:id="@+id/txt_card_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cena: -"
+                android:textSize="18sp" />
+            <TextView
+                android:id="@+id/txt_card_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Množství: -"
+                android:textSize="18sp" />
+            <TextView
+                android:id="@+id/txt_card_ol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="OL: -"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Připraveno."
+            android:textColor="#555"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_delete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Smazat" />
+
+            <View
+                android:layout_width="16dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btn_leave"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Odejít" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

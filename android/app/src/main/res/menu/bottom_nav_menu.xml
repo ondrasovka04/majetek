@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_control_scan"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="Kontrola" />
+    <item
+        android:id="@+id/navigation_inventory_scan"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Inventura" />
+    <item
+        android:id="@+id/navigation_data_transfer"
+        android:icon="@android:drawable/ic_menu_upload"
+        android:title="Přenos" />
+</menu>
+
