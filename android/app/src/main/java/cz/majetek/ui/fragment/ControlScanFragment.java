@@ -33,7 +33,7 @@ public class ControlScanFragment extends Fragment {
     private EditText input;
     private TextView txtId, txtName, txtPrice, txtQuantity, txtLocation, txtStatus;
     private final ExecutorService io = Executors.newSingleThreadExecutor();
-    private final static Locale CZECH_LOCALE = new Locale("cs", "CZ");
+    private final static Locale CZECH_LOCALE = Locale.forLanguageTag("cs-CZ");
 
     @Nullable
     @Override

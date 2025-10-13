@@ -41,7 +41,7 @@ public class InventoryScanFragment extends Fragment {
     private Button btnDelete, btnLeave;
 
     private final ExecutorService io = Executors.newSingleThreadExecutor();
-    private final static Locale CZECH_LOCALE = new Locale("cs", "CZ");
+    private final static Locale CZECH_LOCALE = Locale.forLanguageTag("cs-CZ");
 
     private String currentLocationId = null;
     private int lastScannedCardId = -1;

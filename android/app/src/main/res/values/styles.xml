@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="BottomNavActiveIndicator" parent="">
+    <style name="BottomNavActiveIndicator">
         <item name="android:color">@color/primaryBlue</item>
     </style>
 </resources>
