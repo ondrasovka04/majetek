@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface IInventoryAuditService {
     List<InventoryAuditDto> getAll();
+
     List<InventoryAuditDto> insertMany(List<InventoryAuditDto> items);
 }
 
