@@ -27,10 +27,7 @@
             android:singleLine="true"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
-            android:inputType="textNoSuggestions"
-            android:nextFocusForward="@id/input_scan"
-            android:nextFocusDown="@id/input_scan"
-            android:nextFocusRight="@id/input_scan" />
+            android:inputType="textNoSuggestions" />
 
         <View
             android:layout_width="match_parent"

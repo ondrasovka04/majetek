@@ -41,6 +41,7 @@ public class InventoryScanFragment extends Fragment {
     private Button btnDelete, btnLeave;
 
     private final ExecutorService io = Executors.newSingleThreadExecutor();
+    private final static Locale CZECH_LOCALE = new Locale("cs", "CZ");
 
     private String currentLocationId = null;
     private int lastScannedCardId = -1;
@@ -272,7 +273,7 @@ public class InventoryScanFragment extends Fragment {
         String idStr = String.format(Locale.US, "%04d", c.id);
         txtCardId.setText(idStr);
         txtCardName.setText(c.name != null ? c.name : "");
-        txtCardPrice.setText(String.format(new Locale("cs", "CZ"), "%,.2f", c.price));
+        txtCardPrice.setText(String.format(CZECH_LOCALE, "%,.2f", c.price));
         txtCardQuantity.setText(String.valueOf((int) c.quantity));
         txtCardOu.setText(c.locationId != null ? c.locationId : "");
 

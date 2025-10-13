@@ -21,10 +21,7 @@
             android:singleLine="true"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
-            android:inputType="textVisiblePassword"
-            android:nextFocusForward="@id/input_location"
-            android:nextFocusDown="@id/input_location"
-            android:nextFocusRight="@id/input_location" />
+            android:inputType="textVisiblePassword" />
 
         <EditText
             android:id="@+id/input_asset"
@@ -37,10 +34,7 @@
             android:singleLine="true"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
-            android:inputType="textVisiblePassword"
-            android:nextFocusForward="@id/input_asset"
-            android:nextFocusDown="@id/input_asset"
-            android:nextFocusRight="@id/input_asset" />
+            android:inputType="textVisiblePassword" />
 
         <View
             android:layout_width="match_parent"

@@ -33,6 +33,7 @@ public class ControlScanFragment extends Fragment {
     private EditText input;
     private TextView txtId, txtName, txtPrice, txtQuantity, txtLocation, txtStatus;
     private final ExecutorService io = Executors.newSingleThreadExecutor();
+    private final static Locale CZECH_LOCALE = new Locale("cs", "CZ");
 
     @Nullable
     @Override
@@ -138,7 +139,7 @@ public class ControlScanFragment extends Fragment {
     private void showCard(CardEntity c) {
         txtId.setText(String.format(Locale.getDefault(), "%04d", c.id));
         txtName.setText(c.name);
-        txtPrice.setText(String.format(new Locale("cs", "CZ"), "%,.2f", c.price));
+        txtPrice.setText(String.format(CZECH_LOCALE, "%,.2f", c.price));
         txtQuantity.setText(String.valueOf((int) c.quantity));
         txtLocation.setText(String.valueOf(c.locationId));
         txtStatus.setText("V pořádku");
