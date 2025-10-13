@@ -164,12 +164,12 @@ public class InventoryScanFragment extends Fragment {
 
     private void handleLocationScanned(String code) {
         if (code.isEmpty()) {
-            requestFocusLater(inputLocation);
+            inputLocation.requestFocus();
             return;
         }
         if (currentLocationId != null) {
             inputLocation.setText("");
-            requestFocusLater(inputAsset);
+            inputAsset.requestFocus();
             return;
         }
 
@@ -177,7 +177,7 @@ public class InventoryScanFragment extends Fragment {
 
         if (!code.startsWith("L") || code.length() == 1) {
             setStatusWarn("Kód umístění musí začínat 'L'");
-            requestFocusLater(inputLocation);
+            inputLocation.requestFocus();
             return;
         }
         String locId = code.substring(1);
@@ -188,7 +188,7 @@ public class InventoryScanFragment extends Fragment {
             if (le == null) {
                 postUI(() -> {
                     setStatusError("Umístění nenalezeno: " + locId);
-                    requestFocusLater(inputLocation);
+                    inputLocation.requestFocus();
                 });
                 return;
             }
@@ -205,27 +205,27 @@ public class InventoryScanFragment extends Fragment {
                 updateLocationProgressUI(scannedInLoc, totalInLoc);
                 updateTotalProgressUI(scannedTotal, totalAll);
                 inputLocation.setEnabled(false);
-                requestFocusLater(inputAsset);
+                inputAsset.requestFocus();
             });
         });
     }
 
     private void handleAssetScanned(String code) {
         if (code.isEmpty()) {
-            requestFocusLater(inputAsset);
+            inputAsset.requestFocus();
             return;
         }
         if (code.startsWith("L")) {
             setStatusWarn("Sken umístění patří do horního pole");
             inputAsset.setText("");
-            requestFocusLater(inputLocation);
+            inputLocation.requestFocus();
             return;
         }
 
         if (currentLocationId == null) {
             setStatusWarn("Nejdříve naskenujte umístění (SU)");
             inputAsset.setText("");
-            requestFocusLater(inputLocation);
+            inputLocation.requestFocus();
             return;
         }
 
@@ -291,7 +291,7 @@ public class InventoryScanFragment extends Fragment {
         } else {
             setStatusNeutral("Připraveno");
         }
-        requestFocusLater(inputAsset);
+        inputAsset.requestFocus();
     }
 
     private void showUnknown(String code) {
@@ -303,7 +303,7 @@ public class InventoryScanFragment extends Fragment {
         txtCardOu.setText("");
         cardContainer.setBackgroundColor(0xFFFFCDD2);
         setStatusError("Neznámé ID majetku: " + code);
-        requestFocusLater(inputAsset);
+        inputLocation.requestFocus();
     }
 
     private void deleteLast() {
@@ -321,7 +321,7 @@ public class InventoryScanFragment extends Fragment {
                 updateLocationProgressUI(scannedInLoc, totalInLoc);
                 updateTotalProgressUI(scannedTotal, totalAll);
                 setStatusNeutral("Záznam odstraněn");
-                requestFocusLater(inputAsset);
+                inputAsset.requestFocus();
             });
         });
     }
@@ -332,7 +332,7 @@ public class InventoryScanFragment extends Fragment {
         updateLocationProgressUI(0, 0);
         resetCardDisplay();
         inputLocation.setEnabled(true);
-        requestFocusLater(inputLocation);
+        inputLocation.requestFocus();
         setStatusNeutral("Připraveno");
     }
 
@@ -364,14 +364,6 @@ public class InventoryScanFragment extends Fragment {
         txtCardQuantity.setText("");
         txtCardOu.setText("");
         cardContainer.setBackgroundColor(0xFFEEEEEE);
-    }
-
-    private void requestFocusLater(EditText et) {
-        et.postDelayed(() -> {
-            et.setShowSoftInputOnFocus(false);
-            et.requestFocus();
-            hideIme(et);
-        }, 30);
     }
 
     private void postUI(Runnable r) {
