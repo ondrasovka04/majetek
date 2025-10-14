@@ -33,7 +33,7 @@ public class PurchaseMethodService implements IPurchaseMethodService {
     @Override
     public PurchaseMethod create(PurchaseMethod purchaseMethod) {
         if (purchaseMethodRepository.existsById(purchaseMethod.getId())) {
-            throw PurchaseMethodException.notFound(purchaseMethod.getId());
+            throw new PurchaseMethodException("Purchase method with id " + purchaseMethod.getId() + " already exists");
         }
         return purchaseMethodRepository.save(purchaseMethod);
     }

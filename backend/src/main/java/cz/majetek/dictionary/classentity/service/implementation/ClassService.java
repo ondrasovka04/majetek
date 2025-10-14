@@ -33,7 +33,7 @@ public class ClassService implements IClassService {
     @Override
     public ClassEntity create(ClassEntity classEntity) {
         if (classEntityRepository.existsById(classEntity.getId())) {
-            throw ClassEntityException.notFound(classEntity.getId());
+            throw new ClassEntityException("Class with id " + classEntity.getId() + " already exists");
         }
         return classEntityRepository.save(classEntity);
     }

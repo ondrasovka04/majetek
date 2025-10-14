@@ -34,7 +34,7 @@ public class AssetGroupService implements IAssetGroupService {
     @Override
     public AssetGroup create(AssetGroup assetGroup) {
         if (assetGroupRepository.existsById(assetGroup.getId())) {
-            throw AssetGroupException.notFound(assetGroup.getId());
+            throw new AssetGroupException("Asset group with id " + assetGroup.getId() + " already exists");
         }
         return assetGroupRepository.save(assetGroup);
     }

@@ -33,7 +33,7 @@ public class WriteOffMethodService implements IWriteOffMethodService {
     @Override
     public WriteOffMethod create(WriteOffMethod writeOffMethod) {
         if (writeOffMethodRepository.existsById(writeOffMethod.getId())) {
-            throw WriteOffMethodException.notFound(writeOffMethod.getId());
+            throw new WriteOffMethodException("Write off method with id " + writeOffMethod.getId() + " already exists");
         }
         return writeOffMethodRepository.save(writeOffMethod);
     }

@@ -46,7 +46,7 @@ public class LocationService implements ILocationService {
     @Override
     public Location create(Location location) {
         if (locationRepository.existsById(location.getId())) {
-            throw LocationException.notFound(location.getId());
+            throw new LocationException("Location with id " + location.getId() + " already exists");
         }
         return locationRepository.save(location);
     }

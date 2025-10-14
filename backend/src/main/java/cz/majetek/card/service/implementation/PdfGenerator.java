@@ -54,7 +54,7 @@ public final class PdfGenerator {
 
     static {
 
-        NUMBER_FORMAT = NumberFormat.getNumberInstance(Locale.forLanguageTag("cs-Cz"));
+        NUMBER_FORMAT = NumberFormat.getNumberInstance(Locale.forLanguageTag("cs-CZ"));
         NUMBER_FORMAT.setMaximumFractionDigits(2);
         NUMBER_FORMAT.setMinimumFractionDigits(2);
     }
