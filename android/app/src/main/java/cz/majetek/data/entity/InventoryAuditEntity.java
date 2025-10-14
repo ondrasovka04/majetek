@@ -10,16 +10,40 @@ import androidx.room.PrimaryKey;
 public class InventoryAuditEntity {
     @PrimaryKey
     @ColumnInfo(name = "card_id")
-    public int cardId;
+    private int cardId;
 
     @ColumnInfo(name = "real_location_id")
-    public String realLocationId;
+    private String realLocationId;
 
-    public long timestamp;
+    private long timestamp;
 
     public InventoryAuditEntity(int cardId, String realLocationId, long timestamp) {
         this.cardId = cardId;
         this.realLocationId = realLocationId;
+        this.timestamp = timestamp;
+    }
+
+    public int getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(int cardId) {
+        this.cardId = cardId;
+    }
+
+    public String getRealLocationId() {
+        return realLocationId;
+    }
+
+    public void setRealLocationId(String realLocationId) {
+        this.realLocationId = realLocationId;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 }

@@ -15,7 +15,7 @@ import cz.majetek.data.entity.LocationEntity;
 
 @Database(entities = {CardEntity.class, LocationEntity.class, InventoryAuditEntity.class}, version = 5, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
-    private static volatile AppDatabase INSTANCE;
+    private static AppDatabase instance;
 
     public abstract CardDao cardDao();
 
@@ -23,14 +23,10 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract InventoryAuditDao inventoryAuditDao();
 
-    public static AppDatabase getInstance(Context context) {
-        if (INSTANCE == null) {
-            synchronized (AppDatabase.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "majetek.db").fallbackToDestructiveMigration(true).build();
-                }
-            }
+    public static synchronized AppDatabase getInstance(Context context) {
+        if (instance == null) {
+            instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "majetek.db").fallbackToDestructiveMigration(true).build();
         }
-        return INSTANCE;
+        return instance;
     }
 }

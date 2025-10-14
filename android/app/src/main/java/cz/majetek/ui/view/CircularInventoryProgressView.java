@@ -18,7 +18,7 @@ public class CircularInventoryProgressView extends View {
 
     private int scanned = 0;
     private int total = 0;
-    private final float strokeWidth = 14f;
+    private static final float STROKE_WIDTH = 14f;
 
     public CircularInventoryProgressView(Context context) {
         super(context);
@@ -38,12 +38,12 @@ public class CircularInventoryProgressView extends View {
     private void init() {
         bgPaint.setStyle(Paint.Style.STROKE);
         bgPaint.setStrokeCap(Paint.Cap.ROUND);
-        bgPaint.setStrokeWidth(strokeWidth);
+        bgPaint.setStrokeWidth(STROKE_WIDTH);
         bgPaint.setColor(0xFFDDDDDD);
 
         progressPaint.setStyle(Paint.Style.STROKE);
         progressPaint.setStrokeCap(Paint.Cap.ROUND);
-        progressPaint.setStrokeWidth(strokeWidth);
+        progressPaint.setStrokeWidth(STROKE_WIDTH);
         progressPaint.setColor(0xFF9E9E9E);
 
         textPaint.setTextAlign(Paint.Align.CENTER);
@@ -77,7 +77,7 @@ public class CircularInventoryProgressView extends View {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        float pad = strokeWidth / 2f + 4f;
+        float pad = STROKE_WIDTH / 2f + 4f;
         arcRect.set(pad, pad, getWidth() - pad, getHeight() - pad);
 
         canvas.drawOval(arcRect, bgPaint);
@@ -86,7 +86,7 @@ public class CircularInventoryProgressView extends View {
         float percent = 0f;
         if (total > 0) {
             percent = (scanned * 100f) / total;
-            sweep = 360f * scanned / (float) total;
+            sweep = 360f * scanned / total;
         }
         progressPaint.setColor(chooseColor(percent));
         if (sweep > 0f) {

@@ -34,14 +34,23 @@ import cz.majetek.ui.view.CircularInventoryProgressView;
 
 public class InventoryScanFragment extends Fragment {
 
-    private EditText inputLocation, inputAsset;
-    private TextView txtLocationName, txtCardId, txtCardName, txtCardPrice, txtCardQuantity, txtCardOu, txtStatus;
-    private CircularInventoryProgressView progressCircle, progressCircleTotal;
+    private EditText inputLocation;
+    private EditText inputAsset;
+    private TextView txtLocationName;
+    private TextView txtCardId;
+    private TextView txtCardName;
+    private TextView txtCardPrice;
+    private TextView txtCardQuantity;
+    private TextView txtCardOu;
+    private TextView txtStatus;
+    private CircularInventoryProgressView progressCircle;
+    private CircularInventoryProgressView progressCircleTotal;
     private LinearLayout cardContainer;
-    private Button btnDelete, btnLeave;
+    private Button btnDelete;
+    private Button btnLeave;
 
     private final ExecutorService io = Executors.newSingleThreadExecutor();
-    private final static Locale CZECH_LOCALE = Locale.forLanguageTag("cs-CZ");
+    private static final Locale CZECH_LOCALE = Locale.forLanguageTag("cs-CZ");
 
     private String currentLocationId = null;
     private int lastScannedCardId = -1;
@@ -54,7 +63,7 @@ public class InventoryScanFragment extends Fragment {
         setupFocusBehavior();
         setupInputs();
         setupButtons();
-        setStatusNeutral("Připraveno");
+        setStatusNeutral(getString(R.string.status_ready));
         updateLocationProgressUI(0, 0);
         refreshTotalProgress();
         return v;
@@ -111,6 +120,11 @@ public class InventoryScanFragment extends Fragment {
     }
 
     private void setupInputs() {
+        setupLocationInputs();
+        setupAssetInputs();
+    }
+
+    private void setupLocationInputs() {
         inputLocation.setOnEditorActionListener((tv, actionId, event) -> {
             boolean isEnter = (event != null && event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB)) || actionId == EditorInfo.IME_ACTION_DONE;
             if (isEnter) {
@@ -126,7 +140,9 @@ public class InventoryScanFragment extends Fragment {
             }
             return false;
         });
+    }
 
+    private void setupAssetInputs() {
         inputAsset.setOnEditorActionListener((tv, actionId, event) -> {
             boolean isEnter = (event != null && event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB)) || actionId == EditorInfo.IME_ACTION_DONE;
             if (isEnter) {
@@ -147,18 +163,18 @@ public class InventoryScanFragment extends Fragment {
     private void setupButtons() {
         btnDelete.setOnClickListener(v -> {
             if (lastScannedCardId <= 0) {
-                setStatusWarn("Žádný majetek k smazání");
+                setStatusWarn(getString(R.string.warn_no_card_to_delete));
                 return;
             }
-            new AlertDialog.Builder(requireContext()).setTitle("Smazat").setMessage("Opravdu odstranit tento majetek z inventury?").setPositiveButton("Ano", (d, w) -> deleteLast()).setNegativeButton("Ne", null).show();
+            new AlertDialog.Builder(requireContext()).setTitle(R.string.dialog_delete_title).setMessage(R.string.dialog_delete_message).setPositiveButton(R.string.common_yes, (d, w) -> deleteLast()).setNegativeButton(R.string.common_no, null).show();
         });
 
         btnLeave.setOnClickListener(v -> {
             if (currentLocationId == null) {
-                setStatusWarn("Nebylo vybráno umístění");
+                setStatusWarn(getString(R.string.warn_no_location_selected));
                 return;
             }
-            new AlertDialog.Builder(requireContext()).setTitle("Odejít z místnosti").setMessage("Opravdu odejít z místnosti?").setPositiveButton("Ano", (d, w) -> clearLocation()).setNegativeButton("Ne", null).show();
+            new AlertDialog.Builder(requireContext()).setTitle(R.string.dialog_leave_location_title).setMessage(R.string.dialog_leave_location_message).setPositiveButton(R.string.common_yes, (d, w) -> clearLocation()).setNegativeButton(R.string.common_no, null).show();
         });
     }
 
@@ -176,7 +192,7 @@ public class InventoryScanFragment extends Fragment {
         inputLocation.setText("");
 
         if (!code.startsWith("L") || code.length() == 1) {
-            setStatusWarn("Kód umístění musí začínat 'L'");
+            setStatusWarn(getString(R.string.warn_location_code_format));
             inputLocation.requestFocus();
             return;
         }
@@ -187,7 +203,7 @@ public class InventoryScanFragment extends Fragment {
             LocationEntity le = db.locationDao().getById(locId);
             if (le == null) {
                 postUI(() -> {
-                    setStatusError("Umístění nenalezeno: " + locId);
+                    setStatusError(getString(R.string.error_location_not_found, locId));
                     inputLocation.requestFocus();
                 });
                 return;
@@ -200,8 +216,8 @@ public class InventoryScanFragment extends Fragment {
 
             postUI(() -> {
                 currentLocationId = locId;
-                txtLocationName.setText("SU: " + locId + " – " + (le.name != null ? le.name : ""));
-                setStatusNeutral("Načteno umístění: L" + locId + " – naskenujte majetek");
+                txtLocationName.setText(getString(R.string.format_su_with_name, locId, le.getName() != null ? le.getName() : ""));
+                setStatusNeutral(getString(R.string.status_location_scanned, locId));
                 updateLocationProgressUI(scannedInLoc, totalInLoc);
                 updateTotalProgressUI(scannedTotal, totalAll);
                 inputLocation.setEnabled(false);
@@ -216,14 +232,14 @@ public class InventoryScanFragment extends Fragment {
             return;
         }
         if (code.startsWith("L")) {
-            setStatusWarn("Sken umístění patří do horního pole");
+            setStatusWarn(getString(R.string.warn_location_scan_in_asset_field));
             inputAsset.setText("");
             inputLocation.requestFocus();
             return;
         }
 
         if (currentLocationId == null) {
-            setStatusWarn("Nejdříve naskenujte umístění (SU)");
+            setStatusWarn(getString(R.string.warn_scan_location_first));
             inputAsset.setText("");
             inputLocation.requestFocus();
             return;
@@ -268,28 +284,28 @@ public class InventoryScanFragment extends Fragment {
     }
 
     private void showCard(CardEntity c) {
-        lastScannedCardId = c.id;
+        lastScannedCardId = c.getId();
 
-        String idStr = String.format(Locale.US, "%04d", c.id);
+        String idStr = String.format(Locale.US, "%04d", c.getId());
         txtCardId.setText(idStr);
-        txtCardName.setText(c.name != null ? c.name : "");
-        txtCardPrice.setText(String.format(CZECH_LOCALE, "%,.2f", c.price));
-        txtCardQuantity.setText(String.valueOf((int) c.quantity));
-        txtCardOu.setText(c.locationId != null ? c.locationId : "");
+        txtCardName.setText(c.getName() != null ? c.getName() : "");
+        txtCardPrice.setText(String.format(CZECH_LOCALE, "%,.2f", c.getPrice()));
+        txtCardQuantity.setText(String.valueOf((int) c.getQuantity()));
+        txtCardOu.setText(c.getLocationId() != null ? c.getLocationId() : "");
 
         if (currentLocationId != null) {
-            if (c.locationId == null) {
+            if (c.getLocationId() == null) {
                 cardContainer.setBackgroundColor(0xFFFFCDD2);
-                setStatusError("Majetek očekáván v jiném umístění");
-            } else if (c.locationId.equals(currentLocationId)) {
+                setStatusError(getString(R.string.error_asset_expected_elsewhere));
+            } else if (c.getLocationId().equals(currentLocationId)) {
                 cardContainer.setBackgroundColor(0xFFC8E6C9);
-                setStatusOk("Uloženo");
+                setStatusOk(getString(R.string.status_saved));
             } else {
                 cardContainer.setBackgroundColor(0xFFFFE0B2);
-                setStatusWarn("Majetek očekáván v jiném umístění");
+                setStatusWarn(getString(R.string.error_asset_expected_elsewhere));
             }
         } else {
-            setStatusNeutral("Připraveno");
+            setStatusNeutral(getString(R.string.status_ready));
         }
         inputAsset.requestFocus();
     }
@@ -302,7 +318,7 @@ public class InventoryScanFragment extends Fragment {
         txtCardQuantity.setText("");
         txtCardOu.setText("");
         cardContainer.setBackgroundColor(0xFFFFCDD2);
-        setStatusError("Neznámé ID majetku: " + code);
+        setStatusError(getString(R.string.error_unknown_asset_id, code));
         inputLocation.requestFocus();
     }
 
@@ -320,7 +336,7 @@ public class InventoryScanFragment extends Fragment {
                 resetCardDisplay();
                 updateLocationProgressUI(scannedInLoc, totalInLoc);
                 updateTotalProgressUI(scannedTotal, totalAll);
-                setStatusNeutral("Záznam odstraněn");
+                setStatusNeutral(getString(R.string.status_record_deleted));
                 inputAsset.requestFocus();
             });
         });
@@ -328,12 +344,12 @@ public class InventoryScanFragment extends Fragment {
 
     private void clearLocation() {
         currentLocationId = null;
-        txtLocationName.setText("SU: ");
+        txtLocationName.setText(getString(R.string.label_su_prefix));
         updateLocationProgressUI(0, 0);
         resetCardDisplay();
         inputLocation.setEnabled(true);
         inputLocation.requestFocus();
-        setStatusNeutral("Připraveno");
+        setStatusNeutral(getString(R.string.status_ready));
     }
 
     private void updateLocationProgressUI(int scannedInLoc, int totalInLoc) {

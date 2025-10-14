@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kontrolní snímání"
+            android:text="@string/title_control_scan"
             android:textStyle="bold"
             android:textSize="24sp" />
 
@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:hint="Naskenujte kód..."
+            android:hint="@string/hint_scan_code"
             android:textSize="20sp"
             android:padding="12dp"
             android:singleLine="true"
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Výsledek"
+            android:text="@string/label_result"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -49,15 +49,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:shrinkColumns="1"
-            android:stretchColumns="1">
+            android:stretchColumns="1"
+            android:background="#EEEEEE"
+            android:padding="12dp">
 
             <TableRow>
 
                 <TextView
-                    android:text="ID:"
+                    android:text="@string/label_id"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:paddingStart="0dp" />
 
                 <TextView
                     android:id="@+id/txt_card_id"
@@ -67,23 +70,26 @@
             <TableRow>
 
                 <TextView
-                    android:text="Název:"
+                    android:text="@string/label_name"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:paddingStart="0dp" />
 
                 <TextView
                     android:id="@+id/txt_card_name"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:hyphenationFrequency="none" />
             </TableRow>
 
             <TableRow>
 
                 <TextView
-                    android:text="Cena:"
+                    android:text="@string/label_price"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:paddingStart="0dp" />
 
                 <TextView
                     android:id="@+id/txt_card_price"
@@ -93,10 +99,11 @@
             <TableRow>
 
                 <TextView
-                    android:text="Množství:"
+                    android:text="@string/label_quantity"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:paddingStart="0dp" />
 
                 <TextView
                     android:id="@+id/txt_card_quantity"
@@ -106,10 +113,11 @@
             <TableRow>
 
                 <TextView
-                    android:text="OU:"
+                    android:text="@string/label_ou"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:paddingEnd="16dp" />
+                    android:paddingEnd="16dp"
+                    android:paddingStart="0dp" />
 
                 <TextView
                     android:id="@+id/txt_card_location"
@@ -124,7 +132,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:textColor="@color/statusNeutral"
-            android:text="Připraveno"
+            android:text="@string/status_ready"
             android:gravity="center"
             android:textSize="20sp"
             android:textStyle="bold" />
