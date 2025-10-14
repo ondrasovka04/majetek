@@ -21,7 +21,9 @@ import cz.majetek.entity.AssetGroup;
 import cz.majetek.entity.Card;
 import cz.majetek.entity.Location;
 import cz.majetek.entity.user.User;
+import cz.majetek.exception.auth.UserException;
 import cz.majetek.exception.card.CardException;
+import cz.majetek.exception.dictionary.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
@@ -101,7 +103,7 @@ public class CardService implements ICardService {
     }
 
     public CardDto getCardById(Integer id) {
-        Card card = cardRepository.findById(id).orElseThrow(() -> new CardException("Card with id " + id + " not found"));
+        Card card = cardRepository.findById(id).orElseThrow(() -> CardException.notFound(id));
         return cardMapper.toDto(card);
     }
 
@@ -123,7 +125,7 @@ public class CardService implements ICardService {
     @Override
     public CardDto updateCard(Integer id, CardChangeDto dto) {
         Card existing = cardRepository.findById(id)
-                .orElseThrow(() -> new CardException("Card not found"));
+                .orElseThrow(() -> CardException.notFound(id));
 
         validateReferencesExist(dto.getLocationId(), dto.getClassId(), dto.getGroupId(),
                 dto.getPurchaseMethodId(), dto.getWriteOffMethodId(), dto.getCreatedById(), dto.getResponsiblePersonId());
@@ -137,7 +139,7 @@ public class CardService implements ICardService {
 
     @Override
     public void deleteCard(Integer id) {
-        if (!cardRepository.existsById(id)) throw new CardException("Card not found");
+        if (!cardRepository.existsById(id)) throw CardException.notFound(id);
 
         Path cardFolder = Path.of(uploadRoot, String.valueOf(id));
 
@@ -165,25 +167,7 @@ public class CardService implements ICardService {
         if (cards.isEmpty()) throw new CardException("No cards found");
 
 
-        List<CardExportDto> exportList = cards.stream().map(card -> {
-            CardExportDto dto = new CardExportDto();
-            dto.setId(String.format("%04d", card.getId()));
-            dto.setName(card.getName());
-            dto.setPrice(card.getPrice() != null ? card.getPrice() : BigDecimal.valueOf(0));
-            dto.setSerialNumber(card.getSerialNumber() != null ? card.getSerialNumber() : null);
-            dto.setLocation(card.getLocation().getName());
-            dto.setGroup(card.getGroup().getName());
-            dto.setPurchaseInvoice(card.getPurchaseInvoice() != null ? card.getPurchaseInvoice() : null);
-            dto.setPurchaseDate(card.getPurchaseDate());
-            dto.setWriteOffDate(card.getWriteOffDate() != null ? card.getWriteOffDate() : null);
-            dto.setPurchaseMethod(card.getPurchaseMethod() != null ? card.getPurchaseMethod().getName() : null);
-            dto.setWriteOffMethod(card.getWriteOffMethod() != null ? card.getWriteOffMethod().getName() : null);
-            dto.setResponsiblePerson(card.getResponsiblePerson() != null ? card.getResponsiblePerson().getName() : null);
-            dto.setNote(card.getNote() != null ? card.getNote() : null);
-            dto.setCreated(LocalDate.from(card.getCreatedDate()));
-            dto.setCreatedBy(card.getCreatedBy().getName());
-            return dto;
-        }).toList();
+        List<CardExportDto> exportList = getExportListFromCards(cards);
 
         try {
             Path excelPath = Path.of(exportPath, "cards-" + Instant.now().toEpochMilli() + ".xlsx");
@@ -197,9 +181,29 @@ public class CardService implements ICardService {
         }
     }
 
+    private List<CardExportDto> getExportListFromCards(List<Card> cards) {
+        return cards.stream().map(card -> new CardExportDto(
+                String.format("%04d", card.getId()),
+                card.getName(),
+                card.getPrice() != null ? card.getPrice() : BigDecimal.valueOf(0),
+                card.getSerialNumber(),
+                card.getLocation().getName(),
+                card.getGroup().getName(),
+                card.getPurchaseInvoice(),
+                card.getPurchaseDate(),
+                card.getWriteOffDate(),
+                card.getPurchaseMethod() != null ? card.getPurchaseMethod().getName() : null,
+                card.getWriteOffMethod() != null ? card.getWriteOffMethod().getName() : null,
+                card.getResponsiblePerson() != null ? card.getResponsiblePerson().getName() : null,
+                card.getNote(),
+                LocalDate.from(card.getCreatedDate()),
+                card.getCreatedBy().getName()
+        )).toList();
+    }
+
     @Override
     public InputStreamResource exportGroupReport(String groupId, LocalDate asOf) {
-        AssetGroup group = assetGroupRepository.findById(groupId).orElseThrow(() -> new CardException("Asset group not found"));
+        AssetGroup group = assetGroupRepository.findById(groupId).orElseThrow(() -> AssetGroupException.notFound(groupId));
         CardFilterQuery query = new CardFilterQuery();
         query.setGroupId(group.getId());
         query.setAsOfDate(asOf);
@@ -251,7 +255,7 @@ public class CardService implements ICardService {
     @Override
     public InputStreamResource exportLocationReport(String locationId, LocalDate asOf) {
         Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new CardException("Location with id " + locationId + " not found"));
+                .orElseThrow(() -> LocationException.notFound(locationId));
 
         CardFilterQuery query = new CardFilterQuery();
         query.setLocationId(locationId);
@@ -272,7 +276,7 @@ public class CardService implements ICardService {
 
     public InputStreamResource exportCardReport(Integer cardId) {
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new CardException("Card with id " + cardId + " not found"));
+                .orElseThrow(() -> CardException.notFound(cardId));
 
         byte[] pdfData = PdfGenerator.generateCardReport(card);
         Path pdfPath = Path.of(exportPath, "card_report_" + cardId + "_" + Instant.now().toEpochMilli() + ".pdf");
@@ -295,25 +299,25 @@ public class CardService implements ICardService {
             String responsiblePersonId
     ) {
         if (!locationRepository.existsById(locationId))
-            throw new CardException("Location with id " + locationId + " not found");
+            throw LocationException.notFound(locationId);
 
         if (classId != null && !classRepository.existsById(classId))
-            throw new CardException("Class with id " + classId + " not found");
+            throw ClassEntityException.notFound(classId);
 
         if (groupId != null && !assetGroupRepository.existsById(groupId))
-            throw new CardException("Group with id " + groupId + " not found");
+            throw AssetGroupException.notFound(groupId);
 
         if (purchaseMethodId != null && !purchaseMethodRepository.existsById(purchaseMethodId))
-            throw new CardException("PurchaseMethod with id " + purchaseMethodId + " not found");
+            throw PurchaseMethodException.notFound(purchaseMethodId);
 
         if (writeOffMethodId != null && !writeOffMethodRepository.existsById(writeOffMethodId))
-            throw new CardException("WriteOffMethod with id " + writeOffMethodId + " not found");
+            throw WriteOffMethodException.notFound(writeOffMethodId);
 
         if (createdById != null && !userRepository.existsById(createdById))
-            throw new CardException("User with id " + createdById + " not found");
+            throw UserException.notFound(createdById);
 
         if (responsiblePersonId != null && !userRepository.existsById(responsiblePersonId))
-            throw new CardException("User with id " + responsiblePersonId + " not found");
+            throw UserException.notFound(responsiblePersonId);
     }
 
 

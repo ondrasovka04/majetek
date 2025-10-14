@@ -47,9 +47,14 @@ public final class PdfGenerator {
     private static final NumberFormat NUMBER_FORMAT;
     private static final String FONT_PATH = "fonts/calibri.ttf";
     private static final float BORDER_WIDTH = 2;
+    private static final String NAME = "Název";
+    private static final String GROUP = "Skupina";
+    private static final String LOCATION = "Umístění";
+    private static final String CLASS = "Třída";
 
     static {
-        NUMBER_FORMAT = NumberFormat.getNumberInstance(new Locale("cs", "CZ"));
+
+        NUMBER_FORMAT = NumberFormat.getNumberInstance(Locale.forLanguageTag("cs-CZ"));
         NUMBER_FORMAT.setMaximumFractionDigits(2);
         NUMBER_FORMAT.setMinimumFractionDigits(2);
     }
@@ -60,11 +65,11 @@ public final class PdfGenerator {
     public static byte[] generateGroupReport(AssetGroup group, List<Card> cards, LocalDate asOfDate) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             Document doc = createStyledDocument(baos);
-            addReportHeader(doc, "Skupina " + group.getId() + " (" + group.getName() + ")", asOfDate);
+            addReportHeader(doc, GROUP + " " + group.getId() + " (" + group.getName() + ")", asOfDate);
 
             float[] columnWidths = new float[]{5, 10, 51, 8, 13, 13};
             Table table = new Table(UnitValue.createPercentArray(columnWidths)).useAllAvailableWidth();
-            addAssetTableHeaders(table, "Umístění", "Název");
+            addAssetTableHeaders(table, LOCATION, NAME);
 
             AssetTotals totals = addAssetTableRows(table, cards,
                     new Column(c -> c.getLocation().getId(), TextAlignment.RIGHT, 10),
@@ -85,7 +90,7 @@ public final class PdfGenerator {
             addReportHeader(doc, "Souhrnný přehled skupin", asOfDate);
 
             Table table = new Table(UnitValue.createPercentArray(new float[]{70, 30})).useAllAvailableWidth();
-            table.addHeaderCell(createHeaderCell("Skupina", TextAlignment.LEFT));
+            table.addHeaderCell(createHeaderCell(GROUP, TextAlignment.LEFT));
             table.addHeaderCell(createHeaderCell("Celk. cena (Kč)", TextAlignment.RIGHT));
 
             double grandTotal = 0.0;
@@ -118,7 +123,7 @@ public final class PdfGenerator {
 
             float[] columnWidths = new float[]{6, 50, 10, 8, 13, 13};
             Table table = new Table(UnitValue.createPercentArray(columnWidths)).useAllAvailableWidth();
-            addAssetTableHeaders(table, "Název", "Skupina");
+            addAssetTableHeaders(table, NAME, GROUP);
 
             AssetTotals totals = addAssetTableRows(table, cards,
                     new Column(Card::getName, TextAlignment.LEFT, 0),
@@ -155,18 +160,18 @@ public final class PdfGenerator {
             details.setBorder(new SolidBorder(BORDER_WIDTH));
             details.setBorderBottom(Border.NO_BORDER);
 
-            details.addCell(createLabelCell("Název"));
+            details.addCell(createLabelCell(NAME));
             details.addCell(createValueCell(card.getName(), 2));
 
-            details.addCell(createLabelCell("Umístění"));
+            details.addCell(createLabelCell(LOCATION));
             details.addCell(createValueCell(card.getLocation().getId()));
             details.addCell(createValueCell(Objects.toString(card.getLocation().getName(), "")));
 
-            details.addCell(createLabelCell("Třída"));
+            details.addCell(createLabelCell(CLASS));
             details.addCell(createValueCell(card.getAssetClass().getId()));
             details.addCell(createValueCell(Objects.toString(card.getAssetClass().getName(), "")));
 
-            details.addCell(createLabelCell("Skupina"));
+            details.addCell(createLabelCell(GROUP));
             details.addCell(createValueCell(card.getGroup().getId()));
             details.addCell(createValueCell(Objects.toString(card.getGroup().getName(), "")));
 

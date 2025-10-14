@@ -1,6 +1,8 @@
 package cz.majetek.exception;
 
 import cz.majetek.exception.attachment.AttachmentException;
+import cz.majetek.exception.auth.AuthException;
+import cz.majetek.exception.auth.UserException;
 import cz.majetek.exception.auth.UserIdAlreadyExistsException;
 import cz.majetek.exception.auth.UsernameAlreadyExistsException;
 import cz.majetek.exception.card.CardException;
@@ -94,6 +96,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({UsernameAlreadyExistsException.class, UserIdAlreadyExistsException.class})
     public ResponseEntity<ErrorResponse> handleUsernameOrUserIdAlreadyExistsException(RuntimeException ex) {
+        return errorResponseUtils.buildErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> handleAuthException(AuthException ex) {
+        return errorResponseUtils.buildErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ErrorResponse> handleUserException(UserException ex) {
         return errorResponseUtils.buildErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 ex.getMessage()

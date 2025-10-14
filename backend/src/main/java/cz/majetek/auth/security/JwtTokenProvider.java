@@ -27,9 +27,6 @@ public class JwtTokenProvider {
 
     private SecretKey key;
 
-    public JwtTokenProvider() {
-    }
-
     /**
      * Creates JwtTokenProvider with secret key from configuration.
      *

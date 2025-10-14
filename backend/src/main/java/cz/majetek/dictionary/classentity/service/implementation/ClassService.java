@@ -27,7 +27,7 @@ public class ClassService implements IClassService {
     @Override
     public ClassEntity getById(String id) {
         return classEntityRepository.findById(id).orElseThrow(
-                () -> new ClassEntityException("Class with id " + id + " not found"));
+                () -> ClassEntityException.notFound(id));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ClassService implements IClassService {
     @Override
     public ClassEntity update(String id, UpdateClassRequest request) {
         ClassEntity existing = classEntityRepository.findById(id)
-                .orElseThrow(() -> new ClassEntityException("Class with id " + id + " not found"));
+                .orElseThrow(() -> ClassEntityException.notFound(id));
 
         existing.setName(request.getName());
         return classEntityRepository.save(existing);
