@@ -8,6 +8,9 @@ public class TokenStorage {
     private static final String KEY_TOKEN = "token";
     private static final String KEY_EXPIRY = "token_expiry";
 
+    private TokenStorage() {
+    }
+
     private static SharedPreferences sp(Context ctx) {
         return ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE);
     }
@@ -25,9 +28,5 @@ public class TokenStorage {
         long now = System.currentTimeMillis();
         if (now + 5000 > exp) return null;
         return token;
-    }
-
-    public static void clear(Context ctx) {
-        sp(ctx).edit().clear().apply();
     }
 }

@@ -1,3 +1,77 @@
 <resources>
     <string name="app_name">Majetek</string>
+
+    <!-- Common labels -->
+    <string name="label_id">ID:</string>
+    <string name="label_name">Název:</string>
+    <string name="label_price">Cena:</string>
+    <string name="label_quantity">Množství:</string>
+    <string name="label_ou">OU:</string>
+    <string name="label_su_prefix">SU: </string>
+
+    <!-- Buttons / actions -->
+    <string name="btn_delete">Smazat</string>
+    <string name="btn_leave">Odejít</string>
+    <string name="btn_to_device">Do čtečky</string>
+    <string name="btn_from_device">Ze čtečky</string>
+    <string name="btn_clear_inventory">Vymazat data inventury</string>
+
+    <!-- Menu -->
+    <string name="menu_control">Kontrola</string>
+    <string name="menu_inventory">Inventura</string>
+    <string name="menu_transfer">Přenos</string>
+
+    <!-- Control scan fragment -->
+    <string name="title_control_scan">Kontrolní snímání</string>
+    <string name="hint_scan_code">Naskenujte kód…</string>
+    <string name="label_result">Výsledek</string>
+    <string name="control_processing_code">Zpracovávám: %1$s</string>
+    <string name="control_location_scanned">Načtena lokace: %1$s – naskenujte majetek</string>
+    <string name="control_invalid_code">Neplatný kód: %1$s</string>
+    <string name="control_not_found_id">Nenalezeno ID %1$d</string>
+
+    <!-- Data transfer fragment -->
+    <string name="title_data_transfer">Přenos dat</string>
+    <string name="dialog_clear_inventory_title">Vymazat inventuru</string>
+    <string name="dialog_clear_inventory_message">Opravdu smazat všechna nasnímaná data ve čtečce?</string>
+    <string name="dialog_confirmation_title">Potvrzení</string>
+    <string name="dialog_confirmation_message_irreversible">Tato akce je nevratná. Pokračovat?</string>
+    <string name="common_yes">Ano</string>
+    <string name="common_no">Ne</string>
+    <string name="status_clearing_inventory">Mažu inventuru…</string>
+    <string name="status_inventory_cleared">Inventurní data vymazána</string>
+    <string name="status_wifi_disconnected">Není připojení k Wi-Fi</string>
+    <string name="status_checking_state">Kontroluji stav…</string>
+    <string name="status_data_present">Ve čtečce jsou nasnímaná data, nejprve je odešlete nebo smažte.</string>
+    <string name="status_downloading_data">Stahuji data…</string>
+    <string name="status_downloaded_cards">Načteno %1$d karet</string>
+    <string name="status_error_generic">Chyba: %1$s</string>
+    <string name="status_uploading_inventory">Odesílám inventuru…</string>
+    <string name="status_no_data_to_upload">Žádná data k odeslání</string>
+    <string name="status_uploaded_records">Odesláno %1$d záznamů</string>
+    <string name="status_upload_error">Chyba odeslání: %1$s</string>
+
+    <!-- Inventory scan fragment -->
+    <string name="hint_scan_location">Naskenujte umístění…</string>
+    <string name="hint_scan_asset">Naskenujte majetek…</string>
+    <string name="warn_no_card_to_delete">Žádný majetek k smazání</string>
+    <string name="dialog_delete_title">Smazat</string>
+    <string name="dialog_delete_message">Opravdu odstranit tento majetek z inventury?</string>
+    <string name="warn_no_location_selected">Nebylo vybráno umístění</string>
+    <string name="dialog_leave_location_title">Odejít z místnosti</string>
+    <string name="dialog_leave_location_message">Opravdu odejít z místnosti?</string>
+    <string name="warn_location_code_format">Kód umístění musí začínat \'L\'</string>
+    <string name="error_location_not_found">Umístění nenalezeno: %1$s</string>
+    <string name="status_location_scanned">Načteno umístění: L%1$s – naskenujte majetek</string>
+    <string name="warn_location_scan_in_asset_field">Sken umístění patří do horního pole</string>
+    <string name="warn_scan_location_first">Nejdříve naskenujte umístění (SU)</string>
+    <string name="error_asset_expected_elsewhere">Majetek očekáván v jiném umístění</string>
+    <string name="status_saved">Uloženo</string>
+    <string name="error_unknown_asset_id">Neznámé ID majetku: %1$s</string>
+    <string name="status_record_deleted">Záznam odstraněn</string>
+    <string name="format_su_with_name">SU: %1$s – %2$s</string>
+
+    <!-- Status common -->
+    <string name="status_ready">Připraveno</string>
+    <string name="status_ok">V pořádku</string>
 </resources>

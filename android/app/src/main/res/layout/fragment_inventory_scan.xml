@@ -15,26 +15,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Naskenujte umístění..."
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:singleLine="true"
+            android:hint="@string/hint_scan_location"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
-            android:inputType="textVisiblePassword" />
+            android:inputType="textVisiblePassword"
+            android:padding="12dp"
+            android:singleLine="true"
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/input_asset"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Naskenujte majetek..."
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:singleLine="true"
+            android:hint="@string/hint_scan_asset"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
-            android:inputType="textVisiblePassword" />
+            android:inputType="textVisiblePassword"
+            android:padding="12dp"
+            android:singleLine="true"
+            android:textSize="20sp" />
 
         <View
             android:layout_width="match_parent"
@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="SU: "
+            android:text="@string/label_su_prefix"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -72,125 +72,122 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
+        <TableLayout
             android:id="@+id/card_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginTop="8dp"
+            android:background="#EEEEEE"
             android:padding="12dp"
-            android:background="#EEEEEE">
+            android:shrinkColumns="1"
+            android:stretchColumns="1">
 
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:shrinkColumns="1"
-                android:stretchColumns="1">
+            <TableRow>
 
-                <TableRow>
+                <TextView
+                    android:paddingStart="0dp"
+                    android:paddingEnd="16dp"
+                    android:text="@string/label_id"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:text="ID:"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:paddingEnd="16dp" />
+                <TextView
+                    android:id="@+id/txt_card_id"
+                    android:textSize="18sp" />
+            </TableRow>
 
-                    <TextView
-                        android:id="@+id/txt_card_id"
-                        android:textSize="18sp" />
-                </TableRow>
+            <TableRow>
 
-                <TableRow>
+                <TextView
+                    android:paddingStart="0dp"
+                    android:paddingEnd="16dp"
+                    android:text="@string/label_name"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:text="Název:"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:paddingEnd="16dp" />
+                <TextView
+                    android:id="@+id/txt_card_name"
+                    android:hyphenationFrequency="none"
+                    android:textSize="18sp" />
+            </TableRow>
 
-                    <TextView
-                        android:id="@+id/txt_card_name"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:maxLines="4"
-                        android:scrollHorizontally="false"
-                        android:breakStrategy="balanced"
-                        android:hyphenationFrequency="normal" />
-                </TableRow>
+            <TableRow>
 
-                <TableRow>
+                <TextView
+                    android:paddingStart="0dp"
+                    android:paddingEnd="16dp"
+                    android:text="@string/label_price"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:text="Cena:"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:paddingEnd="16dp" />
+                <TextView
+                    android:id="@+id/txt_card_price"
+                    android:textSize="18sp" />
+            </TableRow>
 
-                    <TextView
-                        android:id="@+id/txt_card_price"
-                        android:textSize="18sp" />
-                </TableRow>
+            <TableRow>
 
-                <TableRow>
+                <TextView
+                    android:paddingStart="0dp"
+                    android:paddingEnd="16dp"
+                    android:text="@string/label_quantity"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:text="Množství:"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:paddingEnd="16dp" />
+                <TextView
+                    android:id="@+id/txt_card_quantity"
+                    android:textSize="18sp" />
+            </TableRow>
 
-                    <TextView
-                        android:id="@+id/txt_card_quantity"
-                        android:textSize="18sp" />
-                </TableRow>
+            <TableRow>
 
-                <TableRow>
+                <TextView
+                    android:paddingStart="0dp"
+                    android:paddingEnd="16dp"
+                    android:text="@string/label_ou"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:text="OU:"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:paddingEnd="16dp" />
-
-                    <TextView
-                        android:id="@+id/txt_card_location"
-                        android:textSize="18sp" />
-                </TableRow>
-            </TableLayout>
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/txt_card_location"
+                    android:textSize="18sp" />
+            </TableRow>
+        </TableLayout>
 
         <TextView
             android:id="@+id/txt_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:textColor="@color/statusNeutral"
-            android:text="Připraveno"
             android:gravity="center"
+            android:text="@string/status_ready"
+            android:textColor="@color/statusNeutral"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <LinearLayout
+            style="?android:attr/buttonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_delete"
+                style="?android:attr/button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Smazat" />
+                android:text="@string/btn_delete" />
 
             <Button
                 android:id="@+id/btn_leave"
+                style="?android:attr/button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="12dp"
-                android:text="Odejít" />
+                android:layout_weight="1"
+                android:text="@string/btn_leave" />
         </LinearLayout>
 
     </LinearLayout>

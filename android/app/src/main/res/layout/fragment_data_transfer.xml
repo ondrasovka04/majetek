@@ -13,7 +13,7 @@
             android:id="@+id/txt_transfer_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Přenos dat"
+            android:text="@string/title_data_transfer"
             android:textStyle="bold"
             android:textSize="24sp"
             android:layout_marginBottom="20dp" />
@@ -22,7 +22,7 @@
             android:id="@+id/btn_download_to_device"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Do čtečky"
+            android:text="@string/btn_to_device"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:padding="16dp" />
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Ze čtečky"
+            android:text="@string/btn_from_device"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:padding="16dp" />
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Vymazat data inventury"
+            android:text="@string/btn_clear_inventory"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:padding="16dp" />
@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text=""
+            android:text="@string/status_ready"
             android:textSize="20sp"
             android:textColor="@color/statusNeutral"
             android:gravity="center_horizontal"

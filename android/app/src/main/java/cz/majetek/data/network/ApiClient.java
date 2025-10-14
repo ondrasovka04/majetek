@@ -38,7 +38,7 @@ public class ApiClient {
     }
 
     public String downloadCards(String bearerToken) throws IOException {
-        Request request = new Request.Builder().url(BASE_URL + "/card/filter?includeWriteOff=false").get().addHeader("Authorization", "Bearer " + bearerToken).build();
+        Request request = finalizeRequest(new Request.Builder().url(BASE_URL + "/card/filter?includeWriteOff=false").get(), bearerToken);
         try (Response r = client.newCall(request).execute()) {
             if (!r.isSuccessful()) throw new IOException("HTTP " + r.code());
             return r.body().string();
@@ -46,7 +46,7 @@ public class ApiClient {
     }
 
     public String downloadLocations(String bearerToken) throws IOException {
-        Request request = new Request.Builder().url(BASE_URL + "/location").get().addHeader("Authorization", "Bearer " + bearerToken).build();
+        Request request = finalizeRequest(new Request.Builder().url(BASE_URL + "/location").get(), bearerToken);
         try (Response r = client.newCall(request).execute()) {
             if (!r.isSuccessful()) throw new IOException("HTTP " + r.code());
             return r.body().string();
@@ -55,9 +55,13 @@ public class ApiClient {
 
     public void uploadInventoryAudit(String bearerToken, String jsonArray) throws IOException {
         RequestBody body = RequestBody.create(jsonArray, MediaType.parse("application/json"));
-        Request request = new Request.Builder().url(BASE_URL + "/inventory-audit/insert-many").post(body).addHeader("Authorization", "Bearer " + bearerToken).build();
+        Request request = finalizeRequest(new Request.Builder().url(BASE_URL + "/inventory-audit/insert-many").post(body), bearerToken);
         try (Response r = client.newCall(request).execute()) {
             if (!r.isSuccessful()) throw new IOException("HTTP " + r.code());
         }
+    }
+
+    private Request finalizeRequest(Request.Builder builder, String bearerToken) {
+        return builder.addHeader("Authorization", "Bearer " + bearerToken).build();
     }
 }

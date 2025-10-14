@@ -134,8 +134,8 @@ public class DataSyncRepository {
         for (int i = 0; i < audits.size(); i++) {
             InventoryAuditEntity a = audits.get(i);
             if (i > 0) sb.append(',');
-            String ts = TS_FMT_BASE.format(Instant.ofEpochMilli(a.timestamp));
-            sb.append('{').append("\"cardId\":").append(a.cardId).append(',').append("\"realLocationId\":\"").append(a.realLocationId).append("\",").append("\"timestamp\":\"").append(ts).append("\"").append('}');
+            String ts = TS_FMT_BASE.format(Instant.ofEpochMilli(a.getTimestamp()));
+            sb.append('{').append("\"cardId\":").append(a.getCardId()).append(',').append("\"realLocationId\":\"").append(a.getRealLocationId()).append("\",").append("\"timestamp\":\"").append(ts).append("\"").append('}');
         }
         sb.append(']');
         return sb.toString();

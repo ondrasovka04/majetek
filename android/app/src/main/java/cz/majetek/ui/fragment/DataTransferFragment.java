@@ -46,7 +46,7 @@ public class DataTransferFragment extends Fragment {
         progress = v.findViewById(R.id.progress);
         txtStatus = v.findViewById(R.id.txt_status);
 
-        setStatusNeutral("Připraveno");
+        setStatusNeutral(getString(R.string.status_ready));
 
         btnDownload.setOnClickListener(view -> startDownload());
         btnUpload.setOnClickListener(view -> startUpload());
@@ -55,11 +55,11 @@ public class DataTransferFragment extends Fragment {
     }
 
     private void confirmClearInventory() {
-        new AlertDialog.Builder(requireContext()).setTitle("Vymazat inventuru").setMessage("Opravdu smazat všechna nasnímaná data ve čtečce?").setPositiveButton("Ano", (d, w) -> new AlertDialog.Builder(requireContext()).setTitle("Potvrzení").setMessage("Tato akce je nevratná. Pokračovat?").setPositiveButton("Ano", (d2, w2) -> clearInventory()).setNegativeButton("Ne", null).show()).setNegativeButton("Ne", null).show();
+        new AlertDialog.Builder(requireContext()).setTitle(R.string.dialog_clear_inventory_title).setMessage(R.string.dialog_clear_inventory_message).setPositiveButton(R.string.common_yes, (d, w) -> new AlertDialog.Builder(requireContext()).setTitle(R.string.dialog_confirmation_title).setMessage(R.string.dialog_confirmation_message_irreversible).setPositiveButton(R.string.common_yes, (d2, w2) -> clearInventory()).setNegativeButton(R.string.common_no, null).show()).setNegativeButton(R.string.common_no, null).show();
     }
 
     private void clearInventory() {
-        setStatusNeutral("Mažu inventuru...");
+        setStatusNeutral(getString(R.string.status_clearing_inventory));
         setLoading(true);
         io.execute(() -> {
             AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
@@ -67,70 +67,82 @@ public class DataTransferFragment extends Fragment {
             if (getActivity() == null) return;
             getActivity().runOnUiThread(() -> {
                 setLoading(false);
-                setStatusOk("Inventurní data vymazána");
+                setStatusOk(getString(R.string.status_inventory_cleared));
             });
         });
     }
 
     private void startDownload() {
         if (isWifiDisconnected()) {
-            setStatusWarn("Není připojení k Wi-Fi");
+            setStatusWarn(getString(R.string.status_wifi_disconnected));
             return;
         }
-        setStatusNeutral("Kontroluji stav...");
+        prepareDownload();
+        io.execute(this::checkAuditState);
+    }
+
+    private void prepareDownload() {
+        setStatusNeutral(getString(R.string.status_checking_state));
         setLoading(true);
-        io.execute(() -> {
-            AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
-            int auditCount = db.inventoryAuditDao().countCardsTotal();
-            if (getActivity() == null) return;
-            getActivity().runOnUiThread(() -> {
-                if (auditCount > 0) {
+    }
+
+    private void checkAuditState() {
+        AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
+        int auditCount = db.inventoryAuditDao().countCardsTotal();
+        runOnUiThreadSafe(() -> handleAuditCount(auditCount));
+    }
+
+    private void handleAuditCount(int auditCount) {
+        if (auditCount > 0) {
+            setLoading(false);
+            setStatusWarn(getString(R.string.status_data_present));
+            return;
+        }
+        startRemoteDownload();
+    }
+
+    private void startRemoteDownload() {
+        setStatusNeutral(getString(R.string.status_downloading_data));
+        repo.downloadToDevice(requireContext().getApplicationContext(), new DataSyncRepository.Callback() {
+            @Override
+            public void onSuccess(int cardCount) {
+                runOnUiThreadSafe(() -> {
                     setLoading(false);
-                    setStatusWarn("Ve čtečce jsou nasnímaná data, nejprve je odešlete nebo smažte.");
-                } else {
-                    setStatusNeutral("Stahuji data...");
-                    repo.downloadToDevice(requireContext().getApplicationContext(), new DataSyncRepository.Callback() {
-                        @Override
-                        public void onSuccess(int cardCount) {
-                            if (getActivity() == null) return;
-                            getActivity().runOnUiThread(() -> {
-                                setLoading(false);
-                                setStatusOk("Načteno " + cardCount + " karet");
+                    setStatusOk(getString(R.string.status_downloaded_cards, cardCount));
+                });
+            }
 
-                            });
-                        }
-
-                        @Override
-                        public void onError(String msg) {
-                            if (getActivity() == null) return;
-                            getActivity().runOnUiThread(() -> {
-                                setLoading(false);
-                                setStatusError("Chyba: " + msg);
-                            });
-                        }
-                    });
-                }
-            });
+            @Override
+            public void onError(String msg) {
+                runOnUiThreadSafe(() -> {
+                    setLoading(false);
+                    setStatusError(getString(R.string.status_error_generic, msg));
+                });
+            }
         });
+    }
+
+    private void runOnUiThreadSafe(Runnable r) {
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(r);
     }
 
     private void startUpload() {
         if (isWifiDisconnected()) {
-            setStatusWarn("Není připojení k Wi-Fi");
+            setStatusWarn(getString(R.string.status_wifi_disconnected));
             return;
         }
-        setStatusNeutral("Odesílám inventuru...");
+        setStatusNeutral(getString(R.string.status_uploading_inventory));
         setLoading(true);
         repo.uploadInventoryAudit(requireContext().getApplicationContext(), new DataSyncRepository.AuditUploadCallback() {
             @Override
             public void onSuccess(int uploadedCount) {
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
+                runOnUiThreadSafe(() -> {
                     setLoading(false);
                     if (uploadedCount == 0) {
-                        setStatusWarn("Žádná data k odeslání");
+                        setStatusWarn(getString(R.string.status_no_data_to_upload));
                     } else {
-                        setStatusOk("Odesláno " + uploadedCount + " záznamů");
+                        setStatusOk(getString(R.string.status_uploaded_records, uploadedCount));
                     }
                 });
             }
@@ -140,7 +152,7 @@ public class DataTransferFragment extends Fragment {
                 if (getActivity() == null) return;
                 getActivity().runOnUiThread(() -> {
                     setLoading(false);
-                    setStatusError("Chyba odeslání: " + msg);
+                    setStatusError(getString(R.string.status_upload_error, msg));
                 });
             }
         });

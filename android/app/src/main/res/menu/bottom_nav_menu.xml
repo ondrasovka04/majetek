@@ -3,14 +3,13 @@
     <item
         android:id="@+id/navigation_control_scan"
         android:icon="@android:drawable/ic_menu_view"
-        android:title="Kontrola" />
+        android:title="@string/menu_control" />
     <item
         android:id="@+id/navigation_inventory_scan"
         android:icon="@drawable/menu_checklist"
-        android:title="Inventura" />
+        android:title="@string/menu_inventory" />
     <item
         android:id="@+id/navigation_data_transfer"
         android:icon="@android:drawable/ic_menu_upload"
-        android:title="Přenos" />
+        android:title="@string/menu_transfer" />
 </menu>
-

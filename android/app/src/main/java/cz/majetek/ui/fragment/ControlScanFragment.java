@@ -31,9 +31,16 @@ import cz.majetek.data.entity.CardEntity;
 public class ControlScanFragment extends Fragment {
 
     private EditText input;
-    private TextView txtId, txtName, txtPrice, txtQuantity, txtLocation, txtStatus;
+    private TextView txtId;
+    private TextView txtName;
+    private TextView txtPrice;
+    private TextView txtQuantity;
+    private TextView txtLocation;
+    private TextView txtStatus;
+
     private final ExecutorService io = Executors.newSingleThreadExecutor();
-    private final static Locale CZECH_LOCALE = Locale.forLanguageTag("cs-CZ");
+
+    private static final Locale CZECH_LOCALE = Locale.forLanguageTag("cs-CZ");
 
     @Nullable
     @Override
@@ -76,14 +83,17 @@ public class ControlScanFragment extends Fragment {
         input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Intentionally empty, no pre-processing needed. Submission is handled by IME and key listeners.
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Intentionally empty, we avoid per-keystroke work to keep UI responsive and prevent duplicate scans.
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                // Intentionally empty, we only submit on Enter or IME_ACTION_DONE to avoid partial scans.
             }
         });
 
@@ -109,11 +119,11 @@ public class ControlScanFragment extends Fragment {
     private void handleScanned(String code) {
         if (code.isEmpty()) return;
         input.setText("");
-        txtStatus.setText("Zpracovávám: " + code);
+        txtStatus.setText(getString(R.string.control_processing_code, code));
         txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusNeutral));
 
         if (code.startsWith("L")) {
-            postUI(() -> showNotFound("Načtena lokace: " + code + " – naskenujte majetek"));
+            postUI(() -> showNotFound(getString(R.string.control_location_scanned, code.substring(1))));
             return;
         }
 
@@ -121,15 +131,16 @@ public class ControlScanFragment extends Fragment {
         try {
             id = Integer.parseInt(code);
         } catch (NumberFormatException nfe) {
-            postUI(() -> showNotFound("Neplatný kód: " + code));
+            postUI(() -> showNotFound(getString(R.string.control_invalid_code, code)));
             return;
         }
 
+        final int finalId = id;
         io.execute(() -> {
             AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
-            CardEntity card = db.cardDao().getById(id);
+            CardEntity card = db.cardDao().getById(finalId);
             if (card == null) {
-                postUI(() -> showNotFound("Nenalezeno ID " + id));
+                postUI(() -> showNotFound(getString(R.string.control_not_found_id, finalId)));
             } else {
                 postUI(() -> showCard(card));
             }
@@ -137,12 +148,12 @@ public class ControlScanFragment extends Fragment {
     }
 
     private void showCard(CardEntity c) {
-        txtId.setText(String.format(Locale.getDefault(), "%04d", c.id));
-        txtName.setText(c.name);
-        txtPrice.setText(String.format(CZECH_LOCALE, "%,.2f", c.price));
-        txtQuantity.setText(String.valueOf((int) c.quantity));
-        txtLocation.setText(String.valueOf(c.locationId));
-        txtStatus.setText("V pořádku");
+        txtId.setText(String.format(Locale.getDefault(), "%04d", c.getId()));
+        txtName.setText(c.getName());
+        txtPrice.setText(String.format(CZECH_LOCALE, "%,.2f", c.getPrice()));
+        txtQuantity.setText(String.valueOf((int) c.getQuantity()));
+        txtLocation.setText(String.valueOf(c.getLocationId()));
+        txtStatus.setText(getString(R.string.status_ok));
         txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusOk));
 
         input.requestFocus();
