@@ -84,35 +84,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /*
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(
-                                        //"/api/auth/login",
-                                        "/swagger-ui/**",
-                                        "/swagger-ui.html",
-                                        "/v3/api-docs/**",
-                                        "/v3/api-docs.yaml",
-                                        "/api-docs/**",
-                                        "/swagger-resources/**",
-                                        "/webjars/**",
-                                        "/configuration/**"
-                                ).permitAll()
-                                .requestMatchers("/api/auth/register").hasRole("ADMIN")
-                                //.requestMatchers("/api/auth/login").authenticated()
-                                .anyRequest().authenticated()
-                )
-                .httpBasic(basic -> basic.authenticationEntryPoint(customBasicAuthenticationEntryPoint))
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }*/
-
     /**
      * Creates AuthenticationManager bean.
      *

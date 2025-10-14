@@ -1,12 +1,14 @@
 package cz.majetek.card.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
 public class CardExportDto {
 
     @ExcelProperty("ID")

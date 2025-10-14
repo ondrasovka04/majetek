@@ -56,8 +56,8 @@ public class ClassController {
     @ApiResponse(responseCode = "200", description = "Class created",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClassEntity.class)))
     public ResponseEntity<ClassEntity> create(
-            @RequestBody @Valid @Parameter(description = "Class to create") ClassEntity ClassEntity) {
-        return ResponseEntity.ok(classService.create(ClassEntity));
+            @RequestBody @Valid @Parameter(description = "Class to create") ClassEntity classEntity) {
+        return ResponseEntity.ok(classService.create(classEntity));
     }
 
     /**

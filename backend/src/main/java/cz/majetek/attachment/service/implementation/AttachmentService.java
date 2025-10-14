@@ -8,6 +8,7 @@ import cz.majetek.card.repository.ICardRepository;
 import cz.majetek.entity.Attachment;
 import cz.majetek.entity.Card;
 import cz.majetek.exception.attachment.AttachmentException;
+import cz.majetek.exception.card.CardException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -36,7 +37,7 @@ public class AttachmentService implements IAttachmentService {
     @Override
     public AttachmentDto upload(Integer cardId, MultipartFile file) {
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new AttachmentException("Card not found"));
+                .orElseThrow(() -> CardException.notFound(cardId));
 
         String uuidName = UUID.randomUUID() + "-" + file.getOriginalFilename();
         Path cardFolder = Paths.get(uploadRoot, String.valueOf(cardId));

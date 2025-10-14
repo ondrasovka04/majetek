@@ -31,7 +31,7 @@ public class InventoryAuditService implements IInventoryAuditService {
     public List<InventoryAuditDto> insertMany(List<InventoryAuditDto> items) {
         List<InventoryAudit> saved = items.stream().map(dto -> {
             Location location = locationRepository.findById(dto.getRealLocationId())
-                    .orElseThrow(() -> new LocationException("Location with id " + dto.getRealLocationId() + " not found"));
+                    .orElseThrow(() -> LocationException.notFound(dto.getRealLocationId()));
 
             InventoryAudit entity = repository.findById(dto.getCardId()).orElse(new InventoryAudit());
             entity.setCardId(dto.getCardId());

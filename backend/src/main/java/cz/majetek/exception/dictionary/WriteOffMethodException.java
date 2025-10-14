@@ -1,7 +1,21 @@
 package cz.majetek.exception.dictionary;
 
-public class WriteOffMethodException extends RuntimeException {
-    public WriteOffMethodException(String message) {
+import lombok.Getter;
+
+@Getter
+public final class WriteOffMethodException extends RuntimeException {
+    private final String writeOffMethodId;
+
+    private WriteOffMethodException(String message, String writeOffMethodId) {
         super(message);
+        this.writeOffMethodId = writeOffMethodId;
+    }
+
+    public WriteOffMethodException(String message) {
+        this(message, null);
+    }
+
+    public static WriteOffMethodException notFound(String id) {
+        return new WriteOffMethodException("Write off method with id " + id + " not found", id);
     }
 }

@@ -28,13 +28,13 @@ public class AssetGroupService implements IAssetGroupService {
     @Override
     public AssetGroup getById(String id) {
         return assetGroupRepository.findById(id).orElseThrow(
-                () -> new AssetGroupException("Asset group with id " + id + " not found"));
+                () -> AssetGroupException.notFound(id));
     }
 
     @Override
     public AssetGroup create(AssetGroup assetGroup) {
         if (assetGroupRepository.existsById(assetGroup.getId())) {
-            throw new AssetGroupException("Asset group with id " + assetGroup.getId() + " already exists");
+            throw AssetGroupException.notFound(assetGroup.getId());
         }
         return assetGroupRepository.save(assetGroup);
     }
@@ -42,7 +42,7 @@ public class AssetGroupService implements IAssetGroupService {
     @Override
     public AssetGroup update(String id, UpdateAssetGroupRequest request) {
         AssetGroup existing = assetGroupRepository.findById(id)
-                .orElseThrow(() -> new AssetGroupException("Asset group with id " + id + " not found"));
+                .orElseThrow(() -> AssetGroupException.notFound(id));
 
         existing.setName(request.getName());
         return assetGroupRepository.save(existing);

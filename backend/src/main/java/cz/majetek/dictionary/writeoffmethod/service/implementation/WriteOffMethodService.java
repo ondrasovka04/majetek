@@ -27,13 +27,13 @@ public class WriteOffMethodService implements IWriteOffMethodService {
     @Override
     public WriteOffMethod getById(String id) {
         return writeOffMethodRepository.findById(id).orElseThrow(
-                () -> new WriteOffMethodException("Write off method with id " + id + " not found"));
+                () -> WriteOffMethodException.notFound(id));
     }
 
     @Override
     public WriteOffMethod create(WriteOffMethod writeOffMethod) {
         if (writeOffMethodRepository.existsById(writeOffMethod.getId())) {
-            throw new WriteOffMethodException("Write off method with id " + writeOffMethod.getId() + " already exists");
+            throw WriteOffMethodException.notFound(writeOffMethod.getId());
         }
         return writeOffMethodRepository.save(writeOffMethod);
     }
@@ -41,7 +41,7 @@ public class WriteOffMethodService implements IWriteOffMethodService {
     @Override
     public WriteOffMethod update(String id, UpdateWriteOffMethodRequest request) {
         WriteOffMethod existing = writeOffMethodRepository.findById(id)
-                .orElseThrow(() -> new WriteOffMethodException("Write off method with id " + id + " not found"));
+                .orElseThrow(() -> WriteOffMethodException.notFound(id));
 
         existing.setName(request.getName());
         return writeOffMethodRepository.save(existing);

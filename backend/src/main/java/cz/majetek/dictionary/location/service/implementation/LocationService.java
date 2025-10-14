@@ -40,13 +40,13 @@ public class LocationService implements ILocationService {
     @Override
     public Location getById(String id) {
         return locationRepository.findById(id).orElseThrow(
-                () -> new LocationException("Location with id " + id + " not found"));
+                () -> LocationException.notFound(id));
     }
 
     @Override
     public Location create(Location location) {
         if (locationRepository.existsById(location.getId())) {
-            throw new LocationException("Location with id " + location.getId() + " already exists");
+            throw LocationException.notFound(location.getId());
         }
         return locationRepository.save(location);
     }
@@ -54,7 +54,7 @@ public class LocationService implements ILocationService {
     @Override
     public Location update(String id, UpdateLocationRequest request) {
         Location existing = locationRepository.findById(id)
-                .orElseThrow(() -> new LocationException("Location with id " + id + " not found"));
+                .orElseThrow(() -> LocationException.notFound(id));
 
         existing.setName(request.getName());
         return locationRepository.save(existing);
@@ -72,7 +72,7 @@ public class LocationService implements ILocationService {
     @Override
     public InputStreamResource exportLocation(String id) {
         Location existing = locationRepository.findById(id)
-                .orElseThrow(() -> new LocationException("Location with id " + id + " not found"));
+                .orElseThrow(() -> LocationException.notFound(id));
 
         String zplContent = labelPrinter.generateZplFromLocation(existing);
         Path path = Path.of(exportPath, "location-" + Instant.now().toEpochMilli() + ".zpl");

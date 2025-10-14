@@ -27,13 +27,13 @@ public class PurchaseMethodService implements IPurchaseMethodService {
     @Override
     public PurchaseMethod getById(String id) {
         return purchaseMethodRepository.findById(id).orElseThrow(
-                () -> new PurchaseMethodException("Purchase method with id " + id + " not found"));
+                () -> PurchaseMethodException.notFound(id));
     }
 
     @Override
     public PurchaseMethod create(PurchaseMethod purchaseMethod) {
         if (purchaseMethodRepository.existsById(purchaseMethod.getId())) {
-            throw new PurchaseMethodException("Purchase method with id " + purchaseMethod.getId() + " already exists");
+            throw PurchaseMethodException.notFound(purchaseMethod.getId());
         }
         return purchaseMethodRepository.save(purchaseMethod);
     }
@@ -41,7 +41,7 @@ public class PurchaseMethodService implements IPurchaseMethodService {
     @Override
     public PurchaseMethod update(String id, UpdatePurchaseMethodRequest request) {
         PurchaseMethod existing = purchaseMethodRepository.findById(id)
-                .orElseThrow(() -> new PurchaseMethodException("Purchase method with id " + id + " not found"));
+                .orElseThrow(() -> PurchaseMethodException.notFound(id));
 
         existing.setName(request.getName());
         return purchaseMethodRepository.save(existing);

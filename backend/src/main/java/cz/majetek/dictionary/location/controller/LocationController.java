@@ -54,8 +54,8 @@ public class LocationController {
     @PostMapping
     @Operation(summary = "Create location", description = "Creates a new location")
     @ApiResponse(responseCode = "200", description = "Location created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Location.class)))
-    public ResponseEntity<Location> create(@RequestBody @Valid @Parameter(description = "Location to create") Location Location) {
-        return ResponseEntity.ok(locationService.create(Location));
+    public ResponseEntity<Location> create(@RequestBody @Valid @Parameter(description = "Location to create") Location location) {
+        return ResponseEntity.ok(locationService.create(location));
     }
 
     /**

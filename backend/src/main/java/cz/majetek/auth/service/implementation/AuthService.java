@@ -11,11 +11,13 @@ import cz.majetek.auth.security.UserPrincipal;
 import cz.majetek.auth.service.IAuthService;
 import cz.majetek.entity.user.User;
 import cz.majetek.entity.user.UserRole;
+import cz.majetek.exception.auth.AuthException;
 import cz.majetek.exception.auth.UserIdAlreadyExistsException;
 import cz.majetek.exception.auth.UsernameAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,7 +49,7 @@ public class AuthService implements IAuthService {
     public LoginResponse login() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("User is not authenticated");
+            throw new AuthException("User is not authenticated");
         }
         User user = ((UserPrincipal) authentication.getPrincipal()).user();
         UserDto userDto = userMapper.toDto(user);
@@ -80,19 +82,17 @@ public class AuthService implements IAuthService {
     public User changePassword(ChangePasswordRequest changePasswordRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("User is not authenticated");
+            throw new AuthException("User is not authenticated");
         }
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         User user = userRepository.findByUsername(userPrincipal.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        // Check if the current password matches
         if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             throw new BadCredentialsException("Current password is incorrect");
         }
 
-        // Update the password
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         return userRepository.save(user);
     }
