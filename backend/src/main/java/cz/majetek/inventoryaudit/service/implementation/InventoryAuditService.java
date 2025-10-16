@@ -1,10 +1,14 @@
 package cz.majetek.inventoryaudit.service.implementation;
 
+import cz.majetek.card.repository.ICardRepository;
 import cz.majetek.dictionary.location.repository.ILocationRepository;
+import cz.majetek.entity.Card;
 import cz.majetek.entity.InventoryAudit;
 import cz.majetek.entity.Location;
+import cz.majetek.exception.card.CardException;
 import cz.majetek.exception.dictionary.LocationException;
 import cz.majetek.inventoryaudit.dto.InventoryAuditDto;
+import cz.majetek.inventoryaudit.mapper.IInventoryAuditMapper;
 import cz.majetek.inventoryaudit.repository.IInventoryAuditRepository;
 import cz.majetek.inventoryaudit.service.IInventoryAuditService;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +22,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InventoryAuditService implements IInventoryAuditService {
 
-    private final IInventoryAuditRepository repository;
+    private final IInventoryAuditRepository inventoryAuditRepository;
     private final ILocationRepository locationRepository;
+    private final ICardRepository cardRepository;
+    private final IInventoryAuditMapper mapper;
 
     @Override
     public List<InventoryAuditDto> getAll() {
-        return repository.findAll().stream().map(this::toDto).toList();
+        return inventoryAuditRepository.findAll().stream().map(mapper::toDto).toList();
     }
 
     @Override
@@ -33,21 +39,15 @@ public class InventoryAuditService implements IInventoryAuditService {
             Location location = locationRepository.findById(dto.getRealLocationId())
                     .orElseThrow(() -> LocationException.notFound(dto.getRealLocationId()));
 
-            InventoryAudit entity = repository.findById(dto.getCardId()).orElse(new InventoryAudit());
-            entity.setCardId(dto.getCardId());
+            Card card = cardRepository.findById(dto.getCardId()).orElseThrow(() -> CardException.notFound(dto.getCardId()));
+
+            InventoryAudit entity = inventoryAuditRepository.findById(dto.getCardId()).orElse(new InventoryAudit());
+            entity.setCard(card);
             entity.setRealLocation(location);
             entity.setTimestamp(dto.getTimestamp() != null ? dto.getTimestamp() : LocalDateTime.now());
-            return repository.save(entity);
+            return inventoryAuditRepository.save(entity);
         }).toList();
 
-        return saved.stream().map(this::toDto).toList();
-    }
-
-    private InventoryAuditDto toDto(InventoryAudit entity) {
-        InventoryAuditDto dto = new InventoryAuditDto();
-        dto.setCardId(entity.getCardId());
-        dto.setRealLocationId(entity.getRealLocation().getId());
-        dto.setTimestamp(entity.getTimestamp());
-        return dto;
+        return saved.stream().map(mapper::toDto).toList();
     }
 }

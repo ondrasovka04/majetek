@@ -18,6 +18,11 @@ public class InventoryAudit {
     @Column(name = "card_id", nullable = false)
     private Integer cardId;
 
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "card_id")
+    private Card card;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "real_location_id")
     private Location realLocation;

@@ -71,4 +71,7 @@ public class Card {
 
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Attachment> attachments = new ArrayList<>();
+
+    @OneToOne(mappedBy = "card", cascade = CascadeType.ALL)
+    private InventoryAudit inventoryAudit;
 }
