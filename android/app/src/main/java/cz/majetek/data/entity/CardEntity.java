@@ -7,7 +7,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 
-@Entity(tableName = "card", foreignKeys = @ForeignKey(entity = LocationEntity.class, parentColumns = "id", childColumns = "location_id", onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.SET_NULL), indices = {@Index(value = {"location_id"})})
+@Entity(tableName = "card", foreignKeys = @ForeignKey(entity = LocationEntity.class, parentColumns = "id", childColumns = "location_id"), indices = {@Index(value = {"location_id"})})
 public class CardEntity {
     @PrimaryKey
     private int id;

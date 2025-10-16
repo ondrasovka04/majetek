@@ -13,7 +13,7 @@ import cz.majetek.data.entity.CardEntity;
 import cz.majetek.data.entity.InventoryAuditEntity;
 import cz.majetek.data.entity.LocationEntity;
 
-@Database(entities = {CardEntity.class, LocationEntity.class, InventoryAuditEntity.class}, version = 5, exportSchema = false)
+@Database(entities = {CardEntity.class, LocationEntity.class, InventoryAuditEntity.class}, version = 6, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase instance;
 

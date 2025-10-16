@@ -3,6 +3,7 @@ package cz.majetek.card.specification;
 import cz.majetek.card.dto.CardFilterQuery;
 import cz.majetek.entity.Card;
 import jakarta.persistence.criteria.*;
+import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
@@ -10,11 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+@UtilityClass
 public final class CardSpecification {
-
-    private CardSpecification() {
-        // Utility class
-    }
 
     private static final String F_ID = "id";
     private static final String F_NAME = "name";

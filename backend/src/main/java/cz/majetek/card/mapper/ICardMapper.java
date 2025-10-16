@@ -15,38 +15,34 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ICardMapper {
 
-    @Mappings({
-            @Mapping(source = "location.id", target = "locationId"),
-            @Mapping(source = "location.name", target = "locationName"),
-            @Mapping(source = "assetClass.id", target = "classId"),
-            @Mapping(source = "assetClass.name", target = "className"),
-            @Mapping(source = "group.id", target = "groupId"),
-            @Mapping(source = "group.name", target = "groupName"),
-            @Mapping(source = "purchaseMethod.id", target = "purchaseMethodId"),
-            @Mapping(source = "purchaseMethod.name", target = "purchaseMethodName"),
-            @Mapping(source = "writeOffMethod.id", target = "writeOffMethodId"),
-            @Mapping(source = "writeOffMethod.name", target = "writeOffMethodName"),
-            @Mapping(source = "createdBy.id", target = "createdById"),
-            @Mapping(source = "createdBy.username", target = "createdByName"),
-            @Mapping(source = "responsiblePerson.id", target = "responsiblePersonId"),
-            @Mapping(source = "responsiblePerson.username", target = "responsiblePersonName"),
-            @Mapping(source = "serialNumber", target = "serialNumber"),
-    })
+    @Mapping(source = "location.id", target = "locationId")
+    @Mapping(source = "location.name", target = "locationName")
+    @Mapping(source = "assetClass.id", target = "classId")
+    @Mapping(source = "assetClass.name", target = "className")
+    @Mapping(source = "group.id", target = "groupId")
+    @Mapping(source = "group.name", target = "groupName")
+    @Mapping(source = "purchaseMethod.id", target = "purchaseMethodId")
+    @Mapping(source = "purchaseMethod.name", target = "purchaseMethodName")
+    @Mapping(source = "writeOffMethod.id", target = "writeOffMethodId")
+    @Mapping(source = "writeOffMethod.name", target = "writeOffMethodName")
+    @Mapping(source = "createdBy.id", target = "createdById")
+    @Mapping(source = "createdBy.username", target = "createdByName")
+    @Mapping(source = "responsiblePerson.id", target = "responsiblePersonId")
+    @Mapping(source = "responsiblePerson.username", target = "responsiblePersonName")
+    @Mapping(source = "serialNumber", target = "serialNumber")
     CardDto toDto(Card card);
 
     List<CardDto> toDto(List<Card> cards);
 
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "attachments", ignore = true),
-            @Mapping(source = "locationId", target = "location", qualifiedByName = "toLocation"),
-            @Mapping(source = "classId", target = "assetClass", qualifiedByName = "toClass"),
-            @Mapping(source = "groupId", target = "group", qualifiedByName = "toGroup"),
-            @Mapping(source = "purchaseMethodId", target = "purchaseMethod", qualifiedByName = "toPurchaseMethod"),
-            @Mapping(source = "writeOffMethodId", target = "writeOffMethod", qualifiedByName = "toWriteOffMethod"),
-            @Mapping(source = "createdById", target = "createdBy", qualifiedByName = "toUser"),
-            @Mapping(source = "responsiblePersonId", target = "responsiblePerson", qualifiedByName = "toUser")
-    })
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "attachments", ignore = true)
+    @Mapping(source = "locationId", target = "location", qualifiedByName = "toLocation")
+    @Mapping(source = "classId", target = "assetClass", qualifiedByName = "toClass")
+    @Mapping(source = "groupId", target = "group", qualifiedByName = "toGroup")
+    @Mapping(source = "purchaseMethodId", target = "purchaseMethod", qualifiedByName = "toPurchaseMethod")
+    @Mapping(source = "writeOffMethodId", target = "writeOffMethod", qualifiedByName = "toWriteOffMethod")
+    @Mapping(source = "createdById", target = "createdBy", qualifiedByName = "toUser")
+    @Mapping(source = "responsiblePersonId", target = "responsiblePerson", qualifiedByName = "toUser")
     Card toEntity(CardChangeDto dto);
 
     @Named("toLocation")
