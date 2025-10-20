@@ -7,6 +7,7 @@ import cz.majetek.exception.auth.UserIdAlreadyExistsException;
 import cz.majetek.exception.auth.UsernameAlreadyExistsException;
 import cz.majetek.exception.card.CardException;
 import cz.majetek.exception.dictionary.*;
+import cz.majetek.exception.inventoryaudit.InventoryAuditException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
@@ -184,6 +185,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(WriteOffMethodException.class)
     public ResponseEntity<ErrorResponse> handleWriteOffMethodException(WriteOffMethodException ex) {
+        return errorResponseUtils.buildErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler(InventoryAuditException.class)
+    public ResponseEntity<ErrorResponse> handleInventoryAuditException(InventoryAuditException ex) {
         return errorResponseUtils.buildErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 ex.getMessage()

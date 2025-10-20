@@ -7,7 +7,6 @@ import cz.majetek.entity.*;
 import cz.majetek.entity.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 
 import java.util.List;

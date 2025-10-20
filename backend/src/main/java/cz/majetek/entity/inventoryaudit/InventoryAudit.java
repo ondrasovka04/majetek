@@ -1,10 +1,14 @@
-package cz.majetek.entity;
+package cz.majetek.entity.inventoryaudit;
 
+import cz.majetek.entity.Card;
+import cz.majetek.entity.Location;
+import cz.majetek.entity.WriteOffMethod;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,10 +27,19 @@ public class InventoryAudit {
     @JoinColumn(name = "card_id")
     private Card card;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "real_location_id")
     private Location realLocation;
 
     @Column(name = "timestamp", nullable = false)
     private LocalDateTime timestamp;
+
+    @Enumerated(EnumType.STRING)
+    private InventoryAuditAction action;
+
+    private LocalDate writeOffDate;
+
+    @ManyToOne
+    @JoinColumn(name = "write_off_method_id")
+    private WriteOffMethod writeOffMethod;
 }

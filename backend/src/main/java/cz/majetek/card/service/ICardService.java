@@ -21,7 +21,7 @@ public interface ICardService {
 
     InputStreamResource exportLocationReport(String locationId, LocalDate asOf);
 
-    public InputStreamResource exportCardReport(Integer cardId);
+    InputStreamResource exportCardReport(Integer cardId);
 
     List<CardDto> getAllCards();
 

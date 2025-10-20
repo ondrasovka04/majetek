@@ -12,6 +12,7 @@ import cz.majetek.auth.service.IAuthService;
 import cz.majetek.entity.user.User;
 import cz.majetek.entity.user.UserRole;
 import cz.majetek.exception.auth.AuthException;
+import cz.majetek.exception.auth.UserException;
 import cz.majetek.exception.auth.UserIdAlreadyExistsException;
 import cz.majetek.exception.auth.UsernameAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,12 @@ public class AuthService implements IAuthService {
     @Override
     public List<UserDto> getAll() {
         return userMapper.toDto(userRepository.findAll());
+    }
+
+    @Override
+    public User getById(String id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> UserException.notFound(id));
     }
 
     @Override
