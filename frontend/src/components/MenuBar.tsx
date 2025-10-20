@@ -7,17 +7,19 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuthStore } from "../store/authStore";
 
 const MenuBar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [inventoryAnchorEl, setInventoryAnchorEl] = useState<null | HTMLElement>(null);
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
 
   const handleCloseMenu = () => setAnchorEl(null);
+  const handleCloseInventoryMenu = () => setInventoryAnchorEl(null);
 
   return (
     <AppBar position="sticky">
@@ -28,8 +30,8 @@ const MenuBar = () => {
             color="inherit"
             onClick={(e) => setAnchorEl(e.currentTarget)}
           >
-            <MenuIcon />
-            <Typography variant="subtitle2" style={{ marginLeft: "8px", marginTop: "1px" }}>ČÍSELNÍKY</Typography>
+          <Typography variant="subtitle2" style={{ marginRight: "4px", marginTop: "1px" }}>ČÍSELNÍKY</Typography>
+          <ArrowDropDownIcon />
           </IconButton>
           <Menu
             anchorEl={anchorEl}
@@ -80,6 +82,33 @@ const MenuBar = () => {
           >
             Sestavy
           </Button>
+          <IconButton
+            color="inherit"
+            onClick={(e) => setInventoryAnchorEl(e.currentTarget)}
+          >
+            <Typography variant="subtitle2" style={{ marginRight: "4px", marginTop: "1px" }}>INVENTURA</Typography>
+            <ArrowDropDownIcon />
+          </IconButton>
+          <Menu
+            anchorEl={inventoryAnchorEl}
+            open={Boolean(inventoryAnchorEl)}
+            onClose={handleCloseInventoryMenu}
+          >
+            <MenuItem
+              component={Link}
+              to="/inventory-audit/overview"
+              onClick={handleCloseInventoryMenu}
+            >
+              Přehled
+            </MenuItem>
+            <MenuItem
+              component={Link}
+              to="/inventory-audit/differences"
+              onClick={handleCloseInventoryMenu}
+            >
+              Rozdíly
+            </MenuItem>
+          </Menu>
         </div>
         <div className="flex items-center gap-4">
           <Button color="inherit" component={Link} to="/user">

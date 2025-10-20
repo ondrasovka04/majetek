@@ -18,6 +18,8 @@ import { cs } from "date-fns/locale";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { defaultTheme } from "./theme";
 import ReportPage from "./pages/ReportPage";
+import InventoryOverviewPage from "./pages/inventoryAudit/InventoryOverviewPage";
+import InventoryDifferencesPage from "./pages/inventoryAudit/InventoryDifferencesPage";
 
 function App() {
   const setAuth = useAuthStore((state) => state.setAuth);
@@ -59,6 +61,22 @@ function App() {
               element={
                 <PrivateRoute>
                   <ReportPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/inventory-audit/overview"
+              element={
+                <PrivateRoute>
+                  <InventoryOverviewPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/inventory-audit/differences"
+              element={
+                <PrivateRoute>
+                  <InventoryDifferencesPage />
                 </PrivateRoute>
               }
             />

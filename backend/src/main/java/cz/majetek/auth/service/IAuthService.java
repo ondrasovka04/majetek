@@ -25,6 +25,14 @@ public interface IAuthService {
     List<UserDto> getAll();
 
     /**
+     * Retrieves a User by its ID.
+     *
+     * @param id the ID of the User to retrieve
+     * @return the User with the given ID
+     */
+    User getById(String id);
+
+    /**
      * Authenticates user and generates JWT token.
      *
      * @return LoginResponse with JWT token and user info

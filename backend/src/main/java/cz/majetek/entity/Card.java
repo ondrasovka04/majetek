@@ -1,5 +1,6 @@
 package cz.majetek.entity;
 
+import cz.majetek.entity.inventoryaudit.InventoryAudit;
 import cz.majetek.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
