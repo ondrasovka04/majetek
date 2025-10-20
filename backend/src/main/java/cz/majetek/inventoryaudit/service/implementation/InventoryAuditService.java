@@ -45,7 +45,7 @@ public class InventoryAuditService implements IInventoryAuditService {
 
     @Override
     public List<InventoryAuditDiffDto> getDiffs() {
-        if(inventoryAuditRepository.findAllByRealLocationIsNotNull().isEmpty()){
+        if (inventoryAuditRepository.findAllByRealLocationIsNotNull().isEmpty()) {
             throw new InventoryAuditException("No inventory audit records found.");
         }
 

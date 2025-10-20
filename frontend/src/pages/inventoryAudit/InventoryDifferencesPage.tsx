@@ -31,7 +31,6 @@ import { WriteOffMethod } from "../../types/writeOffMethod";
 import { translateError } from "../../utils/errorTranslations";
 
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-// Použijeme lokalizaci přímo z DataGrid balíčku (ne z date pickers)
 import { csCZ as dataGridCsCZ } from "@mui/x-data-grid/locales";
 import { useNavigate } from "react-router-dom";
 
@@ -122,7 +121,7 @@ const InventoryDifferencesPage = () => {
           if (msg === "No inventory audit records found.") {
             setNoRecords(true);
             setLoading(false);
-            return; // neukládáme error do snackbar, jen informujeme níže
+            return;
           }
           handleError(translateError(e.message));
         }
