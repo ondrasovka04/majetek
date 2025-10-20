@@ -41,7 +41,7 @@ const ProjectionConfirmDialog: React.FC<ProjectionConfirmDialogProps> = ({
             <ListItemIcon>
               <WarningAmberIcon color="warning" />
             </ListItemIcon>
-            <ListItemText primary={`Upozornění: ${warningCount}`} />
+            <ListItemText primary={`Nalezeno jinde: ${warningCount}`} />
           </ListItem>
           <ListItem>
             <ListItemIcon>
@@ -53,7 +53,7 @@ const ProjectionConfirmDialog: React.FC<ProjectionConfirmDialogProps> = ({
             <ListItemIcon>
               <WarningAmberIcon color="error" />
             </ListItemIcon>
-            <ListItemText primary={`Chybné: ${wrongCount}`} />
+            <ListItemText primary={`Nenaskenováno: ${wrongCount}`} />
           </ListItem>
         </List>
         <Typography variant="body2" color="text.secondary">

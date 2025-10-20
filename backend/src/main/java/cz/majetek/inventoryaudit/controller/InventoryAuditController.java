@@ -68,8 +68,8 @@ public class InventoryAuditController {
     }
 
     @PostMapping("/project")
-    @Operation(summary = "Insert multiple inventory audit records", description = "Creates multiple inventory audit entries in a single request")
-    @ApiResponse(responseCode = "201", description = "Inventory audit records created",
+    @Operation(summary = "Project inventory differences", description = "Projects inventory differences based on current inventory audit data")
+    @ApiResponse(responseCode = "200", description = "Inventory differences projected",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = InventoryAuditInsertDto.class)))
     public ResponseEntity<Void> project() {

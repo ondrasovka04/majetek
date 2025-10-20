@@ -31,6 +31,8 @@ import { WriteOffMethod } from "../../types/writeOffMethod";
 import { translateError } from "../../utils/errorTranslations";
 
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+// Použijeme lokalizaci přímo z DataGrid balíčku (ne z date pickers)
+import { csCZ as dataGridCsCZ } from "@mui/x-data-grid/locales";
 import { useNavigate } from "react-router-dom";
 
 const statusTranslation: Record<InventoryDifferenceStatus, string> = {
@@ -58,6 +60,7 @@ const InventoryDifferencesPage = () => {
   const [projecting, setProjecting] = useState(false);
   const [projectSuccess, setProjectSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [noRecords, setNoRecords] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -97,7 +100,7 @@ const InventoryDifferencesPage = () => {
         setWriteOffMethods(wom);
 
         if (toInit.length > 0) {
-          try{
+          try {
             await Promise.all(
               toInit.map((i) =>
                 patchInventoryDifference(i.cardId, {
@@ -108,12 +111,21 @@ const InventoryDifferencesPage = () => {
               )
             );
           } catch (e: any) {
-            handleError(translateError(e?.response?.data?.message || e.message));
+            handleError(
+              translateError(e?.response?.data?.message || e.message)
+            );
           }
         }
-
       } catch (e: any) {
-        if (active) handleError(translateError(e.message));
+        if (active) {
+          const msg = e?.response?.data?.message || e.message || "";
+          if (msg === "No inventory audit records found.") {
+            setNoRecords(true);
+            setLoading(false);
+            return; // neukládáme error do snackbar, jen informujeme níže
+          }
+          handleError(translateError(e.message));
+        }
       } finally {
         if (active) setLoading(false);
       }
@@ -142,16 +154,24 @@ const InventoryDifferencesPage = () => {
     cardId: number,
     patch: Partial<InventoryDifferenceEntry>
   ) => {
-    const prevEntry = entries.find(e => e.cardId === cardId);
+    const prevEntry = entries.find((e) => e.cardId === cardId);
     if (!prevEntry) return;
 
-    const nextEntry: InventoryDifferenceEntry = { ...prevEntry, ...patch } as InventoryDifferenceEntry;
+    const nextEntry: InventoryDifferenceEntry = {
+      ...prevEntry,
+      ...patch,
+    } as InventoryDifferenceEntry;
 
     if (nextEntry.action === "WRITE_OFF" && !nextEntry.writeOffMethodId) {
-      nextEntry.writeOffMethodId = (writeOffMethods.find(m => m.id === "A")?.id || writeOffMethods[0]?.id) ?? null;
+      nextEntry.writeOffMethodId =
+        (writeOffMethods.find((m) => m.id === "A")?.id ||
+          writeOffMethods[0]?.id) ??
+        null;
     }
 
-    setEntries(prev => prev.map(e => e.cardId === cardId ? nextEntry : e));
+    setEntries((prev) =>
+      prev.map((e) => (e.cardId === cardId ? nextEntry : e))
+    );
 
     const toIsoDate = (d: Date | string | null | undefined) => {
       if (!d) return null;
@@ -178,7 +198,10 @@ const InventoryDifferencesPage = () => {
         payload.writeOffDate = null;
         payload.writeOffMethodId = null;
       }
-    } else if (nextEntry.action === "WRITE_OFF" && (dateChanged || methodChanged)) {
+    } else if (
+      nextEntry.action === "WRITE_OFF" &&
+      (dateChanged || methodChanged)
+    ) {
       payload.action = "WRITE_OFF";
       payload.writeOffDate = toIsoDate(nextEntry.writeOffDate);
       payload.writeOffMethodId = nextEntry.writeOffMethodId ?? null;
@@ -189,7 +212,9 @@ const InventoryDifferencesPage = () => {
     try {
       await patchInventoryDifference(cardId, payload);
     } catch (err: any) {
-      setEntries(prev => prev.map(e => e.cardId === cardId ? prevEntry : e));
+      setEntries((prev) =>
+        prev.map((e) => (e.cardId === cardId ? prevEntry : e))
+      );
       handleError(translateError(err?.response?.data?.message || err.message));
     }
   };
@@ -234,25 +259,36 @@ const InventoryDifferencesPage = () => {
     writeOffMethodId: e.writeOffMethodId ?? "",
   }));
 
-
   const hasInvalid = useMemo(() => {
-    return entries.some(e => {
+    return entries.some((e) => {
       // WRONG bez akce (prázdný string v rows) => e.action null nebo ""
       if (e.status === "WRONG" && !e.action) return true;
-      if (e.action === "WRITE_OFF" && (!e.writeOffDate || !e.writeOffMethodId)) return true;
+      if (e.action === "WRITE_OFF" && (!e.writeOffDate || !e.writeOffMethodId))
+        return true;
       return false;
     });
   }, [entries]);
 
-  const writeOffCount = useMemo(() => entries.filter(e => e.action === "WRITE_OFF").length, [entries]);
-  const warnCount = useMemo(() => entries.filter(e => e.status === "WARN").length, [entries]);
-  const wrongCount = useMemo(() => entries.filter(e => e.status === "WRONG").length, [entries]);
+  const writeOffCount = useMemo(
+    () => entries.filter((e) => e.action === "WRITE_OFF").length,
+    [entries]
+  );
+  const warnCount = useMemo(
+    () => entries.filter((e) => e.status === "WARN").length,
+    [entries]
+  );
+  const wrongCount = useMemo(
+    () => entries.filter((e) => e.status === "WRONG").length,
+    [entries]
+  );
 
   const handleProject = async () => {
     setProjecting(true);
     try {
       await projectInventoryDifferences();
-      setProjectSuccess("Promítnutí dokončeno. Budete přesměrováni na majetkové karty.");
+      setProjectSuccess(
+        "Promítnutí dokončeno. Budete přesměrováni na majetkové karty."
+      );
       setTimeout(() => navigate("/cards"), 2500);
     } catch (e: any) {
       handleError(translateError(e?.response?.data?.message || e.message));
@@ -282,6 +318,12 @@ const InventoryDifferencesPage = () => {
       headerName: "Status",
       width: 130,
       sortable: true,
+      type: "singleSelect",
+      valueOptions: [
+        { value: "CORRECT", label: "Správně" },
+        { value: "WARN", label: "Upozornění" },
+        { value: "WRONG", label: "Chybně" },
+      ],
       renderCell: (params: GridRenderCellParams) =>
         statusTranslation[
           (params.row as any).status as InventoryDifferenceStatus
@@ -297,6 +339,13 @@ const InventoryDifferencesPage = () => {
       headerName: "Akce",
       width: 220,
       sortable: false,
+      type: "singleSelect",
+      valueOptions: [
+        { value: "KEEP", label: "Nechat" },
+        { value: "SU", label: "Skutečné umístění" },
+        { value: "OU", label: "Očekávané umístění" },
+        { value: "WRITE_OFF", label: "Vyřadit" },
+      ],
       renderCell: (params) => {
         const row = params.row as any;
         const entry = entries.find((x) => x.cardId === row.cardId)!;
@@ -418,29 +467,31 @@ const InventoryDifferencesPage = () => {
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <Typography variant="h4">Inventura - Rozdíly</Typography>
-            <Box display="flex" gap={2}>
-              <TextField
-                select
-                label="Status"
-                size="small"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as any)}
-                style={{ minWidth: 180 }}
-              >
-                <MenuItem value="ALL">Všechny</MenuItem>
-                <MenuItem value="CORRECT">Správně</MenuItem>
-                <MenuItem value="WARN">Upozornění</MenuItem>
-                <MenuItem value="WRONG">Chybně</MenuItem>
-              </TextField>
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={loading || hasInvalid || projecting}
-                onClick={() => setConfirmOpen(true)}
-              >
-                {projecting ? "Probíhá..." : "Promítnout"}
-              </Button>
-            </Box>
+            {!noRecords && (
+              <Box display="flex" gap={2}>
+                <TextField
+                  select
+                  label="Status"
+                  size="small"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value as any)}
+                  style={{ minWidth: 180 }}
+                >
+                  <MenuItem value="ALL">Všechny</MenuItem>
+                  <MenuItem value="CORRECT">Správně</MenuItem>
+                  <MenuItem value="WARN">Upozornění</MenuItem>
+                  <MenuItem value="WRONG">Chybně</MenuItem>
+                </TextField>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={loading || hasInvalid || projecting}
+                  onClick={() => setConfirmOpen(true)}
+                >
+                  {projecting ? "Probíhá..." : "Promítnout"}
+                </Button>
+              </Box>
+            )}
           </div>
 
           <div
@@ -470,6 +521,22 @@ const InventoryDifferencesPage = () => {
             <div className="flex justify-center items-center h-64">
               <CircularProgress />
             </div>
+          ) : noRecords ? (
+            <Box
+              className="mt-8"
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              gap={2}
+            >
+              <Typography variant="h6">
+                Zatím nejsou k dispozici žádné záznamy inventury.
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Jakmile budou naskenovány položky, objeví se zde rozdíly k
+                vyhodnocení.
+              </Typography>
+            </Box>
           ) : (
             <div style={{ height: "calc(100vh - 170px)", width: "100%" }}>
               <DataGrid
@@ -481,6 +548,8 @@ const InventoryDifferencesPage = () => {
                   `diff-row-${params.row.status.toLowerCase()}`
                 }
                 localeText={{
+                  ...dataGridCsCZ.components.MuiDataGrid.defaultProps
+                    .localeText,
                   noRowsLabel: "Žádné záznamy",
                   paginationRowsPerPage: "Řádků na stránku:",
                 }}

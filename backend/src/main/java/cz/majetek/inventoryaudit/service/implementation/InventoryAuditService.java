@@ -45,6 +45,10 @@ public class InventoryAuditService implements IInventoryAuditService {
 
     @Override
     public List<InventoryAuditDiffDto> getDiffs() {
+        if(inventoryAuditRepository.findAllByRealLocationIsNotNull().isEmpty()){
+            throw new InventoryAuditException("No inventory audit records found.");
+        }
+
         CardFilterQuery cardFilterQuery = new CardFilterQuery();
         cardFilterQuery.setIncludeWriteOff(false);
 
@@ -88,7 +92,6 @@ public class InventoryAuditService implements IInventoryAuditService {
                 .orElseGet(() -> {
                     InventoryAudit newAudit = new InventoryAudit();
                     newAudit.setCard(card);
-                    newAudit.setTimestamp(LocalDateTime.now());
                     return newAudit;
                 });
 

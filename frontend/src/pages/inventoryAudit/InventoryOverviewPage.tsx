@@ -38,7 +38,9 @@ const InventoryOverviewPage = () => {
         case "realLocationId":
           return a.realLocationId.localeCompare(b.realLocationId, "cs") * dir;
         case "realLocationName":
-          return a.realLocationName.localeCompare(b.realLocationName, "cs") * dir;
+          return (
+            a.realLocationName.localeCompare(b.realLocationName, "cs") * dir
+          );
         case "timestamp":
         default:
           return (a.timestamp.getTime() - b.timestamp.getTime()) * dir;
@@ -49,7 +51,7 @@ const InventoryOverviewPage = () => {
 
   const toggleSort = (column: keyof InventoryAuditEntry) => {
     if (sortBy === column) {
-      setSortDirection(prev => (prev === "asc" ? "desc" : "asc"));
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
       setSortBy(column);
       setSortDirection("asc");
@@ -119,28 +121,113 @@ const InventoryOverviewPage = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{ fontWeight: "bold", cursor: "pointer", width: 140, whiteSpace: "nowrap" }} onClick={() => toggleSort("cardId")}> 
-                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        width: 140,
+                        whiteSpace: "nowrap",
+                      }}
+                      onClick={() => toggleSort("cardId")}
+                    >
+                      <span
+                        style={{ display: "inline-flex", alignItems: "center" }}
+                      >
                         <span>ID karty</span>
-                        <span style={{ display: "inline-block", width: 14, marginLeft: 4 }}>{sortBy === "cardId" ? (sortDirection === "asc" ? "▲" : "▼") : " "}</span>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: 14,
+                            marginLeft: 4,
+                          }}
+                        >
+                          {sortBy === "cardId"
+                            ? sortDirection === "asc"
+                              ? "▲"
+                              : "▼"
+                            : " "}
+                        </span>
                       </span>
                     </TableCell>
-                    <TableCell style={{ fontWeight: "bold", cursor: "pointer", minWidth: 200 }} onClick={() => toggleSort("cardName")}> 
-                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        minWidth: 200,
+                      }}
+                      onClick={() => toggleSort("cardName")}
+                    >
+                      <span
+                        style={{ display: "inline-flex", alignItems: "center" }}
+                      >
                         <span>Název karty</span>
-                        <span style={{ display: "inline-block", width: 14, marginLeft: 4 }}>{sortBy === "cardName" ? (sortDirection === "asc" ? "▲" : "▼") : " "}</span>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: 14,
+                            marginLeft: 4,
+                          }}
+                        >
+                          {sortBy === "cardName"
+                            ? sortDirection === "asc"
+                              ? "▲"
+                              : "▼"
+                            : " "}
+                        </span>
                       </span>
                     </TableCell>
-                    <TableCell style={{ fontWeight: "bold", cursor: "pointer", minWidth: 240 }} onClick={() => toggleSort("realLocationId")}> 
-                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        minWidth: 240,
+                      }}
+                      onClick={() => toggleSort("realLocationId")}
+                    >
+                      <span
+                        style={{ display: "inline-flex", alignItems: "center" }}
+                      >
                         <span>Skutečné umístění</span>
-                        <span style={{ display: "inline-block", width: 14, marginLeft: 4 }}>{sortBy === "realLocationId" ? (sortDirection === "asc" ? "▲" : "▼") : " "}</span>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: 14,
+                            marginLeft: 4,
+                          }}
+                        >
+                          {sortBy === "realLocationId"
+                            ? sortDirection === "asc"
+                              ? "▲"
+                              : "▼"
+                            : " "}
+                        </span>
                       </span>
                     </TableCell>
-                    <TableCell style={{ fontWeight: "bold", cursor: "pointer", minWidth: 190 }} onClick={() => toggleSort("timestamp")}> 
-                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        minWidth: 190,
+                      }}
+                      onClick={() => toggleSort("timestamp")}
+                    >
+                      <span
+                        style={{ display: "inline-flex", alignItems: "center" }}
+                      >
                         <span>Čas</span>
-                        <span style={{ display: "inline-block", width: 14, marginLeft: 4 }}>{sortBy === "timestamp" ? (sortDirection === "asc" ? "▲" : "▼") : " "}</span>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: 14,
+                            marginLeft: 4,
+                          }}
+                        >
+                          {sortBy === "timestamp"
+                            ? sortDirection === "asc"
+                              ? "▲"
+                              : "▼"
+                            : " "}
+                        </span>
                       </span>
                     </TableCell>
                   </TableRow>
@@ -152,14 +239,16 @@ const InventoryOverviewPage = () => {
                       <TableCell>{e.cardName}</TableCell>
                       <TableCell>{`${e.realLocationId} - ${e.realLocationName}`}</TableCell>
                       <TableCell>
-                        {e.timestamp.toLocaleString("cs-CZ", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit",
-                        })}
+                        {e.timestamp
+                          .toLocaleString("cs-CZ", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                          })
+                          .replace(/\.\s/g, ".")}
                       </TableCell>
                     </TableRow>
                   ))}
