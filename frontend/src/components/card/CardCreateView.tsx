@@ -245,8 +245,8 @@ const CardCreateView = ({
               slotProps={{
                 select: {
                   renderValue: (value: unknown) => {
-                    const selected = value as string;
-                    return selected || "(nevybráno)";
+                    const loc = locations.find((l) => l.id === value);
+                    return `${value} - ${loc?.name ?? ""}`;
                   },
                 },
               }}
@@ -300,8 +300,8 @@ const CardCreateView = ({
               slotProps={{
                 select: {
                   renderValue: (value: unknown) => {
-                    const selected = value as string;
-                    return selected || "(nevybráno)";
+                    const group = groups.find((g) => g.id === value);
+                    return `${value} - ${group?.name ?? ""}`;
                   },
                 },
               }}
