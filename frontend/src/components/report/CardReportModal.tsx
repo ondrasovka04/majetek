@@ -51,6 +51,7 @@ const CardReportModal = ({
     setSearchLoading(true);
     (async () => {
       const results = await filterCards({ fulltextSearch: inputValue });
+      results.sort((a, b) => parseInt(a.id) - parseInt(b.id));
       if (active) {
         setOptions(
           results.map((card) => ({
