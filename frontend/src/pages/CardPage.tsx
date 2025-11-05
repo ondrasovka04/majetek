@@ -319,9 +319,9 @@ const CardPage = () => {
       const bVal = b[key as keyof Card] ?? "";
 
       if (key === "name") {
-        return direction === "asc"
-          ? collator.compare(String(aVal), String(bVal))
-          : collator.compare(String(bVal), String(aVal));
+        const cmp = collator.compare(String(aVal), String(bVal));
+        if (cmp !== 0) return direction === "asc" ? cmp : -cmp;
+        return Number(a.id) - Number(b.id);
       }
 
       return direction === "asc"
@@ -466,7 +466,11 @@ const CardPage = () => {
                     <TableCell sx={{ width: "1px", p: 0 }} />
                     <TableCell
                       onClick={() => handleSort("id")}
-                      style={{ whiteSpace: "nowrap", cursor: "pointer", fontWeight: "bold" }}
+                      style={{
+                        whiteSpace: "nowrap",
+                        cursor: "pointer",
+                        fontWeight: "bold",
+                      }}
                     >
                       ID{" "}
                       {sortConfig.key === "id" &&
@@ -474,7 +478,11 @@ const CardPage = () => {
                     </TableCell>
                     <TableCell
                       onClick={() => handleSort("name")}
-                      style={{ whiteSpace: "nowrap", cursor: "pointer", fontWeight: "bold" }}
+                      style={{
+                        whiteSpace: "nowrap",
+                        cursor: "pointer",
+                        fontWeight: "bold",
+                      }}
                     >
                       Název{" "}
                       {sortConfig.key === "name" &&
