@@ -20,7 +20,7 @@ export const filterCards = async (
   Object.entries(filters).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
       if (value instanceof Date) {
-        params[key] = value.toLocaleDateString("sv-SE");
+        params[key] = value.toISOString().split("T")[0];
       } else {
         params[key] = String(value);
       }
@@ -74,8 +74,8 @@ export const exportGroupPdf = async (
     {
       groupId,
       asOf: selectedDate
-        ? selectedDate.toLocaleDateString("sv-SE")
-        : new Date().toLocaleDateString("sv-SE"),
+        ? selectedDate.toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
       allGroups: groupId ? false : true,
     },
     {
@@ -96,8 +96,8 @@ export const exportLocationPdf = async (
     {
       locationId,
       asOf: selectedDate
-        ? selectedDate.toLocaleDateString("sv-SE")
-        : new Date().toLocaleDateString("sv-SE"),
+        ? selectedDate.toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
     },
     {
       responseType: "blob",
@@ -147,11 +147,11 @@ export const updateCard = async (
     locationId: updatedCard.locationId,
     classId: updatedCard.classId || undefined,
     groupId: updatedCard.groupId || undefined,
-    purchaseDate: updatedCard.purchaseDate.toLocaleDateString("sv-SE"),
+    purchaseDate: updatedCard.purchaseDate.toISOString().split("T")[0],
     purchaseMethodId: updatedCard.purchaseMethodId || undefined,
     purchaseInvoice: updatedCard.purchaseInvoice || undefined,
     writeOffDate: updatedCard.writeOffDate
-      ? updatedCard.writeOffDate.toLocaleDateString("sv-SE")
+      ? updatedCard.writeOffDate.toISOString().split("T")[0]
       : undefined,
     writeOffMethodId: updatedCard.writeOffMethodId || undefined,
     createdById: updatedCard.createdById || undefined,
@@ -169,11 +169,11 @@ export const createCard = async (card: Partial<CardDetail>): Promise<void> => {
     locationId: card.locationId,
     classId: card.classId || undefined,
     groupId: card.groupId || undefined,
-    purchaseDate: card.purchaseDate?.toLocaleDateString("sv-SE"),
+    purchaseDate: card.purchaseDate?.toISOString().split("T")[0],
     purchaseMethodId: card.purchaseMethodId || undefined,
     purchaseInvoice: card.purchaseInvoice || undefined,
     writeOffDate: card.writeOffDate
-      ? card.writeOffDate.toLocaleDateString("sv-SE")
+      ? card.writeOffDate.toISOString().split("T")[0]
       : undefined,
     writeOffMethodId: card.writeOffMethodId || undefined,
     createdById: card.createdById || undefined,
