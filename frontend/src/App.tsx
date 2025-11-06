@@ -4,7 +4,6 @@ import CardPage from "./pages/CardPage";
 import PrivateRoute from "./components/PrivateRoute";
 import { useEffect } from "react";
 import { useAuthStore } from "./store/authStore";
-import { User } from "./types/auth";
 import { Navigate } from "react-router-dom";
 import LocationPage from "./pages/LocationPage";
 import UserPage from "./pages/UserPage";
@@ -22,30 +21,19 @@ import InventoryOverviewPage from "./pages/inventoryAudit/InventoryOverviewPage"
 import InventoryDifferencesPage from "./pages/inventoryAudit/InventoryDifferencesPage";
 
 function App() {
-  const setAuth = useAuthStore((state) => state.setAuth);
-  const logout = useAuthStore((state) => state.logout);
+  const attemptRehydrate = useAuthStore((s) => s.attemptRehydrate);
+  const hydrated = useAuthStore((s) => s.hydrated);
 
   useEffect(() => {
-    const tokenFromStorage = localStorage.getItem("token");
-    const userJson = localStorage.getItem("user");
-    const expiresInStorage = localStorage.getItem("expiresIn");
-
-    if (tokenFromStorage && userJson && expiresInStorage) {
-      const expiryDate = new Date(expiresInStorage);
-      if (expiryDate <= new Date()) {
-        logout();
-      } else {
-        const user: User = JSON.parse(userJson);
-        setAuth(user, tokenFromStorage, expiresInStorage);
-      }
-    }
-  }, [setAuth, logout]);
+    void attemptRehydrate();
+  }, [attemptRehydrate]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={cs}>
       <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
         <Router>
+          {hydrated && (
           <Routes>
             <Route path="/" element={<LoginPage />} />
             <Route
@@ -130,6 +118,7 @@ function App() {
             />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          )}
         </Router>
       </ThemeProvider>
     </LocalizationProvider>

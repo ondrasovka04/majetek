@@ -19,13 +19,20 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.access.expiration}")
     private int jwtExpirationInMs;
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.access.secret}")
     private String jwtSecret;
 
-    private SecretKey key;
+    @Value("${jwt.refresh.expiration}")
+    private int refreshExpirationInMs;
+
+    @Value("${jwt.refresh.secret}")
+    private String refreshSecret;
+
+    private SecretKey accessKey;
+    private SecretKey refreshKey;
 
     /**
      * Creates JwtTokenProvider with secret key from configuration.
@@ -37,7 +44,11 @@ public class JwtTokenProvider {
         if (jwtSecret == null || jwtSecret.trim().isEmpty()) {
             throw new IllegalStateException("JWT secret is not configured");
         }
-        this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        this.accessKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        if (refreshSecret == null || refreshSecret.trim().isEmpty()) {
+            throw new IllegalStateException("Refresh JWT secret is not configured");
+        }
+        this.refreshKey = Keys.hmacShaKeyFor(refreshSecret.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -47,16 +58,14 @@ public class JwtTokenProvider {
      * @return JWT token
      */
     public String generateToken(Authentication authentication) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-
+        String subject = authentication.getName();
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
-
         return Jwts.builder()
-                .setSubject(userPrincipal.getUsername())
+                .setSubject(subject)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(key)
+                .signWith(accessKey)
                 .compact();
     }
 
@@ -68,7 +77,7 @@ public class JwtTokenProvider {
      */
     public String getUsernameFromJWT(String token) {
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(accessKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -84,11 +93,65 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(accessKey).build().parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    /**
+     * Generates refresh token for authenticated user.
+     * Longer-lived token used only to obtain new access tokens.
+     */
+    public String generateRefreshToken(Authentication authentication) {
+        return generateRefreshTokenFromUsername(authentication.getName());
+    }
+
+    public String generateRefreshTokenFromUsername(String username) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + refreshExpirationInMs);
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(refreshKey)
+                .compact();
+    }
+
+    /**
+     * Validates refresh token integrity & expiration.
+     */
+    public boolean validateRefreshToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Extract username from refresh token.
+     */
+    public String getUsernameFromRefreshToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(refreshKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
+    }
+
+    /**
+     * Gets expiration date from refresh token.
+     */
+    public Date getExpirationDateFromRefreshToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(refreshKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody().getExpiration();
     }
 
     /**
@@ -99,7 +162,7 @@ public class JwtTokenProvider {
      */
     public Date getExpirationDateFromToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(accessKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody().getExpiration();

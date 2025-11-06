@@ -17,6 +17,7 @@ import cz.majetek.exception.auth.UserIdAlreadyExistsException;
 import cz.majetek.exception.auth.UsernameAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -59,10 +60,25 @@ public class AuthService implements IAuthService {
         }
         User user = ((UserPrincipal) authentication.getPrincipal()).user();
         UserDto userDto = userMapper.toDto(user);
-        String jwt = tokenProvider.generateToken(authentication);
-        Date expirationDate = tokenProvider.getExpirationDateFromToken(jwt);
+        String accessToken = tokenProvider.generateToken(authentication);
+        Date accessExpiration = tokenProvider.getExpirationDateFromToken(accessToken);
+        return new LoginResponse(accessToken, userDto, accessExpiration);
+    }
 
-        return new LoginResponse(jwt, userDto, expirationDate);
+    @Override
+    public LoginResponse refresh(String refreshToken) {
+        if (!tokenProvider.validateRefreshToken(refreshToken)) {
+            throw new AuthException("Invalid refresh token");
+        }
+        String username = tokenProvider.getUsernameFromRefreshToken(refreshToken);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserPrincipal principal = UserPrincipal.create(user);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+        String newAccess = tokenProvider.generateToken(authentication);
+        Date newAccessExp = tokenProvider.getExpirationDateFromToken(newAccess);
+        UserDto userDto = userMapper.toDto(user);
+        return new LoginResponse(newAccess, userDto, newAccessExp);
     }
 
 

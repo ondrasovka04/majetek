@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
@@ -7,16 +7,11 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
-  const { token, expiresIn, logout } = useAuthStore();
-
-  useEffect(() => {
-    if (token && expiresIn) {
-      const expiryDate = new Date(expiresIn);
-      if (expiryDate <= new Date()) {
-        logout();
-      }
-    }
-  }, [token, expiresIn, logout]);
+  const { token, hydrated } = useAuthStore();
+  
+  if (!hydrated) {
+    return <div style={{padding: '1rem', fontSize: 14, color: '#666'}}>Kontroluji relaci…</div>;
+  }
 
   if (!token) {
     return <Navigate to="/" replace />;

@@ -15,7 +15,7 @@ import { useAuthStore } from "../store/authStore";
 const MenuBar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [inventoryAnchorEl, setInventoryAnchorEl] = useState<null | HTMLElement>(null);
-  const { user, logout } = useAuthStore();
+  const { user, clearAuth } = useAuthStore();
   const navigate = useNavigate();
 
   const handleCloseMenu = () => setAnchorEl(null);
@@ -117,7 +117,7 @@ const MenuBar = () => {
           <Button
             color="inherit"
             onClick={() => {
-              logout();
+              clearAuth();
               navigate("/");
             }}
           >

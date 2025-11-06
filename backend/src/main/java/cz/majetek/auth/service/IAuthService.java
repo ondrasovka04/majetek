@@ -40,6 +40,14 @@ public interface IAuthService {
     LoginResponse login();
 
     /**
+     * Refreshes access token using a valid refresh token from cookie.
+     *
+     * @param refreshToken the refresh token extracted from HttpOnly cookie
+     * @return LoginResponse containing new access token & expiration
+     */
+    LoginResponse refresh(String refreshToken);
+
+    /**
      * Registers a new user.
      *
      * @param registerRequest User registration data
