@@ -26,10 +26,12 @@ import cz.majetek.data.entity.InventoryAuditEntity;
 import cz.majetek.data.entity.LocationEntity;
 import cz.majetek.data.network.ApiClient;
 import cz.majetek.data.network.LoginResult;
+import cz.majetek.util.BaseUrlStorage;
 import cz.majetek.util.TokenStorage;
 
 public class DataSyncRepository {
-    private final ApiClient api = new ApiClient();
+    private ApiClient api;
+    private String lastBaseUrl;
     private final ExecutorService io = Executors.newSingleThreadExecutor();
 
     public interface Callback {
@@ -50,8 +52,8 @@ public class DataSyncRepository {
         io.execute(() -> {
             try {
                 String token = ensureToken(ctx);
-                List<LocationEntity> locations = fetchLocations(token);
-                List<CardEntity> cards = fetchCards(token);
+                List<LocationEntity> locations = fetchLocations(ctx, token);
+                List<CardEntity> cards = fetchCards(ctx, token);
                 AppDatabase db = AppDatabase.getInstance(ctx);
                 db.runInTransaction(() -> {
                     db.cardDao().clear();
@@ -77,7 +79,7 @@ public class DataSyncRepository {
                     return;
                 }
                 String json = buildAuditJson(audits);
-                api.uploadInventoryAudit(token, json);
+                getApi(ctx).uploadInventoryAudit(token, json);
                 cb.onSuccess(audits.size());
             } catch (Exception ex) {
                 cb.onError(ex.getMessage() != null ? ex.getMessage() : ex.toString());
@@ -91,8 +93,8 @@ public class DataSyncRepository {
         return login(ctx);
     }
 
-    private List<LocationEntity> fetchLocations(String token) throws IOException {
-        String locJson = api.downloadLocations(token);
+    private List<LocationEntity> fetchLocations(Context ctx, String token) throws IOException {
+        String locJson = getApi(ctx).downloadLocations(token);
         if (locJson == null) throw new IOException("Empty locations body");
         List<LocationEntity> locations = new ArrayList<>();
         JsonArray locArr = JsonParser.parseString(locJson).getAsJsonArray();
@@ -104,8 +106,8 @@ public class DataSyncRepository {
         return locations;
     }
 
-    private List<CardEntity> fetchCards(String token) throws IOException {
-        String json = api.downloadCards(token);
+    private List<CardEntity> fetchCards(Context ctx, String token) throws IOException {
+        String json = getApi(ctx).downloadCards(token);
         if (json == null) throw new IOException("Empty cards body");
         JsonArray arr = JsonParser.parseString(json).getAsJsonArray();
         List<CardEntity> cards = new ArrayList<>();
@@ -120,12 +122,21 @@ public class DataSyncRepository {
     private String login(Context ctx) throws IOException {
         String credentials = BuildConfig.ADMIN_USER + ":" + BuildConfig.ADMIN_PASS;
         String basic = encodeToString(credentials.getBytes(), NO_WRAP);
-        LoginResult lr = api.login(basic);
+        LoginResult lr = getApi(ctx).login(basic);
         if (lr == null || lr.token() == null || lr.token().isEmpty())
             throw new IOException("Login selhal");
         long expiryMillis = lr.expiresAtEpochMillis();
         TokenStorage.saveToken(ctx, lr.token(), expiryMillis);
         return lr.token();
+    }
+
+    private ApiClient getApi(Context ctx) {
+        String base = BaseUrlStorage.getBaseUrl(ctx);
+        if (api == null || lastBaseUrl == null || !lastBaseUrl.equals(base)) {
+            api = new ApiClient(base);
+            lastBaseUrl = base;
+        }
+        return api;
     }
 
     private String buildAuditJson(List<InventoryAuditEntity> audits) {

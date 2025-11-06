@@ -6,10 +6,13 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -25,12 +28,14 @@ import cz.majetek.MajetekApp;
 import cz.majetek.R;
 import cz.majetek.data.db.AppDatabase;
 import cz.majetek.data.repository.DataSyncRepository;
+import cz.majetek.util.BaseUrlStorage;
 
 public class DataTransferFragment extends Fragment {
 
     private Button btnDownload;
     private Button btnUpload;
     private Button btnClear;
+    private Button btnConfigureUrl;
     private ProgressBar progress;
     private TextView txtStatus;
     private final DataSyncRepository repo = new DataSyncRepository();
@@ -43,6 +48,7 @@ public class DataTransferFragment extends Fragment {
         btnDownload = v.findViewById(R.id.btn_download_to_device);
         btnUpload = v.findViewById(R.id.btn_upload_from_device);
         btnClear = v.findViewById(R.id.btn_clear_inventory);
+        btnConfigureUrl = v.findViewById(R.id.btn_configure_base_url);
         progress = v.findViewById(R.id.progress);
         txtStatus = v.findViewById(R.id.txt_status);
 
@@ -51,7 +57,33 @@ public class DataTransferFragment extends Fragment {
         btnDownload.setOnClickListener(view -> startDownload());
         btnUpload.setOnClickListener(view -> startUpload());
         btnClear.setOnClickListener(view -> confirmClearInventory());
+        btnConfigureUrl.setOnClickListener(view -> showConfigureUrlDialog());
         return v;
+    }
+
+    private void showConfigureUrlDialog() {
+        Context ctx = requireContext().getApplicationContext();
+        String current = BaseUrlStorage.getBaseUrl(ctx);
+
+        EditText input = new EditText(requireContext());
+        input.setText(current);
+        input.setHint(getString(R.string.hint_base_url));
+        input.setSingleLine(true);
+
+        LinearLayout container = new LinearLayout(requireContext());
+        container.setOrientation(LinearLayout.VERTICAL);
+        int pad = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+        container.setPadding(pad, pad, pad, pad);
+        container.addView(input, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        new AlertDialog.Builder(requireContext()).setTitle(R.string.dialog_base_url_title).setView(container).setPositiveButton(R.string.common_set, (d, w) -> {
+            String entered = input.getText() != null ? input.getText().toString().trim() : "";
+            if (BaseUrlStorage.setBaseUrl(ctx, entered)) {
+                setStatusOk(getString(R.string.status_base_url_set));
+            } else {
+                setStatusError(getString(R.string.error_invalid_base_url));
+            }
+        }).setNegativeButton(R.string.common_cancel, null).show();
     }
 
     private void confirmClearInventory() {
@@ -163,6 +195,7 @@ public class DataTransferFragment extends Fragment {
         btnDownload.setEnabled(!loading);
         btnUpload.setEnabled(!loading);
         btnClear.setEnabled(!loading);
+        btnConfigureUrl.setEnabled(!loading);
     }
 
     private void setStatusOk(String msg) {
