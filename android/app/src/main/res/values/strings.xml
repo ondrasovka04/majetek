@@ -15,6 +15,7 @@
     <string name="btn_to_device">Do čtečky</string>
     <string name="btn_from_device">Ze čtečky</string>
     <string name="btn_clear_inventory">Vymazat data inventury</string>
+    <string name="btn_configure_base_url">Nastavit server</string>
 
     <!-- Menu -->
     <string name="menu_control">Kontrola</string>
@@ -38,6 +39,8 @@
     <string name="dialog_confirmation_message_irreversible">Tato akce je nevratná. Pokračovat?</string>
     <string name="common_yes">Ano</string>
     <string name="common_no">Ne</string>
+    <string name="common_set">Nastavit</string>
+    <string name="common_cancel">Zrušit</string>
     <string name="status_clearing_inventory">Mažu inventuru…</string>
     <string name="status_inventory_cleared">Inventurní data vymazána</string>
     <string name="status_wifi_disconnected">Není připojení k Wi-Fi</string>
@@ -74,4 +77,8 @@
     <!-- Status common -->
     <string name="status_ready">Připraveno</string>
     <string name="status_ok">V pořádku</string>
+    <string name="status_base_url_set">Adresa serveru nastavena</string>
+    <string name="error_invalid_base_url">Neplatná adresa (musí začínat https://)</string>
+    <string name="dialog_base_url_title">Adresa serveru</string>
+    <string name="hint_base_url">https://domena.cz/api</string>
 </resources>

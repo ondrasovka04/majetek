@@ -13,60 +13,70 @@
             android:id="@+id/txt_transfer_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:text="@string/title_data_transfer"
-            android:textStyle="bold"
             android:textSize="24sp"
-            android:layout_marginBottom="20dp" />
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_configure_base_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/btn_configure_base_url"
+            android:textAllCaps="false"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/btn_download_to_device"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="16dp"
             android:text="@string/btn_to_device"
             android:textAllCaps="false"
-            android:textSize="18sp"
-            android:padding="16dp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/btn_upload_from_device"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:padding="16dp"
             android:text="@string/btn_from_device"
             android:textAllCaps="false"
-            android:textSize="18sp"
-            android:padding="16dp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/btn_clear_inventory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:padding="16dp"
             android:text="@string/btn_clear_inventory"
             android:textAllCaps="false"
-            android:textSize="18sp"
-            android:padding="16dp" />
+            android:textSize="18sp" />
 
         <ProgressBar
             android:id="@+id/progress"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="24dp"
             android:indeterminate="true"
-            android:visibility="gone"
-            android:layout_gravity="center_horizontal" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/txt_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="@string/status_ready"
-            android:textSize="20sp"
-            android:textColor="@color/statusNeutral"
             android:gravity="center_horizontal"
+            android:text="@string/status_ready"
             android:textAlignment="center"
+            android:textColor="@color/statusNeutral"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
     </LinearLayout>

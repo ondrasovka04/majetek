@@ -13,11 +13,15 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ApiClient {
-    private static final String BASE_URL = "https://majetek.zs-ustavni.cz/api";
+    private final String baseUrl;
     private final OkHttpClient client = new OkHttpClient();
 
+    public ApiClient(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
     public LoginResult login(String basicAuth) throws IOException {
-        Request request = new Request.Builder().url(BASE_URL + "/auth/login").post(RequestBody.create(new byte[0], MediaType.parse("application/json"))).addHeader("Authorization", "Basic " + basicAuth).build();
+        Request request = new Request.Builder().url(baseUrl + "/auth/login").post(RequestBody.create(new byte[0], MediaType.parse("application/json"))).addHeader("Authorization", "Basic " + basicAuth).build();
         try (Response r = client.newCall(request).execute()) {
             if (!r.isSuccessful()) throw new IOException("HTTP " + r.code());
             String body = r.body().string().trim();
@@ -38,7 +42,7 @@ public class ApiClient {
     }
 
     public String downloadCards(String bearerToken) throws IOException {
-        Request request = finalizeRequest(new Request.Builder().url(BASE_URL + "/card/filter?includeWriteOff=false").get(), bearerToken);
+        Request request = finalizeRequest(new Request.Builder().url(baseUrl + "/card/filter?includeWriteOff=false").get(), bearerToken);
         try (Response r = client.newCall(request).execute()) {
             if (!r.isSuccessful()) throw new IOException("HTTP " + r.code());
             return r.body().string();
@@ -46,7 +50,7 @@ public class ApiClient {
     }
 
     public String downloadLocations(String bearerToken) throws IOException {
-        Request request = finalizeRequest(new Request.Builder().url(BASE_URL + "/location").get(), bearerToken);
+        Request request = finalizeRequest(new Request.Builder().url(baseUrl + "/location").get(), bearerToken);
         try (Response r = client.newCall(request).execute()) {
             if (!r.isSuccessful()) throw new IOException("HTTP " + r.code());
             return r.body().string();
@@ -55,7 +59,7 @@ public class ApiClient {
 
     public void uploadInventoryAudit(String bearerToken, String jsonArray) throws IOException {
         RequestBody body = RequestBody.create(jsonArray, MediaType.parse("application/json"));
-        Request request = finalizeRequest(new Request.Builder().url(BASE_URL + "/inventory-audit/insert-many").post(body), bearerToken);
+        Request request = finalizeRequest(new Request.Builder().url(baseUrl + "/inventory-audit/insert-many").post(body), bearerToken);
         try (Response r = client.newCall(request).execute()) {
             if (!r.isSuccessful()) throw new IOException("HTTP " + r.code());
         }
