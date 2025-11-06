@@ -7,12 +7,16 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export async function login(username: string, password: string): Promise<LoginResponse> {
   const response = await axios.post<LoginResponse>(`${API_URL}/auth/login`, {}, {
-    headers : {
-      'authorization': `Basic ${btoa(`${username}:${password}`)}`,
-    }
+    headers : { 'authorization': `Basic ${btoa(`${username}:${password}`)}` },
+    withCredentials: true,
   });
   return response.data;
-}
+};
+
+export async function refresh(): Promise<LoginResponse> {
+  const res = await axios.post<LoginResponse>(`${API_URL}/auth/refresh`, {}, { withCredentials: true });
+  return res.data;
+};
 
 export const changePassword = async (data: ChangePasswordDto): Promise<void> => {
   await authorizedRequest.put("/auth/change-password", data);

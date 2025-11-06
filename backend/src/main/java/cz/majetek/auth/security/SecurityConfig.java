@@ -76,6 +76,7 @@ public class SecurityConfig {
                                         "/v3/api-docs/**", "/v3/api-docs.yaml",
                                         "/swagger-resources/**", "/webjars/**", "/configuration/**"
                                 ).permitAll()
+                                .requestMatchers("/api/auth/refresh").permitAll()
                                 .requestMatchers("/api/auth/register").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
