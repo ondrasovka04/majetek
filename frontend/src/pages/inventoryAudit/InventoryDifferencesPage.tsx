@@ -29,6 +29,7 @@ import {
 import { getWriteOffMethods } from "../../services/writeOffMethodService";
 import { WriteOffMethod } from "../../types/writeOffMethod";
 import { translateError } from "../../utils/errorTranslations";
+import { toIsoDateString } from "../../utils/formatDate";
 
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { csCZ as dataGridCsCZ } from "@mui/x-data-grid/locales";
@@ -172,12 +173,6 @@ const InventoryDifferencesPage = () => {
       prev.map((e) => (e.cardId === cardId ? nextEntry : e))
     );
 
-    const toIsoDate = (d: Date | string | null | undefined) => {
-      if (!d) return null;
-      if (d instanceof Date) return d.toISOString().split("T")[0];
-      return d;
-    };
-
     const payload: any = {};
     const actionChanged = patch.action !== undefined;
     const dateChanged = patch.writeOffDate !== undefined;
@@ -191,7 +186,7 @@ const InventoryDifferencesPage = () => {
     if (actionChanged) {
       payload.action = nextEntry.action ?? null;
       if (nextEntry.action === "WRITE_OFF") {
-        payload.writeOffDate = toIsoDate(nextEntry.writeOffDate);
+        payload.writeOffDate = toIsoDateString(nextEntry.writeOffDate);
         payload.writeOffMethodId = nextEntry.writeOffMethodId ?? null;
       } else {
         payload.writeOffDate = null;
@@ -202,7 +197,7 @@ const InventoryDifferencesPage = () => {
       (dateChanged || methodChanged)
     ) {
       payload.action = "WRITE_OFF";
-      payload.writeOffDate = toIsoDate(nextEntry.writeOffDate);
+      payload.writeOffDate = toIsoDateString(nextEntry.writeOffDate);
       payload.writeOffMethodId = nextEntry.writeOffMethodId ?? null;
     }
 
