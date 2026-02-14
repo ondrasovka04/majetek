@@ -3,6 +3,7 @@ import { Card } from "../types/card/card";
 import { CardFilterQuery } from "../types/card/cardFilterQuery";
 import { saveAs } from "file-saver";
 import { CardDetail } from "../types/card/cardDetail";
+import { toIsoDateString } from "../utils/formatDate";
 
 export const getCards = async (): Promise<Card[]> => {
   const res = await authorizedRequest.get("/card");
@@ -20,7 +21,7 @@ export const filterCards = async (
   Object.entries(filters).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
       if (value instanceof Date) {
-        params[key] = value.toISOString().split("T")[0];
+        params[key] = toIsoDateString(value)!;
       } else {
         params[key] = String(value);
       }
@@ -73,9 +74,7 @@ export const exportGroupPdf = async (
     `/card/export-group-pdf`,
     {
       groupId,
-      asOf: selectedDate
-        ? selectedDate.toISOString().split("T")[0]
-        : new Date().toISOString().split("T")[0],
+      asOf: toIsoDateString(selectedDate ?? new Date()),
       allGroups: groupId ? false : true,
     },
     {
@@ -95,9 +94,7 @@ export const exportLocationPdf = async (
     `/card/export-location-pdf`,
     {
       locationId,
-      asOf: selectedDate
-        ? selectedDate.toISOString().split("T")[0]
-        : new Date().toISOString().split("T")[0],
+      asOf: toIsoDateString(selectedDate ?? new Date()),
     },
     {
       responseType: "blob",
@@ -147,12 +144,10 @@ export const updateCard = async (
     locationId: updatedCard.locationId,
     classId: updatedCard.classId || undefined,
     groupId: updatedCard.groupId || undefined,
-    purchaseDate: updatedCard.purchaseDate.toISOString().split("T")[0],
+    purchaseDate: toIsoDateString(updatedCard.purchaseDate),
     purchaseMethodId: updatedCard.purchaseMethodId || undefined,
     purchaseInvoice: updatedCard.purchaseInvoice || undefined,
-    writeOffDate: updatedCard.writeOffDate
-      ? updatedCard.writeOffDate.toISOString().split("T")[0]
-      : undefined,
+    writeOffDate: toIsoDateString(updatedCard.writeOffDate) ?? undefined,
     writeOffMethodId: updatedCard.writeOffMethodId || undefined,
     createdById: updatedCard.createdById || undefined,
     responsiblePersonId: updatedCard.responsiblePersonId || undefined,
@@ -169,12 +164,10 @@ export const createCard = async (card: Partial<CardDetail>): Promise<void> => {
     locationId: card.locationId,
     classId: card.classId || undefined,
     groupId: card.groupId || undefined,
-    purchaseDate: card.purchaseDate?.toISOString().split("T")[0],
+    purchaseDate: toIsoDateString(card.purchaseDate ?? null) ?? undefined,
     purchaseMethodId: card.purchaseMethodId || undefined,
     purchaseInvoice: card.purchaseInvoice || undefined,
-    writeOffDate: card.writeOffDate
-      ? card.writeOffDate.toISOString().split("T")[0]
-      : undefined,
+    writeOffDate: toIsoDateString(card.writeOffDate ?? null) ?? undefined,
     writeOffMethodId: card.writeOffMethodId || undefined,
     createdById: card.createdById || undefined,
     responsiblePersonId: card.responsiblePersonId || undefined,
