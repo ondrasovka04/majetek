@@ -1,7 +1,6 @@
 package cz.majetek.integration;
 
 import jakarta.servlet.http.Cookie;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -9,6 +8,7 @@ import org.springframework.http.MediaType;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -96,7 +96,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(30)
     void refresh_withValidCookie_shouldReturnNewToken() throws Exception {
-        Assertions.assertNotNull(adminRefreshCookie, "Admin must be logged in first");
+        assertNotNull(adminRefreshCookie, "Admin must be logged in first");
 
         mockMvc.perform(post("/api/auth/refresh")
                         .cookie(adminRefreshCookie))

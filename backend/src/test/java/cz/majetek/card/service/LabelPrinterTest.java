@@ -47,11 +47,9 @@ class LabelPrinterTest {
     }
 
     @Test
-    void getLines_EmptyText_ShouldReturnEmptyLines() {
-        // split("") returns [""], so first word is ""
-        String[] lines = labelPrinter.getLines("A");
-        assertEquals(2, lines.length);
-        assertEquals("A", lines[0]);
+    void getLines_EmptyText_ShouldThrow() {
+        // TextLayout does not accept empty strings; empty names are handled before getLines is called
+        assertThrows(IllegalArgumentException.class, () -> labelPrinter.getLines(""));
     }
 
     @Test

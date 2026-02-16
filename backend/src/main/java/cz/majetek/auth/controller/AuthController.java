@@ -67,7 +67,7 @@ public class AuthController {
     /**
      * Refreshes access & refresh tokens.
      *
-     * @param request containing the current refresh token
+     * @param request  containing the current refresh token
      * @param response to set the new refresh token cookie
      * @return LoginResponse with rotated tokens
      */

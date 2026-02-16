@@ -1,7 +1,6 @@
 package cz.majetek.integration;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,7 +12,7 @@ import java.time.LocalDate;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -275,7 +274,7 @@ class CardIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(200)
     void card_delete_shouldReturn204() throws Exception {
-        Assertions.assertNotNull(createdCardId, "Card must be created first");
+        assertNotNull(createdCardId, "Card must be created first");
 
         mockMvc.perform(delete("/api/card/" + createdCardId)
                         .header("Authorization", bearerAdmin()))

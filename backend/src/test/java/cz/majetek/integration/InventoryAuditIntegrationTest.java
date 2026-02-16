@@ -7,8 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.*;
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.hibernate.validator.internal.util.Contracts.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -253,7 +253,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                 .andReturn();
 
         int status = result.getResponse().getStatus();
-        Assertions.assertTrue(status >= 400, "Expected error status (4xx or 5xx), got: " + status);
+        assertTrue(status >= 400, "Expected error status (4xx or 5xx), got: " + status);
     }
 
     // ===================== Patch =====================
@@ -261,7 +261,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(130)
     void inventoryAudit_patch_shouldUpdateAction() throws Exception {
-        Assertions.assertNotNull(testCardId, "Card must be created first");
+        assertNotNull(testCardId, "Card must be created first");
 
         String patchJson = """
                 {
