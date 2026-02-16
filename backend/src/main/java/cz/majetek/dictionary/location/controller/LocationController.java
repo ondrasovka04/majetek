@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +43,7 @@ public class LocationController {
     @GetMapping("{id}")
     @Operation(summary = "Get location by ID", description = "Returns a location by its ID")
     @ApiResponse(responseCode = "200", description = "Location found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Location.class)))
-    public ResponseEntity<Location> getById(@Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id) {
+    public ResponseEntity<Location> getById(@PathVariable @Parameter(name = "id", required = true, in = ParameterIn.PATH) String id) {
         return ResponseEntity.ok(locationService.getById(id));
     }
 
@@ -75,7 +74,7 @@ public class LocationController {
     @DeleteMapping("{id}")
     @Operation(summary = "Delete location", description = "Deletes a location by ID")
     @ApiResponse(responseCode = "204", description = "Location deleted")
-    public ResponseEntity<Void> delete(@Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable @Parameter(name = "id", required = true, in = ParameterIn.PATH) String id) {
         locationService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -85,7 +84,8 @@ public class LocationController {
      */
     @PostMapping("print")
     @Operation(summary = "Print location", description = "Prints location to cloud")
-    @ApiResponses({@ApiResponse(responseCode = "200", description = "Location printed successfully", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PrintResponse.class))}), @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)})
+    @ApiResponse(responseCode = "200", description = "Location printed successfully", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PrintResponse.class))})
+    @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     public ResponseEntity<PrintResponse> exportLabel(@RequestBody @Parameter(description = "Id of location") PrintRequest request) {
         locationService.exportLocation(request.getId());
         return ResponseEntity.ok(new PrintResponse("Label printed successfully to cloud."));

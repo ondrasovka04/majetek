@@ -115,25 +115,26 @@ public class InventoryAuditService implements IInventoryAuditService {
         CardFilterQuery query = new CardFilterQuery();
         query.setIncludeWriteOff(false);
 
-        cardRepository.findAll(CardSpecification.filter(query))
-                .stream()
-                .peek(card -> {
-                    if (card.getInventoryAudit() == null) {
-                        throw InventoryAuditException.notFound(card.getId());
-                    }
-                })
-                .forEach(card -> {
-                    InventoryAudit audit = card.getInventoryAudit();
-                    switch (audit.getAction()) {
-                        case KEEP, OU -> { /* no-op */ }
-                        case SU -> card.setLocation(audit.getRealLocation());
-                        case WRITE_OFF -> {
-                            card.setWriteOffDate(audit.getWriteOffDate());
-                            card.setWriteOffMethod(audit.getWriteOffMethod());
-                        }
-                    }
-                    cardRepository.save(card);
-                });
+        List<Card> cards = cardRepository.findAll(CardSpecification.filter(query));
+
+        cards.forEach(card -> {
+            if (card.getInventoryAudit() == null) {
+                throw InventoryAuditException.notFound(card.getId());
+            }
+        });
+
+        cards.forEach(card -> {
+            InventoryAudit audit = card.getInventoryAudit();
+            switch (audit.getAction()) {
+                case KEEP, OU -> { /* no-op */ }
+                case SU -> card.setLocation(audit.getRealLocation());
+                case WRITE_OFF -> {
+                    card.setWriteOffDate(audit.getWriteOffDate());
+                    card.setWriteOffMethod(audit.getWriteOffMethod());
+                }
+            }
+            cardRepository.save(card);
+        });
         inventoryAuditRepository.deleteAllInBatch();
     }
 }
