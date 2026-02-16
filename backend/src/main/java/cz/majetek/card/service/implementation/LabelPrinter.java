@@ -116,11 +116,11 @@ public class LabelPrinter {
             if (willFit(testLine)) {
                 tmp = testLine;
                 firstRow.add(word);
-                secondRow.remove(0);
+                secondRow.removeFirst();
             } else {
                 if (firstRow.isEmpty()) {
                     firstRow.add(word);
-                    secondRow.remove(0);
+                    secondRow.removeFirst();
                 }
                 break;
             }

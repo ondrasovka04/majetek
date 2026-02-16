@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +43,7 @@ public class CardController {
     @ApiResponse(responseCode = "200", description = "Card",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = CardDto.class)))
-    public ResponseEntity<CardDto> getCardById(@Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id) {
+    public ResponseEntity<CardDto> getCardById(@PathVariable @Parameter(name = "id", required = true, in = ParameterIn.PATH) Integer id) {
         return ResponseEntity.ok(cardService.getCardById(id));
     }
 
@@ -59,15 +58,13 @@ public class CardController {
 
     @PostMapping("print")
     @Operation(summary = "Export or print label", description = "Exports label as a file or prints to cloud, based on the parameter")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Label exported or printed successfully",
-                    content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = PrintResponse.class)),
-                            @Content(mediaType = "application/octet-stream")
-                    }),
-            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
-    })
-    public ResponseEntity<?> exportLabel(
+    @ApiResponse(responseCode = "200", description = "Label exported or printed successfully",
+            content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = PrintResponse.class)),
+                    @Content(mediaType = "application/octet-stream")
+            })
+    @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
+    public ResponseEntity<Object> exportLabel(
             @RequestBody @Parameter(description = "Filter query for selecting cards") CardFilterQuery query,
             @RequestParam @Parameter(description = "Whether to print to the cloud instead of exporting") boolean printCloud) {
 
@@ -84,11 +81,9 @@ public class CardController {
 
     @PostMapping("export-excel")
     @Operation(summary = "Export cards to Excel", description = "Exports filtered cards to an XLSX file")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Excel file exported successfully",
-                    content = @Content(mediaType = "application/octet-stream")),
-            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
-    })
+    @ApiResponse(responseCode = "200", description = "Excel file exported successfully",
+            content = @Content(mediaType = "application/octet-stream"))
+    @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     public ResponseEntity<InputStreamResource> exportExcel(
             @RequestBody @Parameter(description = "Filter query for selecting cards") CardFilterQuery query) {
 
@@ -102,11 +97,9 @@ public class CardController {
 
     @PostMapping("export-group-pdf")
     @Operation(summary = "Export group report to PDF", description = "Generates a PDF report for a given asset group")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "PDF report exported successfully",
-                    content = @Content(mediaType = "application/pdf")),
-            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
-    })
+    @ApiResponse(responseCode = "200", description = "PDF report exported successfully",
+            content = @Content(mediaType = "application/pdf"))
+    @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     public ResponseEntity<InputStreamResource> exportGroupReport(
             @RequestBody @Parameter(description = "Request body containing group ID, flag for all groups and the date to which the report relates") GroupReportRequest req
     ) {
@@ -123,11 +116,9 @@ public class CardController {
 
     @PostMapping("export-location-pdf")
     @Operation(summary = "Export location report to PDF", description = "Generates a PDF report for a given location")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "PDF report exported successfully",
-                    content = @Content(mediaType = "application/pdf")),
-            @ApiResponse(responseCode = "400", description = "Invalid input or location not found", content = @Content)
-    })
+    @ApiResponse(responseCode = "200", description = "PDF report exported successfully",
+            content = @Content(mediaType = "application/pdf"))
+    @ApiResponse(responseCode = "400", description = "Invalid input or location not found", content = @Content)
     public ResponseEntity<InputStreamResource> exportLocationReport(
             @RequestBody @Parameter(description = "Request body containing location ID and the date to which the report relates") LocationReportRequest req
     ) {
@@ -136,18 +127,16 @@ public class CardController {
         InputStreamResource resource = cardService.exportLocationReport(req.getLocationId(), asOf);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "location_report_" + req.getLocationId() + ".pdf")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=location_report_" + req.getLocationId() + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
     }
 
     @PostMapping("export-card-pdf")
     @Operation(summary = "Export card report to PDF", description = "Generates a PDF report for a given card")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "PDF report exported successfully",
-                    content = @Content(mediaType = "application/pdf")),
-            @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
-    })
+    @ApiResponse(responseCode = "200", description = "PDF report exported successfully",
+            content = @Content(mediaType = "application/pdf"))
+    @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
     public ResponseEntity<InputStreamResource> exportCardReport(
             @RequestBody @Parameter(description = "Request body containing card ID") CardReportRequest req
     ) {
@@ -167,7 +156,7 @@ public class CardController {
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = CardDto.class)))
     public ResponseEntity<CardDto> createCard(@Valid @RequestBody CardChangeDto createDto) {
         CardDto created = cardService.createCard(createDto);
-        return ResponseEntity.status(201).body(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PatchMapping("{id}")

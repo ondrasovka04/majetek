@@ -25,7 +25,6 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Global exception handler for the application.
@@ -78,7 +77,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<ErrorFieldResponse> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> new ErrorFieldResponse(error.getField(), error.getDefaultMessage()))
-                .collect(Collectors.toList());
+                .toList();
 
         return errorResponseUtils.buildErrorResponse(
                 HttpStatus.BAD_REQUEST,

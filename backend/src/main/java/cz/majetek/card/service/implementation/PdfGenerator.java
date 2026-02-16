@@ -373,8 +373,8 @@ public final class PdfGenerator {
     }
 
     private static byte[] addPageNumbers(ByteArrayOutputStream baos) throws IOException {
-        try (ByteArrayOutputStream finalOutput = new ByteArrayOutputStream();
-             PdfDocument resultDoc = new PdfDocument(new PdfReader(new ByteArrayInputStream(baos.toByteArray())), new PdfWriter(finalOutput))) {
+        ByteArrayOutputStream finalOutput = new ByteArrayOutputStream();
+        try (PdfDocument resultDoc = new PdfDocument(new PdfReader(new ByteArrayInputStream(baos.toByteArray())), new PdfWriter(finalOutput))) {
 
             PdfFont footerFont = loadFont();
 
@@ -394,9 +394,8 @@ public final class PdfGenerator {
                     canvas.showTextAligned(formatDate(LocalDate.now()), 20, y, TextAlignment.LEFT);
                 }
             }
-            resultDoc.close();
-            return finalOutput.toByteArray();
         }
+        return finalOutput.toByteArray();
     }
 
     private record AssetTotals(int quantity, double sum) {

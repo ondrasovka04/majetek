@@ -1,7 +1,6 @@
 package cz.majetek.card.service.implementation;
 
 
-import com.alibaba.excel.EasyExcel;
 import cz.majetek.auth.repository.IUserRepository;
 import cz.majetek.auth.security.UserPrincipal;
 import cz.majetek.card.dto.CardChangeDto;
@@ -45,6 +44,8 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static com.alibaba.excel.EasyExcelFactory.write;
 
 @Service
 @RequiredArgsConstructor
@@ -171,7 +172,7 @@ public class CardService implements ICardService {
 
         try {
             Path excelPath = Path.of(exportPath, "cards-" + Instant.now().toEpochMilli() + ".xlsx");
-            EasyExcel.write(excelPath.toFile(), CardExportDto.class)
+            write(excelPath.toFile(), CardExportDto.class)
                     .sheet("Karty")
                     .doWrite(exportList);
 
