@@ -5,7 +5,7 @@
  * Exposes a `refilter()` imperative handle so the parent can
  * re-apply the last server-side filter after card creation.
  */
-import { forwardRef, useImperativeHandle, useState, useTransition } from "react";
+import { forwardRef, useImperativeHandle, useState, useDeferredValue, useTransition } from "react";
 import {
   Typography,
   TextField,
@@ -57,11 +57,12 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
   ({ selectedCardId, onSelectCard, onNewCard, onNotify, onError }, ref) => {
     // --- UI state ---
     const [search, setSearch] = useState("");
+    const deferredSearch = useDeferredValue(search);
     const [filterOpen, setFilterOpen] = useState(false);
     const [cloudPrint, setCloudPrint] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [lastFilter, setLastFilter] = useState<CardFilterQuery>({});
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
     const [showWrittenOff, setShowWrittenOff] = useState(false);
     const [sortConfig, setSortConfig] = useState<{
       key: keyof Card;
@@ -120,7 +121,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
     };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      startTransition(() => setSearch(e.target.value));
+      setSearch(e.target.value);
     };
 
     const buildFullQuery = (): CardFilterQuery => ({
@@ -163,7 +164,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
     };
 
     // --- Search + sort (Fuse.js) ---
-    const sortedAndFilteredCards = useCardSearch(cards, search, showWrittenOff, sortConfig);
+    const sortedAndFilteredCards = useCardSearch(cards, deferredSearch, showWrittenOff, sortConfig);
 
     // --- Render ---
     return (
@@ -265,7 +266,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
                 </TableHead>
                 <TableBody
                   style={{
-                    opacity: isPending ? 0.5 : 1,
+                    opacity: search !== deferredSearch ? 0.5 : 1,
                     transition: "opacity 300ms",
                   }}>
                   {sortedAndFilteredCards.map((card) => (
