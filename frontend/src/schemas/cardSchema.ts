@@ -9,8 +9,7 @@ import { z } from "zod";
  */
 
 const emptyToNull = (v: string) => (v === "" ? null : v);
-const emptyToNullNum = (v: number | null | undefined) =>
-  v == null || isNaN(v) ? null : v;
+const emptyToNullNum = (v: number | null | undefined) => (v == null || isNaN(v) ? null : v);
 
 export const cardSchema = z
   .object({
@@ -30,8 +29,7 @@ export const cardSchema = z
           return intPart.length <= 36 && fracPart.length <= 2;
         },
         {
-          message:
-            "Cena musí být číslo s maximálně 2 desetinnými místy a 36 číslicemi celkem.",
+          message: "Cena musí být číslo s maximálně 2 desetinnými místy a 36 číslicemi celkem.",
         },
       ),
 
@@ -46,24 +44,15 @@ export const cardSchema = z
           return intPart.length <= 36 && fracPart.length <= 2;
         },
         {
-          message:
-            "Počet kusů musí být číslo s maximálně 2 desetinnými místy a 36 číslicemi celkem.",
+          message: "Počet kusů musí být číslo s maximálně 2 desetinnými místy a 36 číslicemi celkem.",
         },
       ),
 
-    serialNumber: z
-      .string()
-      .max(30, "Sériové číslo může mít maximálně 30 znaků.")
-      .transform(emptyToNull)
-      .nullable(),
+    serialNumber: z.string().max(30, "Sériové číslo může mít maximálně 30 znaků.").transform(emptyToNull).nullable(),
 
-    locationId: z
-      .string({ error: "Musí být vybrané umístění." })
-      .min(1, "Musí být vybrané umístění."),
+    locationId: z.string({ error: "Musí být vybrané umístění." }).min(1, "Musí být vybrané umístění."),
 
-    groupId: z
-      .string({ error: "Musí být vybraná skupina." })
-      .min(1, "Musí být vybraná skupina."),
+    groupId: z.string({ error: "Musí být vybraná skupina." }).min(1, "Musí být vybraná skupina."),
 
     classId: z.string().transform(emptyToNull).nullable(),
     purchaseMethodId: z.string().transform(emptyToNull).nullable(),
@@ -72,11 +61,7 @@ export const cardSchema = z
       error: "Datum pořízení musí být zadáno.",
     }),
 
-    purchaseInvoice: z
-      .string()
-      .max(30, "Faktura může mít maximálně 30 znaků.")
-      .transform(emptyToNull)
-      .nullable(),
+    purchaseInvoice: z.string().max(30, "Faktura může mít maximálně 30 znaků.").transform(emptyToNull).nullable(),
 
     writeOffDate: z.date().nullable(),
 
@@ -97,8 +82,7 @@ export const cardSchema = z
       return hasDate === hasMethod;
     },
     {
-      message:
-        "Při vyřazení majetku se musí uvést datum i způsob vyřazení.",
+      message: "Při vyřazení majetku se musí uvést datum i způsob vyřazení.",
       path: ["writeOffDate"],
     },
   );

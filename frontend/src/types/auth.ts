@@ -3,7 +3,7 @@ export interface User {
   id: string;
   name: string;
   username: string;
-  role: 'ADMIN' | 'USER';
+  role: "ADMIN" | "USER";
 }
 
 /** Successful login response containing JWT token and user info. */
@@ -26,4 +26,3 @@ export interface RegisterUserDto {
   name: string;
   password: string;
 }
-

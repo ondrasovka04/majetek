@@ -23,11 +23,7 @@ export const PriceInput = ({ value, label, onChange }: PriceInputProps) => {
   const [editingValue, setEditingValue] = useState("");
 
   // Derive display value: when focused, show raw editing text; when blurred, format from prop
-  const displayValue = focused
-    ? editingValue
-    : value != null
-      ? formatCurrency(value)
-      : "";
+  const displayValue = focused ? editingValue : value != null ? formatCurrency(value) : "";
 
   const handleFocus = useCallback(() => {
     setFocused(true);

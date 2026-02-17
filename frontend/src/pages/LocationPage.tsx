@@ -35,8 +35,7 @@ const LocationPage = () => {
             })
           }
           size="small"
-          aria-label="Tisknout"
-        >
+          aria-label="Tisknout">
           <PrintIcon fontSize="small" />
         </IconButton>
       )}

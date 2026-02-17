@@ -9,12 +9,7 @@ interface SortConfig {
   direction: "asc" | "desc";
 }
 
-export function useCardSearch(
-  cards: Card[],
-  search: string,
-  showWrittenOff: boolean,
-  sortConfig: SortConfig,
-) {
+export function useCardSearch(cards: Card[], search: string, showWrittenOff: boolean, sortConfig: SortConfig) {
   const searchableCards = useMemo(
     () =>
       cards.map((card) => ({
@@ -40,9 +35,7 @@ export function useCardSearch(
     let result = cards;
     if (!showWrittenOff) result = result.filter((c) => !c.writeOffDate);
     if (!search) return result;
-    const matchingIds = new Set(
-      fuse.search(normalizeString(search)).map((r) => r.item.id),
-    );
+    const matchingIds = new Set(fuse.search(normalizeString(search)).map((r) => r.item.id));
     return result.filter((c) => matchingIds.has(c.id));
   }, [search, cards, fuse, showWrittenOff]);
 

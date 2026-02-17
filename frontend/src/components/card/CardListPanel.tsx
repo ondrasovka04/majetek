@@ -5,12 +5,7 @@
  * Exposes a `refilter()` imperative handle so the parent can
  * re-apply the last server-side filter after card creation.
  */
-import {
-  forwardRef,
-  useImperativeHandle,
-  useState,
-  useTransition,
-} from "react";
+import { forwardRef, useImperativeHandle, useState, useTransition } from "react";
 import {
   Typography,
   TextField,
@@ -35,12 +30,7 @@ import { Card } from "../../types/card/card";
 import { CardFilterQuery } from "../../types/card/cardFilterQuery";
 import { translateError } from "../../utils/errorTranslations";
 import { extractErrorMessage } from "../../utils/extractErrorMessage";
-import {
-  useCards,
-  useFilterCards,
-  usePrintCards,
-  useExportCardsExcel,
-} from "../../hooks/queries/useCardQueries";
+import { useCards, useFilterCards, usePrintCards, useExportCardsExcel } from "../../hooks/queries/useCardQueries";
 import CardRow from "./CardRow";
 import CardFilterModal from "./CardFilterModal";
 import ConfirmDialog from "./ConfirmDialog";
@@ -84,19 +74,14 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
     const printMutation = usePrintCards();
     const excelMutation = useExportCardsExcel();
 
-    const loading =
-      cardsLoading ||
-      filterMutation.isPending ||
-      printMutation.isPending ||
-      excelMutation.isPending;
+    const loading = cardsLoading || filterMutation.isPending || printMutation.isPending || excelMutation.isPending;
 
     // --- Imperative handle ---
     useImperativeHandle(ref, () => ({
       refilter: () => {
         if (Object.keys(lastFilter).length > 0) {
           filterMutation.mutate(lastFilter, {
-            onError: (err: unknown) =>
-              onError(translateError(extractErrorMessage(err))),
+            onError: (err: unknown) => onError(translateError(extractErrorMessage(err))),
           });
         }
       },
@@ -122,17 +107,14 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
 
       setLastFilter(filters);
       filterMutation.mutate(filters, {
-        onError: (err: unknown) =>
-          onError(translateError(extractErrorMessage(err))),
+        onError: (err: unknown) => onError(translateError(extractErrorMessage(err))),
       });
     };
 
     const handleSort = (key: keyof Card) => {
       startTransition(() => {
         setSortConfig((prev) =>
-          prev.key === key
-            ? { key, direction: prev.direction === "asc" ? "desc" : "asc" }
-            : { key, direction: "asc" },
+          prev.key === key ? { key, direction: prev.direction === "asc" ? "desc" : "asc" } : { key, direction: "asc" },
         );
       });
     };
@@ -165,8 +147,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
           onSuccess: (msg) => {
             if (cloudPrint && msg) onNotify(msg, "success");
           },
-          onError: (err: unknown) =>
-            onError(translateError(extractErrorMessage(err))),
+          onError: (err: unknown) => onError(translateError(extractErrorMessage(err))),
           onSettled: () => setConfirmOpen(false),
         },
       );
@@ -177,8 +158,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
         return onError("Žádné karty k exportu.");
       }
       excelMutation.mutate(buildFullQuery(), {
-        onError: (err: unknown) =>
-          onError(translateError(extractErrorMessage(err))),
+        onError: (err: unknown) => onError(translateError(extractErrorMessage(err))),
       });
     };
 
@@ -198,36 +178,19 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
                     <AddIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
-                <Tooltip
-                  title={
-                    showWrittenOff ? "Skrýt vyřazené" : "Zobrazit vyřazené"
-                  }
-                >
-                  <IconButton
-                    size="small"
-                    onClick={() => setShowWrittenOff((p) => !p)}
-                  >
-                    <VisibilityOffIcon
-                      fontSize="small"
-                      color={showWrittenOff ? "primary" : "disabled"}
-                    />
+                <Tooltip title={showWrittenOff ? "Skrýt vyřazené" : "Zobrazit vyřazené"}>
+                  <IconButton size="small" onClick={() => setShowWrittenOff((p) => !p)}>
+                    <VisibilityOffIcon fontSize="small" color={showWrittenOff ? "primary" : "disabled"} />
                   </IconButton>
                 </Tooltip>
-                <Tooltip
-                  title={
-                    cloudPrint ? "Tisk do cloudu" : "Stáhnout jako soubor"
-                  }
-                >
+                <Tooltip title={cloudPrint ? "Tisk do cloudu" : "Stáhnout jako soubor"}>
                   <ToggleButton
                     value="cloud"
                     selected={cloudPrint}
                     onChange={() => setCloudPrint(!cloudPrint)}
                     size="small"
-                    sx={{ border: "none" }}
-                  >
-                    <CloudIcon
-                      color={cloudPrint ? "primary" : "disabled"}
-                    />
+                    sx={{ border: "none" }}>
+                    <CloudIcon color={cloudPrint ? "primary" : "disabled"} />
                   </ToggleButton>
                 </Tooltip>
                 <Tooltip title="Tisk štítků">
@@ -241,10 +204,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Pokročilé filtrování" sx={{ ml: 2 }}>
-                  <IconButton
-                    size="small"
-                    onClick={() => setFilterOpen(true)}
-                  >
+                  <IconButton size="small" onClick={() => setFilterOpen(true)}>
                     <FilterListIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
@@ -265,13 +225,9 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
                   mt: 1,
                   ml: 1,
                   whiteSpace: "nowrap",
-                  color:
-                    sortedAndFilteredCards.length === 0
-                      ? "error.main"
-                      : "text.secondary",
+                  color: sortedAndFilteredCards.length === 0 ? "error.main" : "text.secondary",
                   fontSize: 15,
-                }}
-              >
+                }}>
                 {!loading && sortedAndFilteredCards.length}
               </Typography>
             </div>
@@ -293,11 +249,8 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
                         whiteSpace: "nowrap",
                         cursor: "pointer",
                         fontWeight: "bold",
-                      }}
-                    >
-                      ID{" "}
-                      {sortConfig.key === "id" &&
-                        (sortConfig.direction === "asc" ? "▲" : "▼")}
+                      }}>
+                      ID {sortConfig.key === "id" && (sortConfig.direction === "asc" ? "▲" : "▼")}
                     </TableCell>
                     <TableCell
                       onClick={() => handleSort("name")}
@@ -305,11 +258,8 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
                         whiteSpace: "nowrap",
                         cursor: "pointer",
                         fontWeight: "bold",
-                      }}
-                    >
-                      Název{" "}
-                      {sortConfig.key === "name" &&
-                        (sortConfig.direction === "asc" ? "▲" : "▼")}
+                      }}>
+                      Název {sortConfig.key === "name" && (sortConfig.direction === "asc" ? "▲" : "▼")}
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -317,8 +267,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
                   style={{
                     opacity: isPending ? 0.5 : 1,
                     transition: "opacity 300ms",
-                  }}
-                >
+                  }}>
                   {sortedAndFilteredCards.map((card) => (
                     <CardRow
                       key={card.id}
@@ -333,11 +282,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
           )}
         </Paper>
 
-        <CardFilterModal
-          open={filterOpen}
-          onClose={() => setFilterOpen(false)}
-          onApply={handleFilterApply}
-        />
+        <CardFilterModal open={filterOpen} onClose={() => setFilterOpen(false)} onApply={handleFilterApply} />
         <ConfirmDialog
           open={confirmOpen}
           description={`Chystáte se vytisknout ${sortedAndFilteredCards.length} štítků. Opravdu chcete pokračovat?`}

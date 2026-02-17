@@ -140,8 +140,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
                     return selected || "(nevybráno)";
                   },
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {locations.map((loc) => (
                 <MenuItem key={loc.id} value={loc.id}>
@@ -167,8 +166,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
                     return selected || "(nevybráno)";
                   },
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {classes.map((cls) => (
                 <MenuItem key={cls.id} value={cls.id}>
@@ -210,8 +208,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
                     return selected || "(nevybráno)";
                   },
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {groups.map((g) => (
                 <MenuItem key={g.id} value={g.id}>
@@ -261,8 +258,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
                     return selected || "(nevybráno)";
                   },
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {purchaseMethods.map((m) => (
                 <MenuItem key={m.id} value={m.id}>
@@ -288,8 +284,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
                     return selected || "(nevybráno)";
                   },
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {writeOffMethods.map((m) => (
                 <MenuItem key={m.id} value={m.id}>
@@ -323,8 +318,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
               select
               fullWidth
               value={filters.createdBy ?? ""}
-              onChange={(e) => handleChange("createdBy", e.target.value)}
-            >
+              onChange={(e) => handleChange("createdBy", e.target.value)}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {users.map((u) => (
                 <MenuItem key={u.id} value={u.id}>
@@ -339,8 +333,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
               select
               fullWidth
               value={filters.responsePerson ?? ""}
-              onChange={(e) => handleChange("responsePerson", e.target.value)}
-            >
+              onChange={(e) => handleChange("responsePerson", e.target.value)}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {users.map((u) => (
                 <MenuItem key={u.id} value={u.id}>
@@ -367,8 +360,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
           onClick={() => {
             onApply(filters);
             onClose();
-          }}
-        >
+          }}>
           Filtrovat
         </Button>
       </DialogActions>

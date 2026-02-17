@@ -2,9 +2,9 @@
  * Zustand auth store. Holds the current user, JWT token, and expiration.
  * `attemptRehydrate` tries to restore the session from the httpOnly refresh cookie on app start.
  */
-import { create } from 'zustand';
-import { User } from '../types/auth';
-import { refresh } from '../services/authService';
+import { create } from "zustand";
+import { User } from "../types/auth";
+import { refresh } from "../services/authService";
 
 interface AuthState {
   user: User | null;
@@ -37,5 +37,5 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } finally {
       set({ hydrated: true });
     }
-  }
+  },
 }));

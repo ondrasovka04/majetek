@@ -8,10 +8,7 @@ import { translateError } from "../utils/errorTranslations";
 import { extractErrorMessage } from "../utils/extractErrorMessage";
 import MenuBar from "../components/MenuBar";
 import AdminUserDialog from "../components/AdminUserDialog";
-import {
-  changePasswordSchema,
-  ChangePasswordFormValues,
-} from "../schemas/userSchema";
+import { changePasswordSchema, ChangePasswordFormValues } from "../schemas/userSchema";
 import { useNotification } from "../hooks/useNotification";
 import { useChangePassword } from "../hooks/queries/useAuthQueries";
 
@@ -60,10 +57,7 @@ const UserPage = () => {
           </Typography>
           {user?.role === "ADMIN" && (
             <>
-              <Button
-                variant="contained"
-                onClick={() => setAdminDialogOpen(true)}
-              >
+              <Button variant="contained" onClick={() => setAdminDialogOpen(true)}>
                 Vytvořit nového uživatele
               </Button>
             </>
@@ -92,10 +86,7 @@ const UserPage = () => {
             error={!!errors.newPassword}
             helperText={errors.newPassword?.message}
           />
-          <Button
-            variant="contained"
-            onClick={handleSubmit(onSubmit, onInvalid)}
-          >
+          <Button variant="contained" onClick={handleSubmit(onSubmit, onInvalid)}>
             Změnit heslo
           </Button>
         </div>
@@ -109,8 +100,6 @@ const UserPage = () => {
             notify(msg, "success");
           }}
         />
-
-
       </div>
     </div>
   );

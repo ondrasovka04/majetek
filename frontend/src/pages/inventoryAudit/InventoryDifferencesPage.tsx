@@ -47,9 +47,7 @@ const rowColor: Record<InventoryDifferenceStatus, string> = {
 };
 
 const InventoryDifferencesPage = () => {
-  const [statusFilter, setStatusFilter] = useState<
-    InventoryDifferenceStatus | "ALL"
-  >("ALL");
+  const [statusFilter, setStatusFilter] = useState<InventoryDifferenceStatus | "ALL">("ALL");
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -70,45 +68,30 @@ const InventoryDifferencesPage = () => {
   } = useDifferenceEntries(notifyError);
 
   const filtered = useMemo(() => {
-    return entries.filter(
-      (e) => statusFilter === "ALL" || e.status === statusFilter
-    );
+    return entries.filter((e) => statusFilter === "ALL" || e.status === statusFilter);
   }, [entries, statusFilter]);
 
   const rows = filtered.map((e) => ({
     id: e.cardId,
     cardId: e.cardId,
     cardName: e.cardName,
-    realLocation: e.realLocationId
-      ? `${e.realLocationId} ${
-          e.realLocationName ? "- " + e.realLocationName : ""
-        }`
-      : "",
+    realLocation: e.realLocationId ? `${e.realLocationId} ${e.realLocationName ? "- " + e.realLocationName : ""}` : "",
     expectedLocation: e.expectedLocationId
-      ? `${e.expectedLocationId} ${
-          e.expectedLocationName ? "- " + e.expectedLocationName : ""
-        }`
+      ? `${e.expectedLocationId} ${e.expectedLocationName ? "- " + e.expectedLocationName : ""}`
       : "",
     status: e.status,
-    action:
-      e.action ??
-      (e.status === "CORRECT" ? "KEEP" : e.status === "WARN" ? "SU" : ""),
+    action: e.action ?? (e.status === "CORRECT" ? "KEEP" : e.status === "WARN" ? "SU" : ""),
     writeOffDate: e.writeOffDate ?? null,
     writeOffMethodId: e.writeOffMethodId ?? "",
   }));
 
-  const selectableActions = (
-    status: InventoryDifferenceStatus
-  ): Exclude<InventoryDifferenceAction, null>[] => {
+  const selectableActions = (status: InventoryDifferenceStatus): Exclude<InventoryDifferenceAction, null>[] => {
     if (status === "CORRECT") return ["KEEP"];
     if (status === "WARN") return ["SU", "OU", "WRITE_OFF"];
     return ["OU", "WRITE_OFF"]; // WRONG
   };
 
-  const actionLabel: Record<
-    Exclude<InventoryDifferenceAction, null>,
-    string
-  > = {
+  const actionLabel: Record<Exclude<InventoryDifferenceAction, null>, string> = {
     KEEP: "Nechat",
     SU: "Skutečné umístění",
     OU: "Očekávané umístění",
@@ -118,10 +101,7 @@ const InventoryDifferencesPage = () => {
   const handleProject = () => {
     projectMutation.mutate(undefined, {
       onSuccess: () => {
-        notify(
-          "Promítnutí dokončeno. Budete přesměrováni na majetkové karty.",
-          "success",
-        );
+        notify("Promítnutí dokončeno. Budete přesměrováni na majetkové karty.", "success");
         setTimeout(() => navigate("/cards"), 2500);
       },
       onError: (e: unknown) => {
@@ -157,14 +137,11 @@ const InventoryDifferencesPage = () => {
         { value: "WARN", label: "Upozornění" },
         { value: "WRONG", label: "Chybně" },
       ],
-      renderCell: (params: GridRenderCellParams) =>
-        statusTranslation[
-          (params.row as InventoryDifferenceEntry).status
-        ],
+      renderCell: (params: GridRenderCellParams) => statusTranslation[(params.row as InventoryDifferenceEntry).status],
       sortComparator: (v1, v2) =>
         statusTranslation[v1 as InventoryDifferenceStatus].localeCompare(
           statusTranslation[v2 as InventoryDifferenceStatus],
-          "cs"
+          "cs",
         ),
     },
     {
@@ -197,8 +174,7 @@ const InventoryDifferencesPage = () => {
             value={entry.action ?? ""}
             displayEmpty={entry.status === "WRONG"}
             onChange={(ev) => {
-              const val = (ev.target.value ||
-                null) as InventoryDifferenceAction;
+              const val = (ev.target.value || null) as InventoryDifferenceAction;
               const patch: Partial<InventoryDifferenceEntry> = { action: val };
               if (val !== "WRITE_OFF") {
                 patch.writeOffDate = null;
@@ -210,8 +186,7 @@ const InventoryDifferencesPage = () => {
               !value && entry.status === "WRONG"
                 ? "(zvolit)"
                 : actionLabel[value as Exclude<InventoryDifferenceAction, null>]
-            }
-          >
+            }>
             {entry.status === "WRONG" && <MenuItem value="">(zvolit)</MenuItem>}
             {actions.map((a) => (
               <MenuItem key={a} value={a}>
@@ -228,9 +203,7 @@ const InventoryDifferencesPage = () => {
       width: 220,
       sortable: false,
       renderCell: (params) => {
-        const entry = entries.find(
-          (x) => x.cardId === (params.row as InventoryDifferenceEntry).cardId
-        )!;
+        const entry = entries.find((x) => x.cardId === (params.row as InventoryDifferenceEntry).cardId)!;
         if (entry.action !== "WRITE_OFF")
           return (
             <Box sx={{ height: "100%", display: "flex", alignItems: "center" }}>
@@ -242,9 +215,7 @@ const InventoryDifferencesPage = () => {
             <DatePicker
               label=""
               value={entry.writeOffDate ?? null}
-              onChange={(date) =>
-                updateEntryAndSave(entry.cardId, { writeOffDate: date || null })
-              }
+              onChange={(date) => updateEntryAndSave(entry.cardId, { writeOffDate: date || null })}
               slotProps={{ textField: { size: "small", fullWidth: true } }}
             />
           </Box>
@@ -257,9 +228,7 @@ const InventoryDifferencesPage = () => {
       width: 220,
       sortable: false,
       renderCell: (params) => {
-        const entry = entries.find(
-          (x) => x.cardId === (params.row as InventoryDifferenceEntry).cardId
-        )!;
+        const entry = entries.find((x) => x.cardId === (params.row as InventoryDifferenceEntry).cardId)!;
         if (entry.action !== "WRITE_OFF")
           return (
             <Box sx={{ height: "100%", display: "flex", alignItems: "center" }}>
@@ -278,8 +247,7 @@ const InventoryDifferencesPage = () => {
                 updateEntryAndSave(entry.cardId, {
                   writeOffMethodId: (ev.target.value || null) as string | null,
                 })
-              }
-            >
+              }>
               {writeOffMethods.map((m) => (
                 <MenuItem key={m.id} value={m.id}>
                   {m.id} - {m.name}
@@ -308,8 +276,7 @@ const InventoryDifferencesPage = () => {
                   size="small"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as InventoryDifferenceStatus | "ALL")}
-                  style={{ minWidth: 180 }}
-                >
+                  style={{ minWidth: 180 }}>
                   <MenuItem value="ALL">Všechny</MenuItem>
                   <MenuItem value="CORRECT">Správně</MenuItem>
                   <MenuItem value="WARN">Upozornění</MenuItem>
@@ -319,8 +286,7 @@ const InventoryDifferencesPage = () => {
                   variant="contained"
                   color="primary"
                   disabled={loading || hasInvalid || projectMutation.isPending}
-                  onClick={() => setConfirmOpen(true)}
-                >
+                  onClick={() => setConfirmOpen(true)}>
                   {projectMutation.isPending ? "Probíhá..." : "Promítnout"}
                 </Button>
               </Box>
@@ -334,19 +300,10 @@ const InventoryDifferencesPage = () => {
               <CircularProgress />
             </div>
           ) : noRecords ? (
-            <Box
-              className="mt-8"
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              gap={2}
-            >
-              <Typography variant="h6">
-                Zatím nejsou k dispozici žádné záznamy inventury.
-              </Typography>
+            <Box className="mt-8" display="flex" flexDirection="column" alignItems="center" gap={2}>
+              <Typography variant="h6">Zatím nejsou k dispozici žádné záznamy inventury.</Typography>
               <Typography variant="body2" color="text.secondary">
-                Jakmile budou naskenovány položky, objeví se zde rozdíly k
-                vyhodnocení.
+                Jakmile budou naskenovány položky, objeví se zde rozdíly k vyhodnocení.
               </Typography>
             </Box>
           ) : (
@@ -356,12 +313,9 @@ const InventoryDifferencesPage = () => {
                 columns={columns}
                 disableRowSelectionOnClick
                 sortingOrder={["asc", "desc"]}
-                getRowClassName={(params) =>
-                  `diff-row-${params.row.status.toLowerCase()}`
-                }
+                getRowClassName={(params) => `diff-row-${params.row.status.toLowerCase()}`}
                 localeText={{
-                  ...dataGridCsCZ.components.MuiDataGrid.defaultProps
-                    .localeText,
+                  ...dataGridCsCZ.components.MuiDataGrid.defaultProps.localeText,
                   noRowsLabel: "Žádné záznamy",
                   paginationRowsPerPage: "Řádků na stránku:",
                 }}
@@ -382,7 +336,6 @@ const InventoryDifferencesPage = () => {
             warningCount={warnCount}
             wrongCount={wrongCount}
           />
-
         </div>
       </div>
     </ThemeProvider>

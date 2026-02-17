@@ -3,7 +3,7 @@
  * Attaches the bearer token from the auth store to every request.
  * On 401, automatically attempts a token refresh and retries the original request once.
  */
-import axios, { InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosHeaders, InternalAxiosRequestConfig } from "axios";
 import { useAuthStore } from "../store/authStore";
 import { refresh } from "../services/authService";
 
@@ -27,8 +27,8 @@ authorizedRequest.interceptors.request.use(async (config) => {
       const refreshed = await refresh();
       setAuth(refreshed.user, refreshed.token, refreshed.expiresIn);
       config.headers.Authorization = `Bearer ${refreshed.token}`;
-    } catch (e) {
-  clearAuth();
+    } catch {
+      clearAuth();
       throw new axios.Cancel("Token refresh failed – user logged out.");
     }
   } else if (token) {
@@ -47,15 +47,15 @@ authorizedRequest.interceptors.response.use(
       try {
         const refreshed = await refresh();
         setAuth(refreshed.user, refreshed.token, refreshed.expiresIn);
-        if (!originalRequest.headers) originalRequest.headers = {} as RetryableRequestConfig["headers"];
+        originalRequest.headers = AxiosHeaders.from(originalRequest.headers ?? {});
         originalRequest.headers.set("Authorization", `Bearer ${refreshed.token}`);
         return authorizedRequest(originalRequest);
-      } catch (e) {
+      } catch {
         clearAuth();
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default authorizedRequest;

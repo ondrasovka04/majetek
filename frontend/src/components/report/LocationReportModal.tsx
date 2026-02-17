@@ -57,8 +57,7 @@ const LocationReportModal = ({
                   return selected || "(nevybráno)";
                 },
               },
-            }}
-          >
+            }}>
             {locations.map((location) => (
               <MenuItem key={location.id} value={location.id}>
                 <Box display="flex" gap={2} width="100%">
@@ -68,20 +67,12 @@ const LocationReportModal = ({
               </MenuItem>
             ))}
           </TextField>
-          <DatePicker
-            label="Stav k"
-            value={selectedDate}
-            onChange={onDateChange}
-          />
+          <DatePicker label="Stav k" value={selectedDate} onChange={onDateChange} />
         </FormControl>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Zrušit</Button>
-        <Button
-          onClick={onGenerate}
-          variant="contained"
-          disabled={selectedLocation === null || loading}
-        >
+        <Button onClick={onGenerate} variant="contained" disabled={selectedLocation === null || loading}>
           Zobrazit
         </Button>
       </DialogActions>

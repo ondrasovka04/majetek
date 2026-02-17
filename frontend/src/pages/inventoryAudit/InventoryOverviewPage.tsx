@@ -30,6 +30,7 @@ const InventoryOverviewPage = () => {
     if (error) {
       notifyError(translateError(extractErrorMessage(error)));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
   const sortedEntries = useMemo(() => {
@@ -44,9 +45,7 @@ const InventoryOverviewPage = () => {
         case "realLocationId":
           return a.realLocationId.localeCompare(b.realLocationId, "cs") * dir;
         case "realLocationName":
-          return (
-            a.realLocationName.localeCompare(b.realLocationName, "cs") * dir
-          );
+          return a.realLocationName.localeCompare(b.realLocationName, "cs") * dir;
         case "timestamp":
         default:
           return (a.timestamp.getTime() - b.timestamp.getTime()) * dir;

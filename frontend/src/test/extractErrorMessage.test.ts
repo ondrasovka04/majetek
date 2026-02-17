@@ -3,9 +3,7 @@ import { extractErrorMessage } from "../utils/extractErrorMessage";
 
 describe("extractErrorMessage", () => {
   it("extracts message from standard Error", () => {
-    expect(extractErrorMessage(new Error("something broke"))).toBe(
-      "something broke",
-    );
+    expect(extractErrorMessage(new Error("something broke"))).toBe("something broke");
   });
 
   it("extracts message from Axios-like error (response.data.message)", () => {

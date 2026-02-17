@@ -22,9 +22,7 @@ export function useCreateWriteOffMethod() {
   return useMutation({
     mutationFn: (m: WriteOffMethod) => createWriteOffMethod(m),
     onSuccess: (created) => {
-      qc.setQueryData<WriteOffMethod[]>(QUERY_KEY, (old) =>
-        old ? [...old, created] : [created],
-      );
+      qc.setQueryData<WriteOffMethod[]>(QUERY_KEY, (old) => (old ? [...old, created] : [created]));
     },
   });
 }
@@ -32,12 +30,9 @@ export function useCreateWriteOffMethod() {
 export function useUpdateWriteOffMethod() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, name }: { id: string; name: string | null }) =>
-      updateWriteOffMethod(id, name),
+    mutationFn: ({ id, name }: { id: string; name: string | null }) => updateWriteOffMethod(id, name),
     onSuccess: (updated) => {
-      qc.setQueryData<WriteOffMethod[]>(QUERY_KEY, (old) =>
-        old?.map((m) => (m.id === updated.id ? updated : m)),
-      );
+      qc.setQueryData<WriteOffMethod[]>(QUERY_KEY, (old) => old?.map((m) => (m.id === updated.id ? updated : m)));
     },
   });
 }
@@ -47,9 +42,7 @@ export function useDeleteWriteOffMethod() {
   return useMutation({
     mutationFn: (id: string) => deleteWriteOffMethod(id),
     onSuccess: (_data, id) => {
-      qc.setQueryData<WriteOffMethod[]>(QUERY_KEY, (old) =>
-        old?.filter((m) => m.id !== id),
-      );
+      qc.setQueryData<WriteOffMethod[]>(QUERY_KEY, (old) => old?.filter((m) => m.id !== id));
     },
   });
 }

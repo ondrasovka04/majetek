@@ -1,11 +1,5 @@
 /** Login form with username/password fields. Calls the auth service directly (no TanStack Query — one-time action). */
-import {
-  Button,
-  TextField,
-  Card,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
+import { Button, TextField, Card, Typography, CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { login } from "../services/authService";
@@ -49,19 +43,8 @@ const LoginForm = () => {
         Přihlášení
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          label="Uživatelské jméno"
-          fullWidth
-          margin="normal"
-          {...register("username")}
-        />
-        <TextField
-          label="Heslo"
-          type="password"
-          fullWidth
-          margin="normal"
-          {...register("password")}
-        />
+        <TextField label="Uživatelské jméno" fullWidth margin="normal" {...register("username")} />
+        <TextField label="Heslo" type="password" fullWidth margin="normal" {...register("password")} />
         {error && <Typography color="error">{error}</Typography>}
         <Button type="submit" variant="contained" fullWidth className="mt-4">
           {isLoading ? <CircularProgress size={24} color="inherit" /> : "Přihlásit se"}

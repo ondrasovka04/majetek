@@ -40,15 +40,16 @@ export function translateError(message: string): string {
 
   const staticTranslations: Record<string, string> = {
     "Invalid username or password": "Špatné přihlašovací údaje",
-    "Location cannot be deleted because it is being used." : "Umístění nelze smazat, protože je používáno.",
+    "Location cannot be deleted because it is being used.": "Umístění nelze smazat, protože je používáno.",
     "User Id is already taken": "Uživatelské ID je již obsazeno.",
     "Username is already taken": "Uživatelské jméno je již obsazeno.",
-    "Asset group cannot be deleted because it is being used." : "Skupinu nelze smazat, protože je používána.",
-    "Class cannot be deleted because it is being used." : "Třídu nelze smazat, protože je používána.",
-    "Purchase method cannot be deleted because it is being used." : "Způsob pořízení nelze smazat, protože je používán.",
-    "Write off method cannot be deleted because it is being used." : "Způsob vyřazení nelze smazat, protože je používán.",
-    "Validation failed" : "Chyba validace vstupu",
-    "Maximum upload size exceeded": "Příloha je příliš velká"
+    "Asset group cannot be deleted because it is being used.": "Skupinu nelze smazat, protože je používána.",
+    "Class cannot be deleted because it is being used.": "Třídu nelze smazat, protože je používána.",
+    "Purchase method cannot be deleted because it is being used.": "Způsob pořízení nelze smazat, protože je používán.",
+    "Write off method cannot be deleted because it is being used.":
+      "Způsob vyřazení nelze smazat, protože je používán.",
+    "Validation failed": "Chyba validace vstupu",
+    "Maximum upload size exceeded": "Příloha je příliš velká",
   };
 
   return staticTranslations[message] || message;

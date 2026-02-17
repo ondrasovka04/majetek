@@ -57,10 +57,7 @@ export default function DictionaryPage<T extends DictionaryEntity>({
   const updateMutation = useUpdate();
   const deleteMutation = useDelete();
 
-  const { sortedData, sortConfig, handleSort } = useSortableData(
-    items,
-    "id" as string & keyof T,
-  );
+  const { sortedData, sortConfig, handleSort } = useSortableData(items, "id" as string & keyof T);
 
   const handleCreate = (item: T) => {
     createMutation.mutate(item, {
@@ -112,19 +109,13 @@ export default function DictionaryPage<T extends DictionaryEntity>({
                     <TableRow>
                       <TableCell
                         onClick={() => handleSort("id" as string & keyof T)}
-                        style={{ cursor: "pointer", fontWeight: "bold" }}
-                      >
-                        ID{" "}
-                        {sortConfig.key === "id" &&
-                          (sortConfig.direction === "asc" ? "▲" : "▼")}
+                        style={{ cursor: "pointer", fontWeight: "bold" }}>
+                        ID {sortConfig.key === "id" && (sortConfig.direction === "asc" ? "▲" : "▼")}
                       </TableCell>
                       <TableCell
                         onClick={() => handleSort("name" as string & keyof T)}
-                        style={{ cursor: "pointer", fontWeight: "bold" }}
-                      >
-                        Název{" "}
-                        {sortConfig.key === "name" &&
-                          (sortConfig.direction === "asc" ? "▲" : "▼")}
+                        style={{ cursor: "pointer", fontWeight: "bold" }}>
+                        Název {sortConfig.key === "name" && (sortConfig.direction === "asc" ? "▲" : "▼")}
                       </TableCell>
                       <TableCell style={{ fontWeight: "bold" }}>Akce</TableCell>
                     </TableRow>
@@ -138,9 +129,7 @@ export default function DictionaryPage<T extends DictionaryEntity>({
                         onDelete={handleDelete}
                         onError={notifyError}
                         extraActions={
-                          extraRowActions
-                            ? (i: T) => extraRowActions(i, { notify, notifyError })
-                            : undefined
+                          extraRowActions ? (i: T) => extraRowActions(i, { notify, notifyError }) : undefined
                         }
                       />
                     ))}

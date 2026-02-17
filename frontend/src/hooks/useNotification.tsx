@@ -34,14 +34,8 @@ export function useNotification() {
       open={state.open}
       autoHideDuration={6000}
       onClose={close}
-      anchorOrigin={{ vertical: "top", horizontal: "center" }}
-    >
-      <Alert
-        onClose={close}
-        severity={state.severity}
-        variant="filled"
-        sx={{ width: "100%" }}
-      >
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+      <Alert onClose={close} severity={state.severity} variant="filled" sx={{ width: "100%" }}>
         {state.message}
       </Alert>
     </Snackbar>

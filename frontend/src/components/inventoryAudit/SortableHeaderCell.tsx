@@ -19,10 +19,7 @@ const SortableHeaderCell = ({
   onSort,
   style,
 }: SortableHeaderCellProps) => (
-  <TableCell
-    style={{ ...style, cursor: "pointer", fontWeight: "bold" }}
-    onClick={() => onSort(sortKey)}
-  >
+  <TableCell style={{ ...style, cursor: "pointer", fontWeight: "bold" }} onClick={() => onSort(sortKey)}>
     {label} {activeSortKey === sortKey ? (sortDirection === "asc" ? "▲" : "▼") : ""}
   </TableCell>
 );

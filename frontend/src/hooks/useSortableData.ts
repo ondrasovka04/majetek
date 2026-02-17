@@ -22,9 +22,7 @@ export function useSortableData<T>(
 
   const handleSort = useCallback((key: string & keyof T) => {
     setSortConfig((prev) =>
-      prev.key === key
-        ? { key, direction: prev.direction === "asc" ? "desc" : "asc" }
-        : { key, direction: "asc" },
+      prev.key === key ? { key, direction: prev.direction === "asc" ? "desc" : "asc" } : { key, direction: "asc" },
     );
   }, []);
 
@@ -37,9 +35,7 @@ export function useSortableData<T>(
       if (nameKeys.includes(key)) {
         if (!aVal.trim()) return 1;
         if (!bVal.trim()) return -1;
-        return direction === "asc"
-          ? czechCollator.compare(aVal, bVal)
-          : czechCollator.compare(bVal, aVal);
+        return direction === "asc" ? czechCollator.compare(aVal, bVal) : czechCollator.compare(bVal, aVal);
       }
 
       return direction === "asc"

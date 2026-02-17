@@ -19,12 +19,9 @@ const CardRow = memo(({ card, selected, onClick }: Props) => {
       sx={{
         cursor: "pointer",
         "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
-      }}
-    >
+      }}>
       <TableCell sx={{ p: 0, width: "1px" }}>
-        {card.writeOffDate  && (
-          <FiberManualRecordIcon sx={{fontSize: 8, mx: 0.5}} color="error" />
-        )}
+        {card.writeOffDate && <FiberManualRecordIcon sx={{ fontSize: 8, mx: 0.5 }} color="error" />}
       </TableCell>
       <TableCell>{card.id}</TableCell>
       <TableCell>{card.name}</TableCell>

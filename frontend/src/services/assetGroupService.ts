@@ -7,21 +7,13 @@ export const getAssetGroups = async (): Promise<AssetGroup[]> => {
   return res.data;
 };
 
-export const createAssetGroup = async (
-  assetGroup: AssetGroup
-): Promise<AssetGroup> => {
+export const createAssetGroup = async (assetGroup: AssetGroup): Promise<AssetGroup> => {
   const res = await authorizedRequest.post("/asset-group", assetGroup);
   return res.data;
 };
 
-export const updateAssetGroup = async (
-  id: string,
-  name: string | null
-): Promise<AssetGroup> => {
-  const res = await authorizedRequest.patch(
-    `/asset-group/${encodeURIComponent(id)}`,
-    { name }
-  );
+export const updateAssetGroup = async (id: string, name: string | null): Promise<AssetGroup> => {
+  const res = await authorizedRequest.patch(`/asset-group/${encodeURIComponent(id)}`, { name });
   return res.data;
 };
 

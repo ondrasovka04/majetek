@@ -22,11 +22,7 @@ import { saveAs } from "file-saver";
 import { translateError } from "../../utils/errorTranslations";
 import { extractErrorMessage } from "../../utils/extractErrorMessage";
 import { AxiosError } from "axios";
-import {
-  useAttachments,
-  useUploadAttachment,
-  useDeleteAttachment,
-} from "../../hooks/queries/useAttachmentQueries";
+import { useAttachments, useUploadAttachment, useDeleteAttachment } from "../../hooks/queries/useAttachmentQueries";
 
 interface Props {
   open: boolean;
@@ -86,8 +82,7 @@ const AttachmentModal = ({ open, onClose, cardId, onError }: Props) => {
           <Button
             startIcon={<UploadFileIcon />}
             onClick={() => inputRef.current?.click()}
-            disabled={uploadMutation.isPending}
-          >
+            disabled={uploadMutation.isPending}>
             Nahrát soubor
           </Button>
         </Box>
@@ -110,18 +105,14 @@ const AttachmentModal = ({ open, onClose, cardId, onError }: Props) => {
                 key={a.id}
                 secondaryAction={
                   <>
-                    <IconButton
-                      edge="end"
-                      onClick={() => handleDownload(a.id, a.name)}
-                    >
+                    <IconButton edge="end" onClick={() => handleDownload(a.id, a.name)}>
                       <CloudDownloadIcon />
                     </IconButton>
                     <IconButton edge="end" onClick={() => handleDelete(a.id)}>
                       <DeleteIcon />
                     </IconButton>
                   </>
-                }
-              >
+                }>
                 <ListItemText primary={a.name} />
               </ListItem>
             ))}

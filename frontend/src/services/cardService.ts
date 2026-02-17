@@ -15,9 +15,7 @@ export const getCards = async (): Promise<Card[]> => {
   }));
 };
 
-export const filterCards = async (
-  filters: CardFilterQuery
-): Promise<Card[]> => {
+export const filterCards = async (filters: CardFilterQuery): Promise<Card[]> => {
   const params: Record<string, string> = {};
 
   Object.entries(filters).forEach(([key, value]) => {
@@ -37,14 +35,8 @@ export const filterCards = async (
   }));
 };
 
-export const printCards = async (
-  query: CardFilterQuery,
-  cloudPrint: boolean
-): Promise<string | void> => {
-  const res = await authorizedRequest.post(
-    `/card/print?printCloud=${cloudPrint}`,
-    query
-  );
+export const printCards = async (query: CardFilterQuery, cloudPrint: boolean): Promise<string | void> => {
+  const res = await authorizedRequest.post(`/card/print?printCloud=${cloudPrint}`, query);
 
   if (!cloudPrint) {
     const blob = new Blob([res.data], { type: "application/octet-stream" });
@@ -55,9 +47,7 @@ export const printCards = async (
   return "Štítek byl úspěšně odeslán do tiskárny.";
 };
 
-export const exportCardsExcel = async (
-  query: CardFilterQuery
-): Promise<void> => {
+export const exportCardsExcel = async (query: CardFilterQuery): Promise<void> => {
   const res = await authorizedRequest.post("/card/export-excel", query, {
     responseType: "blob",
   });
@@ -68,10 +58,7 @@ export const exportCardsExcel = async (
   saveAs(blob, "cards.xlsx");
 };
 
-export const exportGroupPdf = async (
-  groupId: string,
-  selectedDate: Date | null
-): Promise<string> => {
+export const exportGroupPdf = async (groupId: string, selectedDate: Date | null): Promise<string> => {
   const response = await authorizedRequest.post(
     `/card/export-group-pdf`,
     {
@@ -81,17 +68,14 @@ export const exportGroupPdf = async (
     },
     {
       responseType: "blob",
-    }
+    },
   );
 
   const blob = new Blob([response.data], { type: "application/pdf" });
   return URL.createObjectURL(blob);
 };
 
-export const exportLocationPdf = async (
-  locationId: string,
-  selectedDate: Date | null
-): Promise<string> => {
+export const exportLocationPdf = async (locationId: string, selectedDate: Date | null): Promise<string> => {
   const response = await authorizedRequest.post(
     `/card/export-location-pdf`,
     {
@@ -100,7 +84,7 @@ export const exportLocationPdf = async (
     },
     {
       responseType: "blob",
-    }
+    },
   );
 
   const blob = new Blob([response.data], { type: "application/pdf" });
@@ -115,7 +99,7 @@ export const exportCardPdf = async (cardId: number): Promise<{ blob: Blob; url: 
     },
     {
       responseType: "blob",
-    }
+    },
   );
 
   const blob = new Blob([response.data], { type: "application/pdf" });
@@ -134,10 +118,7 @@ export const getCardById = async (id: string): Promise<CardDetail> => {
   };
 };
 
-export const updateCard = async (
-  id: string,
-  data: CardFormOutput
-): Promise<void> => {
+export const updateCard = async (id: string, data: CardFormOutput): Promise<void> => {
   await authorizedRequest.patch(`/card/${id}`, {
     name: data.name,
     price: data.price ?? undefined,

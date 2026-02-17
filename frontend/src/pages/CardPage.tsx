@@ -9,9 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import MenuBar from "../components/MenuBar";
 import CardDetailView from "../components/card/CardDetailView";
 import CardCreateView from "../components/card/CardCreateView";
-import CardListPanel, {
-  CardListPanelHandle,
-} from "../components/card/CardListPanel";
+import CardListPanel, { CardListPanelHandle } from "../components/card/CardListPanel";
 import { CardFormValues } from "../schemas/cardSchema";
 import { useNotification } from "../hooks/useNotification";
 import { useUsers } from "../hooks/queries/useCardQueries";

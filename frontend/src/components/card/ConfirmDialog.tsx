@@ -1,12 +1,5 @@
 /** Generic confirmation dialog with title, description, and confirm/cancel actions. */
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
-} from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -16,13 +9,7 @@ interface ConfirmDialogProps {
   onConfirm: () => void;
 }
 
-const ConfirmDialog = ({
-  open,
-  title = "Potvrzení akce",
-  description,
-  onCancel,
-  onConfirm,
-}: ConfirmDialogProps) => {
+const ConfirmDialog = ({ open, title = "Potvrzení akce", description, onCancel, onConfirm }: ConfirmDialogProps) => {
   return (
     <Dialog open={open} onClose={onCancel}>
       <DialogTitle>{title}</DialogTitle>

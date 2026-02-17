@@ -3,12 +3,7 @@
  * Loads full card data via useCardDetail, provides save/delete/duplicate/PDF actions,
  * and manages the attachment modal.
  */
-import {
-  Typography,
-  CircularProgress,
-  Tooltip,
-  IconButton,
-} from "@mui/material";
+import { Typography, CircularProgress, Tooltip, IconButton } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import AttachmentModal from "./AttachmentModal";
 import SaveIcon from "@mui/icons-material/Save";
@@ -27,20 +22,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DownloadIcon from "@mui/icons-material/Download";
 import ConfirmDialog from "./ConfirmDialog";
 import { saveAs } from "file-saver";
-import {
-  cardSchema,
-  CardFormValues,
-  CardFormOutput,
-} from "../../schemas/cardSchema";
+import { cardSchema, CardFormValues, CardFormOutput } from "../../schemas/cardSchema";
 import CardFormFields from "./CardFormFields";
 import { useNotification } from "../../hooks/useNotification";
 import { extractErrorMessage } from "../../utils/extractErrorMessage";
-import {
-  useCardDetail,
-  useUpdateCard,
-  useDeleteCard,
-  useExportCardPdf,
-} from "../../hooks/queries/useCardQueries";
+import { useCardDetail, useUpdateCard, useDeleteCard, useExportCardPdf } from "../../hooks/queries/useCardQueries";
 import { useAttachments } from "../../hooks/queries/useAttachmentQueries";
 
 interface Props {
@@ -114,7 +100,8 @@ const CardDetailView = ({
       createdById: cardDetail.createdById,
       createdDate: cardDetail.createdDate,
     });
-  }, [cardDetail]); // eslint-disable-line react-hooks/exhaustive-deps — methods.reset is stable (from useForm); only cardDetail should trigger a reset
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardDetail]);
 
   const onSubmit = (data: CardFormOutput) => {
     updateMutation.mutate(
@@ -194,8 +181,7 @@ const CardDetailView = ({
               <IconButton
                 onClick={methods.handleSubmit(onSubmit, onInvalid)}
                 color="primary"
-                disabled={updateMutation.isPending}
-              >
+                disabled={updateMutation.isPending}>
                 {updateMutation.isPending ? <CircularProgress size={24} /> : <SaveIcon />}
               </IconButton>
             </span>
@@ -211,8 +197,7 @@ const CardDetailView = ({
             <span>
               <IconButton
                 onClick={() => setAttachmentModalOpen(true)}
-                color={attachments.length > 0 ? "primary" : "default"}
-              >
+                color={attachments.length > 0 ? "primary" : "default"}>
                 <AttachFileIcon />
               </IconButton>
             </span>
@@ -240,8 +225,7 @@ const CardDetailView = ({
           overflowY: "auto",
           paddingRight: 8,
           paddingTop: 8,
-        }}
-      >
+        }}>
         <FormProvider {...methods}>
           <CardFormFields
             locations={locations}

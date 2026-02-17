@@ -25,12 +25,7 @@ interface CardReportModalProps {
   loading: boolean;
 }
 
-const CardReportModal = ({
-  open,
-  onClose,
-  onGenerate,
-  loading,
-}: CardReportModalProps) => {
+const CardReportModal = ({ open, onClose, onGenerate, loading }: CardReportModalProps) => {
   const [selectedCard, setSelectedCard] = useState<CardOption | null>(null);
   const [inputValue, setInputValue] = useState("");
 
@@ -82,28 +77,17 @@ const CardReportModal = ({
           renderInput={(params) => {
             params.InputProps.endAdornment = (
               <>
-                {searchLoading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
+                {searchLoading ? <CircularProgress color="inherit" size={20} /> : null}
                 {params.InputProps.endAdornment}
               </>
             );
-            return (
-              <TextField
-                {...params}
-                label="Hledat podle inv. čísla nebo názvu"
-              />
-            );
+            return <TextField {...params} label="Hledat podle inv. čísla nebo názvu" />;
           }}
         />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Zrušit</Button>
-        <Button
-          onClick={handleGenerate}
-          variant="contained"
-          disabled={!selectedCard || loading}
-        >
+        <Button onClick={handleGenerate} variant="contained" disabled={!selectedCard || loading}>
           Zobrazit
         </Button>
       </DialogActions>

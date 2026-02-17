@@ -10,12 +10,7 @@ import { Location } from "../../types/location";
 import { PurchaseMethod } from "../../types/purchaseMethod";
 import { WriteOffMethod } from "../../types/writeOffMethod";
 import { User } from "../../types/auth";
-import {
-  cardSchema,
-  CardFormValues,
-  CardFormOutput,
-  defaultCardValues,
-} from "../../schemas/cardSchema";
+import { cardSchema, CardFormValues, CardFormOutput, defaultCardValues } from "../../schemas/cardSchema";
 import CardFormFields from "./CardFormFields";
 import { extractErrorMessage } from "../../utils/extractErrorMessage";
 import { useCreateCard } from "../../hooks/queries/useCardQueries";
@@ -81,8 +76,7 @@ const CardCreateView = ({
             <IconButton
               onClick={methods.handleSubmit(onSubmit, onInvalid)}
               color="primary"
-              disabled={createMutation.isPending}
-            >
+              disabled={createMutation.isPending}>
               {createMutation.isPending ? <CircularProgress size={24} /> : <SaveIcon />}
             </IconButton>
           </span>
@@ -95,8 +89,7 @@ const CardCreateView = ({
           overflowY: "auto",
           paddingRight: 8,
           paddingTop: 8,
-        }}
-      >
+        }}>
         <FormProvider {...methods}>
           <CardFormFields
             locations={locations}

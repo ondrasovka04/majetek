@@ -52,104 +52,109 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={cs}>
-      <ThemeProvider theme={defaultTheme}>
-        <CssBaseline />
-        <Router>
-          <ErrorBoundary>
-          <Suspense fallback={<div className="flex justify-center items-center h-screen"><CircularProgress /></div>}>
-          {hydrated && (
-          <Routes>
-            <Route path="/" element={<LoginPage />} />
-            <Route
-              path="/card"
-              element={
-                <PrivateRoute>
-                  <CardPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/report"
-              element={
-                <PrivateRoute>
-                  <ReportPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/inventory-audit/overview"
-              element={
-                <PrivateRoute>
-                  <InventoryOverviewPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/inventory-audit/differences"
-              element={
-                <PrivateRoute>
-                  <InventoryDifferencesPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/location"
-              element={
-                <PrivateRoute>
-                  <LocationPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/asset-group"
-              element={
-                <PrivateRoute>
-                  <AssetGroupPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/class"
-              element={
-                <PrivateRoute>
-                  <ClassPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/purchase-method"
-              element={
-                <PrivateRoute>
-                  <PurchaseMethodPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/write-off-method"
-              element={
-                <PrivateRoute>
-                  <WriteOffMethodPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/user"
-              element={
-                <PrivateRoute>
-                  <UserPage />
-                </PrivateRoute>
-              }
-            />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-          )}
-          </Suspense>
-          </ErrorBoundary>
-        </Router>
-      </ThemeProvider>
-    </LocalizationProvider>
-    <ReactQueryDevtools initialIsOpen={false} />
+      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={cs}>
+        <ThemeProvider theme={defaultTheme}>
+          <CssBaseline />
+          <Router>
+            <ErrorBoundary>
+              <Suspense
+                fallback={
+                  <div className="flex justify-center items-center h-screen">
+                    <CircularProgress />
+                  </div>
+                }>
+                {hydrated && (
+                  <Routes>
+                    <Route path="/" element={<LoginPage />} />
+                    <Route
+                      path="/card"
+                      element={
+                        <PrivateRoute>
+                          <CardPage />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/report"
+                      element={
+                        <PrivateRoute>
+                          <ReportPage />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/inventory-audit/overview"
+                      element={
+                        <PrivateRoute>
+                          <InventoryOverviewPage />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/inventory-audit/differences"
+                      element={
+                        <PrivateRoute>
+                          <InventoryDifferencesPage />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/location"
+                      element={
+                        <PrivateRoute>
+                          <LocationPage />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/asset-group"
+                      element={
+                        <PrivateRoute>
+                          <AssetGroupPage />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/class"
+                      element={
+                        <PrivateRoute>
+                          <ClassPage />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/purchase-method"
+                      element={
+                        <PrivateRoute>
+                          <PurchaseMethodPage />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/write-off-method"
+                      element={
+                        <PrivateRoute>
+                          <WriteOffMethodPage />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/user"
+                      element={
+                        <PrivateRoute>
+                          <UserPage />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                )}
+              </Suspense>
+            </ErrorBoundary>
+          </Router>
+        </ThemeProvider>
+      </LocalizationProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

@@ -23,9 +23,7 @@ export function useCreateLocation() {
   return useMutation({
     mutationFn: (loc: Location) => createLocation(loc),
     onSuccess: (created) => {
-      qc.setQueryData<Location[]>(QUERY_KEY, (old) =>
-        old ? [...old, created] : [created],
-      );
+      qc.setQueryData<Location[]>(QUERY_KEY, (old) => (old ? [...old, created] : [created]));
     },
   });
 }
@@ -33,12 +31,9 @@ export function useCreateLocation() {
 export function useUpdateLocation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, name }: { id: string; name: string | null }) =>
-      updateLocation(id, name),
+    mutationFn: ({ id, name }: { id: string; name: string | null }) => updateLocation(id, name),
     onSuccess: (updated) => {
-      qc.setQueryData<Location[]>(QUERY_KEY, (old) =>
-        old?.map((l) => (l.id === updated.id ? updated : l)),
-      );
+      qc.setQueryData<Location[]>(QUERY_KEY, (old) => old?.map((l) => (l.id === updated.id ? updated : l)));
     },
   });
 }
@@ -48,9 +43,7 @@ export function useDeleteLocation() {
   return useMutation({
     mutationFn: (id: string) => deleteLocation(id),
     onSuccess: (_data, id) => {
-      qc.setQueryData<Location[]>(QUERY_KEY, (old) =>
-        old?.filter((l) => l.id !== id),
-      );
+      qc.setQueryData<Location[]>(QUERY_KEY, (old) => old?.filter((l) => l.id !== id));
     },
   });
 }

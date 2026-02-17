@@ -9,10 +9,7 @@
  * - Exposes derived summary counts (writeOff, warn, wrong) and a validation flag.
  */
 import { useEffect, useMemo, useState } from "react";
-import {
-  InventoryDifferenceEntry,
-  InventoryDifferenceAction,
-} from "../types/inventoryAudit/inventoryDifference";
+import { InventoryDifferenceEntry, InventoryDifferenceAction } from "../types/inventoryAudit/inventoryDifference";
 import type { PatchDifferenceBody } from "../services/inventoryAuditService";
 import { toIsoDateString } from "../utils/formatDate";
 import { translateError } from "../utils/errorTranslations";
@@ -27,11 +24,7 @@ import { useWriteOffMethods } from "./queries/useWriteOffMethodQueries";
 export function useDifferenceEntries(onError: (msg: string) => void) {
   const [entries, setEntries] = useState<InventoryDifferenceEntry[]>([]);
 
-  const {
-    data: rawDiffs,
-    isLoading,
-    error: diffsError,
-  } = useInventoryDifferences();
+  const { data: rawDiffs, isLoading, error: diffsError } = useInventoryDifferences();
   const { data: writeOffMethods = [] } = useWriteOffMethods();
   const patchMutation = usePatchInventoryDifference();
   const projectMutation = useProjectInventoryDifferences();
@@ -39,9 +32,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
   // Derive noRecords from the error message instead of separate useState
   const noRecords = useMemo(() => {
     if (!diffsError) return false;
-    return (
-      extractErrorMessage(diffsError) === "No inventory audit records found."
-    );
+    return extractErrorMessage(diffsError) === "No inventory audit records found.";
   }, [diffsError]);
 
   // Notify non-"no records" errors
@@ -49,35 +40,25 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
     if (diffsError && !noRecords) {
       onError(translateError(extractErrorMessage(diffsError)));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [diffsError, noRecords]);
 
   // Initialize local entries from query data + derive default actions
   useEffect(() => {
     if (!rawDiffs || writeOffMethods.length === 0) return;
-    const defaultWriteOffMethodId =
-      (writeOffMethods.find((m) => m.id === "A")?.id ||
-        writeOffMethods[0]?.id) ??
-      null;
+    const defaultWriteOffMethodId = (writeOffMethods.find((m) => m.id === "A")?.id || writeOffMethods[0]?.id) ?? null;
 
     const toInit: { cardId: number; action: InventoryDifferenceAction }[] = [];
 
     const mapped = rawDiffs.map((d) => {
-      const derivedAction =
-        d.action ??
-        (d.status === "CORRECT"
-          ? "KEEP"
-          : d.status === "WARN"
-            ? "SU"
-            : null);
+      const derivedAction = d.action ?? (d.status === "CORRECT" ? "KEEP" : d.status === "WARN" ? "SU" : null);
       if (d.action == null && derivedAction) {
         toInit.push({ cardId: d.cardId, action: derivedAction });
       }
       return {
         ...d,
         action: derivedAction,
-        writeOffMethodId:
-          d.writeOffMethodId ??
-          (derivedAction === "WRITE_OFF" ? defaultWriteOffMethodId : null),
+        writeOffMethodId: d.writeOffMethodId ?? (derivedAction === "WRITE_OFF" ? defaultWriteOffMethodId : null),
       };
     });
     setEntries(mapped);
@@ -99,13 +80,11 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
         onError(translateError(extractErrorMessage(e)));
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawDiffs, writeOffMethods]);
 
   /** Optimistically update a single entry locally and persist the change. */
-  const updateEntryAndSave = (
-    cardId: number,
-    patch: Partial<InventoryDifferenceEntry>,
-  ) => {
+  const updateEntryAndSave = (cardId: number, patch: Partial<InventoryDifferenceEntry>) => {
     const prevEntry = entries.find((e) => e.cardId === cardId);
     if (!prevEntry) return;
 
@@ -115,15 +94,10 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
     } as InventoryDifferenceEntry;
 
     if (nextEntry.action === "WRITE_OFF" && !nextEntry.writeOffMethodId) {
-      nextEntry.writeOffMethodId =
-        (writeOffMethods.find((m) => m.id === "A")?.id ||
-          writeOffMethods[0]?.id) ??
-        null;
+      nextEntry.writeOffMethodId = (writeOffMethods.find((m) => m.id === "A")?.id || writeOffMethods[0]?.id) ?? null;
     }
 
-    setEntries((prev) =>
-      prev.map((e) => (e.cardId === cardId ? nextEntry : e)),
-    );
+    setEntries((prev) => prev.map((e) => (e.cardId === cardId ? nextEntry : e)));
 
     // Build PATCH payload
     const payload: PatchDifferenceBody = {};
@@ -143,10 +117,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
         payload.writeOffDate = null;
         payload.writeOffMethodId = null;
       }
-    } else if (
-      nextEntry.action === "WRITE_OFF" &&
-      (dateChanged || methodChanged)
-    ) {
+    } else if (nextEntry.action === "WRITE_OFF" && (dateChanged || methodChanged)) {
       payload.action = "WRITE_OFF";
       payload.writeOffDate = toIsoDateString(nextEntry.writeOffDate);
       payload.writeOffMethodId = nextEntry.writeOffMethodId ?? null;
@@ -159,9 +130,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
       {
         onError: (err: unknown) => {
           // Rollback on failure
-          setEntries((prev) =>
-            prev.map((e) => (e.cardId === cardId ? prevEntry : e)),
-          );
+          setEntries((prev) => prev.map((e) => (e.cardId === cardId ? prevEntry : e)));
           onError(translateError(extractErrorMessage(err)));
         },
       },
@@ -172,24 +141,14 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
   const hasInvalid = useMemo(() => {
     return entries.some((e) => {
       if (e.status === "WRONG" && !e.action) return true;
-      if (e.action === "WRITE_OFF" && (!e.writeOffDate || !e.writeOffMethodId))
-        return true;
+      if (e.action === "WRITE_OFF" && (!e.writeOffDate || !e.writeOffMethodId)) return true;
       return false;
     });
   }, [entries]);
 
-  const writeOffCount = useMemo(
-    () => entries.filter((e) => e.action === "WRITE_OFF").length,
-    [entries],
-  );
-  const warnCount = useMemo(
-    () => entries.filter((e) => e.status === "WARN").length,
-    [entries],
-  );
-  const wrongCount = useMemo(
-    () => entries.filter((e) => e.status === "WRONG").length,
-    [entries],
-  );
+  const writeOffCount = useMemo(() => entries.filter((e) => e.action === "WRITE_OFF").length, [entries]);
+  const warnCount = useMemo(() => entries.filter((e) => e.status === "WARN").length, [entries]);
+  const wrongCount = useMemo(() => entries.filter((e) => e.status === "WRONG").length, [entries]);
 
   return {
     entries,

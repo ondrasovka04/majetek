@@ -23,9 +23,7 @@ export function createDictionarySchema(maxIdLength = 20) {
 export const dictionarySchema = createDictionarySchema();
 
 /** Schema for validating just the name field (used in inline DictionaryRow edit). */
-export const dictionaryNameSchema = z
-  .string()
-  .max(255, "Název nesmí být delší než 255 znaků.");
+export const dictionaryNameSchema = z.string().max(255, "Název nesmí být delší než 255 znaků.");
 
 /** Form input values — before transform (name is a string). */
 export type DictionaryFormValues = z.input<ReturnType<typeof createDictionarySchema>>;

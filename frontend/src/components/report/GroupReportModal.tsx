@@ -61,8 +61,7 @@ const GroupReportModal = ({
                   return selected || "(nevybráno)";
                 },
               },
-            }}
-          >
+            }}>
             <MenuItem value="">Všechny skupiny</MenuItem>
             {groups.map((group) => (
               <MenuItem key={group.id} value={group.id}>
@@ -73,20 +72,12 @@ const GroupReportModal = ({
               </MenuItem>
             ))}
           </TextField>
-          <DatePicker
-            label="Stav k"
-            value={selectedDate}
-            onChange={onDateChange}
-          />
+          <DatePicker label="Stav k" value={selectedDate} onChange={onDateChange} />
         </FormControl>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Zrušit</Button>
-        <Button
-          onClick={onGenerate}
-          variant="contained"
-          disabled={selectedGroup === null || loading}
-        >
+        <Button onClick={onGenerate} variant="contained" disabled={selectedGroup === null || loading}>
           Zobrazit
         </Button>
       </DialogActions>

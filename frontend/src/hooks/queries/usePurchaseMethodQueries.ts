@@ -22,9 +22,7 @@ export function useCreatePurchaseMethod() {
   return useMutation({
     mutationFn: (m: PurchaseMethod) => createPurchaseMethod(m),
     onSuccess: (created) => {
-      qc.setQueryData<PurchaseMethod[]>(QUERY_KEY, (old) =>
-        old ? [...old, created] : [created],
-      );
+      qc.setQueryData<PurchaseMethod[]>(QUERY_KEY, (old) => (old ? [...old, created] : [created]));
     },
   });
 }
@@ -32,12 +30,9 @@ export function useCreatePurchaseMethod() {
 export function useUpdatePurchaseMethod() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, name }: { id: string; name: string | null }) =>
-      updatePurchaseMethod(id, name),
+    mutationFn: ({ id, name }: { id: string; name: string | null }) => updatePurchaseMethod(id, name),
     onSuccess: (updated) => {
-      qc.setQueryData<PurchaseMethod[]>(QUERY_KEY, (old) =>
-        old?.map((m) => (m.id === updated.id ? updated : m)),
-      );
+      qc.setQueryData<PurchaseMethod[]>(QUERY_KEY, (old) => old?.map((m) => (m.id === updated.id ? updated : m)));
     },
   });
 }
@@ -47,9 +42,7 @@ export function useDeletePurchaseMethod() {
   return useMutation({
     mutationFn: (id: string) => deletePurchaseMethod(id),
     onSuccess: (_data, id) => {
-      qc.setQueryData<PurchaseMethod[]>(QUERY_KEY, (old) =>
-        old?.filter((m) => m.id !== id),
-      );
+      qc.setQueryData<PurchaseMethod[]>(QUERY_KEY, (old) => old?.filter((m) => m.id !== id));
     },
   });
 }

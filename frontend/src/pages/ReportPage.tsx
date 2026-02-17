@@ -1,12 +1,6 @@
 /** PDF report generation page. Offers group, location, and individual card reports with an embedded PDF viewer. */
 import { useState } from "react";
-import {
-  Paper,
-  Typography,
-  List,
-  ListItemButton,
-  CircularProgress,
-} from "@mui/material";
+import { Paper, Typography, List, ListItemButton, CircularProgress } from "@mui/material";
 import MenuBar from "../components/MenuBar";
 import { translateError } from "../utils/errorTranslations";
 import { extractErrorMessage } from "../utils/extractErrorMessage";
@@ -21,11 +15,7 @@ import CardReportModal from "../components/report/CardReportModal";
 import { useNotification } from "../hooks/useNotification";
 import { useAssetGroups } from "../hooks/queries/useAssetGroupQueries";
 import { useLocations } from "../hooks/queries/useLocationQueries";
-import {
-  useExportCardPdf,
-  useExportGroupPdf,
-  useExportLocationPdf,
-} from "../hooks/queries/useCardQueries";
+import { useExportCardPdf, useExportGroupPdf, useExportLocationPdf } from "../hooks/queries/useCardQueries";
 import { sortById } from "../utils/czech";
 
 type ActiveModal = "group" | "location" | "card" | null;
@@ -60,14 +50,12 @@ const ReportPage = () => {
               alignItems: "center",
               display: "flex",
               width: "100%",
-            }}
-          >
+            }}>
             <div
               style={{
                 alignItems: "center",
                 display: "flex",
-              }}
-            >
+              }}>
               <div className="mt-1 ml-1">
                 <slots.ShowSearchPopover />
               </div>
@@ -91,8 +79,7 @@ const ReportPage = () => {
                 flexGrow: 1,
                 flexShrink: 1,
                 justifyContent: "center",
-              }}
-            >
+              }}>
               <div className="mt-1">
                 <slots.ZoomOut />
               </div>
@@ -105,8 +92,7 @@ const ReportPage = () => {
               style={{
                 alignItems: "center",
                 display: "flex",
-              }}
-            >
+              }}>
               <div className="mt-1">
                 <slots.EnterFullScreen />
               </div>
@@ -184,15 +170,9 @@ const ReportPage = () => {
             Sestavy
           </Typography>
           <List>
-            <ListItemButton onClick={() => setActiveModal("group")}>
-              Podle skupin
-            </ListItemButton>
-            <ListItemButton onClick={() => setActiveModal("location")}>
-              Podle místností
-            </ListItemButton>
-            <ListItemButton onClick={() => setActiveModal("card")}>
-              Karta majetku
-            </ListItemButton>
+            <ListItemButton onClick={() => setActiveModal("group")}>Podle skupin</ListItemButton>
+            <ListItemButton onClick={() => setActiveModal("location")}>Podle místností</ListItemButton>
+            <ListItemButton onClick={() => setActiveModal("card")}>Karta majetku</ListItemButton>
           </List>
         </Paper>
 
@@ -202,8 +182,7 @@ const ReportPage = () => {
           style={{
             width: "66.6667%",
             height: pdfUrl ? "calc(100vh - 120px)" : "auto",
-          }}
-        >
+          }}>
           {loading ? (
             <div className="flex justify-center items-center h-full">
               <CircularProgress />

@@ -12,14 +12,8 @@ export const createLocation = async (location: Location): Promise<Location> => {
   return res.data;
 };
 
-export const updateLocation = async (
-  id: string,
-  name: string | null
-): Promise<Location> => {
-  const res = await authorizedRequest.patch(
-    `/location/${encodeURIComponent(id)}`,
-    { name }
-  );
+export const updateLocation = async (id: string, name: string | null): Promise<Location> => {
+  const res = await authorizedRequest.patch(`/location/${encodeURIComponent(id)}`, { name });
   return res.data;
 };
 

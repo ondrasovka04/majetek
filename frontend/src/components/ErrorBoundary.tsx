@@ -32,8 +32,7 @@ class ErrorBoundary extends Component<Props, State> {
           justifyContent="center"
           minHeight="100vh"
           gap={2}
-          p={4}
-        >
+          p={4}>
           <Typography variant="h5" color="error">
             Něco se pokazilo
           </Typography>
@@ -45,8 +44,7 @@ class ErrorBoundary extends Component<Props, State> {
             onClick={() => {
               this.setState({ hasError: false, error: null });
               window.location.reload();
-            }}
-          >
+            }}>
             Obnovit stránku
           </Button>
         </Box>

@@ -1,19 +1,8 @@
 /** Admin dialog for registering a new user account. Uses Zod validation and useRegisterUser mutation. */
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-} from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  registerUserSchema,
-  RegisterUserFormValues,
-  RegisterUserFormOutput,
-} from "../schemas/userSchema";
+import { registerUserSchema, RegisterUserFormValues, RegisterUserFormOutput } from "../schemas/userSchema";
 import { translateError } from "../utils/errorTranslations";
 import { extractErrorMessage } from "../utils/extractErrorMessage";
 import { useRegisterUser } from "../hooks/queries/useAuthQueries";
@@ -77,12 +66,7 @@ const AdminUserDialog = ({ open, onClose, onSuccess }: Props) => {
           error={!!errors.username}
           helperText={errors.username?.message}
         />
-        <TextField
-          label="Jméno"
-          fullWidth
-          sx={{ mb: 2 }}
-          {...register("name")}
-        />
+        <TextField label="Jméno" fullWidth sx={{ mb: 2 }} {...register("name")} />
         <TextField
           label="Heslo"
           type="password"
@@ -92,11 +76,7 @@ const AdminUserDialog = ({ open, onClose, onSuccess }: Props) => {
           error={!!errors.password}
           helperText={errors.password?.message}
         />
-        {errors.root && (
-          <span style={{ color: "#d32f2f", fontSize: "0.875rem" }}>
-            {errors.root.message}
-          </span>
-        )}
+        {errors.root && <span style={{ color: "#d32f2f", fontSize: "0.875rem" }}>{errors.root.message}</span>}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Zrušit</Button>

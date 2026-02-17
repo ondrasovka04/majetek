@@ -2,17 +2,12 @@
 import authorizedRequest from "../utils/authorizedRequest";
 import { AttachmentDto } from "../types/attachment";
 
-export const getAttachments = async (
-  cardId: string
-): Promise<AttachmentDto[]> => {
+export const getAttachments = async (cardId: string): Promise<AttachmentDto[]> => {
   const res = await authorizedRequest.get(`card/${cardId}/attachments`);
   return res.data;
 };
 
-export const downloadAttachment = async (
-  cardId: string,
-  id: number
-): Promise<Blob> => {
+export const downloadAttachment = async (cardId: string, id: number): Promise<Blob> => {
   const res = await authorizedRequest.get(`card/${cardId}/attachments/${id}`, {
     responseType: "blob",
   });

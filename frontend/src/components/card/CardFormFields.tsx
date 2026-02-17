@@ -69,11 +69,7 @@ const CardFormFields = ({
           name="price"
           control={control}
           render={({ field }) => (
-            <PriceInput
-              label="Cena"
-              value={field.value ?? null}
-              onChange={(val) => field.onChange(val)}
-            />
+            <PriceInput label="Cena" value={field.value ?? null} onChange={(val) => field.onChange(val)} />
           )}
         />
       </Grid>
@@ -133,8 +129,7 @@ const CardFormFields = ({
                     return loc ? `${value} - ${loc.name ?? ""}` : String(value);
                   },
                 },
-              }}
-            >
+              }}>
               {locations.map((l) => (
                 <DictionaryMenuItem key={l.id} id={l.id} name={l.name} />
               ))}
@@ -156,11 +151,9 @@ const CardFormFields = ({
               onChange={field.onChange}
               slotProps={{
                 select: {
-                  renderValue: (value: unknown) =>
-                    (value as string) || "(nevybráno)",
+                  renderValue: (value: unknown) => (value as string) || "(nevybráno)",
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {classes.map((c) => (
                 <DictionaryMenuItem key={c.id} id={c.id} name={c.name} />
@@ -188,13 +181,10 @@ const CardFormFields = ({
                 select: {
                   renderValue: (value: unknown) => {
                     const group = groups.find((g) => g.id === value);
-                    return group
-                      ? `${value} - ${group.name ?? ""}`
-                      : String(value);
+                    return group ? `${value} - ${group.name ?? ""}` : String(value);
                   },
                 },
-              }}
-            >
+              }}>
               {groups.map((g) => (
                 <DictionaryMenuItem key={g.id} id={g.id} name={g.name} />
               ))}
@@ -216,11 +206,9 @@ const CardFormFields = ({
               onChange={field.onChange}
               slotProps={{
                 select: {
-                  renderValue: (value: unknown) =>
-                    (value as string) || "(nevybráno)",
+                  renderValue: (value: unknown) => (value as string) || "(nevybráno)",
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {purchaseMethods.map((m) => (
                 <DictionaryMenuItem key={m.id} id={m.id} name={m.name} />
@@ -298,11 +286,9 @@ const CardFormFields = ({
               onChange={field.onChange}
               slotProps={{
                 select: {
-                  renderValue: (value: unknown) =>
-                    (value as string) || "(nevybráno)",
+                  renderValue: (value: unknown) => (value as string) || "(nevybráno)",
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {writeOffMethods.map((m) => (
                 <DictionaryMenuItem key={m.id} id={m.id} name={m.name} />
@@ -317,13 +303,7 @@ const CardFormFields = ({
           name="responsiblePersonId"
           control={control}
           render={({ field }) => (
-            <TextField
-              label="Zodpovědná osoba"
-              select
-              fullWidth
-              value={field.value ?? ""}
-              onChange={field.onChange}
-            >
+            <TextField label="Zodpovědná osoba" select fullWidth value={field.value ?? ""} onChange={field.onChange}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {users.map((u) => (
                 <MenuItem key={u.id} value={u.id}>
@@ -336,13 +316,7 @@ const CardFormFields = ({
       </Grid>
 
       <Grid size={{ xs: 12 }}>
-        <TextField
-          label="Poznámka"
-          multiline
-          fullWidth
-          minRows={2}
-          {...register("note")}
-        />
+        <TextField label="Poznámka" multiline fullWidth minRows={2} {...register("note")} />
       </Grid>
 
       {/* --- Read-only metadata (detail view) --- */}
@@ -352,21 +326,12 @@ const CardFormFields = ({
             <TextField
               label="Vytvořeno"
               fullWidth
-              value={
-                watch("createdDate")
-                  ? new Date(watch("createdDate")!).toLocaleDateString("cs-CZ")
-                  : ""
-              }
+              value={watch("createdDate") ? new Date(watch("createdDate")!).toLocaleDateString("cs-CZ") : ""}
               disabled
             />
           </Grid>
           <Grid size={{ xs: 6 }}>
-            <TextField
-              label="Vytvořil"
-              fullWidth
-              value={watch("createdById") ?? ""}
-              disabled
-            />
+            <TextField label="Vytvořil" fullWidth value={watch("createdById") ?? ""} disabled />
           </Grid>
         </>
       )}

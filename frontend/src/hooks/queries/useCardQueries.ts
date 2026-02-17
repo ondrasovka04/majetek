@@ -14,11 +14,9 @@ import {
   exportLocationPdf,
 } from "../../services/cardService";
 import { Card } from "../../types/card/card";
-import { CardDetail } from "../../types/card/cardDetail";
 import { CardFormOutput } from "../../schemas/cardSchema";
 import { CardFilterQuery } from "../../types/card/cardFilterQuery";
 import { getUsers } from "../../services/authService";
-import { User } from "../../types/auth";
 
 const CARDS_KEY = ["cards"] as const;
 const USERS_KEY = ["users"] as const;
@@ -61,8 +59,7 @@ export function useCreateCard() {
 export function useUpdateCard() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, card }: { id: string; card: CardFormOutput }) =>
-      updateCard(id, card),
+    mutationFn: ({ id, card }: { id: string; card: CardFormOutput }) => updateCard(id, card),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: CARDS_KEY });
     },
@@ -74,22 +71,15 @@ export function useDeleteCard() {
   return useMutation({
     mutationFn: (id: string) => deleteCard(id),
     onSuccess: (_data, id) => {
-      qc.setQueryData<Card[]>(CARDS_KEY, (old) =>
-        old?.filter((c) => c.id !== id),
-      );
+      qc.setQueryData<Card[]>(CARDS_KEY, (old) => old?.filter((c) => c.id !== id));
     },
   });
 }
 
 export function usePrintCards() {
   return useMutation({
-    mutationFn: ({
-      query,
-      cloudPrint,
-    }: {
-      query: CardFilterQuery;
-      cloudPrint: boolean;
-    }) => printCards(query, cloudPrint),
+    mutationFn: ({ query, cloudPrint }: { query: CardFilterQuery; cloudPrint: boolean }) =>
+      printCards(query, cloudPrint),
   });
 }
 
@@ -107,25 +97,15 @@ export function useExportCardPdf() {
 
 export function useExportGroupPdf() {
   return useMutation({
-    mutationFn: ({
-      groupId,
-      selectedDate,
-    }: {
-      groupId: string;
-      selectedDate: Date | null;
-    }) => exportGroupPdf(groupId, selectedDate),
+    mutationFn: ({ groupId, selectedDate }: { groupId: string; selectedDate: Date | null }) =>
+      exportGroupPdf(groupId, selectedDate),
   });
 }
 
 export function useExportLocationPdf() {
   return useMutation({
-    mutationFn: ({
-      locationId,
-      selectedDate,
-    }: {
-      locationId: string;
-      selectedDate: Date | null;
-    }) => exportLocationPdf(locationId, selectedDate),
+    mutationFn: ({ locationId, selectedDate }: { locationId: string; selectedDate: Date | null }) =>
+      exportLocationPdf(locationId, selectedDate),
   });
 }
 

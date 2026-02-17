@@ -13,13 +13,7 @@ interface Props<T extends DictionaryEntity> {
   extraActions?: (item: T) => React.ReactNode;
 }
 
-function DictionaryRowInner<T extends DictionaryEntity>({
-  item,
-  onUpdate,
-  onDelete,
-  onError,
-  extraActions,
-}: Props<T>) {
+function DictionaryRowInner<T extends DictionaryEntity>({ item, onUpdate, onDelete, onError, extraActions }: Props<T>) {
   const [name, setName] = useState(item.name ?? "");
   const lastSentName = useRef(item.name ?? "");
 
@@ -47,8 +41,7 @@ function DictionaryRowInner<T extends DictionaryEntity>({
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
-        }}
-      >
+        }}>
         {item.id}
       </TableCell>
       <TableCell>
@@ -64,12 +57,7 @@ function DictionaryRowInner<T extends DictionaryEntity>({
       <TableCell>
         <Box display="flex" gap={1}>
           {extraActions?.(item)}
-          <IconButton
-            color="error"
-            onClick={() => onDelete(item.id)}
-            size="small"
-            aria-label="Smazat"
-          >
+          <IconButton color="error" onClick={() => onDelete(item.id)} size="small" aria-label="Smazat">
             <DeleteIcon fontSize="small" />
           </IconButton>
         </Box>
