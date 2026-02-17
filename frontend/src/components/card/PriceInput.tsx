@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 
 interface PriceInputProps {
   value: number | null;
@@ -14,36 +14,34 @@ const formatCurrency = (value: number) =>
     minimumFractionDigits: 2,
   });
 
+/**
+ * Currency input that shows formatted value when blurred, raw number when focused.
+ * Derives display value from props instead of syncing via useEffect.
+ */
 export const PriceInput = ({ value, label, onChange }: PriceInputProps) => {
-  const [displayValue, setDisplayValue] = useState<string>("");
+  const [focused, setFocused] = useState(false);
+  const [editingValue, setEditingValue] = useState("");
 
-  useEffect(() => {
-    setDisplayValue(value === undefined || value === null ? "" : formatCurrency(value));
+  // Derive display value: when focused, show raw editing text; when blurred, format from prop
+  const displayValue = focused ? editingValue : value != null ? formatCurrency(value) : "";
+
+  const handleFocus = useCallback(() => {
+    setFocused(true);
+    setEditingValue(value != null ? value.toString().replace(".", ",") : "");
   }, [value]);
 
-  const handleFocus = () => {
-    if (value !== null) {
-      setDisplayValue(value.toString().replace(".", ","));
-    }
-  };
+  const handleBlur = useCallback(() => {
+    setFocused(false);
+    const numeric = parseFloat(editingValue.replace(",", "."));
+    onChange(!isNaN(numeric) ? numeric : null);
+  }, [editingValue, onChange]);
 
-  const handleBlur = () => {
-    const numeric = parseFloat(displayValue.replace(",", "."));
-    if (!isNaN(numeric)) {
-      onChange(numeric);
-      setDisplayValue(formatCurrency(numeric));
-    } else {
-      setDisplayValue("");
-      onChange(null);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     if (/^[0-9]*[.,]?[0-9]*$/.test(val) || val === "") {
-      setDisplayValue(val);
+      setEditingValue(val);
     }
-  };
+  }, []);
 
   return (
     <TextField

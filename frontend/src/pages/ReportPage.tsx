@@ -1,46 +1,45 @@
-import { useState, useEffect } from "react";
-import {
-  Paper,
-  Typography,
-  List,
-  ListItemButton,
-  CircularProgress,
-  Alert,
-  Collapse,
-} from "@mui/material";
+/** PDF report generation page. Offers group, location, and individual card reports with an embedded PDF viewer. */
+import { useState } from "react";
+import { Paper, Typography, List, ListItemButton, CircularProgress } from "@mui/material";
 import MenuBar from "../components/MenuBar";
-import { AssetGroup } from "../types/assetGroup";
-import { Location } from "../types/location";
-import { getAssetGroups } from "../services/assetGroupService";
-import { getLocations } from "../services/locationService";
-import {
-  exportCardPdf,
-  exportGroupPdf,
-  exportLocationPdf,
-} from "../services/cardService";
 import { translateError } from "../utils/errorTranslations";
+import { extractErrorMessage } from "../utils/extractErrorMessage";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
-import GroupReportModal from "../components/report/GroupReportModal";
+import GroupReportModal, { ALL_GROUPS } from "../components/report/GroupReportModal";
 import czechLocalization from "../utils/czechLocalization";
 import LocationReportModal from "../components/report/LocationReportModal";
 import CardReportModal from "../components/report/CardReportModal";
+import { useNotification } from "../hooks/useNotification";
+import { useAssetGroups } from "../hooks/queries/useAssetGroupQueries";
+import { useLocations } from "../hooks/queries/useLocationQueries";
+import { useExportCardPdf, useExportGroupPdf, useExportLocationPdf } from "../hooks/queries/useCardQueries";
+import { sortById } from "../utils/czech";
 
 type ActiveModal = "group" | "location" | "card" | null;
 
 const ReportPage = () => {
-  const [groups, setGroups] = useState<AssetGroup[]>([]);
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+
+  const { notifyError, NotificationBar } = useNotification();
+
+  // --- TanStack Query ---
+  const { data: rawGroups = [] } = useAssetGroups();
+  const { data: rawLocations = [] } = useLocations();
+  const groups = sortById(rawGroups);
+  const locations = sortById(rawLocations);
+
+  const groupPdfMutation = useExportGroupPdf();
+  const locationPdfMutation = useExportLocationPdf();
+  const cardPdfMutation = useExportCardPdf();
+
+  const loading = groupPdfMutation.isPending || locationPdfMutation.isPending || cardPdfMutation.isPending;
 
   const defaultLayoutPluginInstance = defaultLayoutPlugin({
     renderToolbar: (Toolbar) => (
@@ -51,14 +50,12 @@ const ReportPage = () => {
               alignItems: "center",
               display: "flex",
               width: "100%",
-            }}
-          >
+            }}>
             <div
               style={{
                 alignItems: "center",
                 display: "flex",
-              }}
-            >
+              }}>
               <div className="mt-1 ml-1">
                 <slots.ShowSearchPopover />
               </div>
@@ -82,8 +79,7 @@ const ReportPage = () => {
                 flexGrow: 1,
                 flexShrink: 1,
                 justifyContent: "center",
-              }}
-            >
+              }}>
               <div className="mt-1">
                 <slots.ZoomOut />
               </div>
@@ -96,8 +92,7 @@ const ReportPage = () => {
               style={{
                 alignItems: "center",
                 display: "flex",
-              }}
-            >
+              }}>
               <div className="mt-1">
                 <slots.EnterFullScreen />
               </div>
@@ -115,127 +110,84 @@ const ReportPage = () => {
     sidebarTabs: () => [],
   });
 
-  useEffect(() => {
-    const collator = new Intl.Collator("cs", {
-      sensitivity: "variant",
-      usage: "sort",
-      caseFirst: "false",
+  const resetModalState = () => {
+    setSelectedGroup("");
+    setSelectedLocation("");
+    setSelectedDate(new Date());
+  };
+
+  const handleCloseModal = () => {
+    setActiveModal(null);
+    resetModalState();
+  };
+
+  const handleGenerateGroupPdf = () => {
+    if (!selectedGroup) {
+      notifyError("Musíte vybrat skupinu.");
+      return;
+    }
+    setActiveModal(null);
+    const groupId = selectedGroup === ALL_GROUPS ? "" : selectedGroup;
+    groupPdfMutation.mutate(
+      { groupId, selectedDate },
+      {
+        onSuccess: (objectUrl) => {
+          setPdfUrl(objectUrl);
+          resetModalState();
+        },
+        onError: (err: unknown) => {
+          notifyError(translateError(extractErrorMessage(err)));
+        },
+      },
+    );
+  };
+
+  const handleGenerateLocationPdf = () => {
+    if (!selectedLocation) {
+      notifyError("Musíte vybrat místnost.");
+      return;
+    }
+    setActiveModal(null);
+    locationPdfMutation.mutate(
+      { locationId: selectedLocation, selectedDate },
+      {
+        onSuccess: (objectUrl) => {
+          setPdfUrl(objectUrl);
+          resetModalState();
+        },
+        onError: (err: unknown) => {
+          notifyError(translateError(extractErrorMessage(err)));
+        },
+      },
+    );
+  };
+
+  const handleGenerateCardPdf = (cardId: number) => {
+    setActiveModal(null);
+    cardPdfMutation.mutate(cardId, {
+      onSuccess: (result) => {
+        setPdfUrl(result.url);
+      },
+      onError: (err: unknown) => {
+        notifyError(translateError(extractErrorMessage(err)));
+      },
     });
-
-    const fetchData = async () => {
-      try {
-        const [groupsData, locationsData] = await Promise.all([
-          getAssetGroups(),
-          getLocations(),
-        ]);
-        setGroups(groupsData.sort((a, b) => collator.compare(a.id, b.id)));
-        setLocations(
-          locationsData.sort((a, b) => collator.compare(a.id, b.id))
-        );
-      } catch (err: any) {
-        const backendMessage = err.response?.data?.message;
-        handleError(translateError(backendMessage));
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleError = (msg: string) => {
-    setError(msg);
-    setSnackbarOpen(true);
-    setTimeout(() => setSnackbarOpen(false), 6000);
-  };
-
-  const handleGenerateGroupPdf = async () => {
-    if (selectedGroup === null) return;
-
-    setActiveModal(null);
-
-    try {
-      setLoading(true);
-      const objectUrl = await exportGroupPdf(selectedGroup, selectedDate);
-      setPdfUrl(objectUrl);
-      setSelectedDate(new Date());
-    } catch (error: any) {
-      const backendMessage = error.response?.data?.message;
-      handleError(translateError(backendMessage));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGenerateLocationPdf = async () => {
-    if (selectedLocation === null)
-      return handleError("Musíte vybrat místnost.");
-    setActiveModal(null);
-    setLoading(true);
-
-    try {
-      const objectUrl = await exportLocationPdf(selectedLocation, selectedDate);
-      setPdfUrl(objectUrl);
-      setSelectedDate(new Date());
-    } catch (error: any) {
-      handleError(translateError(error.response?.data?.message));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGenerateCardPdf = async (cardId: number) => {
-    setActiveModal(null);
-    setLoading(true);
-    try {
-      const objectUrl = await exportCardPdf(cardId);
-      setPdfUrl(objectUrl.url);
-    } catch (error: any) {
-      handleError(translateError(error.response?.data?.message));
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <MenuBar />
       <div className="p-6 flex">
-        <div
-          style={{
-            position: "fixed",
-            top: 20,
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 1400,
-            width: "auto",
-            maxWidth: "90vw",
-          }}
-        >
-          <Collapse in={snackbarOpen}>
-            <Alert
-              severity="error"
-              variant="filled"
-              onClose={() => setSnackbarOpen(false)}
-              sx={{ width: "100%" }}
-            >
-              {error}
-            </Alert>
-          </Collapse>
-        </div>
+        {NotificationBar}
 
         <Paper className="w-1/3 mr-4 p-4" elevation={3}>
           <Typography variant="h6" gutterBottom>
             Sestavy
           </Typography>
           <List>
-            <ListItemButton onClick={() => setActiveModal("group")}>
-              Podle skupin
-            </ListItemButton>
-            <ListItemButton onClick={() => setActiveModal("location")}>
-              Podle místností
-            </ListItemButton>
-            <ListItemButton onClick={() => setActiveModal("card")}>
-              Karta majetku
-            </ListItemButton>
+            <ListItemButton onClick={() => setActiveModal("group")}>Podle skupin</ListItemButton>
+            <ListItemButton onClick={() => setActiveModal("location")}>Podle místností</ListItemButton>
+            <ListItemButton onClick={() => setActiveModal("card")}>Karta majetku</ListItemButton>
           </List>
         </Paper>
 
@@ -245,8 +197,7 @@ const ReportPage = () => {
           style={{
             width: "66.6667%",
             height: pdfUrl ? "calc(100vh - 120px)" : "auto",
-          }}
-        >
+          }}>
           {loading ? (
             <div className="flex justify-center items-center h-full">
               <CircularProgress />
@@ -272,7 +223,7 @@ const ReportPage = () => {
 
       <GroupReportModal
         open={activeModal === "group"}
-        onClose={() => setActiveModal(null)}
+        onClose={handleCloseModal}
         onGenerate={handleGenerateGroupPdf}
         selectedGroup={selectedGroup}
         onGroupChange={setSelectedGroup}
@@ -284,7 +235,7 @@ const ReportPage = () => {
 
       <LocationReportModal
         open={activeModal === "location"}
-        onClose={() => setActiveModal(null)}
+        onClose={handleCloseModal}
         onGenerate={handleGenerateLocationPdf}
         selectedLocation={selectedLocation}
         onLocationChange={setSelectedLocation}
@@ -296,7 +247,7 @@ const ReportPage = () => {
 
       <CardReportModal
         open={activeModal === "card"}
-        onClose={() => setActiveModal(null)}
+        onClose={handleCloseModal}
         onGenerate={handleGenerateCardPdf}
         loading={loading}
       />

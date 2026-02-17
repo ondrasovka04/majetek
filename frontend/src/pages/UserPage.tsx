@@ -1,39 +1,49 @@
+/** User settings page — password change form and admin user creation dialog. */
 import { useState } from "react";
-import { Typography, TextField, Button, Alert, Snackbar } from "@mui/material";
+import { Typography, TextField, Button } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthStore } from "../store/authStore";
-import { changePassword } from "../services/authService";
 import { translateError } from "../utils/errorTranslations";
+import { extractErrorMessage } from "../utils/extractErrorMessage";
 import MenuBar from "../components/MenuBar";
 import AdminUserDialog from "../components/AdminUserDialog";
+import { changePasswordSchema, ChangePasswordFormValues } from "../schemas/userSchema";
+import { useNotification } from "../hooks/useNotification";
+import { useChangePassword } from "../hooks/queries/useAuthQueries";
 
 const UserPage = () => {
   const user = useAuthStore((state) => state.user);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [adminDialogOpen, setAdminDialogOpen] = useState(false);
+  const { notify, notifyError, NotificationBar } = useNotification();
+  const changePasswordMutation = useChangePassword();
 
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ChangePasswordFormValues>({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: { currentPassword: "", newPassword: "" },
+  });
 
-  const handleChangePassword = async () => {
-    if (!currentPassword.trim() || !newPassword.trim()) {
-      setError("Obě pole musí být vyplněna.");
-      setSnackbarOpen(true);
-      return;
-    }
-    try {
-      await changePassword({ currentPassword, newPassword });
-      setSuccess("Heslo bylo úspěšně změněno.");
-      setError("");
-      setSnackbarOpen(true);
-      setCurrentPassword("");
-      setNewPassword("");
-    } catch (err: any) {
-      const backendMessage = err.response?.data?.message;
-      setError(translateError(backendMessage));
-      setSuccess("");
-      setSnackbarOpen(true);
+  const onSubmit = (data: ChangePasswordFormValues) => {
+    changePasswordMutation.mutate(data, {
+      onSuccess: () => {
+        notify("Heslo bylo úspěšně změněno.", "success");
+        reset();
+      },
+      onError: (err: unknown) => {
+        notifyError(translateError(extractErrorMessage(err)));
+      },
+    });
+  };
+
+  const onInvalid = () => {
+    const firstError = Object.values(errors)[0];
+    if (firstError?.message) {
+      notifyError(String(firstError.message));
     }
   };
 
@@ -47,10 +57,7 @@ const UserPage = () => {
           </Typography>
           {user?.role === "ADMIN" && (
             <>
-              <Button
-                variant="contained"
-                onClick={() => setAdminDialogOpen(true)}
-              >
+              <Button variant="contained" onClick={() => setAdminDialogOpen(true)}>
                 Vytvořit nového uživatele
               </Button>
             </>
@@ -66,50 +73,33 @@ const UserPage = () => {
             type="password"
             fullWidth
             sx={{ mb: 2 }}
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
+            {...register("currentPassword")}
+            error={!!errors.currentPassword}
+            helperText={errors.currentPassword?.message}
           />
           <TextField
             label="Nové heslo"
             type="password"
             fullWidth
             sx={{ mb: 2 }}
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            {...register("newPassword")}
+            error={!!errors.newPassword}
+            helperText={errors.newPassword?.message}
           />
-          <Button
-            variant="contained"
-            onClick={handleChangePassword}
-          >
+          <Button variant="contained" onClick={handleSubmit(onSubmit, onInvalid)}>
             Změnit heslo
           </Button>
         </div>
+
+        {NotificationBar}
 
         <AdminUserDialog
           open={adminDialogOpen}
           onClose={() => setAdminDialogOpen(false)}
           onSuccess={(msg) => {
-            setSuccess(msg);
-            setError("");
-            setSnackbarOpen(true);
+            notify(msg, "success");
           }}
         />
-
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={() => setSnackbarOpen(false)}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        >
-          <Alert
-            onClose={() => setSnackbarOpen(false)}
-            severity={error ? "error" : "success"}
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
-            {error ? error : success}
-          </Alert>
-        </Snackbar>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+/** API service for class (třída) dictionary CRUD operations. */
 import authorizedRequest from "../utils/authorizedRequest";
 import { Class } from "../types/class";
 

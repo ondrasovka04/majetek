@@ -1,3 +1,4 @@
+/** Query parameters for filtering asset cards on the server. */
 export interface CardFilterQuery {
   id?: number;
   minId?: number;

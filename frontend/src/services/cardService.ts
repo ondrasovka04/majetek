@@ -1,21 +1,21 @@
+/** API service functions for asset cards — CRUD, filtering, printing, and PDF/Excel export. */
 import authorizedRequest from "../utils/authorizedRequest";
 import { Card } from "../types/card/card";
 import { CardFilterQuery } from "../types/card/cardFilterQuery";
 import { saveAs } from "file-saver";
 import { CardDetail } from "../types/card/cardDetail";
+import { CardFormOutput } from "../schemas/cardSchema";
 import { toIsoDateString } from "../utils/formatDate";
 
 export const getCards = async (): Promise<Card[]> => {
   const res = await authorizedRequest.get("/card");
-  return res.data.map((card: any) => ({
+  return res.data.map((card: { id: number; name: string; writeOffDate: Date | null }) => ({
     ...card,
     id: card.id.toString().padStart(4, "0"),
   }));
 };
 
-export const filterCards = async (
-  filters: CardFilterQuery
-): Promise<Card[]> => {
+export const filterCards = async (filters: CardFilterQuery): Promise<Card[]> => {
   const params: Record<string, string> = {};
 
   Object.entries(filters).forEach(([key, value]) => {
@@ -29,20 +29,14 @@ export const filterCards = async (
   });
 
   const res = await authorizedRequest.get("/card/filter", { params });
-  return res.data.map((card: any) => ({
+  return res.data.map((card: { id: number; name: string; writeOffDate: Date | null }) => ({
     ...card,
     id: card.id.toString().padStart(4, "0"),
   }));
 };
 
-export const printCards = async (
-  query: CardFilterQuery,
-  cloudPrint: boolean
-): Promise<string | void> => {
-  const res = await authorizedRequest.post(
-    `/card/print?printCloud=${cloudPrint}`,
-    query
-  );
+export const printCards = async (query: CardFilterQuery, cloudPrint: boolean): Promise<string | void> => {
+  const res = await authorizedRequest.post(`/card/print?printCloud=${cloudPrint}`, query);
 
   if (!cloudPrint) {
     const blob = new Blob([res.data], { type: "application/octet-stream" });
@@ -53,9 +47,7 @@ export const printCards = async (
   return "Štítek byl úspěšně odeslán do tiskárny.";
 };
 
-export const exportCardsExcel = async (
-  query: CardFilterQuery
-): Promise<void> => {
+export const exportCardsExcel = async (query: CardFilterQuery): Promise<void> => {
   const res = await authorizedRequest.post("/card/export-excel", query, {
     responseType: "blob",
   });
@@ -66,10 +58,7 @@ export const exportCardsExcel = async (
   saveAs(blob, "cards.xlsx");
 };
 
-export const exportGroupPdf = async (
-  groupId: string,
-  selectedDate: Date | null
-): Promise<string> => {
+export const exportGroupPdf = async (groupId: string, selectedDate: Date | null): Promise<string> => {
   const response = await authorizedRequest.post(
     `/card/export-group-pdf`,
     {
@@ -79,17 +68,14 @@ export const exportGroupPdf = async (
     },
     {
       responseType: "blob",
-    }
+    },
   );
 
   const blob = new Blob([response.data], { type: "application/pdf" });
   return URL.createObjectURL(blob);
 };
 
-export const exportLocationPdf = async (
-  locationId: string,
-  selectedDate: Date | null
-): Promise<string> => {
+export const exportLocationPdf = async (locationId: string, selectedDate: Date | null): Promise<string> => {
   const response = await authorizedRequest.post(
     `/card/export-location-pdf`,
     {
@@ -98,7 +84,7 @@ export const exportLocationPdf = async (
     },
     {
       responseType: "blob",
-    }
+    },
   );
 
   const blob = new Blob([response.data], { type: "application/pdf" });
@@ -113,7 +99,7 @@ export const exportCardPdf = async (cardId: number): Promise<{ blob: Blob; url: 
     },
     {
       responseType: "blob",
-    }
+    },
   );
 
   const blob = new Blob([response.data], { type: "application/pdf" });
@@ -132,46 +118,43 @@ export const getCardById = async (id: string): Promise<CardDetail> => {
   };
 };
 
-export const updateCard = async (
-  id: string,
-  updatedCard: CardDetail
-): Promise<void> => {
+export const updateCard = async (id: string, data: CardFormOutput): Promise<void> => {
   await authorizedRequest.patch(`/card/${id}`, {
-    name: updatedCard.name,
-    price: updatedCard.price ?? undefined,
-    quantity: updatedCard.quantity ?? undefined,
-    serialNumber: updatedCard.serialNumber || undefined,
-    locationId: updatedCard.locationId,
-    classId: updatedCard.classId || undefined,
-    groupId: updatedCard.groupId || undefined,
-    purchaseDate: toIsoDateString(updatedCard.purchaseDate),
-    purchaseMethodId: updatedCard.purchaseMethodId || undefined,
-    purchaseInvoice: updatedCard.purchaseInvoice || undefined,
-    writeOffDate: toIsoDateString(updatedCard.writeOffDate) ?? undefined,
-    writeOffMethodId: updatedCard.writeOffMethodId || undefined,
-    createdById: updatedCard.createdById || undefined,
-    responsiblePersonId: updatedCard.responsiblePersonId || undefined,
-    note: updatedCard.note || undefined,
+    name: data.name,
+    price: data.price ?? undefined,
+    quantity: data.quantity ?? undefined,
+    serialNumber: data.serialNumber ?? undefined,
+    locationId: data.locationId,
+    classId: data.classId ?? undefined,
+    groupId: data.groupId ?? undefined,
+    purchaseDate: toIsoDateString(data.purchaseDate),
+    purchaseMethodId: data.purchaseMethodId ?? undefined,
+    purchaseInvoice: data.purchaseInvoice ?? undefined,
+    writeOffDate: toIsoDateString(data.writeOffDate) ?? undefined,
+    writeOffMethodId: data.writeOffMethodId ?? undefined,
+    createdById: data.createdById ?? undefined,
+    responsiblePersonId: data.responsiblePersonId ?? undefined,
+    note: data.note ?? undefined,
   });
 };
 
-export const createCard = async (card: Partial<CardDetail>): Promise<void> => {
+export const createCard = async (data: CardFormOutput): Promise<void> => {
   await authorizedRequest.post("/card", {
-    name: card.name,
-    price: card.price ?? undefined,
-    quantity: card.quantity ?? undefined,
-    serialNumber: card.serialNumber || undefined,
-    locationId: card.locationId,
-    classId: card.classId || undefined,
-    groupId: card.groupId || undefined,
-    purchaseDate: toIsoDateString(card.purchaseDate ?? null) ?? undefined,
-    purchaseMethodId: card.purchaseMethodId || undefined,
-    purchaseInvoice: card.purchaseInvoice || undefined,
-    writeOffDate: toIsoDateString(card.writeOffDate ?? null) ?? undefined,
-    writeOffMethodId: card.writeOffMethodId || undefined,
-    createdById: card.createdById || undefined,
-    responsiblePersonId: card.responsiblePersonId || undefined,
-    note: card.note || undefined,
+    name: data.name,
+    price: data.price ?? undefined,
+    quantity: data.quantity ?? undefined,
+    serialNumber: data.serialNumber ?? undefined,
+    locationId: data.locationId,
+    classId: data.classId ?? undefined,
+    groupId: data.groupId ?? undefined,
+    purchaseDate: toIsoDateString(data.purchaseDate) ?? undefined,
+    purchaseMethodId: data.purchaseMethodId ?? undefined,
+    purchaseInvoice: data.purchaseInvoice ?? undefined,
+    writeOffDate: toIsoDateString(data.writeOffDate) ?? undefined,
+    writeOffMethodId: data.writeOffMethodId ?? undefined,
+    createdById: data.createdById ?? undefined,
+    responsiblePersonId: data.responsiblePersonId ?? undefined,
+    note: data.note ?? undefined,
   });
 };
 

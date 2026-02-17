@@ -1,3 +1,4 @@
+/** API service functions for location CRUD and label printing. */
 import authorizedRequest from "../utils/authorizedRequest";
 import { Location } from "../types/location";
 
@@ -11,14 +12,8 @@ export const createLocation = async (location: Location): Promise<Location> => {
   return res.data;
 };
 
-export const updateLocation = async (
-  id: string,
-  name: string | null
-): Promise<Location> => {
-  const res = await authorizedRequest.patch(
-    `/location/${encodeURIComponent(id)}`,
-    { name }
-  );
+export const updateLocation = async (id: string, name: string | null): Promise<Location> => {
+  const res = await authorizedRequest.patch(`/location/${encodeURIComponent(id)}`, { name });
   return res.data;
 };
 
@@ -26,7 +21,7 @@ export const deleteLocation = async (id: string): Promise<void> => {
   await authorizedRequest.delete(`/location/${encodeURIComponent(id)}`);
 };
 
-export const printLocation = async (id: String): Promise<string> => {
+export const printLocation = async (id: string): Promise<string> => {
   await authorizedRequest.post("/location/print", { id });
   return "Štítek byl úspěšně odeslán do tiskárny.";
 };

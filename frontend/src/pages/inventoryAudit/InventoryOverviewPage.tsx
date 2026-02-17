@@ -1,3 +1,4 @@
+/** Inventory audit overview — sortable table of scanned cards with real location and timestamp. */
 import { useEffect, useMemo, useState } from "react";
 import {
   Typography,
@@ -7,24 +8,30 @@ import {
   TableCell,
   TableBody,
   CircularProgress,
-  Alert,
-  Collapse,
   ThemeProvider,
   CssBaseline,
 } from "@mui/material";
 import MenuBar from "../../components/MenuBar";
-import { getInventoryAudit } from "../../services/inventoryAuditService";
 import { InventoryAuditEntry } from "../../types/inventoryAudit/inventoryAudit";
-import { translateError } from "../../utils/errorTranslations";
 import { defaultTheme } from "../../theme";
+import { useInventoryAudit } from "../../hooks/queries/useInventoryAuditQueries";
+import { useNotification } from "../../hooks/useNotification";
+import { translateError } from "../../utils/errorTranslations";
+import { extractErrorMessage } from "../../utils/extractErrorMessage";
+import SortableHeaderCell from "../../components/inventoryAudit/SortableHeaderCell";
 
 const InventoryOverviewPage = () => {
-  const [entries, setEntries] = useState<InventoryAuditEntry[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
-  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const { data: entries = [], isLoading, error } = useInventoryAudit();
+  const { notifyError, NotificationBar } = useNotification();
   const [sortBy, setSortBy] = useState<keyof InventoryAuditEntry>("cardId");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  useEffect(() => {
+    if (error) {
+      notifyError(translateError(extractErrorMessage(error)));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const sortedEntries = useMemo(() => {
     const copy = [...entries];
@@ -38,9 +45,7 @@ const InventoryOverviewPage = () => {
         case "realLocationId":
           return a.realLocationId.localeCompare(b.realLocationId, "cs") * dir;
         case "realLocationName":
-          return (
-            a.realLocationName.localeCompare(b.realLocationName, "cs") * dir
-          );
+          return a.realLocationName.localeCompare(b.realLocationName, "cs") * dir;
         case "timestamp":
         default:
           return (a.timestamp.getTime() - b.timestamp.getTime()) * dir;
@@ -58,27 +63,6 @@ const InventoryOverviewPage = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getInventoryAudit();
-        setEntries(data);
-      } catch (error: any) {
-        const backendMessage = error.response?.data?.message;
-        handleError(translateError(backendMessage));
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const handleError = (msg: string) => {
-    setError(msg);
-    setSnackbarOpen(true);
-    setTimeout(() => setSnackbarOpen(false), 6000);
-  };
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -89,30 +73,9 @@ const InventoryOverviewPage = () => {
             <Typography variant="h4">Inventura - Přehled</Typography>
           </div>
 
-          <div
-            style={{
-              position: "fixed",
-              top: 20,
-              left: "50%",
-              transform: "translateX(-50%)",
-              zIndex: 1400,
-              width: "auto",
-              maxWidth: "90vw",
-            }}
-          >
-            <Collapse in={snackbarOpen}>
-              <Alert
-                severity="error"
-                variant="filled"
-                onClose={() => setSnackbarOpen(false)}
-                sx={{ width: "100%" }}
-              >
-                {error}
-              </Alert>
-            </Collapse>
-          </div>
+          {NotificationBar}
 
-          {loading ? (
+          {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <CircularProgress />
             </div>
@@ -121,115 +84,38 @@ const InventoryOverviewPage = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell
-                      style={{
-                        fontWeight: "bold",
-                        cursor: "pointer",
-                        width: 140,
-                        whiteSpace: "nowrap",
-                      }}
-                      onClick={() => toggleSort("cardId")}
-                    >
-                      <span
-                        style={{ display: "inline-flex", alignItems: "center" }}
-                      >
-                        <span>ID karty</span>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: 14,
-                            marginLeft: 4,
-                          }}
-                        >
-                          {sortBy === "cardId"
-                            ? sortDirection === "asc"
-                              ? "▲"
-                              : "▼"
-                            : " "}
-                        </span>
-                      </span>
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        fontWeight: "bold",
-                        cursor: "pointer",
-                        minWidth: 200,
-                      }}
-                      onClick={() => toggleSort("cardName")}
-                    >
-                      <span
-                        style={{ display: "inline-flex", alignItems: "center" }}
-                      >
-                        <span>Název karty</span>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: 14,
-                            marginLeft: 4,
-                          }}
-                        >
-                          {sortBy === "cardName"
-                            ? sortDirection === "asc"
-                              ? "▲"
-                              : "▼"
-                            : " "}
-                        </span>
-                      </span>
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        fontWeight: "bold",
-                        cursor: "pointer",
-                        minWidth: 240,
-                      }}
-                      onClick={() => toggleSort("realLocationId")}
-                    >
-                      <span
-                        style={{ display: "inline-flex", alignItems: "center" }}
-                      >
-                        <span>Skutečné umístění</span>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: 14,
-                            marginLeft: 4,
-                          }}
-                        >
-                          {sortBy === "realLocationId"
-                            ? sortDirection === "asc"
-                              ? "▲"
-                              : "▼"
-                            : " "}
-                        </span>
-                      </span>
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        fontWeight: "bold",
-                        cursor: "pointer",
-                        minWidth: 190,
-                      }}
-                      onClick={() => toggleSort("timestamp")}
-                    >
-                      <span
-                        style={{ display: "inline-flex", alignItems: "center" }}
-                      >
-                        <span>Čas</span>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: 14,
-                            marginLeft: 4,
-                          }}
-                        >
-                          {sortBy === "timestamp"
-                            ? sortDirection === "asc"
-                              ? "▲"
-                              : "▼"
-                            : " "}
-                        </span>
-                      </span>
-                    </TableCell>
+                    <SortableHeaderCell
+                      label="ID karty"
+                      sortKey="cardId"
+                      activeSortKey={sortBy}
+                      sortDirection={sortDirection}
+                      onSort={toggleSort}
+                      style={{ width: 140, whiteSpace: "nowrap" }}
+                    />
+                    <SortableHeaderCell
+                      label="Název karty"
+                      sortKey="cardName"
+                      activeSortKey={sortBy}
+                      sortDirection={sortDirection}
+                      onSort={toggleSort}
+                      style={{ minWidth: 200 }}
+                    />
+                    <SortableHeaderCell
+                      label="Skutečné umístění"
+                      sortKey="realLocationId"
+                      activeSortKey={sortBy}
+                      sortDirection={sortDirection}
+                      onSort={toggleSort}
+                      style={{ minWidth: 240 }}
+                    />
+                    <SortableHeaderCell
+                      label="Čas"
+                      sortKey="timestamp"
+                      activeSortKey={sortBy}
+                      sortDirection={sortDirection}
+                      onSort={toggleSort}
+                      style={{ minWidth: 190 }}
+                    />
                   </TableRow>
                 </TableHead>
                 <TableBody>

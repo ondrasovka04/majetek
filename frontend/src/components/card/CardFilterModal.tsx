@@ -1,3 +1,4 @@
+/** Advanced card filter dialog. Allows filtering by ID range, name, price, date ranges, and all dictionary references. */
 import {
   Dialog,
   DialogTitle,
@@ -10,21 +11,16 @@ import {
   Box,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { CardFilterQuery } from "../../types/card/cardFilterQuery";
-import { getClasses } from "../../services/classService";
-import { getAssetGroups } from "../../services/assetGroupService";
-import { getLocations } from "../../services/locationService";
-import { getPurchaseMethods } from "../../services/purchaseMethodService";
-import { getUsers } from "../../services/authService";
-import { getWriteOffMethods } from "../../services/writeOffMethodService";
-import { Class } from "../../types/class";
-import { AssetGroup } from "../../types/assetGroup";
-import { Location } from "../../types/location";
-import { PurchaseMethod } from "../../types/purchaseMethod";
-import { WriteOffMethod } from "../../types/writeOffMethod";
-import { User } from "../../types/auth";
 import { PriceInput } from "./PriceInput";
+import { useLocations } from "../../hooks/queries/useLocationQueries";
+import { useClasses } from "../../hooks/queries/useClassQueries";
+import { useAssetGroups } from "../../hooks/queries/useAssetGroupQueries";
+import { usePurchaseMethods } from "../../hooks/queries/usePurchaseMethodQueries";
+import { useWriteOffMethods } from "../../hooks/queries/useWriteOffMethodQueries";
+import { useUsers } from "../../hooks/queries/useCardQueries";
+import { sortById } from "../../utils/czech";
 
 interface Props {
   open: boolean;
@@ -34,42 +30,23 @@ interface Props {
 
 const CardFilterModal = ({ open, onClose, onApply }: Props) => {
   const [filters, setFilters] = useState<CardFilterQuery>({});
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [classes, setClasses] = useState<Class[]>([]);
-  const [groups, setGroups] = useState<AssetGroup[]>([]);
-  const [purchaseMethods, setPurchaseMethods] = useState<PurchaseMethod[]>([]);
-  const [writeOffMethods, setWriteOffMethods] = useState<WriteOffMethod[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
 
-  useEffect(() => {
-    const collator = new Intl.Collator("cs", {
-      sensitivity: "variant",
-      usage: "sort",
-      caseFirst: "false",
-    });
+  // Reuse TanStack Query cached data — no duplicate fetch
+  const { data: rawLocations = [] } = useLocations();
+  const { data: rawClasses = [] } = useClasses();
+  const { data: rawGroups = [] } = useAssetGroups();
+  const { data: rawPurchaseMethods = [] } = usePurchaseMethods();
+  const { data: rawWriteOffMethods = [] } = useWriteOffMethods();
+  const { data: rawUsers = [] } = useUsers();
 
-    const fetchData = async () => {
-      const [locs, cls, grps, pm, wom, usrs] = await Promise.all([
-        getLocations(),
-        getClasses(),
-        getAssetGroups(),
-        getPurchaseMethods(),
-        getWriteOffMethods(),
-        getUsers(),
-      ]);
+  const locations = useMemo(() => sortById(rawLocations), [rawLocations]);
+  const classes = useMemo(() => sortById(rawClasses), [rawClasses]);
+  const groups = useMemo(() => sortById(rawGroups), [rawGroups]);
+  const purchaseMethods = useMemo(() => sortById(rawPurchaseMethods), [rawPurchaseMethods]);
+  const writeOffMethods = useMemo(() => sortById(rawWriteOffMethods), [rawWriteOffMethods]);
+  const users = useMemo(() => sortById(rawUsers), [rawUsers]);
 
-      setLocations(locs.sort((a, b) => collator.compare(a.id, b.id)));
-      setClasses(cls.sort((a, b) => collator.compare(a.id, b.id)));
-      setGroups(grps.sort((a, b) => collator.compare(a.id, b.id)));
-      setPurchaseMethods(pm.sort((a, b) => collator.compare(a.id, b.id)));
-      setWriteOffMethods(wom.sort((a, b) => collator.compare(a.id, b.id)));
-      setUsers(usrs.sort((a, b) => collator.compare(a.id, b.id)));
-    };
-
-    fetchData();
-  }, []);
-
-  const handleChange = (field: keyof CardFilterQuery, value: any) => {
+  const handleChange = (field: keyof CardFilterQuery, value: CardFilterQuery[keyof CardFilterQuery] | null) => {
     setFilters((prev) => ({
       ...prev,
       [field]: value === "" ? undefined : value,
@@ -163,8 +140,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
                     return selected || "(nevybráno)";
                   },
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {locations.map((loc) => (
                 <MenuItem key={loc.id} value={loc.id}>
@@ -190,8 +166,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
                     return selected || "(nevybráno)";
                   },
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {classes.map((cls) => (
                 <MenuItem key={cls.id} value={cls.id}>
@@ -233,8 +208,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
                     return selected || "(nevybráno)";
                   },
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {groups.map((g) => (
                 <MenuItem key={g.id} value={g.id}>
@@ -284,8 +258,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
                     return selected || "(nevybráno)";
                   },
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {purchaseMethods.map((m) => (
                 <MenuItem key={m.id} value={m.id}>
@@ -311,8 +284,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
                     return selected || "(nevybráno)";
                   },
                 },
-              }}
-            >
+              }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {writeOffMethods.map((m) => (
                 <MenuItem key={m.id} value={m.id}>
@@ -346,8 +318,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
               select
               fullWidth
               value={filters.createdBy ?? ""}
-              onChange={(e) => handleChange("createdBy", e.target.value)}
-            >
+              onChange={(e) => handleChange("createdBy", e.target.value)}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {users.map((u) => (
                 <MenuItem key={u.id} value={u.id}>
@@ -362,8 +333,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
               select
               fullWidth
               value={filters.responsePerson ?? ""}
-              onChange={(e) => handleChange("responsePerson", e.target.value)}
-            >
+              onChange={(e) => handleChange("responsePerson", e.target.value)}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {users.map((u) => (
                 <MenuItem key={u.id} value={u.id}>
@@ -390,8 +360,7 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
           onClick={() => {
             onApply(filters);
             onClose();
-          }}
-        >
+          }}>
           Filtrovat
         </Button>
       </DialogActions>

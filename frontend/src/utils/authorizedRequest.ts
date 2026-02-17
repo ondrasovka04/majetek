@@ -1,8 +1,17 @@
-import axios from "axios";
+/**
+ * Pre-configured Axios instance with JWT authorization.
+ * Attaches the bearer token from the auth store to every request.
+ * On 401, automatically attempts a token refresh and retries the original request once.
+ */
+import axios, { AxiosHeaders, InternalAxiosRequestConfig } from "axios";
 import { useAuthStore } from "../store/authStore";
 import { refresh } from "../services/authService";
 
-const API_URL = process.env.REACT_APP_API_URL;
+interface RetryableRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const authorizedRequest = axios.create({
   baseURL: API_URL,
@@ -18,8 +27,8 @@ authorizedRequest.interceptors.request.use(async (config) => {
       const refreshed = await refresh();
       setAuth(refreshed.user, refreshed.token, refreshed.expiresIn);
       config.headers.Authorization = `Bearer ${refreshed.token}`;
-    } catch (e) {
-  clearAuth();
+    } catch {
+      clearAuth();
       throw new axios.Cancel("Token refresh failed – user logged out.");
     }
   } else if (token) {
@@ -31,22 +40,22 @@ authorizedRequest.interceptors.request.use(async (config) => {
 authorizedRequest.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-    if (error.response?.status === 401 && !(originalRequest as any)._retry) {
+    const originalRequest = error.config as RetryableRequestConfig;
+    if (error.response?.status === 401 && !originalRequest._retry) {
       const { clearAuth, setAuth } = useAuthStore.getState();
-      (originalRequest as any)._retry = true;
+      originalRequest._retry = true;
       try {
         const refreshed = await refresh();
         setAuth(refreshed.user, refreshed.token, refreshed.expiresIn);
-        if (!originalRequest.headers) originalRequest.headers = {};
-        (originalRequest.headers as any).Authorization = `Bearer ${refreshed.token}`;
+        originalRequest.headers = AxiosHeaders.from(originalRequest.headers ?? {});
+        originalRequest.headers.set("Authorization", `Bearer ${refreshed.token}`);
         return authorizedRequest(originalRequest);
-      } catch (e) {
+      } catch {
         clearAuth();
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default authorizedRequest;
