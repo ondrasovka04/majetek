@@ -110,6 +110,17 @@ const ReportPage = () => {
     sidebarTabs: () => [],
   });
 
+  const resetModalState = () => {
+    setSelectedGroup(null);
+    setSelectedLocation(null);
+    setSelectedDate(new Date());
+  };
+
+  const handleCloseModal = () => {
+    setActiveModal(null);
+    resetModalState();
+  };
+
   const handleGenerateGroupPdf = () => {
     if (selectedGroup === null) return;
     setActiveModal(null);
@@ -118,7 +129,7 @@ const ReportPage = () => {
       {
         onSuccess: (objectUrl) => {
           setPdfUrl(objectUrl);
-          setSelectedDate(new Date());
+          resetModalState();
         },
         onError: (err: unknown) => {
           notifyError(translateError(extractErrorMessage(err)));
@@ -138,7 +149,7 @@ const ReportPage = () => {
       {
         onSuccess: (objectUrl) => {
           setPdfUrl(objectUrl);
-          setSelectedDate(new Date());
+          resetModalState();
         },
         onError: (err: unknown) => {
           notifyError(translateError(extractErrorMessage(err)));
@@ -208,7 +219,7 @@ const ReportPage = () => {
 
       <GroupReportModal
         open={activeModal === "group"}
-        onClose={() => setActiveModal(null)}
+        onClose={handleCloseModal}
         onGenerate={handleGenerateGroupPdf}
         selectedGroup={selectedGroup}
         onGroupChange={setSelectedGroup}
@@ -220,7 +231,7 @@ const ReportPage = () => {
 
       <LocationReportModal
         open={activeModal === "location"}
-        onClose={() => setActiveModal(null)}
+        onClose={handleCloseModal}
         onGenerate={handleGenerateLocationPdf}
         selectedLocation={selectedLocation}
         onLocationChange={setSelectedLocation}
@@ -232,7 +243,7 @@ const ReportPage = () => {
 
       <CardReportModal
         open={activeModal === "card"}
-        onClose={() => setActiveModal(null)}
+        onClose={handleCloseModal}
         onGenerate={handleGenerateCardPdf}
         loading={loading}
       />

@@ -273,7 +273,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
                       key={card.id}
                       card={card}
                       selected={card.id === selectedCardId}
-                      onClick={() => onSelectCard(card.id)}
+                      onClick={onSelectCard}
                     />
                   ))}
                 </TableBody>

@@ -59,11 +59,15 @@ export default function DictionaryPage<T extends DictionaryEntity>({
 
   const { sortedData, sortConfig, handleSort } = useSortableData(items, "id" as string & keyof T);
 
-  const handleCreate = (item: T) => {
-    createMutation.mutate(item, {
-      onError: (err: unknown) => {
-        notifyError(translateError(extractErrorMessage(err)));
-      },
+  const handleCreate = (item: T): Promise<void> => {
+    return new Promise<void>((resolve, reject) => {
+      createMutation.mutate(item, {
+        onSuccess: () => resolve(),
+        onError: (err: unknown) => {
+          notifyError(translateError(extractErrorMessage(err)));
+          reject(err);
+        },
+      });
     });
   };
 

@@ -45,14 +45,22 @@ const CardReportModal = ({ open, onClose, onGenerate, loading }: CardReportModal
 
   const displayOptions = inputValue ? options : selectedCard ? [selectedCard] : [];
 
+  const handleClose = () => {
+    setSelectedCard(null);
+    setInputValue("");
+    onClose();
+  };
+
   const handleGenerate = () => {
     if (selectedCard) {
       onGenerate(selectedCard.id);
+      setSelectedCard(null);
+      setInputValue("");
     }
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>Vyberte kartu majetku</DialogTitle>
       <DialogContent>
         <Autocomplete
@@ -86,7 +94,7 @@ const CardReportModal = ({ open, onClose, onGenerate, loading }: CardReportModal
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Zrušit</Button>
+        <Button onClick={handleClose}>Zrušit</Button>
         <Button onClick={handleGenerate} variant="contained" disabled={!selectedCard || loading}>
           Zobrazit
         </Button>

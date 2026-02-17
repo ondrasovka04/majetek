@@ -9,7 +9,7 @@ import { defaultTheme } from "../../theme";
 interface Props<T extends DictionaryEntity> {
   open: boolean;
   onClose: () => void;
-  onCreate: (item: T) => void;
+  onCreate: (item: T) => Promise<void>;
   title: string;
   /** Maximum length of the ID field (default: 20) */
   maxIdLength?: number;
@@ -34,10 +34,14 @@ export default function AddDictionaryDialog<T extends DictionaryEntity>({
     defaultValues: { id: "", name: "" },
   });
 
-  const onSubmit = (data: DictionaryFormOutput) => {
-    onCreate({ id: data.id, name: data.name } as T);
-    reset();
-    onClose();
+  const onSubmit = async (data: DictionaryFormOutput) => {
+    try {
+      await onCreate({ id: data.id, name: data.name } as T);
+      reset();
+      onClose();
+    } catch {
+      // Error is handled by the caller — keep dialog open so user can fix input
+    }
   };
 
   const handleClose = () => {
