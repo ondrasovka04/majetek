@@ -8,7 +8,7 @@ import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
-import GroupReportModal from "../components/report/GroupReportModal";
+import GroupReportModal, { ALL_GROUPS } from "../components/report/GroupReportModal";
 import czechLocalization from "../utils/czechLocalization";
 import LocationReportModal from "../components/report/LocationReportModal";
 import CardReportModal from "../components/report/CardReportModal";
@@ -21,8 +21,8 @@ import { sortById } from "../utils/czech";
 type ActiveModal = "group" | "location" | "card" | null;
 
 const ReportPage = () => {
-  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -111,8 +111,8 @@ const ReportPage = () => {
   });
 
   const resetModalState = () => {
-    setSelectedGroup(null);
-    setSelectedLocation(null);
+    setSelectedGroup("");
+    setSelectedLocation("");
     setSelectedDate(new Date());
   };
 
@@ -122,10 +122,14 @@ const ReportPage = () => {
   };
 
   const handleGenerateGroupPdf = () => {
-    if (selectedGroup === null) return;
+    if (!selectedGroup) {
+      notifyError("Musíte vybrat skupinu.");
+      return;
+    }
     setActiveModal(null);
+    const groupId = selectedGroup === ALL_GROUPS ? "" : selectedGroup;
     groupPdfMutation.mutate(
-      { groupId: selectedGroup, selectedDate },
+      { groupId, selectedDate },
       {
         onSuccess: (objectUrl) => {
           setPdfUrl(objectUrl);
@@ -139,7 +143,7 @@ const ReportPage = () => {
   };
 
   const handleGenerateLocationPdf = () => {
-    if (selectedLocation === null) {
+    if (!selectedLocation) {
       notifyError("Musíte vybrat místnost.");
       return;
     }

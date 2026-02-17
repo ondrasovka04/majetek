@@ -17,8 +17,8 @@ interface LocationReportModalProps {
   open: boolean;
   onClose: () => void;
   onGenerate: () => void;
-  selectedLocation: string | null;
-  onLocationChange: (value: string | null) => void;
+  selectedLocation: string;
+  onLocationChange: (value: string) => void;
   locations: Location[];
   loading: boolean;
   selectedDate: Date | null;
@@ -72,7 +72,7 @@ const LocationReportModal = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Zrušit</Button>
-        <Button onClick={onGenerate} variant="contained" disabled={selectedLocation === null || loading}>
+        <Button onClick={onGenerate} variant="contained" disabled={!selectedLocation || loading}>
           Zobrazit
         </Button>
       </DialogActions>

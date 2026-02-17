@@ -11,6 +11,15 @@ import { z } from "zod";
 const emptyToNull = (v: string) => (v === "" ? null : v);
 const emptyToNullNum = (v: number | null | undefined) => (v == null || isNaN(v) ? null : v);
 
+/** Check that a number has at most `maxDecimals` decimal places and `maxIntDigits` integer digits. */
+const isValidPrecision = (val: number | null, maxIntDigits: number, maxDecimals: number): boolean => {
+  if (val == null) return true;
+  const multiplier = 10 ** maxDecimals;
+  const hasValidDecimals = Math.abs(Math.round(val * multiplier) - val * multiplier) < 1e-6;
+  const intDigits = val === 0 ? 1 : Math.floor(Math.log10(Math.abs(val))) + 1;
+  return hasValidDecimals && intDigits <= maxIntDigits;
+};
+
 export const cardSchema = z
   .object({
     name: z
@@ -22,31 +31,17 @@ export const cardSchema = z
       .number()
       .nullable()
       .transform(emptyToNullNum)
-      .refine(
-        (val) => {
-          if (val == null) return true;
-          const [intPart, fracPart = ""] = val.toString().split(".");
-          return intPart.length <= 36 && fracPart.length <= 2;
-        },
-        {
-          message: "Cena musí být číslo s maximálně 2 desetinnými místy a 36 číslicemi celkem.",
-        },
-      ),
+      .refine((val) => isValidPrecision(val, 36, 2), {
+        message: "Cena musí být číslo s maximálně 2 desetinnými místy a 36 číslicemi celkem.",
+      }),
 
     quantity: z
       .number()
       .nullable()
       .transform(emptyToNullNum)
-      .refine(
-        (val) => {
-          if (val == null) return true;
-          const [intPart, fracPart = ""] = val.toString().split(".");
-          return intPart.length <= 36 && fracPart.length <= 2;
-        },
-        {
-          message: "Počet kusů musí být číslo s maximálně 2 desetinnými místy a 36 číslicemi celkem.",
-        },
-      ),
+      .refine((val) => isValidPrecision(val, 36, 2), {
+        message: "Počet kusů musí být číslo s maximálně 2 desetinnými místy a 36 číslicemi celkem.",
+      }),
 
     serialNumber: z.string().max(30, "Sériové číslo může mít maximálně 30 znaků.").transform(emptyToNull).nullable(),
 

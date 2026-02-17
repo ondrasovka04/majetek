@@ -14,14 +14,16 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 type Group = {
   id: string;
-  name: string;
+  name: string | null;
 };
+
+export const ALL_GROUPS = "__ALL__";
 
 interface GroupReportModalProps {
   open: boolean;
   onClose: () => void;
   onGenerate: () => void;
-  selectedGroup: string | null;
+  selectedGroup: string;
   onGroupChange: (value: string) => void;
   groups: Group[];
   loading: boolean;
@@ -55,14 +57,17 @@ const GroupReportModal = ({
               onGroupChange(e.target.value);
             }}
             slotProps={{
+              inputLabel: { shrink: true },
               select: {
+                displayEmpty: true,
                 renderValue: (value: unknown) => {
                   const selected = value as string;
-                  return selected || "(nevybráno)";
+                  if (!selected) return <span style={{ color: "#999" }}>(nevybráno)</span>;
+                  return selected === ALL_GROUPS ? "Všechny skupiny" : selected;
                 },
               },
             }}>
-            <MenuItem value="">Všechny skupiny</MenuItem>
+            <MenuItem value={ALL_GROUPS}>Všechny skupiny</MenuItem>
             {groups.map((group) => (
               <MenuItem key={group.id} value={group.id}>
                 <Box display="flex" gap={2} width="100%">
@@ -77,7 +82,7 @@ const GroupReportModal = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Zrušit</Button>
-        <Button onClick={onGenerate} variant="contained" disabled={selectedGroup === null || loading}>
+        <Button onClick={onGenerate} variant="contained" disabled={!selectedGroup || loading}>
           Zobrazit
         </Button>
       </DialogActions>
