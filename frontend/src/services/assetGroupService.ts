@@ -1,3 +1,4 @@
+/** API service for asset group (skupina majetku) dictionary CRUD operations. */
 import authorizedRequest from "../utils/authorizedRequest";
 import { AssetGroup } from "../types/assetGroup";
 
@@ -15,7 +16,7 @@ export const createAssetGroup = async (
 
 export const updateAssetGroup = async (
   id: string,
-  name: string
+  name: string | null
 ): Promise<AssetGroup> => {
   const res = await authorizedRequest.patch(
     `/asset-group/${encodeURIComponent(id)}`,

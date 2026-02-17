@@ -1,3 +1,4 @@
+/** Czech localization strings for the react-pdf-viewer component. */
 const czechLocalization = {
   download: {
     download: "Stáhnout",

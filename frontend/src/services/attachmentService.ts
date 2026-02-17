@@ -1,3 +1,4 @@
+/** API service for card attachment operations (list, download, upload, delete). */
 import authorizedRequest from "../utils/authorizedRequest";
 import { AttachmentDto } from "../types/attachment";
 

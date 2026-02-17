@@ -1,3 +1,4 @@
+/** Modal for generating a PDF report filtered by location and optional date. */
 import {
   Dialog,
   DialogTitle,

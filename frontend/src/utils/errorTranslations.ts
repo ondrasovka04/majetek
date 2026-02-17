@@ -1,3 +1,4 @@
+/** Translates English backend error messages to Czech UI strings using regex patterns and a static lookup map. */
 export function translateError(message: string): string {
   if (!message) return "Neznámá chyba.";
 

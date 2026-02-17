@@ -1,4 +1,4 @@
-import { useState } from "react";
+/** Login form with username/password fields. Calls the auth service directly (no TanStack Query — one-time action). */
 import {
   Button,
   TextField,
@@ -6,30 +6,38 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { login } from "../services/authService";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import { translateError } from "../utils/errorTranslations";
+import { extractErrorMessage } from "../utils/extractErrorMessage";
+
+interface LoginFormValues {
+  username: string;
+  password: string;
+}
 
 const LoginForm = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const setAuth = useAuthStore((state) => state.setAuth);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const { register, handleSubmit } = useForm<LoginFormValues>({
+    defaultValues: { username: "", password: "" },
+  });
 
+  const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
+    setError("");
     try {
-      const { user, token, expiresIn } = await login(username, password);
+      const { user, token, expiresIn } = await login(data.username, data.password);
       setAuth(user, token, expiresIn);
       navigate("/card");
-    } catch (error: any) {
-      const backandMessage = error.response?.data?.message;
-      setError(translateError(backandMessage));
+    } catch (err: unknown) {
+      setError(translateError(extractErrorMessage(err)));
     } finally {
       setIsLoading(false);
     }
@@ -40,21 +48,19 @@ const LoginForm = () => {
       <Typography variant="h5" className="mb-4">
         Přihlášení
       </Typography>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           label="Uživatelské jméno"
           fullWidth
           margin="normal"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          {...register("username")}
         />
         <TextField
           label="Heslo"
           type="password"
           fullWidth
           margin="normal"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          {...register("password")}
         />
         {error && <Typography color="error">{error}</Typography>}
         <Button type="submit" variant="contained" fullWidth className="mt-4">

@@ -1,3 +1,4 @@
+/** Generic confirmation dialog with title, description, and confirm/cancel actions. */
 import {
   Dialog,
   DialogTitle,

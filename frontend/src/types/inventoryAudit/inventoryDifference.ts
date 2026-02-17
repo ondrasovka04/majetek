@@ -1,8 +1,10 @@
+/** Status indicating match between real and expected location. */
 export type InventoryDifferenceStatus = "CORRECT" | "WARN" | "WRONG";
 
-// Akce které může uživatel zvolit na daném řádku
+// Actions the user can assign to a given inventory difference row
 export type InventoryDifferenceAction = "KEEP" | "SU" | "OU" | "WRITE_OFF" | null;
 
+/** Single row in the inventory differences comparison table. */
 export interface InventoryDifferenceEntry {
   cardId: number;
   cardName: string;

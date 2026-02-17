@@ -1,3 +1,4 @@
+/** Admin dialog for registering a new user account. Uses Zod validation and useRegisterUser mutation. */
 import {
   Dialog,
   DialogTitle,
@@ -5,12 +6,17 @@ import {
   DialogActions,
   TextField,
   Button,
-  Typography,
 } from "@mui/material";
-import { useState } from "react";
-import { RegisterUserDto } from "../types/auth";
-import { registerUser } from "../services/authService";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  registerUserSchema,
+  RegisterUserFormValues,
+  RegisterUserFormOutput,
+} from "../schemas/userSchema";
 import { translateError } from "../utils/errorTranslations";
+import { extractErrorMessage } from "../utils/extractErrorMessage";
+import { useRegisterUser } from "../hooks/queries/useAuthQueries";
 
 interface Props {
   open: boolean;
@@ -19,81 +25,82 @@ interface Props {
 }
 
 const AdminUserDialog = ({ open, onClose, onSuccess }: Props) => {
-  const [form, setForm] = useState<RegisterUserDto>({
-    id: "",
-    name: "",
-    username: "",
-    password: "",
+  const registerMutation = useRegisterUser();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors },
+  } = useForm<RegisterUserFormValues, unknown, RegisterUserFormOutput>({
+    resolver: zodResolver(registerUserSchema),
+    defaultValues: { id: "", name: "", username: "", password: "" },
   });
 
-  const [error, setError] = useState("");
+  const onSubmit = (data: RegisterUserFormOutput) => {
+    registerMutation.mutate(data, {
+      onSuccess: () => {
+        onSuccess(`Uživatel ${data.username} byl úspěšně vytvořen.`);
+        reset();
+        onClose();
+      },
+      onError: (err: unknown) => {
+        setError("root", {
+          message: translateError(extractErrorMessage(err)),
+        });
+      },
+    });
+  };
 
-  const handleSubmit = async () => {
-    if (!form.id.trim()) {
-      setError("ID nesmí být prázdné.");
-      return;
-    }
-
-    if (!form.username.trim()) {
-      setError("Uživatelské jméno nesmí být prázdné.");
-      return;
-    }
-
-    if (!form.password.trim()) {
-      setError("Heslo nesmí být prázdné.");
-      return;
-    }
-
-    try {
-      await registerUser(form);
-      onSuccess(`Uživatel ${form.username} byl úspěšně vytvořen.`);
-      setForm({ id: "", name: "", username: "", password: "" });
-      setError("");
-      onClose();
-    } catch (err: any) {
-      const backendMessage = err.response?.data?.message;
-      setError(translateError(backendMessage));
-    }
+  const handleClose = () => {
+    reset();
+    onClose();
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Vytvořit nového uživatele</DialogTitle>
       <DialogContent>
         <TextField
           label="ID"
           fullWidth
           sx={{ mb: 2, mt: 1 }}
-          value={form.id}
-          onChange={(e) => setForm({ ...form, id: e.target.value })}
+          {...register("id")}
+          error={!!errors.id}
+          helperText={errors.id?.message}
         />
         <TextField
           label="Uživatelské jméno"
           fullWidth
           sx={{ mb: 2 }}
-          value={form.username}
-          onChange={(e) => setForm({ ...form, username: e.target.value })}
+          {...register("username")}
+          error={!!errors.username}
+          helperText={errors.username?.message}
         />
         <TextField
           label="Jméno"
           fullWidth
           sx={{ mb: 2 }}
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          {...register("name")}
         />
         <TextField
           label="Heslo"
           type="password"
           fullWidth
           sx={{ mb: 2 }}
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          {...register("password")}
+          error={!!errors.password}
+          helperText={errors.password?.message}
         />
-        {error && <Typography color="error">{error}</Typography>}
+        {errors.root && (
+          <span style={{ color: "#d32f2f", fontSize: "0.875rem" }}>
+            {errors.root.message}
+          </span>
+        )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Zrušit</Button>
-        <Button onClick={handleSubmit} variant="contained">
+        <Button onClick={handleClose}>Zrušit</Button>
+        <Button onClick={handleSubmit(onSubmit)} variant="contained">
           Vytvořit
         </Button>
       </DialogActions>

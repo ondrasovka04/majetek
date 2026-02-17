@@ -1,3 +1,4 @@
+/** Modal for managing card attachments — upload, download, and delete files. */
 import {
   Dialog,
   DialogTitle,
@@ -15,82 +16,64 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { useEffect, useRef, useState, useCallback } from "react";
-import { AttachmentDto } from "../../types/attachment";
-import {
-  getAttachments,
-  deleteAttachment,
-  uploadAttachment,
-  downloadAttachment,
-} from "../../services/attachmentService";
+import { useRef } from "react";
+import { downloadAttachment } from "../../services/attachmentService";
 import { saveAs } from "file-saver";
 import { translateError } from "../../utils/errorTranslations";
+import { extractErrorMessage } from "../../utils/extractErrorMessage";
+import { AxiosError } from "axios";
+import {
+  useAttachments,
+  useUploadAttachment,
+  useDeleteAttachment,
+} from "../../hooks/queries/useAttachmentQueries";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   cardId: string;
-  onAttachmentChange?: () => void;
   onError: (msg: string) => void;
 }
 
-const AttachmentModal = ({
-  open,
-  onClose,
-  cardId,
-  onAttachmentChange,
-  onError,
-}: Props) => {
-  const [attachments, setAttachments] = useState<AttachmentDto[]>([]);
-  const [uploading, setUploading] = useState(false);
+const AttachmentModal = ({ open, onClose, cardId, onError }: Props) => {
+  const { data: attachments = [] } = useAttachments(open ? cardId : null);
+  const uploadMutation = useUploadAttachment(cardId);
+  const deleteMutation = useDeleteAttachment(cardId);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const fetch = useCallback(async () => {
-    const data = await getAttachments(cardId);
-    setAttachments(data);
-  }, [cardId]);
-
-  useEffect(() => {
-    if (open) {
-      fetch();
-    }
-  }, [open, fetch]);
-
-  const handleDelete = async (id: number) => {
-    await deleteAttachment(cardId, id);
-    await fetch();
-    onAttachmentChange?.();
+  const handleDelete = (id: number) => {
+    deleteMutation.mutate(id, {
+      onError: (err: unknown) => {
+        onError(translateError(extractErrorMessage(err)));
+      },
+    });
   };
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
-    try {
-      await uploadAttachment(cardId, file);
-      await fetch();
-    } catch (err: any) {
-      if (err.message === "Request failed with status code 413") {
-        onError("Příloha je příliš velká");
-        return;
-      }
-      const backendMessage = err.response?.data?.message;
-      onError(translateError(backendMessage));
-    } finally {
-      setUploading(false);
-    }
-
-    onAttachmentChange?.();
+    uploadMutation.mutate(file, {
+      onError: (err: unknown) => {
+        if (err instanceof AxiosError && err.response?.status === 413) {
+          onError("Příloha je příliš velká");
+          return;
+        }
+        onError(translateError(extractErrorMessage(err)));
+      },
+      onSettled: () => {
+        // Reset file input so the same file can be uploaded again
+        if (inputRef.current) inputRef.current.value = "";
+      },
+    });
   };
 
   const handleDownload = async (id: number, name: string) => {
     try {
       const blob = await downloadAttachment(cardId, id);
       saveAs(blob, name);
-    } catch (err: any) {
-      const backendMessage = err.response?.data?.message;
-      onError(translateError(backendMessage));
+    } catch (err: unknown) {
+      onError(translateError(extractErrorMessage(err)));
     }
   };
 
@@ -103,13 +86,13 @@ const AttachmentModal = ({
           <Button
             startIcon={<UploadFileIcon />}
             onClick={() => inputRef.current?.click()}
-            disabled={uploading}
+            disabled={uploadMutation.isPending}
           >
             Nahrát soubor
           </Button>
         </Box>
 
-        {uploading ? (
+        {uploadMutation.isPending ? (
           <Box display="flex" alignItems="center" gap={1}>
             <CircularProgress size={20} />
             <Typography variant="body2" color="text.secondary">
@@ -146,7 +129,7 @@ const AttachmentModal = ({
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={uploading}>
+        <Button onClick={onClose} disabled={uploadMutation.isPending}>
           Zavřít
         </Button>
       </DialogActions>

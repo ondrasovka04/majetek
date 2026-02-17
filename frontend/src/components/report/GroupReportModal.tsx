@@ -1,3 +1,4 @@
+/** Modal for generating a PDF report filtered by asset group and optional date. */
 import {
   Dialog,
   DialogTitle,

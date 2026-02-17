@@ -1,3 +1,4 @@
+/** Top navigation bar with links to Cards, Reports, Dictionaries, Inventory, and User settings. */
 import {
   AppBar,
   Toolbar,

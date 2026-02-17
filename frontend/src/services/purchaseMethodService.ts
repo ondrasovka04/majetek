@@ -1,3 +1,4 @@
+/** API service for purchase method (způsob pořízení) dictionary CRUD operations. */
 import authorizedRequest from "../utils/authorizedRequest";
 import { PurchaseMethod } from "../types/purchaseMethod";
 

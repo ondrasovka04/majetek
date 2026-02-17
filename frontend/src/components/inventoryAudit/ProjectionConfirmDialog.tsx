@@ -1,3 +1,4 @@
+/** Confirmation dialog shown before projecting inventory audit results. Displays a summary of actions (keep, relocate, write-off counts). */
 import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";

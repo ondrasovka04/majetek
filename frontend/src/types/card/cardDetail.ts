@@ -1,3 +1,4 @@
+/** Full asset card detail returned by the API for view/edit screens. */
 export interface CardDetail {
   id: string;
   name: string;

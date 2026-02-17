@@ -1,3 +1,8 @@
+/**
+ * MUI theme configuration.
+ * - `dictionaryTheme`: compact table styling for dictionary pages.
+ * - `defaultTheme`: standard theme with autocomplete off by default.
+ */
 import { createTheme } from "@mui/material/styles";
 
 export const dictionaryTheme = createTheme({

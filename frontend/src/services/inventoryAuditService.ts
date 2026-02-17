@@ -1,3 +1,4 @@
+/** API service functions for inventory audit — overview, differences, patching actions, and projecting results. */
 import authorizedRequest from "../utils/authorizedRequest";
 import { InventoryAuditEntry } from "../types/inventoryAudit/inventoryAudit";
 import {
@@ -25,7 +26,7 @@ export const getInventoryDifferences = async (): Promise<
   }));
 };
 
-interface PatchDifferenceBody {
+export interface PatchDifferenceBody {
   action?: InventoryDifferenceAction | null;
   writeOffDate?: string | null;
   writeOffMethodId?: string | null;

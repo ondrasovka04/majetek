@@ -1,3 +1,4 @@
+/** Converts a Date, ISO string, null, or undefined to a "yyyy-MM-dd" string (or null). */
 import { format } from "date-fns";
 
 export const toIsoDateString = (

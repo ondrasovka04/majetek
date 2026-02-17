@@ -1,3 +1,4 @@
+/** API service for write-off method (způsob vyřazení) dictionary CRUD operations. */
 import authorizedRequest from "../utils/authorizedRequest";
 import { WriteOffMethod } from "../types/writeOffMethod";
 
