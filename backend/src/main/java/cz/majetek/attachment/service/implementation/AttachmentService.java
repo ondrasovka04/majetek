@@ -66,11 +66,13 @@ public class AttachmentService implements IAttachmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AttachmentDto> getAttachments(Integer cardId) {
         return attachmentMapper.toDto(attachmentRepository.findAllByIdCardId(cardId));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Resource download(Integer cardId, Integer id) {
         Attachment attachment = attachmentRepository.findById(new Attachment.AttachmentId(id, cardId))
                 .orElseThrow(() -> new AttachmentException("Attachment not found"));

@@ -124,9 +124,6 @@ public class AuthController {
         return ResponseEntity.ok(authService.changePassword(changePasswordRequest));
     }
 
-    /**
-     * Get all asset groups.
-     */
     @GetMapping
     @Operation(summary = "Get all users", description = "Returns a list of all users")
     @ApiResponse(responseCode = "200", description = "List of users",

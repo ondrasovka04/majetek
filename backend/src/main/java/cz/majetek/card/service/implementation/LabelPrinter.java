@@ -33,9 +33,11 @@ import java.util.stream.Collectors;
 public class LabelPrinter {
 
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
-    public LabelPrinter(RestTemplate restTemplate) {
+    public LabelPrinter(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Value("${zebra.apikey}")
@@ -95,7 +97,7 @@ public class LabelPrinter {
         }
 
         try {
-            if ("FAILURE".equals(new ObjectMapper().readTree(response.getBody())
+            if ("FAILURE".equals(objectMapper.readTree(response.getBody())
                     .get("responses").get(0).get("status").asText())) {
                 throw new CardException("Failed to send to cloud printer");
             }

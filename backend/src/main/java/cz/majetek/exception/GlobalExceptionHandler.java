@@ -66,10 +66,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        String message = ex.getCause() != null ? ex.getCause().getMessage() : "Invalid JSON format in request body";
         return errorResponseUtils.buildErrorResponse(
                 HttpStatus.BAD_REQUEST,
-                message
+                "Invalid JSON format in request body"
         );
     }
 
@@ -202,7 +201,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex) {
         return errorResponseUtils.buildErrorResponse(
                 HttpStatus.BAD_REQUEST,
-                ex.getMessage()
+                "Invalid data access operation"
         );
     }
 

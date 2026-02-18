@@ -42,11 +42,13 @@ public class AuthService implements IAuthService {
     private final IUserMapper userMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserDto> getAll() {
         return userMapper.toDto(userRepository.findAll());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getById(String id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> UserException.notFound(id));

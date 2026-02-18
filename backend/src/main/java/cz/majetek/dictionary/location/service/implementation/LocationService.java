@@ -81,6 +81,7 @@ public class LocationService implements ILocationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public InputStreamResource exportLocation(String id) {
         Location existing = locationRepository.findById(id)
                 .orElseThrow(() -> LocationException.notFound(id));

@@ -1,5 +1,6 @@
 package cz.majetek.card.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.majetek.card.service.implementation.LabelPrinter;
 import cz.majetek.entity.Card;
 import cz.majetek.entity.Location;
@@ -18,7 +19,7 @@ class LabelPrinterTest {
 
     @BeforeEach
     void setUp() {
-        labelPrinter = new LabelPrinter(new RestTemplate());
+        labelPrinter = new LabelPrinter(new RestTemplate(), new ObjectMapper());
         ReflectionTestUtils.setField(labelPrinter, "apiKey", "test-key");
         ReflectionTestUtils.setField(labelPrinter, "tenant", "test-tenant");
         ReflectionTestUtils.setField(labelPrinter, "sn", "test-sn");

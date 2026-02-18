@@ -1,20 +1,19 @@
 package cz.majetek.exception;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Represents a field-level validation error.
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorFieldResponse {
-    @JsonProperty("field")
     private String field;
 
-    @JsonProperty("message")
     private String message;
 } 

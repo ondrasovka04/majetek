@@ -1,21 +1,19 @@
 package cz.majetek.inventoryaudit.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.majetek.entity.inventoryaudit.InventoryAuditAction;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 public class InventoryAuditPatchDto {
 
-    @JsonProperty("action")
     private InventoryAuditAction action;
 
-    @JsonProperty("writeOffDate")
     private LocalDate writeOffDate;
 
-    @JsonProperty("writeOffMethodId")
     private String writeOffMethodId;
 }
 
