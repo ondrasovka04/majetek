@@ -14,7 +14,7 @@ import cz.majetek.card.specification.CardSpecification;
 import cz.majetek.dictionary.assetgroup.repository.IAssetGroupRepository;
 import cz.majetek.dictionary.classentity.repository.IClassRepository;
 import cz.majetek.dictionary.location.repository.ILocationRepository;
-import cz.majetek.dictionary.puchasemethod.repository.IPurchaseMethodRepository;
+import cz.majetek.dictionary.purchasemethod.repository.IPurchaseMethodRepository;
 import cz.majetek.dictionary.writeoffmethod.repository.IWriteOffMethodRepository;
 import cz.majetek.entity.AssetGroup;
 import cz.majetek.entity.Card;
@@ -31,6 +31,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -109,6 +110,7 @@ public class CardService implements ICardService {
     }
 
     @Override
+    @Transactional
     public CardDto createCard(CardChangeDto dto) {
         validateReferencesExist(dto.getLocationId(), dto.getClassId(), dto.getGroupId(),
                 dto.getPurchaseMethodId(), dto.getWriteOffMethodId(), dto.getCreatedById(), dto.getResponsiblePersonId());
@@ -124,6 +126,7 @@ public class CardService implements ICardService {
     }
 
     @Override
+    @Transactional
     public CardDto updateCard(Integer id, CardChangeDto dto) {
         Card existing = cardRepository.findById(id)
                 .orElseThrow(() -> CardException.notFound(id));
@@ -139,8 +142,11 @@ public class CardService implements ICardService {
     }
 
     @Override
+    @Transactional
     public void deleteCard(Integer id) {
         if (!cardRepository.existsById(id)) throw CardException.notFound(id);
+
+        cardRepository.deleteById(id);
 
         Path cardFolder = Path.of(uploadRoot, String.valueOf(id));
 
@@ -158,8 +164,6 @@ public class CardService implements ICardService {
                 throw new CardException("Failed to delete attachment folder for card ID: " + id);
             }
         }
-
-        cardRepository.deleteById(id);
     }
 
     @Override
@@ -188,8 +192,8 @@ public class CardService implements ICardService {
                 card.getName(),
                 card.getPrice() != null ? card.getPrice() : BigDecimal.valueOf(0),
                 card.getSerialNumber(),
-                card.getLocation().getName(),
-                card.getGroup().getName(),
+                card.getLocation() != null ? card.getLocation().getName() : null,
+                card.getGroup() != null ? card.getGroup().getName() : null,
                 card.getPurchaseInvoice(),
                 card.getPurchaseDate(),
                 card.getWriteOffDate(),
@@ -197,8 +201,8 @@ public class CardService implements ICardService {
                 card.getWriteOffMethod() != null ? card.getWriteOffMethod().getName() : null,
                 card.getResponsiblePerson() != null ? card.getResponsiblePerson().getName() : null,
                 card.getNote(),
-                LocalDate.from(card.getCreatedDate()),
-                card.getCreatedBy().getName()
+                card.getCreatedDate() != null ? LocalDate.from(card.getCreatedDate()) : null,
+                card.getCreatedBy() != null ? card.getCreatedBy().getName() : null
         )).toList();
     }
 

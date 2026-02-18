@@ -59,39 +59,16 @@ class CardRepositoryTest {
     }
 
     @Test
-    void findMaxId_WithNoCards_ShouldReturnZero() {
-        Integer maxId = cardRepository.findMaxId();
-
-        assertEquals(0, maxId);
-    }
-
-    @Test
-    void findMaxId_WithCards_ShouldReturnMaximumId() {
-        Card card1 = createCard(1, "Card 1");
-        Card card2 = createCard(5, "Card 2");
-        Card card3 = createCard(3, "Card 3");
-
-        entityManager.persist(card1);
-        entityManager.persist(card2);
-        entityManager.persist(card3);
-        entityManager.flush();
-
-        Integer maxId = cardRepository.findMaxId();
-
-        assertEquals(5, maxId);
-    }
-
-    @Test
     void save_ShouldPersistCard() {
-        Card card = createCard(10, "New Card");
+        Card card = createCard(1, "New Card");
 
         Card saved = cardRepository.save(card);
 
         assertNotNull(saved);
-        assertEquals(10, saved.getId());
+        assertEquals(1, saved.getId());
         assertEquals("New Card", saved.getName());
 
-        Card found = entityManager.find(Card.class, 10);
+        Card found = entityManager.find(Card.class, 1);
         assertNotNull(found);
         assertEquals("New Card", found.getName());
     }
@@ -145,7 +122,21 @@ class CardRepositoryTest {
         assertFalse(exists);
     }
 
-    private Card createCard(Integer id, String name) {
+    @Test
+    void findMaxId_WhenCardsExist_ShouldReturnMaxId() {
+        entityManager.persist(createCard(5, "Card 5"));
+        entityManager.persist(createCard(10, "Card 10"));
+        entityManager.flush();
+
+        assertEquals(10, cardRepository.findMaxId());
+    }
+
+    @Test
+    void findMaxId_WhenNoCardsExist_ShouldReturnZero() {
+        assertEquals(0, cardRepository.findMaxId());
+    }
+
+    private Card createCard(int id, String name) {
         Card card = new Card();
         card.setId(id);
         card.setName(name);
@@ -160,4 +151,3 @@ class CardRepositoryTest {
         return card;
     }
 }
-

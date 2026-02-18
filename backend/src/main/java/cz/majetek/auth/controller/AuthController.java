@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -106,8 +107,8 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/register")
     @Operation(summary = "Register new user", description = "Creates a new user account")
-    public ResponseEntity<User> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity.ok(authService.register(registerRequest));
+    public ResponseEntity<UserDto> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(registerRequest));
     }
 
     /**
@@ -119,7 +120,7 @@ public class AuthController {
      */
     @Operation(summary = "Change user password", description = "Allows an authenticated user to change their password")
     @PutMapping("/change-password")
-    public ResponseEntity<User> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+    public ResponseEntity<UserDto> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         return ResponseEntity.ok(authService.changePassword(changePasswordRequest));
     }
 

@@ -54,16 +54,16 @@ public interface IAuthService {
      * @return Created user entity
      * @throws UsernameAlreadyExistsException if username is already taken
      */
-    User register(RegisterRequest registerRequest);
+    UserDto register(RegisterRequest registerRequest);
 
     /**
      * Changes the password of the currently authenticated user.
      *
      * @param changePasswordRequest object containing the current and new passwords
-     * @return the updated user entity after the password change
+     * @return the updated user DTO after the password change
      * @throws RuntimeException          if the user is not authenticated
      * @throws UsernameNotFoundException if the user cannot be found in the repository
      * @throws BadCredentialsException   if the current password does not match the stored password
      */
-    User changePassword(ChangePasswordRequest changePasswordRequest);
+    UserDto changePassword(ChangePasswordRequest changePasswordRequest);
 } 

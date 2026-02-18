@@ -34,7 +34,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -48,7 +48,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -62,7 +62,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -194,7 +194,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(120)
-    void inventoryAudit_insertMany_withNonExistentCard_shouldReturn400() throws Exception {
+    void inventoryAudit_insertMany_withNonExistentCard_shouldReturn404() throws Exception {
         String timestamp = LocalDateTime.now().toString();
         String json = String.format("""
                 [
@@ -210,12 +210,12 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @Order(121)
-    void inventoryAudit_insertMany_withNonExistentLocation_shouldReturn400() throws Exception {
+    void inventoryAudit_insertMany_withNonExistentLocation_shouldReturn404() throws Exception {
         String timestamp = LocalDateTime.now().toString();
         String json = String.format("""
                 [
@@ -231,7 +231,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -296,7 +296,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(132)
-    void inventoryAudit_patch_nonExistentCard_shouldReturn400() throws Exception {
+    void inventoryAudit_patch_nonExistentCard_shouldReturn404() throws Exception {
         String patchJson = """
                 {
                     "action": "KEEP"
@@ -307,7 +307,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(patchJson))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     // ===================== Project =====================

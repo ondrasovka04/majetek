@@ -6,6 +6,7 @@ import cz.majetek.entity.Location;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ class LabelPrinterTest {
 
     @BeforeEach
     void setUp() {
-        labelPrinter = new LabelPrinter();
+        labelPrinter = new LabelPrinter(new RestTemplate());
         ReflectionTestUtils.setField(labelPrinter, "apiKey", "test-key");
         ReflectionTestUtils.setField(labelPrinter, "tenant", "test-tenant");
         ReflectionTestUtils.setField(labelPrinter, "sn", "test-sn");

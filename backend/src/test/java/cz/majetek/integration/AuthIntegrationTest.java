@@ -36,10 +36,10 @@ class AuthIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(12)
-    void refreshEndpoint_withoutCookie_shouldReturn400() throws Exception {
+    void refreshEndpoint_withoutCookie_shouldReturn401() throws Exception {
         // /api/auth/refresh is permitAll() but requires valid cookie
         mockMvc.perform(post("/api/auth/refresh"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     // ===================== Login with BasicAuth =====================
@@ -60,18 +60,18 @@ class AuthIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(21)
-    void login_withInvalidPassword_shouldReturn400() throws Exception {
+    void login_withInvalidPassword_shouldReturn401() throws Exception {
         mockMvc.perform(post("/api/auth/login")
                         .header("Authorization", basicAuth(ADMIN_USERNAME, "wrongPassword")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
     @Order(22)
-    void login_withNonExistentUser_shouldReturn400() throws Exception {
+    void login_withNonExistentUser_shouldReturn401() throws Exception {
         mockMvc.perform(post("/api/auth/login")
                         .header("Authorization", basicAuth("nonexistent", "password")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -108,18 +108,18 @@ class AuthIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(31)
-    void refresh_withInvalidCookieName_shouldReturn400() throws Exception {
+    void refresh_withInvalidCookieName_shouldReturn401() throws Exception {
         mockMvc.perform(post("/api/auth/refresh")
                         .cookie(new Cookie("wrongName", "someValue")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
     @Order(32)
-    void refresh_withInvalidCookieValue_shouldReturn400() throws Exception {
+    void refresh_withInvalidCookieValue_shouldReturn401() throws Exception {
         mockMvc.perform(post("/api/auth/refresh")
                         .cookie(new Cookie("refreshToken", "invalid.token.value")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     // ===================== JWT-protected Access =====================
@@ -162,7 +162,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registerJson))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value("newregistered"))
                 .andExpect(jsonPath("$.name").value("Registered User"));
     }
@@ -182,7 +182,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(52)
-    void register_withDuplicateUsername_shouldReturn400() throws Exception {
+    void register_withDuplicateUsername_shouldReturn409() throws Exception {
         String registerJson = objectMapper.writeValueAsString(
                 Map.of("id", "REG03", "username", ADMIN_USERNAME, "password", "pass123", "name", "Duplicate"));
 
@@ -190,7 +190,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registerJson))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -209,15 +209,15 @@ class AuthIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(54)
-    void register_withDuplicateId_shouldReturn400() throws Exception {
+    void register_withDuplicateId_shouldReturn409() throws Exception {
         String registerJson = objectMapper.writeValueAsString(
-                Map.of("id", ADMIN_ID, "username", "uniquename", "password", "pass123", "name", "Duplicate ID"));
+                Map.of("id", "REG01", "username", "uniquename", "password", "pass123", "name", "Duplicate ID"));
 
         mockMvc.perform(post("/api/auth/register")
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registerJson))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
     }
 
     // ===================== Get Users =====================
@@ -260,7 +260,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(tempUserJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         // Login as the temp user
         var result = mockMvc.perform(post("/api/auth/login")
@@ -290,12 +290,12 @@ class AuthIntegrationTest extends BaseIntegrationTest {
         // Verify old password no longer works
         mockMvc.perform(post("/api/auth/login")
                         .header("Authorization", basicAuth(username, oldPassword)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
     @Order(71)
-    void changePassword_withWrongCurrentPassword_shouldReturn400() throws Exception {
+    void changePassword_withWrongCurrentPassword_shouldReturn401() throws Exception {
         String changeJson = objectMapper.writeValueAsString(
                 Map.of("currentPassword", "totallyWrong", "newPassword", "anything"));
 
@@ -303,6 +303,6 @@ class AuthIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerUser())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(changeJson))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 }

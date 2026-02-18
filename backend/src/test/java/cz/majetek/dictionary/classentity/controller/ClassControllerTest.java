@@ -75,7 +75,7 @@ class ClassControllerTest {
         mockMvc.perform(post("/api/class")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testClass)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("CL1"));
     }
 

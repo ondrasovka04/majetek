@@ -53,11 +53,11 @@ public class WriteOffMethodController {
      */
     @PostMapping
     @Operation(summary = "Create write-off method", description = "Creates a new write-off method")
-    @ApiResponse(responseCode = "200", description = "WriteOffMethod created",
+    @ApiResponse(responseCode = "201", description = "WriteOffMethod created",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = WriteOffMethod.class)))
     public ResponseEntity<WriteOffMethod> create(
             @RequestBody @Valid @Parameter(description = "WriteOffMethod to create") WriteOffMethod purchaseMethod) {
-        return ResponseEntity.ok(writeOffMethodService.create(purchaseMethod));
+        return ResponseEntity.status(HttpStatus.CREATED).body(writeOffMethodService.create(purchaseMethod));
     }
 
     /**

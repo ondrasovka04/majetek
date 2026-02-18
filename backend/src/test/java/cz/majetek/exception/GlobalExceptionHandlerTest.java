@@ -78,77 +78,88 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleCardException_ShouldReturnBadRequest() {
-        CardException exception = new CardException("Card not found");
+    void handleCardException_WithCardId_ShouldReturnNotFound() {
+        CardException exception = CardException.notFound(1);
+
+        ResponseEntity<ErrorResponse> response = exceptionHandler.handleCardException(exception);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.NOT_FOUND), anyString());
+    }
+
+    @Test
+    void handleCardException_WithoutCardId_ShouldReturnBadRequest() {
+        CardException exception = new CardException("No cards found");
 
         ResponseEntity<ErrorResponse> response = exceptionHandler.handleCardException(exception);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals("Card not found", response.getBody().getMessage());
-        verify(errorResponseUtils).buildErrorResponse(HttpStatus.BAD_REQUEST, "Card not found");
+        assertEquals("No cards found", response.getBody().getMessage());
+        verify(errorResponseUtils).buildErrorResponse(HttpStatus.BAD_REQUEST, "No cards found");
     }
 
     @Test
-    void handleUserException_ShouldReturnBadRequest() {
+    void handleUserException_ShouldReturnNotFound() {
         UserException exception = UserException.notFound("user123");
 
         ResponseEntity<ErrorResponse> response = exceptionHandler.handleUserException(exception);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
-        verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.BAD_REQUEST), anyString());
+        verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.NOT_FOUND), anyString());
     }
 
     @Test
-    void handleAuthException_ShouldReturnBadRequest() {
+    void handleAuthException_ShouldReturnUnauthorized() {
         AuthException exception = new AuthException("Invalid credentials");
 
         ResponseEntity<ErrorResponse> response = exceptionHandler.handleAuthException(exception);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Invalid credentials", response.getBody().getMessage());
     }
 
     @Test
-    void handleBadCredentialsException_ShouldReturnBadRequest() {
+    void handleBadCredentialsException_ShouldReturnUnauthorized() {
         BadCredentialsException exception = new BadCredentialsException("Bad credentials");
 
         ResponseEntity<ErrorResponse> response = exceptionHandler.handleBadCredentialsException(exception);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertNotNull(response.getBody());
     }
 
     @Test
-    void handleAssetGroupException_ShouldReturnBadRequest() {
+    void handleAssetGroupException_ShouldReturnNotFound() {
         AssetGroupException exception = AssetGroupException.notFound("group1");
 
         ResponseEntity<ErrorResponse> response = exceptionHandler.handleAssetGroupException(exception);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.BAD_REQUEST), anyString());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.NOT_FOUND), anyString());
     }
 
     @Test
-    void handleLocationException_ShouldReturnBadRequest() {
+    void handleLocationException_ShouldReturnNotFound() {
         LocationException exception = LocationException.notFound("loc1");
 
         ResponseEntity<ErrorResponse> response = exceptionHandler.handleLocationException(exception);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.BAD_REQUEST), anyString());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.NOT_FOUND), anyString());
     }
 
     @Test
-    void handleMaxUploadSizeExceededException_ShouldReturnBadRequest() {
+    void handleMaxUploadSizeExceededException_ShouldReturnPayloadTooLarge() {
         MaxUploadSizeExceededException exception = new MaxUploadSizeExceededException(1000L);
 
         ResponseEntity<ErrorResponse> response = exceptionHandler.handleMaxUploadSizeExceededException(exception);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.BAD_REQUEST), anyString());
+        assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, response.getStatusCode());
+        verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.PAYLOAD_TOO_LARGE), anyString());
     }
 
     @Test
@@ -169,11 +180,11 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleAuthenticationException_ShouldReturnBadRequest() {
+    void handleAuthenticationException_ShouldReturnUnauthorized() {
         AuthenticationException ex = new AuthenticationException("Auth failed") {
         };
         ResponseEntity<ErrorResponse> resp = exceptionHandler.handleAuthenticationException(ex);
-        assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED, resp.getStatusCode());
     }
 
     @Test
@@ -211,22 +222,22 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleUsernameAlreadyExistsException_ShouldReturnBadRequest() {
+    void handleUsernameAlreadyExistsException_ShouldReturnConflict() {
         ResponseEntity<ErrorResponse> resp = exceptionHandler.handleUsernameOrUserIdAlreadyExistsException(new UsernameAlreadyExistsException("taken"));
-        assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, resp.getStatusCode());
     }
 
     @Test
-    void handleUserIdAlreadyExistsException_ShouldReturnBadRequest() {
+    void handleUserIdAlreadyExistsException_ShouldReturnConflict() {
         ResponseEntity<ErrorResponse> resp = exceptionHandler.handleUsernameOrUserIdAlreadyExistsException(new UserIdAlreadyExistsException("taken"));
-        assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, resp.getStatusCode());
     }
 
     @Test
-    void handleHttpRequestMethodNotSupported_ShouldReturnBadRequest() {
+    void handleHttpRequestMethodNotSupported_ShouldReturnMethodNotAllowed() {
         HttpRequestMethodNotSupportedException ex = new HttpRequestMethodNotSupportedException("PATCH");
         ResponseEntity<ErrorResponse> resp = exceptionHandler.handleHttpRequestMethodNotSupportedException(ex);
-        assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
+        assertEquals(HttpStatus.METHOD_NOT_ALLOWED, resp.getStatusCode());
     }
 
     @Test
@@ -245,21 +256,21 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleClassEntityException_ShouldReturnBadRequest() {
+    void handleClassEntityException_ShouldReturnNotFound() {
         ResponseEntity<ErrorResponse> resp = exceptionHandler.handleClassEntityException(ClassEntityException.notFound("C1"));
-        assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, resp.getStatusCode());
     }
 
     @Test
-    void handlePurchaseMethodException_ShouldReturnBadRequest() {
+    void handlePurchaseMethodException_ShouldReturnNotFound() {
         ResponseEntity<ErrorResponse> resp = exceptionHandler.handlePurchaseMethodException(PurchaseMethodException.notFound("PM1"));
-        assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, resp.getStatusCode());
     }
 
     @Test
-    void handleWriteOffMethodException_ShouldReturnBadRequest() {
+    void handleWriteOffMethodException_ShouldReturnNotFound() {
         ResponseEntity<ErrorResponse> resp = exceptionHandler.handleWriteOffMethodException(WriteOffMethodException.notFound("WO1"));
-        assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, resp.getStatusCode());
     }
 
     @Test

@@ -1,8 +1,8 @@
-package cz.majetek.dictionary.puchasemethod.controller;
+package cz.majetek.dictionary.purchasemethod.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.majetek.dictionary.puchasemethod.dto.UpdatePurchaseMethodRequest;
-import cz.majetek.dictionary.puchasemethod.service.IPurchaseMethodService;
+import cz.majetek.dictionary.purchasemethod.dto.UpdatePurchaseMethodRequest;
+import cz.majetek.dictionary.purchasemethod.service.IPurchaseMethodService;
 import cz.majetek.entity.PurchaseMethod;
 import cz.majetek.exception.ErrorResponseUtils;
 import cz.majetek.exception.GlobalExceptionHandler;
@@ -75,7 +75,7 @@ class PurchaseMethodControllerTest {
         mockMvc.perform(post("/api/purchase-method")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testMethod)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("PM1"));
     }
 

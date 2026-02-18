@@ -1,8 +1,8 @@
-package cz.majetek.dictionary.puchasemethod.service;
+package cz.majetek.dictionary.purchasemethod.service;
 
-import cz.majetek.dictionary.puchasemethod.dto.UpdatePurchaseMethodRequest;
-import cz.majetek.dictionary.puchasemethod.repository.IPurchaseMethodRepository;
-import cz.majetek.dictionary.puchasemethod.service.implementation.PurchaseMethodService;
+import cz.majetek.dictionary.purchasemethod.dto.UpdatePurchaseMethodRequest;
+import cz.majetek.dictionary.purchasemethod.repository.IPurchaseMethodRepository;
+import cz.majetek.dictionary.purchasemethod.service.implementation.PurchaseMethodService;
 import cz.majetek.entity.PurchaseMethod;
 import cz.majetek.exception.dictionary.PurchaseMethodException;
 import org.junit.jupiter.api.BeforeEach;

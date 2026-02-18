@@ -53,11 +53,11 @@ public class ClassController {
      */
     @PostMapping
     @Operation(summary = "Create class", description = "Creates a new class")
-    @ApiResponse(responseCode = "200", description = "Class created",
+    @ApiResponse(responseCode = "201", description = "Class created",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClassEntity.class)))
     public ResponseEntity<ClassEntity> create(
             @RequestBody @Valid @Parameter(description = "Class to create") ClassEntity classEntity) {
-        return ResponseEntity.ok(classService.create(classEntity));
+        return ResponseEntity.status(HttpStatus.CREATED).body(classService.create(classEntity));
     }
 
     /**

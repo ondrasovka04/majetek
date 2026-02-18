@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,11 +31,11 @@ public class AttachmentController {
 
     @PostMapping
     @Operation(summary = "Upload attachment", description = "Upload attachment for given card")
-    @ApiResponse(responseCode = "200", description = "Attachment uploaded successfully")
+    @ApiResponse(responseCode = "201", description = "Attachment uploaded successfully")
     public ResponseEntity<AttachmentDto> uploadAttachment(
             @PathVariable Integer cardId,
             @RequestParam MultipartFile file) {
-        return ResponseEntity.ok(attachmentService.upload(cardId, file));
+        return ResponseEntity.status(HttpStatus.CREATED).body(attachmentService.upload(cardId, file));
     }
 
     @GetMapping

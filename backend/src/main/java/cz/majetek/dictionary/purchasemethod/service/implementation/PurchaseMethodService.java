@@ -1,0 +1,69 @@
+package cz.majetek.dictionary.purchasemethod.service.implementation;
+
+import cz.majetek.dictionary.purchasemethod.dto.UpdatePurchaseMethodRequest;
+import cz.majetek.dictionary.purchasemethod.repository.IPurchaseMethodRepository;
+import cz.majetek.dictionary.purchasemethod.service.IPurchaseMethodService;
+import cz.majetek.entity.PurchaseMethod;
+import cz.majetek.exception.dictionary.PurchaseMethodException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * Implementation of purchase method service interface.
+ */
+@Service
+@RequiredArgsConstructor
+public class PurchaseMethodService implements IPurchaseMethodService {
+    private final IPurchaseMethodRepository purchaseMethodRepository;
+
+    @Override
+    @Cacheable("purchaseMethods")
+    public List<PurchaseMethod> getAll() {
+        return purchaseMethodRepository.findAll();
+    }
+
+    @Override
+    @Cacheable(value = "purchaseMethods", key = "#id")
+    public PurchaseMethod getById(String id) {
+        return purchaseMethodRepository.findById(id).orElseThrow(
+                () -> PurchaseMethodException.notFound(id));
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = "purchaseMethods", allEntries = true)
+    public PurchaseMethod create(PurchaseMethod purchaseMethod) {
+        if (purchaseMethodRepository.existsById(purchaseMethod.getId())) {
+            throw new PurchaseMethodException("Purchase method with id " + purchaseMethod.getId() + " already exists");
+        }
+        return purchaseMethodRepository.save(purchaseMethod);
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = "purchaseMethods", allEntries = true)
+    public PurchaseMethod update(String id, UpdatePurchaseMethodRequest request) {
+        PurchaseMethod existing = purchaseMethodRepository.findById(id)
+                .orElseThrow(() -> PurchaseMethodException.notFound(id));
+
+        existing.setName(request.getName());
+        return purchaseMethodRepository.save(existing);
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = "purchaseMethods", allEntries = true)
+    public void delete(String id) {
+        try {
+            purchaseMethodRepository.deleteById(id);
+        } catch (DataIntegrityViolationException ex) {
+            throw new PurchaseMethodException("Purchase method cannot be deleted because it is being used.");
+        }
+    }
+}

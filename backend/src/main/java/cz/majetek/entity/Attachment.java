@@ -1,20 +1,22 @@
 package cz.majetek.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
 @Entity
 @Table(name = "attachment")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"card"})
 public class Attachment {
 
     @EmbeddedId
+    @EqualsAndHashCode.Include
     private AttachmentId id;
 
     private String name;

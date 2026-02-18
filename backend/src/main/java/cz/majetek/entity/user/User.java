@@ -1,20 +1,21 @@
 package cz.majetek.entity.user;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * User entity representing a system user.
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "user_")
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
     @Id
+    @EqualsAndHashCode.Include
     private String id;
 
     @Column(nullable = false, unique = true)

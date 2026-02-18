@@ -6,8 +6,11 @@ import cz.majetek.dictionary.writeoffmethod.service.IWriteOffMethodService;
 import cz.majetek.entity.WriteOffMethod;
 import cz.majetek.exception.dictionary.WriteOffMethodException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,17 +23,21 @@ public class WriteOffMethodService implements IWriteOffMethodService {
     private final IWriteOffMethodRepository writeOffMethodRepository;
 
     @Override
+    @Cacheable("writeOffMethods")
     public List<WriteOffMethod> getAll() {
         return writeOffMethodRepository.findAll();
     }
 
     @Override
+    @Cacheable(value = "writeOffMethods", key = "#id")
     public WriteOffMethod getById(String id) {
         return writeOffMethodRepository.findById(id).orElseThrow(
                 () -> WriteOffMethodException.notFound(id));
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "writeOffMethods", allEntries = true)
     public WriteOffMethod create(WriteOffMethod writeOffMethod) {
         if (writeOffMethodRepository.existsById(writeOffMethod.getId())) {
             throw new WriteOffMethodException("Write off method with id " + writeOffMethod.getId() + " already exists");
@@ -39,6 +46,8 @@ public class WriteOffMethodService implements IWriteOffMethodService {
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "writeOffMethods", allEntries = true)
     public WriteOffMethod update(String id, UpdateWriteOffMethodRequest request) {
         WriteOffMethod existing = writeOffMethodRepository.findById(id)
                 .orElseThrow(() -> WriteOffMethodException.notFound(id));
@@ -48,6 +57,8 @@ public class WriteOffMethodService implements IWriteOffMethodService {
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "writeOffMethods", allEntries = true)
     public void delete(String id) {
         try {
             writeOffMethodRepository.deleteById(id);

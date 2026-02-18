@@ -4,22 +4,24 @@ import cz.majetek.entity.Card;
 import cz.majetek.entity.Location;
 import cz.majetek.entity.WriteOffMethod;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "inventory_audit")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"card"})
 public class InventoryAudit {
 
     @Id
     @Column(name = "card_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Integer cardId;
 
     @OneToOne

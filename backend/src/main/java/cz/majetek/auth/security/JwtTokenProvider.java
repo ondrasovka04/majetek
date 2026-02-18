@@ -20,13 +20,13 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     @Value("${jwt.access.expiration}")
-    private int jwtExpirationInMs;
+    private long jwtExpirationInMs;
 
     @Value("${jwt.access.secret}")
     private String jwtSecret;
 
     @Value("${jwt.refresh.expiration}")
-    private int refreshExpirationInMs;
+    private long refreshExpirationInMs;
 
     @Value("${jwt.refresh.secret}")
     private String refreshSecret;
@@ -62,9 +62,9 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
         return Jwts.builder()
-                .setSubject(subject)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
+                .subject(subject)
+                .issuedAt(now)
+                .expiration(expiryDate)
                 .signWith(accessKey)
                 .compact();
     }
@@ -76,11 +76,11 @@ public class JwtTokenProvider {
      * @return Username
      */
     public String getUsernameFromJWT(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(accessKey)
+        Claims claims = Jwts.parser()
+                .verifyWith(accessKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
 
         return claims.getSubject();
     }
@@ -93,7 +93,7 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(accessKey).build().parseClaimsJws(token);
+            Jwts.parser().verifyWith(accessKey).build().parseSignedClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
@@ -112,9 +112,9 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + refreshExpirationInMs);
         return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
+                .subject(username)
+                .issuedAt(now)
+                .expiration(expiryDate)
                 .signWith(refreshKey)
                 .compact();
     }
@@ -124,7 +124,7 @@ public class JwtTokenProvider {
      */
     public boolean validateRefreshToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(token);
+            Jwts.parser().verifyWith(refreshKey).build().parseSignedClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
@@ -135,11 +135,11 @@ public class JwtTokenProvider {
      * Extract username from refresh token.
      */
     public String getUsernameFromRefreshToken(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(refreshKey)
+        Claims claims = Jwts.parser()
+                .verifyWith(refreshKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
         return claims.getSubject();
     }
 
@@ -147,11 +147,11 @@ public class JwtTokenProvider {
      * Gets expiration date from refresh token.
      */
     public Date getExpirationDateFromRefreshToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(refreshKey)
+        return Jwts.parser()
+                .verifyWith(refreshKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody().getExpiration();
+                .parseSignedClaims(token)
+                .getPayload().getExpiration();
     }
 
     /**
@@ -161,10 +161,10 @@ public class JwtTokenProvider {
      * @return Expiration date
      */
     public Date getExpirationDateFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(accessKey)
+        return Jwts.parser()
+                .verifyWith(accessKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody().getExpiration();
+                .parseSignedClaims(token)
+                .getPayload().getExpiration();
     }
 } 

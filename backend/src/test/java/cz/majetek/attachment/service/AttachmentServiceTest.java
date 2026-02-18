@@ -83,7 +83,7 @@ class AttachmentServiceTest {
                 "test content".getBytes()
         );
 
-        when(cardRepository.findById(1)).thenReturn(Optional.of(testCard));
+        when(cardRepository.findByIdForUpdate(1)).thenReturn(Optional.of(testCard));
         when(attachmentRepository.findNextIdForCard(1)).thenReturn(1);
         when(attachmentRepository.save(any(Attachment.class))).thenReturn(testAttachment);
         when(attachmentMapper.toDto(any(Attachment.class))).thenReturn(testAttachmentDto);
@@ -92,7 +92,7 @@ class AttachmentServiceTest {
 
         assertNotNull(result);
         assertEquals("test.pdf", result.getName());
-        verify(cardRepository).findById(1);
+        verify(cardRepository).findByIdForUpdate(1);
         verify(attachmentRepository).save(any(Attachment.class));
 
         // Verify file was created
@@ -108,7 +108,7 @@ class AttachmentServiceTest {
                 "test content".getBytes()
         );
 
-        when(cardRepository.findById(999)).thenReturn(Optional.empty());
+        when(cardRepository.findByIdForUpdate(999)).thenReturn(Optional.empty());
 
         assertThrows(CardException.class, () -> attachmentService.upload(999, file));
         verify(attachmentRepository, never()).save(any(Attachment.class));
