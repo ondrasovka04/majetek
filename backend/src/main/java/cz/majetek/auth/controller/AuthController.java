@@ -101,8 +101,8 @@ public class AuthController {
      * Registers a new user.
      *
      * @param registerRequest User registration data
-     * @return Created user entity
-     * @throws UsernameAlreadyExistsException (400) if username is already taken
+     * @return Created user DTO
+     * @throws UsernameAlreadyExistsException (409) if the username is already taken
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/register")
