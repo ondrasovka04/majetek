@@ -25,6 +25,7 @@ public final class CardSpecification {
     private static final String F_PURCHASE_METHOD = "purchaseMethod";
     private static final String F_PURCHASE_INVOICE = "purchaseInvoice";
     private static final String F_WRITE_OFF_DATE = "writeOffDate";
+    private static final String F_WRITE_OFF_METHOD = "writeOffMethod";
     private static final String F_CREATED_BY = "createdBy";
     private static final String F_CREATED_DATE = "createdDate";
     private static final String F_RESPONSIBLE_PERSON = "responsiblePerson";
@@ -49,7 +50,7 @@ public final class CardSpecification {
             add(predicates, query.getClassId(), v -> cb.equal(root.get(F_ASSET_CLASS).get(F_ID), v));
             add(predicates, query.getGroupId(), v -> cb.equal(root.get(F_GROUP).get(F_ID), v));
             add(predicates, query.getPurchaseMethodId(), v -> cb.equal(root.get(F_PURCHASE_METHOD).get(F_ID), v));
-            add(predicates, query.getWriteOffMethodId(), v -> cb.equal(root.get("writeOffMethod").get(F_ID), v));
+            add(predicates, query.getWriteOffMethodId(), v -> cb.equal(root.get(F_WRITE_OFF_METHOD).get(F_ID), v));
             add(predicates, query.getPurchaseInvoice(), v -> cb.equal(root.get(F_PURCHASE_INVOICE), v));
             add(predicates, query.getCreatedBy(), v -> cb.equal(root.get(F_CREATED_BY).get(F_ID), v));
             add(predicates, query.getResponsePerson(), v -> cb.equal(root.get(F_RESPONSIBLE_PERSON).get(F_ID), v));

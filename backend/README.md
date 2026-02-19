@@ -7,15 +7,17 @@ REST API pro správu majetku (asset management) postavené na Spring Boot.
 | Technologie | Verze | Účel |
 |---|---|---|
 | Java | 21 | Runtime |
-| Spring Boot | 3.2.5 | Framework |
+| Spring Boot | 3.2.12 | Framework |
 | PostgreSQL | 17 | Produkční databáze |
 | H2 | — | Testovací in-memory databáze |
-| JWT (jjwt) | 0.11.5 | Autentizace (access + refresh tokeny) |
-| MapStruct | 1.5.5 | Mapování DTO ↔ Entity |
+| JWT (jjwt) | 0.12.6 | Autentizace (access + refresh tokeny) |
+| MapStruct | 1.6.3 | Mapování DTO ↔ Entity |
 | Lombok | — | Boilerplate redukce |
-| iText 7 | 8.0.0 | Generování PDF reportů |
+| iText 7 | 8.0.5 | Generování PDF reportů |
 | EasyExcel + POI | 4.0.3 / 5.4.0 | Excel export |
-| SpringDoc OpenAPI | 2.4.0 | Swagger UI |
+| SpringDoc OpenAPI | 2.5.0 | Swagger UI |
+| Caffeine | — | In-memory cache (číselníky) |
+| Actuator | — | Health check a monitoring |
 | JaCoCo | 0.8.11 | Code coverage (≥80 % line, ≥75 % branch) |
 
 ## Prerekvizity
