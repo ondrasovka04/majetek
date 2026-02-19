@@ -40,19 +40,19 @@ class JwtAuthenticationEntryPointTest {
     }
 
     @Test
-    void commence_WithBadCredentials_ShouldReturn400() throws Exception {
+    void commence_WithBadCredentials_ShouldReturn401() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         BadCredentialsException ex = new BadCredentialsException("bad creds");
 
-        ErrorResponse body = new ErrorResponse(400, "Bad Request", "Invalid username or password", List.of(), Instant.now());
-        when(errorResponseUtils.buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid username or password"))
-                .thenReturn(ResponseEntity.status(400).body(body));
+        ErrorResponse body = new ErrorResponse(401, "Unauthorized", "Invalid username or password", List.of(), Instant.now());
+        when(errorResponseUtils.buildErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid username or password"))
+                .thenReturn(ResponseEntity.status(401).body(body));
         when(objectMapper.writeValueAsString(any())).thenReturn("{\"message\":\"Invalid username or password\"}");
 
         entryPoint.commence(request, response, ex);
 
-        assertEquals(400, response.getStatus());
+        assertEquals(401, response.getStatus());
         assertTrue(response.getContentAsString().contains("Invalid username or password"));
     }
 

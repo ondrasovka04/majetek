@@ -57,12 +57,12 @@ class AttachmentControllerTest {
     }
 
     @Test
-    void uploadAttachment_ShouldReturnOk() throws Exception {
+    void uploadAttachment_ShouldReturnCreated() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "test.pdf", "application/pdf", "test content".getBytes());
         when(attachmentService.upload(eq(1), any(MultipartFile.class))).thenReturn(testAttachmentDto);
 
         mockMvc.perform(multipart("/api/card/1/attachments").file(file))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("test.pdf"));
     }
 

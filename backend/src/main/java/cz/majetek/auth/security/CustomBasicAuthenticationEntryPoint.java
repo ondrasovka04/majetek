@@ -52,7 +52,7 @@ public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntr
 
         ResponseEntity<ErrorResponse> errorResponse;
         if (authException instanceof BadCredentialsException) {
-            errorResponse = errorResponseUtils.buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid username or password");
+            errorResponse = errorResponseUtils.buildErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         } else {
             errorResponse = errorResponseUtils.buildErrorResponse(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }

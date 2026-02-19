@@ -112,7 +112,7 @@ class InventoryAuditServiceTest {
 
     @Test
     void getDiffs_WithNoAuditRecords_ShouldThrowException() {
-        when(inventoryAuditRepository.findAllByRealLocationIsNotNull()).thenReturn(Collections.emptyList());
+        when(inventoryAuditRepository.existsByRealLocationIsNotNull()).thenReturn(false);
 
         assertThrows(InventoryAuditException.class, () -> inventoryAuditService.getDiffs());
     }
@@ -120,7 +120,7 @@ class InventoryAuditServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     void getDiffs_WithAuditRecords_ShouldReturnDiffs() {
-        when(inventoryAuditRepository.findAllByRealLocationIsNotNull()).thenReturn(List.of(testAudit));
+        when(inventoryAuditRepository.existsByRealLocationIsNotNull()).thenReturn(true);
         when(cardRepository.findAll(any(Specification.class))).thenReturn(List.of(testCard));
 
         var diffDto = new InventoryAuditDiffDto();
@@ -145,7 +145,7 @@ class InventoryAuditServiceTest {
         when(locationRepository.findById("LOC2")).thenReturn(Optional.of(realLocation));
         when(cardRepository.findById(1)).thenReturn(Optional.of(testCard));
         when(inventoryAuditRepository.findById(1)).thenReturn(Optional.empty());
-        when(inventoryAuditRepository.save(any(InventoryAudit.class))).thenReturn(testAudit);
+        when(inventoryAuditRepository.saveAll(anyList())).thenReturn(List.of(testAudit));
 
         InventoryAuditInsertDto resultDto = new InventoryAuditInsertDto();
         resultDto.setCardId(1);
@@ -156,7 +156,7 @@ class InventoryAuditServiceTest {
 
         assertEquals(1, result.size());
         assertEquals(1, result.getFirst().getCardId());
-        verify(inventoryAuditRepository).save(any(InventoryAudit.class));
+        verify(inventoryAuditRepository).saveAll(anyList());
     }
 
     @Test
@@ -169,13 +169,13 @@ class InventoryAuditServiceTest {
         when(locationRepository.findById("LOC2")).thenReturn(Optional.of(realLocation));
         when(cardRepository.findById(1)).thenReturn(Optional.of(testCard));
         when(inventoryAuditRepository.findById(1)).thenReturn(Optional.empty());
-        when(inventoryAuditRepository.save(any(InventoryAudit.class))).thenReturn(testAudit);
+        when(inventoryAuditRepository.saveAll(anyList())).thenReturn(List.of(testAudit));
         when(mapper.toInsertDto(testAudit)).thenReturn(insertDto);
 
         List<InventoryAuditInsertDto> result = inventoryAuditService.insertMany(List.of(insertDto));
 
         assertEquals(1, result.size());
-        verify(inventoryAuditRepository).save(any(InventoryAudit.class));
+        verify(inventoryAuditRepository).saveAll(anyList());
     }
 
     @Test
@@ -188,13 +188,13 @@ class InventoryAuditServiceTest {
         when(locationRepository.findById("LOC2")).thenReturn(Optional.of(realLocation));
         when(cardRepository.findById(1)).thenReturn(Optional.of(testCard));
         when(inventoryAuditRepository.findById(1)).thenReturn(Optional.of(testAudit));
-        when(inventoryAuditRepository.save(any(InventoryAudit.class))).thenReturn(testAudit);
+        when(inventoryAuditRepository.saveAll(anyList())).thenReturn(List.of(testAudit));
         when(mapper.toInsertDto(testAudit)).thenReturn(insertDto);
 
         List<InventoryAuditInsertDto> result = inventoryAuditService.insertMany(List.of(insertDto));
 
         assertEquals(1, result.size());
-        verify(inventoryAuditRepository).save(any(InventoryAudit.class));
+        verify(inventoryAuditRepository).saveAll(anyList());
     }
 
     @Test
@@ -207,7 +207,7 @@ class InventoryAuditServiceTest {
 
         List<InventoryAuditInsertDto> insertDtoList = List.of(insertDto);
         assertThrows(LocationException.class, () -> inventoryAuditService.insertMany(insertDtoList));
-        verify(inventoryAuditRepository, never()).save(any(InventoryAudit.class));
+        verify(inventoryAuditRepository, never()).saveAll(anyList());
     }
 
     @Test
@@ -221,7 +221,7 @@ class InventoryAuditServiceTest {
 
         List<InventoryAuditInsertDto> insertDtoList = List.of(insertDto);
         assertThrows(CardException.class, () -> inventoryAuditService.insertMany(insertDtoList));
-        verify(inventoryAuditRepository, never()).save(any(InventoryAudit.class));
+        verify(inventoryAuditRepository, never()).saveAll(anyList());
     }
 
     @Test
@@ -316,13 +316,12 @@ class InventoryAuditServiceTest {
         testCard.setInventoryAudit(testAudit);
 
         when(cardRepository.findAll(any(Specification.class))).thenReturn(List.of(testCard));
-        when(cardRepository.save(any(Card.class))).thenReturn(testCard);
         doNothing().when(inventoryAuditRepository).deleteAllInBatch();
 
         inventoryAuditService.project();
 
         assertEquals(realLocation, testCard.getLocation());
-        verify(cardRepository).save(testCard);
+        verify(cardRepository).saveAll(anyList());
     }
 
     @Test
@@ -332,11 +331,10 @@ class InventoryAuditServiceTest {
         testCard.setInventoryAudit(testAudit);
 
         when(cardRepository.findAll(any(Specification.class))).thenReturn(List.of(testCard));
-        when(cardRepository.save(any(Card.class))).thenReturn(testCard);
         doNothing().when(inventoryAuditRepository).deleteAllInBatch();
 
         assertDoesNotThrow(() -> inventoryAuditService.project());
-        verify(cardRepository).save(testCard);
+        verify(cardRepository).saveAll(anyList());
         verify(inventoryAuditRepository).deleteAllInBatch();
     }
 
@@ -350,7 +348,6 @@ class InventoryAuditServiceTest {
         testCard.setInventoryAudit(testAudit);
 
         when(cardRepository.findAll(any(Specification.class))).thenReturn(List.of(testCard));
-        when(cardRepository.save(any(Card.class))).thenReturn(testCard);
         doNothing().when(inventoryAuditRepository).deleteAllInBatch();
 
         inventoryAuditService.project();
@@ -375,7 +372,6 @@ class InventoryAuditServiceTest {
         testCard.setInventoryAudit(testAudit);
 
         when(cardRepository.findAll(any(Specification.class))).thenReturn(List.of(testCard));
-        when(cardRepository.save(any(Card.class))).thenReturn(testCard);
         doNothing().when(inventoryAuditRepository).deleteAllInBatch();
 
         Location originalLocation = testCard.getLocation();

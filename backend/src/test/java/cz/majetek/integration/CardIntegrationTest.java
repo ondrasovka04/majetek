@@ -38,7 +38,7 @@ class CardIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -52,7 +52,7 @@ class CardIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -66,7 +66,7 @@ class CardIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     // ===================== Card CRUD =====================
@@ -205,9 +205,6 @@ class CardIntegrationTest extends BaseIntegrationTest {
                         {"name": "No Location Card", "purchaseDate": "%s"}
                         """.formatted(date)),
                 Arguments.of("""
-                        {"name": "Bad Location Card", "locationId": "XXXXX", "purchaseDate": "%s"}
-                        """.formatted(date)),
-                Arguments.of("""
                         {"name": "No Date Card", "locationId": "CLOC1"}
                         """)
         );
@@ -222,6 +219,20 @@ class CardIntegrationTest extends BaseIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJson))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Order(121)
+    void card_create_withNonExistentLocation_shouldReturn404() throws Exception {
+        String json = String.format("""
+                {"name": "Bad Location Card", "locationId": "XXXXX", "purchaseDate": "%s"}
+                """, LocalDate.now());
+
+        mockMvc.perform(post("/api/card")
+                        .header("Authorization", bearerAdmin())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isNotFound());
     }
 
     // ===================== Create second card for filter tests =====================
@@ -283,18 +294,18 @@ class CardIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(201)
-    void card_getDeleted_shouldReturn400() throws Exception {
+    void card_getDeleted_shouldReturn404() throws Exception {
         mockMvc.perform(get("/api/card/" + createdCardId)
                         .header("Authorization", bearerAdmin()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @Order(202)
-    void card_deleteNonExistent_shouldReturn400() throws Exception {
+    void card_deleteNonExistent_shouldReturn404() throws Exception {
         mockMvc.perform(delete("/api/card/999999")
                         .header("Authorization", bearerAdmin()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     // ===================== Cleanup =====================

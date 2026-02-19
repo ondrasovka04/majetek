@@ -75,7 +75,7 @@ class WriteOffMethodControllerTest {
         mockMvc.perform(post("/api/write-off-method")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testMethod)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("WO1"));
     }
 

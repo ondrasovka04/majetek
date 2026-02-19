@@ -30,6 +30,8 @@ class CardSpecificationIntegrationTest {
     @Autowired
     private EntityManager entityManager;
 
+    private Card card1, card2, card3, cardWrittenOff;
+
     @BeforeEach
     void setUp() {
         // Create reference entities
@@ -75,7 +77,7 @@ class CardSpecificationIntegrationTest {
         entityManager.persist(userB);
 
         // Create test cards
-        Card card1 = new Card();
+        card1 = new Card();
         card1.setId(1);
         card1.setName("Notebook Dell");
         card1.setPrice(new BigDecimal("25000"));
@@ -92,7 +94,7 @@ class CardSpecificationIntegrationTest {
         card1.setNote("First notebook for development");
         entityManager.persist(card1);
 
-        Card card2 = new Card();
+        card2 = new Card();
         card2.setId(2);
         card2.setName("Monitor LG");
         card2.setPrice(new BigDecimal("8000"));
@@ -108,7 +110,7 @@ class CardSpecificationIntegrationTest {
         card2.setNote("Two monitors for office");
         entityManager.persist(card2);
 
-        Card card3 = new Card();
+        card3 = new Card();
         card3.setId(3);
         card3.setName("Keyboard Logitech");
         card3.setPrice(new BigDecimal("1500"));
@@ -122,7 +124,7 @@ class CardSpecificationIntegrationTest {
         card3.setNote("Keyboards for new employees");
         entityManager.persist(card3);
 
-        Card cardWrittenOff = new Card();
+        cardWrittenOff = new Card();
         cardWrittenOff.setId(4);
         cardWrittenOff.setName("Old Printer");
         cardWrittenOff.setPrice(new BigDecimal("5000"));
@@ -161,8 +163,8 @@ class CardSpecificationIntegrationTest {
         List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
 
         assertEquals(2, result.size());
-        assertTrue(result.stream().anyMatch(c -> c.getId() == 2));
-        assertTrue(result.stream().anyMatch(c -> c.getId() == 3));
+        assertTrue(result.stream().anyMatch(c -> c.getId().equals(2)));
+        assertTrue(result.stream().anyMatch(c -> c.getId().equals(3)));
     }
 
     // --- Name filter ---

@@ -5,18 +5,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "purchase_method")
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class PurchaseMethod {
 
     @Id
+    @EqualsAndHashCode.Include
     @NotBlank(message = "ID must not be blank")
     @Size(max = 20, message = "ID must not be longer than 20 characters")
     private String id;

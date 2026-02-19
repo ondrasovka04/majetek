@@ -25,6 +25,7 @@ public final class CardSpecification {
     private static final String F_PURCHASE_METHOD = "purchaseMethod";
     private static final String F_PURCHASE_INVOICE = "purchaseInvoice";
     private static final String F_WRITE_OFF_DATE = "writeOffDate";
+    private static final String F_WRITE_OFF_METHOD = "writeOffMethod";
     private static final String F_CREATED_BY = "createdBy";
     private static final String F_CREATED_DATE = "createdDate";
     private static final String F_RESPONSIBLE_PERSON = "responsiblePerson";
@@ -49,6 +50,7 @@ public final class CardSpecification {
             add(predicates, query.getClassId(), v -> cb.equal(root.get(F_ASSET_CLASS).get(F_ID), v));
             add(predicates, query.getGroupId(), v -> cb.equal(root.get(F_GROUP).get(F_ID), v));
             add(predicates, query.getPurchaseMethodId(), v -> cb.equal(root.get(F_PURCHASE_METHOD).get(F_ID), v));
+            add(predicates, query.getWriteOffMethodId(), v -> cb.equal(root.get(F_WRITE_OFF_METHOD).get(F_ID), v));
             add(predicates, query.getPurchaseInvoice(), v -> cb.equal(root.get(F_PURCHASE_INVOICE), v));
             add(predicates, query.getCreatedBy(), v -> cb.equal(root.get(F_CREATED_BY).get(F_ID), v));
             add(predicates, query.getResponsePerson(), v -> cb.equal(root.get(F_RESPONSIBLE_PERSON).get(F_ID), v));
@@ -84,7 +86,11 @@ public final class CardSpecification {
 
     private static void addLikeIgnoreCase(List<Predicate> predicates, String value, CriteriaBuilder cb, Path<String> path) {
         if (value != null && !value.isBlank()) {
-            predicates.add(cb.like(cb.lower(path), "%" + value.toLowerCase() + "%"));
+            String escaped = value.toLowerCase()
+                    .replace("\\", "\\\\")
+                    .replace("%", "\\%")
+                    .replace("_", "\\_");
+            predicates.add(cb.like(cb.lower(path), "%" + escaped + "%", '\\'));
         }
     }
 
@@ -92,13 +98,16 @@ public final class CardSpecification {
         if (search == null || search.isBlank()) {
             return;
         }
-        String normalizedSearch = search.toLowerCase();
+        String normalizedSearch = search.toLowerCase()
+                .replace("\\", "\\\\")
+                .replace("%", "\\%")
+                .replace("_", "\\_");
         Expression<String> searchTerm = cb.function("unaccent", String.class, cb.literal(normalizedSearch));
         Expression<String> paddedId = cb.function("lpad", String.class, root.get(F_ID).as(String.class), cb.literal(4), cb.literal("0"));
         Expression<String> unaccentedName = cb.function("unaccent", String.class, cb.lower(root.get(F_NAME)));
         predicates.add(cb.or(
-                cb.like(unaccentedName, cb.concat("%", cb.concat(searchTerm, "%"))),
-                cb.like(paddedId, cb.concat("%", cb.concat(searchTerm, "%")))
+                cb.like(unaccentedName, cb.concat("%", cb.concat(searchTerm, "%")), '\\'),
+                cb.like(paddedId, cb.concat("%", cb.concat(searchTerm, "%")), '\\')
         ));
     }
 

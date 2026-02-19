@@ -75,7 +75,7 @@ class AssetGroupControllerTest {
         mockMvc.perform(post("/api/asset-group")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testGroup)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("GRP1"));
     }
 

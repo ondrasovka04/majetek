@@ -76,7 +76,7 @@ class LocationControllerTest {
         mockMvc.perform(post("/api/location")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testLocation)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("LOC1"));
     }
 

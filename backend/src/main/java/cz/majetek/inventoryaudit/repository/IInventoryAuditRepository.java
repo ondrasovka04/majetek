@@ -8,4 +8,6 @@ import java.util.List;
 public interface IInventoryAuditRepository extends JpaRepository<InventoryAudit, Integer> {
 
     List<InventoryAudit> findAllByRealLocationIsNotNull();
+
+    boolean existsByRealLocationIsNotNull();
 }

@@ -32,6 +32,14 @@ import java.util.stream.Collectors;
 @Component
 public class LabelPrinter {
 
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+
+    public LabelPrinter(RestTemplate restTemplate, ObjectMapper objectMapper) {
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
+    }
+
     @Value("${zebra.apikey}")
     private String apiKey;
 
@@ -82,14 +90,14 @@ public class LabelPrinter {
 
         ResponseEntity<String> response;
         try {
-            response = new RestTemplate().postForEntity("https://api.zebra.com/v2/devices/printers/send", request, String.class);
+            response = restTemplate.postForEntity("https://api.zebra.com/v2/devices/printers/send", request, String.class);
 
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new CardException("Failed to send to cloud printer");
         }
 
         try {
-            if ("FAILURE".equals(new ObjectMapper().readTree(response.getBody())
+            if ("FAILURE".equals(objectMapper.readTree(response.getBody())
                     .get("responses").get(0).get("status").asText())) {
                 throw new CardException("Failed to send to cloud printer");
             }

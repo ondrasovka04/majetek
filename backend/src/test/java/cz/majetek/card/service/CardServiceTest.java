@@ -12,7 +12,7 @@ import cz.majetek.card.service.implementation.LabelPrinter;
 import cz.majetek.dictionary.assetgroup.repository.IAssetGroupRepository;
 import cz.majetek.dictionary.classentity.repository.IClassRepository;
 import cz.majetek.dictionary.location.repository.ILocationRepository;
-import cz.majetek.dictionary.puchasemethod.repository.IPurchaseMethodRepository;
+import cz.majetek.dictionary.purchasemethod.repository.IPurchaseMethodRepository;
 import cz.majetek.dictionary.writeoffmethod.repository.IWriteOffMethodRepository;
 import cz.majetek.entity.AssetGroup;
 import cz.majetek.entity.Card;
@@ -202,8 +202,8 @@ class CardServiceTest {
         when(classRepository.existsById("CLS1")).thenReturn(true);
         when(assetGroupRepository.existsById("GRP1")).thenReturn(true);
         when(userRepository.existsById("1")).thenReturn(true);
-        when(cardRepository.findMaxId()).thenReturn(0);
         when(cardMapper.toEntity(changeDto)).thenReturn(testCard);
+        when(cardRepository.findMaxId()).thenReturn(0);
         when(cardRepository.save(any(Card.class))).thenReturn(testCard);
         when(cardMapper.toDto(testCard)).thenReturn(testCardDto);
 

@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
         return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.UNAUTHORIZED,
                 "Invalid username or password"
         );
     }
@@ -59,17 +59,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
         return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.UNAUTHORIZED,
                 ex.getMessage()
         );
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        String message = ex.getCause() != null ? ex.getCause().getMessage() : "Invalid JSON format in request body";
         return errorResponseUtils.buildErrorResponse(
                 HttpStatus.BAD_REQUEST,
-                message
+                "Invalid JSON format in request body"
         );
     }
 
@@ -97,7 +96,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({UsernameAlreadyExistsException.class, UserIdAlreadyExistsException.class})
     public ResponseEntity<ErrorResponse> handleUsernameOrUserIdAlreadyExistsException(RuntimeException ex) {
         return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.CONFLICT,
                 ex.getMessage()
         );
     }
@@ -105,23 +104,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<ErrorResponse> handleAuthException(AuthException ex) {
         return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.UNAUTHORIZED,
                 ex.getMessage()
         );
     }
 
     @ExceptionHandler(UserException.class)
     public ResponseEntity<ErrorResponse> handleUserException(UserException ex) {
-        return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage()
-        );
+        HttpStatus status = ex.getUserId() != null ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        return errorResponseUtils.buildErrorResponse(status, ex.getMessage());
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
         return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.METHOD_NOT_ALLOWED,
                 ex.getMessage()
         );
     }
@@ -144,58 +141,44 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CardException.class)
     public ResponseEntity<ErrorResponse> handleCardException(CardException ex) {
-        return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage()
-        );
+        HttpStatus status = ex.getCardId() != null ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        return errorResponseUtils.buildErrorResponse(status, ex.getMessage());
     }
 
     @ExceptionHandler(AssetGroupException.class)
     public ResponseEntity<ErrorResponse> handleAssetGroupException(AssetGroupException ex) {
-        return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage()
-        );
+        HttpStatus status = ex.getAssetGroupId() != null ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        return errorResponseUtils.buildErrorResponse(status, ex.getMessage());
     }
 
     @ExceptionHandler(ClassEntityException.class)
     public ResponseEntity<ErrorResponse> handleClassEntityException(ClassEntityException ex) {
-        return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage()
-        );
+        HttpStatus status = ex.getClassId() != null ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        return errorResponseUtils.buildErrorResponse(status, ex.getMessage());
     }
 
     @ExceptionHandler(LocationException.class)
     public ResponseEntity<ErrorResponse> handleLocationException(LocationException ex) {
-        return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage()
-        );
+        HttpStatus status = ex.getLocationId() != null ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        return errorResponseUtils.buildErrorResponse(status, ex.getMessage());
     }
 
     @ExceptionHandler(PurchaseMethodException.class)
     public ResponseEntity<ErrorResponse> handlePurchaseMethodException(PurchaseMethodException ex) {
-        return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage()
-        );
+        HttpStatus status = ex.getPurchaseMethodId() != null ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        return errorResponseUtils.buildErrorResponse(status, ex.getMessage());
     }
 
     @ExceptionHandler(WriteOffMethodException.class)
     public ResponseEntity<ErrorResponse> handleWriteOffMethodException(WriteOffMethodException ex) {
-        return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage()
-        );
+        HttpStatus status = ex.getWriteOffMethodId() != null ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        return errorResponseUtils.buildErrorResponse(status, ex.getMessage());
     }
 
     @ExceptionHandler(InventoryAuditException.class)
     public ResponseEntity<ErrorResponse> handleInventoryAuditException(InventoryAuditException ex) {
-        return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage()
-        );
+        HttpStatus status = ex.getCardId() != null ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+        return errorResponseUtils.buildErrorResponse(status, ex.getMessage());
     }
 
     @ExceptionHandler(AttachmentException.class)
@@ -209,7 +192,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         return errorResponseUtils.buildErrorResponse(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.PAYLOAD_TOO_LARGE,
                 ex.getMessage()
         );
     }
@@ -218,7 +201,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex) {
         return errorResponseUtils.buildErrorResponse(
                 HttpStatus.BAD_REQUEST,
-                ex.getMessage()
+                "Invalid data access operation"
         );
     }
 

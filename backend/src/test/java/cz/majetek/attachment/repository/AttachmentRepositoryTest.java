@@ -26,6 +26,7 @@ class AttachmentRepositoryTest {
     private TestEntityManager entityManager;
 
     private Card card1;
+    private Card card2;
 
     @BeforeEach
     void setUp() {
@@ -34,14 +35,15 @@ class AttachmentRepositoryTest {
         card1.setName("Test Card 1");
         entityManager.persist(card1);
 
-        Card card2 = new Card();
+        card2 = new Card();
         card2.setId(2);
         card2.setName("Test Card 2");
         entityManager.persist(card2);
+        entityManager.flush();
 
-        Attachment att1 = new Attachment(new AttachmentId(1, 1), "file1.pdf", "/path/file1.pdf", card1);
-        Attachment att2 = new Attachment(new AttachmentId(2, 1), "file2.txt", "/path/file2.txt", card1);
-        Attachment att3 = new Attachment(new AttachmentId(1, 2), "file3.png", "/path/file3.png", card2);
+        Attachment att1 = new Attachment(new AttachmentId(1, card1.getId()), "file1.pdf", "/path/file1.pdf", card1);
+        Attachment att2 = new Attachment(new AttachmentId(2, card1.getId()), "file2.txt", "/path/file2.txt", card1);
+        Attachment att3 = new Attachment(new AttachmentId(1, card2.getId()), "file3.png", "/path/file3.png", card2);
 
         entityManager.persist(att1);
         entityManager.persist(att2);
@@ -51,7 +53,7 @@ class AttachmentRepositoryTest {
 
     @Test
     void findAllByIdCardId_ShouldReturnAttachmentsForCard() {
-        List<Attachment> result = attachmentRepository.findAllByIdCardId(1);
+        List<Attachment> result = attachmentRepository.findAllByIdCardId(card1.getId());
 
         assertThat(result).hasSize(2);
         assertThat(result).extracting(Attachment::getName)
@@ -65,14 +67,14 @@ class AttachmentRepositoryTest {
         card3.setName("Empty Card");
         entityManager.persistAndFlush(card3);
 
-        List<Attachment> result = attachmentRepository.findAllByIdCardId(3);
+        List<Attachment> result = attachmentRepository.findAllByIdCardId(card3.getId());
 
         assertThat(result).isEmpty();
     }
 
     @Test
     void findById_ShouldReturnAttachmentWhenExists() {
-        Optional<Attachment> result = attachmentRepository.findById(new AttachmentId(1, 1));
+        Optional<Attachment> result = attachmentRepository.findById(new AttachmentId(1, card1.getId()));
 
         assertThat(result).isPresent();
         assertThat(result.get().getName()).isEqualTo("file1.pdf");
@@ -80,14 +82,14 @@ class AttachmentRepositoryTest {
 
     @Test
     void findById_ShouldReturnEmptyWhenNotExists() {
-        Optional<Attachment> result = attachmentRepository.findById(new AttachmentId(99, 1));
+        Optional<Attachment> result = attachmentRepository.findById(new AttachmentId(99, card1.getId()));
 
         assertThat(result).isEmpty();
     }
 
     @Test
     void findNextIdForCard_ShouldReturnNextId() {
-        int nextId = attachmentRepository.findNextIdForCard(1);
+        int nextId = attachmentRepository.findNextIdForCard(card1.getId());
 
         // Card 1 has attachments with id 1 and 2, so next should be 3
         assertThat(nextId).isEqualTo(3);
@@ -100,7 +102,7 @@ class AttachmentRepositoryTest {
         card3.setName("Empty Card");
         entityManager.persistAndFlush(card3);
 
-        int nextId = attachmentRepository.findNextIdForCard(3);
+        int nextId = attachmentRepository.findNextIdForCard(card3.getId());
 
         // COALESCE(MAX, 0) + 1 = 1
         assertThat(nextId).isEqualTo(1);
@@ -108,25 +110,25 @@ class AttachmentRepositoryTest {
 
     @Test
     void save_ShouldPersistNewAttachment() {
-        Attachment newAtt = new Attachment(new AttachmentId(3, 1), "new.doc", "/path/new.doc", card1);
+        Attachment newAtt = new Attachment(new AttachmentId(3, card1.getId()), "new.doc", "/path/new.doc", card1);
         attachmentRepository.save(newAtt);
         entityManager.flush();
 
-        Optional<Attachment> found = attachmentRepository.findById(new AttachmentId(3, 1));
+        Optional<Attachment> found = attachmentRepository.findById(new AttachmentId(3, card1.getId()));
         assertThat(found).isPresent();
         assertThat(found.get().getName()).isEqualTo("new.doc");
     }
 
     @Test
     void delete_ShouldRemoveAttachment() {
-        Attachment att = attachmentRepository.findById(new AttachmentId(1, 1)).orElseThrow();
+        Attachment att = attachmentRepository.findById(new AttachmentId(1, card1.getId())).orElseThrow();
         attachmentRepository.delete(att);
         entityManager.flush();
 
-        Optional<Attachment> result = attachmentRepository.findById(new AttachmentId(1, 1));
+        Optional<Attachment> result = attachmentRepository.findById(new AttachmentId(1, card1.getId()));
         assertThat(result).isEmpty();
 
         // Other attachments should remain
-        assertThat(attachmentRepository.findAllByIdCardId(1)).hasSize(1);
+        assertThat(attachmentRepository.findAllByIdCardId(card1.getId())).hasSize(1);
     }
 }

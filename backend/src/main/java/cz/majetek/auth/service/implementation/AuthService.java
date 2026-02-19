@@ -42,11 +42,13 @@ public class AuthService implements IAuthService {
     private final IUserMapper userMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserDto> getAll() {
         return userMapper.toDto(userRepository.findAll());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getById(String id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> UserException.notFound(id));
@@ -84,24 +86,25 @@ public class AuthService implements IAuthService {
 
     @Override
     @Transactional
-    public User register(RegisterRequest registerRequest) {
+    public UserDto register(RegisterRequest registerRequest) {
         if (userRepository.existsById(registerRequest.getId())) {
             throw new UserIdAlreadyExistsException("User Id is already taken");
         }
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
             throw new UsernameAlreadyExistsException("Username is already taken");
         }
-        return userRepository.save(new User(
+        User saved = userRepository.save(new User(
                 registerRequest.getId(),
                 registerRequest.getUsername(),
                 passwordEncoder.encode(registerRequest.getPassword()),
                 registerRequest.getName(),
                 UserRole.USER));
+        return userMapper.toDto(saved);
     }
 
     @Override
     @Transactional
-    public User changePassword(ChangePasswordRequest changePasswordRequest) {
+    public UserDto changePassword(ChangePasswordRequest changePasswordRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AuthException("User is not authenticated");
@@ -116,7 +119,8 @@ public class AuthService implements IAuthService {
         }
 
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        return userMapper.toDto(saved);
     }
 
 } 

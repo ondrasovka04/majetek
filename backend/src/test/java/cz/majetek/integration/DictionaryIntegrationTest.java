@@ -28,7 +28,7 @@ class DictionaryIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("AG001"))
                 .andExpect(jsonPath("$.name").value("Buildings"));
     }
@@ -78,10 +78,10 @@ class DictionaryIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(105)
-    void assetGroup_getDeleted_shouldReturn400() throws Exception {
+    void assetGroup_getDeleted_shouldReturn404() throws Exception {
         mockMvc.perform(get("/api/asset-group/AG001")
                         .header("Authorization", bearerAdmin()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -109,7 +109,7 @@ class DictionaryIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         // Duplicate create
         mockMvc.perform(post("/api/asset-group")
@@ -136,7 +136,7 @@ class DictionaryIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("LOC01"))
                 .andExpect(jsonPath("$.name").value("Office A"));
     }
@@ -186,10 +186,10 @@ class DictionaryIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(205)
-    void location_getDeleted_shouldReturn400() throws Exception {
+    void location_getDeleted_shouldReturn404() throws Exception {
         mockMvc.perform(get("/api/location/LOC01")
                         .header("Authorization", bearerAdmin()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -220,7 +220,7 @@ class DictionaryIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("CLS001"))
                 .andExpect(jsonPath("$.name").value("Computers"));
     }
@@ -270,10 +270,10 @@ class DictionaryIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(305)
-    void classEntity_getDeleted_shouldReturn400() throws Exception {
+    void classEntity_getDeleted_shouldReturn404() throws Exception {
         mockMvc.perform(get("/api/class/CLS001")
                         .header("Authorization", bearerAdmin()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     // ===================== PurchaseMethod =====================
@@ -289,7 +289,7 @@ class DictionaryIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("PM001"))
                 .andExpect(jsonPath("$.name").value("Direct Purchase"));
     }
@@ -339,10 +339,10 @@ class DictionaryIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(405)
-    void purchaseMethod_getDeleted_shouldReturn400() throws Exception {
+    void purchaseMethod_getDeleted_shouldReturn404() throws Exception {
         mockMvc.perform(get("/api/purchase-method/PM001")
                         .header("Authorization", bearerAdmin()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     // ===================== WriteOffMethod =====================
@@ -358,7 +358,7 @@ class DictionaryIntegrationTest extends BaseIntegrationTest {
                         .header("Authorization", bearerAdmin())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("WO001"))
                 .andExpect(jsonPath("$.name").value("Depreciation"));
     }
@@ -408,9 +408,9 @@ class DictionaryIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(505)
-    void writeOffMethod_getDeleted_shouldReturn400() throws Exception {
+    void writeOffMethod_getDeleted_shouldReturn404() throws Exception {
         mockMvc.perform(get("/api/write-off-method/WO001")
                         .header("Authorization", bearerAdmin()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }

@@ -270,12 +270,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
                     transition: "opacity 300ms",
                   }}>
                   {sortedAndFilteredCards.map((card) => (
-                    <CardRow
-                      key={card.id}
-                      card={card}
-                      selected={card.id === selectedCardId}
-                      onClick={onSelectCard}
-                    />
+                    <CardRow key={card.id} card={card} selected={card.id === selectedCardId} onClick={onSelectCard} />
                   ))}
                 </TableBody>
               </Table>

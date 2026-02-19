@@ -54,11 +54,11 @@ public class AssetGroupController {
      */
     @PostMapping
     @Operation(summary = "Create asset group", description = "Creates a new asset group")
-    @ApiResponse(responseCode = "200", description = "Asset group created",
+    @ApiResponse(responseCode = "201", description = "Asset group created",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = AssetGroup.class)))
     public ResponseEntity<AssetGroup> create(
             @RequestBody @Valid @Parameter(description = "Asset group to create") AssetGroup assetGroup) {
-        return ResponseEntity.ok(assetGroupService.create(assetGroup));
+        return ResponseEntity.status(HttpStatus.CREATED).body(assetGroupService.create(assetGroup));
     }
 
     /**

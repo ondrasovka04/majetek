@@ -101,7 +101,7 @@ public class CardController {
             content = @Content(mediaType = "application/pdf"))
     @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     public ResponseEntity<InputStreamResource> exportGroupReport(
-            @RequestBody @Parameter(description = "Request body containing group ID, flag for all groups and the date to which the report relates") GroupReportRequest req
+            @Valid @RequestBody @Parameter(description = "Request body containing group ID, flag for all groups and the date to which the report relates") GroupReportRequest req
     ) {
         LocalDate asOf = req.getAsOf() != null ? req.getAsOf() : LocalDate.now();
 
@@ -120,7 +120,7 @@ public class CardController {
             content = @Content(mediaType = "application/pdf"))
     @ApiResponse(responseCode = "400", description = "Invalid input or location not found", content = @Content)
     public ResponseEntity<InputStreamResource> exportLocationReport(
-            @RequestBody @Parameter(description = "Request body containing location ID and the date to which the report relates") LocationReportRequest req
+            @Valid @RequestBody @Parameter(description = "Request body containing location ID and the date to which the report relates") LocationReportRequest req
     ) {
         LocalDate asOf = req.getAsOf() != null ? req.getAsOf() : LocalDate.now();
 
@@ -138,7 +138,7 @@ public class CardController {
             content = @Content(mediaType = "application/pdf"))
     @ApiResponse(responseCode = "404", description = "Card not found", content = @Content)
     public ResponseEntity<InputStreamResource> exportCardReport(
-            @RequestBody @Parameter(description = "Request body containing card ID") CardReportRequest req
+            @Valid @RequestBody @Parameter(description = "Request body containing card ID") CardReportRequest req
     ) {
         InputStreamResource resource = cardService.exportCardReport(req.getCardId());
 

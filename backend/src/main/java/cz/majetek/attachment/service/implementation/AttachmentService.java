@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -35,13 +36,23 @@ public class AttachmentService implements IAttachmentService {
     private String uploadRoot;
 
     @Override
+    @Transactional
     public AttachmentDto upload(Integer cardId, MultipartFile file) {
-        Card card = cardRepository.findById(cardId)
+        Card card = cardRepository.findByIdForUpdate(cardId)
                 .orElseThrow(() -> CardException.notFound(cardId));
 
-        String uuidName = UUID.randomUUID() + "-" + file.getOriginalFilename();
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || originalFilename.isBlank()) {
+            throw new AttachmentException("File name is missing");
+        }
+        String safeName = Paths.get(originalFilename).getFileName().toString();
+        String uuidName = UUID.randomUUID() + "-" + safeName;
         Path cardFolder = Paths.get(uploadRoot, String.valueOf(cardId));
-        Path filePath = cardFolder.resolve(uuidName);
+        Path filePath = cardFolder.resolve(uuidName).normalize();
+
+        if (!filePath.startsWith(cardFolder.normalize())) {
+            throw new AttachmentException("Invalid file name");
+        }
 
         try {
             Files.createDirectories(cardFolder);
@@ -55,11 +66,13 @@ public class AttachmentService implements IAttachmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AttachmentDto> getAttachments(Integer cardId) {
         return attachmentMapper.toDto(attachmentRepository.findAllByIdCardId(cardId));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Resource download(Integer cardId, Integer id) {
         Attachment attachment = attachmentRepository.findById(new Attachment.AttachmentId(id, cardId))
                 .orElseThrow(() -> new AttachmentException("Attachment not found"));
@@ -73,6 +86,7 @@ public class AttachmentService implements IAttachmentService {
     }
 
     @Override
+    @Transactional
     public void delete(Integer cardId, Integer id) {
         Attachment attachment = attachmentRepository.findById(new Attachment.AttachmentId(id, cardId))
                 .orElseThrow(() -> new AttachmentException("Attachment not found"));

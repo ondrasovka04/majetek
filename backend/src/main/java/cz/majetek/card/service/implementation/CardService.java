@@ -14,7 +14,7 @@ import cz.majetek.card.specification.CardSpecification;
 import cz.majetek.dictionary.assetgroup.repository.IAssetGroupRepository;
 import cz.majetek.dictionary.classentity.repository.IClassRepository;
 import cz.majetek.dictionary.location.repository.ILocationRepository;
-import cz.majetek.dictionary.puchasemethod.repository.IPurchaseMethodRepository;
+import cz.majetek.dictionary.purchasemethod.repository.IPurchaseMethodRepository;
 import cz.majetek.dictionary.writeoffmethod.repository.IWriteOffMethodRepository;
 import cz.majetek.entity.AssetGroup;
 import cz.majetek.entity.Card;
@@ -31,6 +31,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,6 +44,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.alibaba.excel.EasyExcelFactory.write;
@@ -63,12 +66,13 @@ public class CardService implements ICardService {
     private final ICardMapper cardMapper;
 
     @Value("${export.path}")
-    public String exportPath;
+    private String exportPath;
 
     @Value("${attachments.folder}")
     private String uploadRoot;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CardDto> getFilteredCards(CardFilterQuery query) {
         return cardMapper.toDto(cardRepository.findAll(CardSpecification.filter(query)));
     }
@@ -77,6 +81,7 @@ public class CardService implements ICardService {
     private long maxLabelPerPrint;
 
     @Override
+    @Transactional(readOnly = true)
     public InputStreamResource exportLabel(CardFilterQuery query, boolean printCloud) {
         List<Card> cards = cardRepository.findAll(CardSpecification.filter(query));
         if (cards.isEmpty()) throw new CardException("No cards found");
@@ -99,16 +104,19 @@ public class CardService implements ICardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CardDto> getAllCards() {
         return cardMapper.toDto(cardRepository.findAll());
     }
 
+    @Transactional(readOnly = true)
     public CardDto getCardById(Integer id) {
         Card card = cardRepository.findById(id).orElseThrow(() -> CardException.notFound(id));
         return cardMapper.toDto(card);
     }
 
     @Override
+    @Transactional
     public CardDto createCard(CardChangeDto dto) {
         validateReferencesExist(dto.getLocationId(), dto.getClassId(), dto.getGroupId(),
                 dto.getPurchaseMethodId(), dto.getWriteOffMethodId(), dto.getCreatedById(), dto.getResponsiblePersonId());
@@ -124,6 +132,7 @@ public class CardService implements ICardService {
     }
 
     @Override
+    @Transactional
     public CardDto updateCard(Integer id, CardChangeDto dto) {
         Card existing = cardRepository.findById(id)
                 .orElseThrow(() -> CardException.notFound(id));
@@ -139,8 +148,11 @@ public class CardService implements ICardService {
     }
 
     @Override
+    @Transactional
     public void deleteCard(Integer id) {
         if (!cardRepository.existsById(id)) throw CardException.notFound(id);
+
+        cardRepository.deleteById(id);
 
         Path cardFolder = Path.of(uploadRoot, String.valueOf(id));
 
@@ -158,11 +170,10 @@ public class CardService implements ICardService {
                 throw new CardException("Failed to delete attachment folder for card ID: " + id);
             }
         }
-
-        cardRepository.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public InputStreamResource exportExcel(CardFilterQuery query) {
         List<Card> cards = cardRepository.findAll(CardSpecification.filter(query), Sort.by(Sort.Direction.ASC, "id"));
         if (cards.isEmpty()) throw new CardException("No cards found");
@@ -183,13 +194,17 @@ public class CardService implements ICardService {
     }
 
     private List<CardExportDto> getExportListFromCards(List<Card> cards) {
-        return cards.stream().map(card -> new CardExportDto(
+        return cards.stream().map(this::toExportDto).toList();
+    }
+
+    private CardExportDto toExportDto(Card card) {
+        return new CardExportDto(
                 String.format("%04d", card.getId()),
                 card.getName(),
                 card.getPrice() != null ? card.getPrice() : BigDecimal.valueOf(0),
                 card.getSerialNumber(),
-                card.getLocation().getName(),
-                card.getGroup().getName(),
+                card.getLocation() != null ? card.getLocation().getName() : null,
+                card.getGroup() != null ? card.getGroup().getName() : null,
                 card.getPurchaseInvoice(),
                 card.getPurchaseDate(),
                 card.getWriteOffDate(),
@@ -197,12 +212,13 @@ public class CardService implements ICardService {
                 card.getWriteOffMethod() != null ? card.getWriteOffMethod().getName() : null,
                 card.getResponsiblePerson() != null ? card.getResponsiblePerson().getName() : null,
                 card.getNote(),
-                LocalDate.from(card.getCreatedDate()),
-                card.getCreatedBy().getName()
-        )).toList();
+                card.getCreatedDate() != null ? LocalDate.from(card.getCreatedDate()) : null,
+                card.getCreatedBy() != null ? card.getCreatedBy().getName() : null
+        );
     }
 
     @Override
+    @Transactional(readOnly = true)
     public InputStreamResource exportGroupReport(String groupId, LocalDate asOf) {
         AssetGroup group = assetGroupRepository.findById(groupId).orElseThrow(() -> AssetGroupException.notFound(groupId));
         CardFilterQuery query = new CardFilterQuery();
@@ -224,14 +240,21 @@ public class CardService implements ICardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public InputStreamResource exportAllGroupsReport(LocalDate asOf) {
         List<AssetGroup> groups = assetGroupRepository.findAll(Sort.by("id"));
 
+        CardFilterQuery allQuery = new CardFilterQuery();
+        allQuery.setAsOfDate(asOf);
+        allQuery.setIncludeWriteOff(false);
+        List<Card> allCards = cardRepository.findAll(CardSpecification.filter(allQuery));
+
+        Map<String, List<Card>> cardsByGroup = allCards.stream()
+                .filter(c -> c.getGroup() != null)
+                .collect(Collectors.groupingBy(c -> c.getGroup().getId()));
+
         List<Pair<String, Double>> groupTotals = groups.stream().map(group -> {
-            CardFilterQuery query = new CardFilterQuery();
-            query.setGroupId(group.getId());
-            query.setAsOfDate(asOf);
-            List<Card> cards = cardRepository.findAll(CardSpecification.filter(query));
+            List<Card> cards = cardsByGroup.getOrDefault(group.getId(), List.of());
             double total = cards.stream()
                     .mapToDouble(c -> {
                         double price = c.getPrice() != null ? c.getPrice().doubleValue() : 0;
@@ -254,6 +277,7 @@ public class CardService implements ICardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public InputStreamResource exportLocationReport(String locationId, LocalDate asOf) {
         Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> LocationException.notFound(locationId));
@@ -275,6 +299,7 @@ public class CardService implements ICardService {
         }
     }
 
+    @Transactional(readOnly = true)
     public InputStreamResource exportCardReport(Integer cardId) {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> CardException.notFound(cardId));

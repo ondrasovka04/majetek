@@ -6,8 +6,11 @@ import cz.majetek.dictionary.classentity.service.IClassService;
 import cz.majetek.entity.ClassEntity;
 import cz.majetek.exception.dictionary.ClassEntityException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,17 +23,21 @@ public class ClassService implements IClassService {
     private final IClassRepository classEntityRepository;
 
     @Override
+    @Cacheable("classes")
     public List<ClassEntity> getAll() {
         return classEntityRepository.findAll();
     }
 
     @Override
+    @Cacheable(value = "classes", key = "#id")
     public ClassEntity getById(String id) {
         return classEntityRepository.findById(id).orElseThrow(
                 () -> ClassEntityException.notFound(id));
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "classes", allEntries = true)
     public ClassEntity create(ClassEntity classEntity) {
         if (classEntityRepository.existsById(classEntity.getId())) {
             throw new ClassEntityException("Class with id " + classEntity.getId() + " already exists");
@@ -39,6 +46,8 @@ public class ClassService implements IClassService {
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "classes", allEntries = true)
     public ClassEntity update(String id, UpdateClassRequest request) {
         ClassEntity existing = classEntityRepository.findById(id)
                 .orElseThrow(() -> ClassEntityException.notFound(id));
@@ -48,6 +57,8 @@ public class ClassService implements IClassService {
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "classes", allEntries = true)
     public void delete(String id) {
         try {
             classEntityRepository.deleteById(id);

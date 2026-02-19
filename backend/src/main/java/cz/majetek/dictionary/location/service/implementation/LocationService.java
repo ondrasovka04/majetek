@@ -9,9 +9,12 @@ import cz.majetek.exception.card.CardException;
 import cz.majetek.exception.dictionary.LocationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -33,17 +36,21 @@ public class LocationService implements ILocationService {
     public String exportPath;
 
     @Override
+    @Cacheable("locations")
     public List<Location> getAll() {
         return locationRepository.findAll();
     }
 
     @Override
+    @Cacheable(value = "locations", key = "#id")
     public Location getById(String id) {
         return locationRepository.findById(id).orElseThrow(
                 () -> LocationException.notFound(id));
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "locations", allEntries = true)
     public Location create(Location location) {
         if (locationRepository.existsById(location.getId())) {
             throw new LocationException("Location with id " + location.getId() + " already exists");
@@ -52,6 +59,8 @@ public class LocationService implements ILocationService {
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "locations", allEntries = true)
     public Location update(String id, UpdateLocationRequest request) {
         Location existing = locationRepository.findById(id)
                 .orElseThrow(() -> LocationException.notFound(id));
@@ -61,6 +70,8 @@ public class LocationService implements ILocationService {
     }
 
     @Override
+    @Transactional
+    @CacheEvict(value = "locations", allEntries = true)
     public void delete(String id) {
         try {
             locationRepository.deleteById(id);
@@ -70,6 +81,7 @@ public class LocationService implements ILocationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public InputStreamResource exportLocation(String id) {
         Location existing = locationRepository.findById(id)
                 .orElseThrow(() -> LocationException.notFound(id));

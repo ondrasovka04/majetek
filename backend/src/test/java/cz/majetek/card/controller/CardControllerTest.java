@@ -80,11 +80,11 @@ class CardControllerTest {
     }
 
     @Test
-    void getCardById_WithNonExistingCard_ShouldReturn400() throws Exception {
-        when(cardService.getCardById(999)).thenThrow(new CardException("Card not found"));
+    void getCardById_WithNonExistingCard_ShouldReturn404() throws Exception {
+        when(cardService.getCardById(999)).thenThrow(CardException.notFound(999));
 
         mockMvc.perform(get("/api/card/999"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -139,10 +139,10 @@ class CardControllerTest {
     }
 
     @Test
-    void deleteCard_WithNonExistingCard_ShouldReturn400() throws Exception {
-        doThrow(new CardException("Card not found")).when(cardService).deleteCard(999);
+    void deleteCard_WithNonExistingCard_ShouldReturn404() throws Exception {
+        doThrow(CardException.notFound(999)).when(cardService).deleteCard(999);
 
         mockMvc.perform(delete("/api/card/999"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }

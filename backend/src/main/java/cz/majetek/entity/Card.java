@@ -3,9 +3,7 @@ package cz.majetek.entity;
 import cz.majetek.entity.inventoryaudit.InventoryAudit;
 import cz.majetek.entity.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,12 +13,16 @@ import java.util.List;
 
 @Entity
 @Table(name = "card")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"attachments", "inventoryAudit"})
 public class Card {
 
     @Id
+    @EqualsAndHashCode.Include
     private Integer id;
 
     private String name;

@@ -184,13 +184,15 @@ class AuthServiceTest {
     void register_WithValidRequest_ShouldCreateUser() {
         RegisterRequest request = new RegisterRequest("2", "newuser", "password", "New User");
         User newUser = new User("2", "newuser", "encodedPassword", "New User", UserRole.USER);
+        UserDto newUserDto = new UserDto("2", "New User", "newuser", UserRole.USER);
 
         when(userRepository.existsById("2")).thenReturn(false);
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(newUser);
+        when(userMapper.toDto(newUser)).thenReturn(newUserDto);
 
-        User result = authService.register(request);
+        UserDto result = authService.register(request);
 
         assertNotNull(result);
         assertEquals("2", result.getId());
@@ -233,8 +235,9 @@ class AuthServiceTest {
         when(passwordEncoder.matches("oldPassword", "encodedPassword")).thenReturn(true);
         when(passwordEncoder.encode("newPassword")).thenReturn("newEncodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(userMapper.toDto(testUser)).thenReturn(testUserDto);
 
-        User result = authService.changePassword(request);
+        UserDto result = authService.changePassword(request);
 
         assertNotNull(result);
         verify(passwordEncoder).matches("oldPassword", "encodedPassword");

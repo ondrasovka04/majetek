@@ -127,7 +127,7 @@ public final class PdfGenerator {
 
             AssetTotals totals = addAssetTableRows(table, cards,
                     new Column(Card::getName, TextAlignment.LEFT, 0),
-                    new Column(c -> c.getGroup().getId(), TextAlignment.LEFT, 0));
+                    new Column(c -> c.getGroup() != null ? c.getGroup().getId() : "", TextAlignment.LEFT, 0));
             doc.add(table);
             addAssetTableSummary(doc, totals, columnWidths);
 
@@ -172,8 +172,8 @@ public final class PdfGenerator {
             details.addCell(createValueCell(Objects.toString(card.getAssetClass().getName(), "")));
 
             details.addCell(createLabelCell(GROUP));
-            details.addCell(createValueCell(card.getGroup().getId()));
-            details.addCell(createValueCell(Objects.toString(card.getGroup().getName(), "")));
+            details.addCell(createValueCell(card.getGroup() != null ? card.getGroup().getId() : ""));
+            details.addCell(createValueCell(card.getGroup() != null ? Objects.toString(card.getGroup().getName(), "") : ""));
 
             doc.add(details);
 
@@ -213,7 +213,7 @@ public final class PdfGenerator {
             userSection.addCell(createLabelCell("Vyhotovil"));
             userSection.addCell(createValueCell(card.getCreatedBy().getName()));
             userSection.addCell(createLabelCell("Zodpovídá"));
-            userSection.addCell(createValueCell(card.getResponsiblePerson().getName()));
+            userSection.addCell(createValueCell(card.getResponsiblePerson() != null ? card.getResponsiblePerson().getName() : ""));
 
             bottomSection.addCell(userSection);
 

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -39,13 +40,15 @@ public class InventoryAuditService implements IInventoryAuditService {
     private final IWriteOffMethodRepository writeOffMethodRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<InventoryAuditDto> getAll() {
         return inventoryAuditRepository.findAllByRealLocationIsNotNull().stream().map(mapper::toDto).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<InventoryAuditDiffDto> getDiffs() {
-        if (inventoryAuditRepository.findAllByRealLocationIsNotNull().isEmpty()) {
+        if (!inventoryAuditRepository.existsByRealLocationIsNotNull()) {
             throw new InventoryAuditException("No inventory audit records found.");
         }
 
@@ -63,7 +66,7 @@ public class InventoryAuditService implements IInventoryAuditService {
     @Override
     @Transactional
     public List<InventoryAuditInsertDto> insertMany(List<InventoryAuditInsertDto> items) {
-        List<InventoryAudit> saved = items.stream().map(dto -> {
+        List<InventoryAudit> entities = items.stream().map(dto -> {
             Location location = locationRepository.findById(dto.getRealLocationId())
                     .orElseThrow(() -> LocationException.notFound(dto.getRealLocationId()));
 
@@ -76,9 +79,10 @@ public class InventoryAuditService implements IInventoryAuditService {
             entity.setAction(null);
             entity.setWriteOffDate(null);
             entity.setWriteOffMethod(null);
-            return inventoryAuditRepository.save(entity);
+            return entity;
         }).toList();
 
+        List<InventoryAudit> saved = inventoryAuditRepository.saveAll(entities);
         return saved.stream().map(mapper::toInsertDto).toList();
     }
 
@@ -123,8 +127,10 @@ public class InventoryAuditService implements IInventoryAuditService {
             }
         });
 
+        List<Card> modifiedCards = new ArrayList<>();
         cards.forEach(card -> {
             InventoryAudit audit = card.getInventoryAudit();
+            if (audit.getAction() == null) return;
             switch (audit.getAction()) {
                 case KEEP, OU -> { /* no-op */ }
                 case SU -> card.setLocation(audit.getRealLocation());
@@ -133,8 +139,9 @@ public class InventoryAuditService implements IInventoryAuditService {
                     card.setWriteOffMethod(audit.getWriteOffMethod());
                 }
             }
-            cardRepository.save(card);
+            modifiedCards.add(card);
         });
+        cardRepository.saveAll(modifiedCards);
         inventoryAuditRepository.deleteAllInBatch();
     }
 }

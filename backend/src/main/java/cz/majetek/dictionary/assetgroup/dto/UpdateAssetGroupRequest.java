@@ -2,12 +2,14 @@ package cz.majetek.dictionary.assetgroup.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * DTO for updating the name of an asset group.
  */
-@Data
+@Getter
+@Setter
 public class UpdateAssetGroupRequest {
 
     @Schema(description = "New name of the asset group")

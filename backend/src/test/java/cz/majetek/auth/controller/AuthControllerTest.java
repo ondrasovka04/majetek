@@ -8,7 +8,6 @@ import cz.majetek.auth.dto.UserDto;
 import cz.majetek.auth.security.JwtTokenProvider;
 import cz.majetek.auth.security.RefreshTokenCookieFactory;
 import cz.majetek.auth.service.IAuthService;
-import cz.majetek.entity.user.User;
 import cz.majetek.entity.user.UserRole;
 import cz.majetek.exception.ErrorResponseUtils;
 import cz.majetek.exception.GlobalExceptionHandler;
@@ -59,7 +58,6 @@ class AuthControllerTest {
     private ObjectMapper objectMapper;
     private UserDto testUserDto;
     private LoginResponse testLoginResponse;
-    private User testUser;
 
     @BeforeEach
     void setUp() {
@@ -70,7 +68,6 @@ class AuthControllerTest {
 
         testUserDto = new UserDto("U1", "Test User", "testuser", UserRole.USER);
         testLoginResponse = new LoginResponse("jwt-token", testUserDto, new Date());
-        testUser = new User("U1", "testuser", "encoded-pass", "Test User", UserRole.USER);
     }
 
     @AfterEach
@@ -112,19 +109,19 @@ class AuthControllerTest {
     @Test
     void register_WithValidData_ShouldReturnUser() throws Exception {
         RegisterRequest req = new RegisterRequest("U2", "newuser", "pass123", "New User");
-        when(authService.register(any(RegisterRequest.class))).thenReturn(testUser);
+        when(authService.register(any(RegisterRequest.class))).thenReturn(testUserDto);
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value("testuser"));
     }
 
     @Test
     void changePassword_WithValidData_ShouldReturnOk() throws Exception {
         ChangePasswordRequest req = new ChangePasswordRequest("oldpass", "newpass");
-        when(authService.changePassword(any(ChangePasswordRequest.class))).thenReturn(testUser);
+        when(authService.changePassword(any(ChangePasswordRequest.class))).thenReturn(testUserDto);
 
         mockMvc.perform(put("/api/auth/change-password")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -144,15 +141,15 @@ class AuthControllerTest {
     }
 
     @Test
-    void refresh_NoCookies_ShouldReturn400() throws Exception {
+    void refresh_NoCookies_ShouldReturn401() throws Exception {
         mockMvc.perform(post("/api/auth/refresh"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void refresh_WrongCookieName_ShouldReturn400() throws Exception {
+    void refresh_WrongCookieName_ShouldReturn401() throws Exception {
         mockMvc.perform(post("/api/auth/refresh")
                         .cookie(new Cookie("otherCookie", "someValue")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 }

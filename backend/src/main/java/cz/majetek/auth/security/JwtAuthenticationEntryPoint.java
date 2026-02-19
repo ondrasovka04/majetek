@@ -46,7 +46,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         HttpStatus status;
 
         if (authException instanceof BadCredentialsException) {
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.UNAUTHORIZED;
             errorMessage = "Invalid username or password";
         } else {
             status = HttpStatus.UNAUTHORIZED;
