@@ -1,5 +1,6 @@
 package cz.majetek.ui.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -67,6 +68,12 @@ public class InventoryScanFragment extends Fragment {
         updateLocationProgressUI(0, 0);
         refreshTotalProgress();
         return v;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        io.shutdownNow();
     }
 
     private void bindViews(View v) {
@@ -198,8 +205,9 @@ public class InventoryScanFragment extends Fragment {
         }
         String locId = code.substring(1);
 
+        MajetekApp app = (MajetekApp) requireActivity().getApplication();
         io.execute(() -> {
-            AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
+            AppDatabase db = app.getDatabase();
             LocationEntity le = db.locationDao().getById(locId);
             if (le == null) {
                 postUI(() -> {
@@ -256,11 +264,14 @@ public class InventoryScanFragment extends Fragment {
             return;
         }
 
+        MajetekApp app = (MajetekApp) requireActivity().getApplication();
         io.execute(() -> {
-            AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
+            AppDatabase db = app.getDatabase();
             CardEntity card = db.cardDao().getById(cardId);
-            long now = System.currentTimeMillis();
-            db.inventoryAuditDao().upsert(new InventoryAuditEntity(cardId, currentLocationId, now));
+            if (card != null) {
+                long now = System.currentTimeMillis();
+                db.inventoryAuditDao().upsert(new InventoryAuditEntity(cardId, currentLocationId, now));
+            }
 
             int scannedInLoc = db.inventoryAuditDao().countCardsInLocation(currentLocationId);
             int totalInLoc = db.cardDao().countByLocation(currentLocationId);
@@ -284,6 +295,7 @@ public class InventoryScanFragment extends Fragment {
     }
 
     private void showCard(CardEntity c) {
+        if (!isAdded()) return;
         lastScannedCardId = c.getId();
 
         String idStr = String.format(Locale.US, "%04d", c.getId());
@@ -311,6 +323,7 @@ public class InventoryScanFragment extends Fragment {
     }
 
     private void showUnknown(String code) {
+        if (!isAdded()) return;
         lastScannedCardId = -1;
         txtCardId.setText("");
         txtCardName.setText("");
@@ -319,13 +332,18 @@ public class InventoryScanFragment extends Fragment {
         txtCardOu.setText("");
         cardContainer.setBackgroundColor(0xFFFFCDD2);
         setStatusError(getString(R.string.error_unknown_asset_id, code));
-        inputLocation.requestFocus();
+        if (inputLocation.isEnabled()) {
+            inputLocation.requestFocus();
+        } else {
+            inputAsset.requestFocus();
+        }
     }
 
     private void deleteLast() {
         if (lastScannedCardId <= 0) return;
+        MajetekApp app = (MajetekApp) requireActivity().getApplication();
         io.execute(() -> {
-            AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
+            AppDatabase db = app.getDatabase();
             db.inventoryAuditDao().deleteByCardId(lastScannedCardId);
             int scannedInLoc = currentLocationId != null ? db.inventoryAuditDao().countCardsInLocation(currentLocationId) : 0;
             int totalInLoc = currentLocationId != null ? db.cardDao().countByLocation(currentLocationId) : 0;
@@ -365,8 +383,9 @@ public class InventoryScanFragment extends Fragment {
     }
 
     private void refreshTotalProgress() {
+        MajetekApp app = (MajetekApp) requireActivity().getApplication();
         io.execute(() -> {
-            AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
+            AppDatabase db = app.getDatabase();
             int scannedTotal = db.inventoryAuditDao().countCardsTotal();
             int totalAll = db.cardDao().countAll();
             postUI(() -> updateTotalProgressUI(scannedTotal, totalAll));
@@ -383,25 +402,30 @@ public class InventoryScanFragment extends Fragment {
     }
 
     private void postUI(Runnable r) {
-        if (getActivity() != null) getActivity().runOnUiThread(r);
+        Activity a = getActivity();
+        if (a != null) a.runOnUiThread(() -> { if (isAdded()) r.run(); });
     }
 
     private void setStatusOk(String msg) {
+        if (!isAdded()) return;
         txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusOk));
         txtStatus.setText(msg);
     }
 
     private void setStatusWarn(String msg) {
+        if (!isAdded()) return;
         txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusWarn));
         txtStatus.setText(msg);
     }
 
     private void setStatusError(String msg) {
+        if (!isAdded()) return;
         txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusError));
         txtStatus.setText(msg);
     }
 
     private void setStatusNeutral(String msg) {
+        if (!isAdded()) return;
         txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusNeutral));
         txtStatus.setText(msg);
     }

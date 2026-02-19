@@ -56,6 +56,7 @@ public class CircularInventoryProgressView extends View {
         if (total < 0) total = 0;
         this.scanned = scanned;
         this.total = total;
+        setContentDescription(scanned + " / " + total);
         invalidate();
     }
 

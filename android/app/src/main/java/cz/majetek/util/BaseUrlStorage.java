@@ -26,14 +26,14 @@ public final class BaseUrlStorage {
         return true;
     }
 
-    private static boolean isValid(String url) {
+    static boolean isValid(String url) {
         if (url == null) return false;
         url = url.trim();
         if (!url.startsWith("https://")) return false;
         return url.length() >= "https://x.y".length();
     }
 
-    private static String sanitize(String url) {
+    static String sanitize(String url) {
         if (url == null) return DEFAULT_BASE_URL;
         url = url.trim();
         while (url.endsWith("/") && url.length() > 8) {

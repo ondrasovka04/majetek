@@ -10,9 +10,7 @@ val localProps = Properties().apply {
 
 android {
     namespace = "cz.majetek"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
 
     defaultConfig {
@@ -31,7 +29,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -42,8 +40,8 @@ android {
         buildConfig = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
@@ -53,11 +51,14 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.room.runtime)
-    annotationProcessor(libs.room.compiler)
     implementation(libs.okhttp)
     implementation(libs.gson)
+    implementation(libs.security.crypto)
+    annotationProcessor(libs.room.compiler)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockwebserver)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.room.testing)
 }
