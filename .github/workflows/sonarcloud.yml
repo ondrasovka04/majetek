@@ -64,8 +64,8 @@ jobs:
         with:
           name: android-build
           path: |
-            android/app/build/intermediates/javac/debug/classes/
-            android/app/build/intermediates/javac/debugUnitTest/classes/
+            android/app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/
+            android/app/build/intermediates/javac/debugUnitTest/compileDebugUnitTestJavaWithJavac/classes/
           retention-days: 1
 
   frontend:
