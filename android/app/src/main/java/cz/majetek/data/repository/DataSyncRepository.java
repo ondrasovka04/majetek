@@ -114,7 +114,7 @@ public class DataSyncRepository {
         for (JsonElement e : arr) {
             if (!e.isJsonObject()) continue;
             JsonObject o = e.getAsJsonObject();
-            cards.add(new CardEntity(o.get("id").getAsInt(), safeString(o, "name"), safeDouble(o, "price"), safeDouble(o, "quantity"), safeString(o, "locationId")));
+            cards.add(new CardEntity(o.get("id").getAsInt(), safeString(o, "name"), safeDouble(o, "price"), safeDouble(o, "quantity"), safeStringOrNull(o, "locationId")));
         }
         return cards;
     }
@@ -139,21 +139,28 @@ public class DataSyncRepository {
         return api;
     }
 
-    private String buildAuditJson(List<InventoryAuditEntity> audits) {
-        StringBuilder sb = new StringBuilder();
-        sb.append('[');
-        for (int i = 0; i < audits.size(); i++) {
-            InventoryAuditEntity a = audits.get(i);
-            if (i > 0) sb.append(',');
-            String ts = TS_FMT_BASE.format(Instant.ofEpochMilli(a.getTimestamp()));
-            sb.append('{').append("\"cardId\":").append(a.getCardId()).append(',').append("\"realLocationId\":\"").append(a.getRealLocationId()).append("\",").append("\"timestamp\":\"").append(ts).append("\"").append('}');
+    String buildAuditJson(List<InventoryAuditEntity> audits) {
+        JsonArray arr = new JsonArray();
+        for (InventoryAuditEntity a : audits) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("cardId", a.getCardId());
+            obj.addProperty("realLocationId", a.getRealLocationId());
+            obj.addProperty("timestamp", TS_FMT_BASE.format(Instant.ofEpochMilli(a.getTimestamp())));
+            arr.add(obj);
         }
-        sb.append(']');
-        return sb.toString();
+        return arr.toString();
+    }
+
+    public void shutdown() {
+        io.shutdownNow();
     }
 
     private static String safeString(JsonObject o, String key) {
         return o.has(key) && !o.get(key).isJsonNull() ? o.get(key).getAsString() : "";
+    }
+
+    private static String safeStringOrNull(JsonObject o, String key) {
+        return o.has(key) && !o.get(key).isJsonNull() ? o.get(key).getAsString() : null;
     }
 
     private static double safeDouble(JsonObject o, String key) {

@@ -1,5 +1,6 @@
 package cz.majetek.ui.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -61,6 +62,13 @@ public class DataTransferFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        repo.shutdown();
+        io.shutdownNow();
+    }
+
     private void showConfigureUrlDialog() {
         Context ctx = requireContext().getApplicationContext();
         String current = BaseUrlStorage.getBaseUrl(ctx);
@@ -93,11 +101,14 @@ public class DataTransferFragment extends Fragment {
     private void clearInventory() {
         setStatusNeutral(getString(R.string.status_clearing_inventory));
         setLoading(true);
+        MajetekApp app = (MajetekApp) requireActivity().getApplication();
         io.execute(() -> {
-            AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
+            AppDatabase db = app.getDatabase();
             db.inventoryAuditDao().clear();
-            if (getActivity() == null) return;
-            getActivity().runOnUiThread(() -> {
+            Activity a = getActivity();
+            if (a == null) return;
+            a.runOnUiThread(() -> {
+                if (!isAdded()) return;
                 setLoading(false);
                 setStatusOk(getString(R.string.status_inventory_cleared));
             });
@@ -110,7 +121,8 @@ public class DataTransferFragment extends Fragment {
             return;
         }
         prepareDownload();
-        io.execute(this::checkAuditState);
+        MajetekApp app = (MajetekApp) requireActivity().getApplication();
+        io.execute(() -> checkAuditState(app.getDatabase()));
     }
 
     private void prepareDownload() {
@@ -118,8 +130,7 @@ public class DataTransferFragment extends Fragment {
         setLoading(true);
     }
 
-    private void checkAuditState() {
-        AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
+    private void checkAuditState(AppDatabase db) {
         int auditCount = db.inventoryAuditDao().countCardsTotal();
         runOnUiThreadSafe(() -> handleAuditCount(auditCount));
     }
@@ -155,8 +166,8 @@ public class DataTransferFragment extends Fragment {
     }
 
     private void runOnUiThreadSafe(Runnable r) {
-        if (getActivity() == null) return;
-        getActivity().runOnUiThread(r);
+        Activity a = getActivity();
+        if (a != null) a.runOnUiThread(() -> { if (isAdded()) r.run(); });
     }
 
     private void startUpload() {
@@ -181,8 +192,10 @@ public class DataTransferFragment extends Fragment {
 
             @Override
             public void onError(String msg) {
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
+                Activity a = getActivity();
+                if (a == null) return;
+                a.runOnUiThread(() -> {
+                    if (!isAdded()) return;
                     setLoading(false);
                     setStatusError(getString(R.string.status_upload_error, msg));
                 });
@@ -199,21 +212,25 @@ public class DataTransferFragment extends Fragment {
     }
 
     private void setStatusOk(String msg) {
+        if (!isAdded()) return;
         txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusOk));
         txtStatus.setText(msg);
     }
 
     private void setStatusWarn(String msg) {
+        if (!isAdded()) return;
         txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusWarn));
         txtStatus.setText(msg);
     }
 
     private void setStatusError(String msg) {
+        if (!isAdded()) return;
         txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusError));
         txtStatus.setText(msg);
     }
 
     private void setStatusNeutral(String msg) {
+        if (!isAdded()) return;
         txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusNeutral));
         txtStatus.setText(msg);
     }
@@ -224,6 +241,6 @@ public class DataTransferFragment extends Fragment {
         Network network = cm.getActiveNetwork();
         if (network == null) return true;
         NetworkCapabilities caps = cm.getNetworkCapabilities(network);
-        return caps == null || !caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
+        return caps == null || (!caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) && !caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET));
     }
 }

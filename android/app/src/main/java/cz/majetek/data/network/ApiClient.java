@@ -35,8 +35,8 @@ public class ApiClient {
                     expiresAt = odt.toInstant().toEpochMilli();
                 }
                 return new LoginResult(token, expiresAt);
-            } catch (Exception ignore) {
-                return new LoginResult(body, 0L);
+            } catch (Exception e) {
+                throw new IOException("Failed to parse login response", e);
             }
         }
     }

@@ -1,5 +1,6 @@
 package cz.majetek.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -57,6 +58,12 @@ public class ControlScanFragment extends Fragment {
         setupInput();
         setupFocusWithoutKeyboard();
         return v;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        io.shutdownNow();
     }
 
     private void setupFocusWithoutKeyboard() {
@@ -136,8 +143,9 @@ public class ControlScanFragment extends Fragment {
         }
 
         final int finalId = id;
+        MajetekApp app = (MajetekApp) requireActivity().getApplication();
         io.execute(() -> {
-            AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
+            AppDatabase db = app.getDatabase();
             CardEntity card = db.cardDao().getById(finalId);
             if (card == null) {
                 postUI(() -> showNotFound(getString(R.string.control_not_found_id, finalId)));
@@ -148,6 +156,7 @@ public class ControlScanFragment extends Fragment {
     }
 
     private void showCard(CardEntity c) {
+        if (!isAdded()) return;
         txtId.setText(String.format(Locale.getDefault(), "%04d", c.getId()));
         txtName.setText(c.getName());
         txtPrice.setText(String.format(CZECH_LOCALE, "%,.2f", c.getPrice()));
@@ -160,6 +169,7 @@ public class ControlScanFragment extends Fragment {
     }
 
     private void showNotFound(String msg) {
+        if (!isAdded()) return;
         txtId.setText("");
         txtName.setText("");
         txtPrice.setText("");
@@ -172,6 +182,7 @@ public class ControlScanFragment extends Fragment {
     }
 
     private void postUI(Runnable r) {
-        if (getActivity() != null) getActivity().runOnUiThread(r);
+        Activity a = getActivity();
+        if (a != null) a.runOnUiThread(() -> { if (isAdded()) r.run(); });
     }
 }
