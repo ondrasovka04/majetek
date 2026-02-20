@@ -3,6 +3,8 @@ name: SonarCloud Analysis
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   sonarcloud:
@@ -21,11 +23,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # ── Backend build (without tests) ─────────────
-      - name: Build backend
-        run: mvn -f backend/pom.xml clean package -DskipTests
+      # ── Backend build + tests + JaCoCo ──────────
+      - name: Build & test backend
+        run: mvn -B -f backend/pom.xml clean verify
 
-      # ── Android build ───────────────────────────
+      # ── Android build + tests ───────────────────
       - name: Create Android local.properties
         run: |
           cat > android/local.properties <<EOF
@@ -34,11 +36,11 @@ jobs:
           ADMIN_PASS=ci
           EOF
 
-      - name: Build Android (debug)
+      - name: Build & test Android
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug testDebugUnitTest --no-daemon
 
       # ── Frontend ────────────────────────────────
       - name: Set up Node.js
