@@ -118,7 +118,7 @@ const CardFormFields = ({
               select
               required
               fullWidth
-              value={field.value}
+              value={field.value ?? ""}
               onChange={field.onChange}
               error={!!errors.locationId}
               helperText={errors.locationId?.message}
@@ -173,7 +173,7 @@ const CardFormFields = ({
               select
               required
               fullWidth
-              value={field.value}
+              value={field.value ?? ""}
               onChange={field.onChange}
               error={!!errors.groupId}
               helperText={errors.groupId?.message}

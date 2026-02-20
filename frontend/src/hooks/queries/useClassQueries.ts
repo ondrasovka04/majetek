@@ -9,6 +9,7 @@ export function useClasses() {
   return useQuery({
     queryKey: QUERY_KEY,
     queryFn: getClasses,
+    staleTime: Infinity,
   });
 }
 
