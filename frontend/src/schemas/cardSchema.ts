@@ -9,7 +9,7 @@ import { z } from "zod";
  */
 
 const emptyToNull = (v: string) => (v === "" ? null : v);
-const emptyToNullNum = (v: number | null | undefined) => (v == null || isNaN(v) ? null : v);
+const emptyToNullNum = (v: number | null | undefined) => (v == null || Number.isNaN(v) ? null : v);
 
 /** Check that a number has at most `maxDecimals` decimal places and `maxIntDigits` integer digits. */
 const isValidPrecision = (val: number | null, maxIntDigits: number, maxDecimals: number): boolean => {

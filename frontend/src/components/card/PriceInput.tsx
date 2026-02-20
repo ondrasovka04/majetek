@@ -23,22 +23,27 @@ export const PriceInput = ({ value, label, onChange }: PriceInputProps) => {
   const [editingValue, setEditingValue] = useState("");
 
   // Derive display value: when focused, show raw editing text; when blurred, format from prop
-  const displayValue = focused ? editingValue : value != null ? formatCurrency(value) : "";
+  const getDisplayValue = () => {
+    if (focused) return editingValue;
+    if (value != null) return formatCurrency(value);
+    return "";
+  };
+  const displayValue = getDisplayValue();
 
   const handleFocus = useCallback(() => {
     setFocused(true);
-    setEditingValue(value != null ? value.toString().replace(".", ",") : "");
+    setEditingValue(value == null ? "" : value.toString().replace(".", ","));
   }, [value]);
 
   const handleBlur = useCallback(() => {
     setFocused(false);
-    const numeric = parseFloat(editingValue.replace(",", "."));
-    onChange(!isNaN(numeric) ? numeric : null);
+    const numeric = Number.parseFloat(editingValue.replace(",", "."));
+    onChange(Number.isNaN(numeric) ? null : numeric);
   }, [editingValue, onChange]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    if (/^[0-9]*[.,]?[0-9]*$/.test(val) || val === "") {
+    if (/^\d*[.,]?\d*$/.test(val) || val === "") {
       setEditingValue(val);
     }
   }, []);
@@ -53,7 +58,7 @@ export const PriceInput = ({ value, label, onChange }: PriceInputProps) => {
       onChange={handleChange}
       type="text"
       slotProps={{
-        htmlInput: { inputMode: "decimal", pattern: "[0-9]*[.,]?[0-9]*" },
+        htmlInput: { inputMode: "decimal", pattern: "\\d*[.,]?\\d*" },
       }}
     />
   );

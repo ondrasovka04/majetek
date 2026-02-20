@@ -71,16 +71,27 @@ const InventoryDifferencesPage = () => {
     return entries.filter((e) => statusFilter === "ALL" || e.status === statusFilter);
   }, [entries, statusFilter]);
 
+  const formatLocation = (id: string | null, name: string | null): string => {
+    if (!id) return "";
+    if (name) return `${id} - ${name}`;
+    return id;
+  };
+
+  const getDefaultAction = (entry: InventoryDifferenceEntry): InventoryDifferenceAction | "" => {
+    if (entry.action) return entry.action;
+    if (entry.status === "CORRECT") return "KEEP";
+    if (entry.status === "WARN") return "SU";
+    return "";
+  };
+
   const rows = filtered.map((e) => ({
     id: e.cardId,
     cardId: e.cardId,
     cardName: e.cardName,
-    realLocation: e.realLocationId ? `${e.realLocationId} ${e.realLocationName ? "- " + e.realLocationName : ""}` : "",
-    expectedLocation: e.expectedLocationId
-      ? `${e.expectedLocationId} ${e.expectedLocationName ? "- " + e.expectedLocationName : ""}`
-      : "",
+    realLocation: formatLocation(e.realLocationId, e.realLocationName),
+    expectedLocation: formatLocation(e.expectedLocationId, e.expectedLocationName),
     status: e.status,
-    action: e.action ?? (e.status === "CORRECT" ? "KEEP" : e.status === "WARN" ? "SU" : ""),
+    action: getDefaultAction(e),
     writeOffDate: e.writeOffDate ?? null,
     writeOffMethodId: e.writeOffMethodId ?? "",
   }));
@@ -260,6 +271,47 @@ const InventoryDifferencesPage = () => {
     },
   ];
 
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="flex justify-center items-center h-64">
+          <CircularProgress />
+        </div>
+      );
+    }
+    if (noRecords) {
+      return (
+        <Box className="mt-8" display="flex" flexDirection="column" alignItems="center" gap={2}>
+          <Typography variant="h6">Zatím nejsou k dispozici žádné záznamy inventury.</Typography>
+          <Typography variant="body2" color="text.secondary">
+            Jakmile budou naskenovány položky, objeví se zde rozdíly k vyhodnocení.
+          </Typography>
+        </Box>
+      );
+    }
+    return (
+      <div style={{ height: "calc(100vh - 170px)", width: "100%" }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          disableRowSelectionOnClick
+          sortingOrder={["asc", "desc"]}
+          getRowClassName={(params) => `diff-row-${params.row.status.toLowerCase()}`}
+          localeText={{
+            ...dataGridCsCZ.components.MuiDataGrid.defaultProps.localeText,
+            noRowsLabel: "Žádné záznamy",
+            paginationRowsPerPage: "Řádků na stránku:",
+          }}
+          sx={{
+            "& .diff-row-correct": { backgroundColor: rowColor.CORRECT },
+            "& .diff-row-warn": { backgroundColor: rowColor.WARN },
+            "& .diff-row-wrong": { backgroundColor: rowColor.WRONG },
+          }}
+        />
+      </div>
+    );
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -295,38 +347,7 @@ const InventoryDifferencesPage = () => {
 
           {NotificationBar}
 
-          {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <CircularProgress />
-            </div>
-          ) : noRecords ? (
-            <Box className="mt-8" display="flex" flexDirection="column" alignItems="center" gap={2}>
-              <Typography variant="h6">Zatím nejsou k dispozici žádné záznamy inventury.</Typography>
-              <Typography variant="body2" color="text.secondary">
-                Jakmile budou naskenovány položky, objeví se zde rozdíly k vyhodnocení.
-              </Typography>
-            </Box>
-          ) : (
-            <div style={{ height: "calc(100vh - 170px)", width: "100%" }}>
-              <DataGrid
-                rows={rows}
-                columns={columns}
-                disableRowSelectionOnClick
-                sortingOrder={["asc", "desc"]}
-                getRowClassName={(params) => `diff-row-${params.row.status.toLowerCase()}`}
-                localeText={{
-                  ...dataGridCsCZ.components.MuiDataGrid.defaultProps.localeText,
-                  noRowsLabel: "Žádné záznamy",
-                  paginationRowsPerPage: "Řádků na stránku:",
-                }}
-                sx={{
-                  "& .diff-row-correct": { backgroundColor: rowColor.CORRECT },
-                  "& .diff-row-warn": { backgroundColor: rowColor.WARN },
-                  "& .diff-row-wrong": { backgroundColor: rowColor.WRONG },
-                }}
-              />
-            </div>
-          )}
+          {renderContent()}
           <ProjectionConfirmDialog
             open={confirmOpen}
             onClose={() => setConfirmOpen(false)}

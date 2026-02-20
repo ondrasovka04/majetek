@@ -33,9 +33,9 @@ const CardReportModal = ({ open, onClose, onGenerate, loading }: CardReportModal
     queryKey: ["cardSearch", inputValue],
     queryFn: async () => {
       const results = await filterCards({ fulltextSearch: inputValue });
-      results.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      results.sort((a, b) => Number.parseInt(a.id) - Number.parseInt(b.id));
       return results.map((card) => ({
-        id: parseInt(card.id),
+        id: Number.parseInt(card.id),
         label: `${String(card.id).padStart(4, "0")} \u2003${card.name}`,
       }));
     },
@@ -43,7 +43,12 @@ const CardReportModal = ({ open, onClose, onGenerate, loading }: CardReportModal
     placeholderData: (prev) => prev,
   });
 
-  const displayOptions = inputValue ? options : selectedCard ? [selectedCard] : [];
+  const getDisplayOptions = () : CardOption[] => {
+    if (inputValue) return options;
+    if (selectedCard) return [selectedCard];
+    return [];
+  }
+  const displayOptions = getDisplayOptions();
 
   const handleClose = () => {
     setSelectedCard(null);

@@ -11,6 +11,15 @@ interface SortableHeaderCellProps {
   style?: React.CSSProperties;
 }
 
+const getSortIndicator = (
+  sortKey: keyof InventoryAuditEntry,
+  activeSortKey: keyof InventoryAuditEntry,
+  sortDirection: "asc" | "desc",
+) => {
+  if (activeSortKey !== sortKey) return "";
+  return sortDirection === "asc" ? "▲" : "▼";
+};
+
 const SortableHeaderCell = ({
   label,
   sortKey,
@@ -20,7 +29,7 @@ const SortableHeaderCell = ({
   style,
 }: SortableHeaderCellProps) => (
   <TableCell style={{ ...style, cursor: "pointer", fontWeight: "bold" }} onClick={() => onSort(sortKey)}>
-    {label} {activeSortKey === sortKey ? (sortDirection === "asc" ? "▲" : "▼") : ""}
+    {label} {getSortIndicator(sortKey, activeSortKey, sortDirection)}
   </TableCell>
 );
 

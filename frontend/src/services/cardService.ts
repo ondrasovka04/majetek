@@ -64,7 +64,7 @@ export const exportGroupPdf = async (groupId: string, selectedDate: Date | null)
     {
       groupId,
       asOf: toIsoDateString(selectedDate ?? new Date()),
-      allGroups: groupId ? false : true,
+      allGroups: !groupId,
     },
     {
       responseType: "blob",

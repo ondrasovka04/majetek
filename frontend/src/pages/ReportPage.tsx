@@ -174,6 +174,35 @@ const ReportPage = () => {
     });
   };
 
+  const renderPdfPanel = () => {
+    if (loading) {
+      return (
+        <div className="flex justify-center items-center h-full">
+          <CircularProgress />
+        </div>
+      );
+    }
+    if (pdfUrl) {
+      return (
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+          <div style={{ height: "100%" }}>
+            <Viewer
+              localization={czechLocalization}
+              fileUrl={pdfUrl}
+              plugins={[defaultLayoutPluginInstance]}
+              defaultScale={1.5}
+            />
+          </div>
+        </Worker>
+      );
+    }
+    return (
+      <Typography variant="body1" color="textSecondary">
+        Vyberte report vlevo pro zobrazení.
+      </Typography>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <MenuBar />
@@ -198,26 +227,7 @@ const ReportPage = () => {
             width: "66.6667%",
             height: pdfUrl ? "calc(100vh - 120px)" : "auto",
           }}>
-          {loading ? (
-            <div className="flex justify-center items-center h-full">
-              <CircularProgress />
-            </div>
-          ) : pdfUrl ? (
-            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
-              <div style={{ height: "100%" }}>
-                <Viewer
-                  localization={czechLocalization}
-                  fileUrl={pdfUrl}
-                  plugins={[defaultLayoutPluginInstance]}
-                  defaultScale={1.5}
-                />
-              </div>
-            </Worker>
-          ) : (
-            <Typography variant="body1" color="textSecondary">
-              Vyberte report vlevo pro zobrazení.
-            </Typography>
-          )}
+          {renderPdfPanel()}
         </Paper>
       </div>
 
