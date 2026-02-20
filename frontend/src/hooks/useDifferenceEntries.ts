@@ -54,7 +54,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
       if (status === "CORRECT") return "KEEP";
       if (status === "WARN") return "SU";
       return null;
-    }
+    };
 
     const mapped = rawDiffs.map((d) => {
       const derivedAction = d.action ?? getDerivedAction(d.status);

@@ -43,11 +43,11 @@ const CardReportModal = ({ open, onClose, onGenerate, loading }: CardReportModal
     placeholderData: (prev) => prev,
   });
 
-  const getDisplayOptions = () : CardOption[] => {
+  const getDisplayOptions = (): CardOption[] => {
     if (inputValue) return options;
     if (selectedCard) return [selectedCard];
     return [];
-  }
+  };
   const displayOptions = getDisplayOptions();
 
   const handleClose = () => {
