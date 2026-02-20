@@ -121,8 +121,8 @@ public class DataTransferFragment extends Fragment {
             return;
         }
         prepareDownload();
-        AppDatabase db = ((MajetekApp) requireActivity().getApplication()).getDatabase();
-        io.execute(() -> checkAuditState(db));
+        MajetekApp app = (MajetekApp) requireActivity().getApplication();
+        io.execute(() -> checkAuditState(app.getDatabase()));
     }
 
     private void prepareDownload() {

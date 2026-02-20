@@ -18,6 +18,7 @@ Mobilní Android aplikace pro evidenci a inventarizaci majetku pomocí čárový
 - **Build systém:** Gradle Kotlin DSL, AGP 8.13.0
 - **Databáze:** Room 2.8.2 (SQLite) – tabulky `card`, `location`, `inventory_audit`
 - **Síťová komunikace:** OkHttp 5.2.1, Gson 2.13.2
+- **Bezpečnost:** EncryptedSharedPreferences (security-crypto) pro JWT token, network security config (cleartext zakázán), R8 obfuskace v release
 - **UI:** Material Design 1.13, ConstraintLayout, BottomNavigationView, vlastní `CircularInventoryProgressView`
 
 ## Struktura projektu
@@ -52,7 +53,7 @@ app/src/main/java/cz/majetek/
 │       └── CircularInventoryProgressView.java  # Vlastní kruhový ukazatel průběhu inventury
 └── util/
     ├── BaseUrlStorage.java               # SharedPreferences pro URL serveru
-    └── TokenStorage.java                 # SharedPreferences pro JWT token s expirací
+    └── TokenStorage.java                 # EncryptedSharedPreferences pro JWT token s expirací
 ```
 
 ## Požadavky
@@ -104,8 +105,8 @@ APK se vygeneruje v `app/build/outputs/apk/debug/`.
 
 | Typ | Složka | Popis |
 |---|---|---|
-| Unit testy | `app/src/test/` | `DataSyncRepositoryTest` (JSON serializace), `BaseUrlStorageTest` (validace URL) |
-| Instrumentované | `app/src/androidTest/` | `DaoTest` – 11 testů pro Room DAO (in-memory DB) |
+| Unit testy | `app/src/test/` | `DataSyncRepositoryTest` (4 testy – JSON serializace), `BaseUrlStorageTest` (9 testů – validace/sanitizace URL), `ApiClientTest` (9 testů – MockWebServer: login, download, upload, chybové stavy) |
+| Instrumentované | `app/src/androidTest/` | `DaoTest` (11 testů – Room DAO s in-memory DB), `TokenStorageTest` (6 testů – EncryptedSharedPreferences, expiry, legacy cleanup) |
 
 ## REST API endpointy
 

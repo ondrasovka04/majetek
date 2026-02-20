@@ -36,7 +36,7 @@ public class TokenStorage {
             );
         } catch (GeneralSecurityException | IOException e) {
             Log.e(TAG, "EncryptedSharedPreferences failed, falling back to plain", e);
-            return ctx.getSharedPreferences(PREF, Context.MODE_PRIVATE);
+            return ctx.getSharedPreferences(PREF + "_fallback", Context.MODE_PRIVATE);
         }
     }
 
