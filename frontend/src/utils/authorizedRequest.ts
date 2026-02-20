@@ -54,7 +54,7 @@ authorizedRequest.interceptors.response.use(
         clearAuth();
       }
     }
-    return Promise.reject(error);
+    throw error;
   },
 );
 

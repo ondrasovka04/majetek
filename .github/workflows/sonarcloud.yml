@@ -76,10 +76,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install frontend dependencies
+      - name: Install dependencies & test frontend
         run: |
           cd frontend
           npm ci --ignore-scripts
+          npm run test
 
   sonarcloud:
     needs: [backend, android, frontend]

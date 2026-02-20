@@ -5,12 +5,12 @@ import { DictionaryEntity } from "../../types/dictionary";
 import { dictionaryNameSchema } from "../../schemas/dictionarySchema";
 
 interface Props<T extends DictionaryEntity> {
-  item: T;
-  onUpdate: (vars: { id: string; name: string | null }) => void;
-  onDelete: (id: string) => void;
-  onError: (msg: string) => void;
+  readonly item: T;
+  readonly onUpdate: (vars: { id: string; name: string | null }) => void;
+  readonly onDelete: (id: string) => void;
+  readonly onError: (msg: string) => void;
   /** Extra action buttons rendered after the delete button */
-  extraActions?: (item: T) => React.ReactNode;
+  readonly extraActions?: (item: T) => React.ReactNode;
 }
 
 function DictionaryRowInner<T extends DictionaryEntity>({ item, onUpdate, onDelete, onError, extraActions }: Props<T>) {

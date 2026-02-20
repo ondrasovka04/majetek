@@ -2,37 +2,37 @@
 export function translateError(message: string): string {
   if (!message) return "Neznámá chyba.";
 
-  let match = message.match(/^Location with id (.+) already exists$/);
+  let match = /^Location with id (.+) already exists$/.exec(message);
   if (match) {
     const id = match[1];
     return `Umístění s ID ${id} již existuje.`;
   }
 
-  match = message.match(/^Asset group with id (.+) already exists$/);
+  match = /^Asset group with id (.+) already exists$/.exec(message);
   if (match) {
     const id = match[1];
     return `Skupina s ID ${id} již existuje.`;
   }
 
-  match = message.match(/^Class with id (.+) already exists$/);
+  match = /^Class with id (.+) already exists$/.exec(message);
   if (match) {
     const id = match[1];
     return `Třída s ID ${id} již existuje.`;
   }
 
-  match = message.match(/^Purchase method with id (.+) already exists$/);
+  match = /^Purchase method with id (.+) already exists$/.exec(message);
   if (match) {
     const id = match[1];
     return `Způsob pořízení s ID ${id} již existuje.`;
   }
 
-  match = message.match(/^Write off method with id (.+) already exists$/);
+  match = /^Write off method with id (.+) already exists$/.exec(message);
   if (match) {
     const id = match[1];
     return `Způsob vyřazení s ID ${id} již existuje.`;
   }
 
-  match = message.match(/^Printing more than (.+) cards is forbidden$/);
+  match = /^Printing more than (.+) cards is forbidden$/.exec(message);
   if (match) {
     const count = match[1];
     return `Tisk více než ${count} štítků není povolen.`;

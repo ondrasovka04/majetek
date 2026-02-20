@@ -119,8 +119,8 @@ const InventoryOverviewPage = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {sortedEntries.map((e, idx) => (
-                    <TableRow key={idx}>
+                  {sortedEntries.map((e) => (
+                    <TableRow key={`${e.cardId}-${e.timestamp.getTime()}`}>
                       <TableCell>{e.cardId}</TableCell>
                       <TableCell>{e.cardName}</TableCell>
                       <TableCell>{`${e.realLocationId} - ${e.realLocationName}`}</TableCell>
@@ -134,7 +134,7 @@ const InventoryOverviewPage = () => {
                             minute: "2-digit",
                             second: "2-digit",
                           })
-                          .replace(/\.\s/g, ".")}
+                          .replaceAll(". ", ".")}
                       </TableCell>
                     </TableRow>
                   ))}

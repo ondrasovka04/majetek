@@ -9,6 +9,7 @@ export function useAssetGroups() {
   return useQuery({
     queryKey: QUERY_KEY,
     queryFn: getAssetGroups,
+    staleTime: Infinity,
   });
 }
 

@@ -113,5 +113,6 @@ export function useUsers() {
   return useQuery({
     queryKey: USERS_KEY,
     queryFn: getUsers,
+    staleTime: Infinity,
   });
 }

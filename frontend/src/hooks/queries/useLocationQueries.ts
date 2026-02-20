@@ -15,6 +15,7 @@ export function useLocations() {
   return useQuery({
     queryKey: QUERY_KEY,
     queryFn: getLocations,
+    staleTime: Infinity,
   });
 }
 

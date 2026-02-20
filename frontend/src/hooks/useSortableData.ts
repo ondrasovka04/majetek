@@ -9,6 +9,14 @@ interface SortConfig<K extends string> {
   direction: SortDirection;
 }
 
+/** Safely convert an unknown value to a sortable string. */
+const toSortString = (value: unknown): string => {
+  if (value == null) return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  return "";
+};
+
 export function useSortableData<T>(
   data: T[],
   defaultKey: string & keyof T,
@@ -29,8 +37,8 @@ export function useSortableData<T>(
   const sortedData = useMemo(() => {
     const { key, direction } = sortConfig;
     return [...data].sort((a, b) => {
-      const aVal = String((a as Record<string, unknown>)[key] ?? "");
-      const bVal = String((b as Record<string, unknown>)[key] ?? "");
+      const aVal = toSortString((a as Record<string, unknown>)[key]);
+      const bVal = toSortString((b as Record<string, unknown>)[key]);
 
       if (nameKeys.includes(key)) {
         if (!aVal.trim()) return 1;

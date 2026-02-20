@@ -14,6 +14,7 @@ export function useWriteOffMethods() {
   return useQuery({
     queryKey: QUERY_KEY,
     queryFn: getWriteOffMethods,
+    staleTime: Infinity,
   });
 }
 

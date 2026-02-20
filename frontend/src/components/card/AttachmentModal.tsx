@@ -73,6 +73,46 @@ const AttachmentModal = ({ open, onClose, cardId, onError }: Props) => {
     }
   };
 
+  const renderContent = () => {
+    if (uploadMutation.isPending) {
+      return (
+        <Box display="flex" alignItems="center" gap={1}>
+          <CircularProgress size={20} />
+          <Typography variant="body2" color="text.secondary">
+            Nahrávám soubor…
+          </Typography>
+        </Box>
+      );
+    }
+    if (attachments.length === 0) {
+      return (
+        <Typography variant="body2" color="text.secondary">
+          Žádné přílohy
+        </Typography>
+      );
+    }
+    return (
+      <List dense>
+        {attachments.map((a) => (
+          <ListItem
+            key={a.id}
+            secondaryAction={
+              <>
+                <IconButton edge="end" onClick={() => handleDownload(a.id, a.name)}>
+                  <CloudDownloadIcon />
+                </IconButton>
+                <IconButton edge="end" onClick={() => handleDelete(a.id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </>
+            }>
+            <ListItemText primary={a.name} />
+          </ListItem>
+        ))}
+      </List>
+    );
+  };
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Přílohy</DialogTitle>
@@ -87,37 +127,7 @@ const AttachmentModal = ({ open, onClose, cardId, onError }: Props) => {
           </Button>
         </Box>
 
-        {uploadMutation.isPending ? (
-          <Box display="flex" alignItems="center" gap={1}>
-            <CircularProgress size={20} />
-            <Typography variant="body2" color="text.secondary">
-              Nahrávám soubor…
-            </Typography>
-          </Box>
-        ) : attachments.length === 0 ? (
-          <Typography variant="body2" color="text.secondary">
-            Žádné přílohy
-          </Typography>
-        ) : (
-          <List dense>
-            {attachments.map((a) => (
-              <ListItem
-                key={a.id}
-                secondaryAction={
-                  <>
-                    <IconButton edge="end" onClick={() => handleDownload(a.id, a.name)}>
-                      <CloudDownloadIcon />
-                    </IconButton>
-                    <IconButton edge="end" onClick={() => handleDelete(a.id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </>
-                }>
-                <ListItemText primary={a.name} />
-              </ListItem>
-            ))}
-          </List>
-        )}
+        {renderContent()}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={uploadMutation.isPending}>

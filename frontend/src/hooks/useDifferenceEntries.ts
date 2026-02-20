@@ -50,8 +50,14 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
 
     const toInit: { cardId: number; action: InventoryDifferenceAction }[] = [];
 
+    const getDerivedAction = (status: InventoryDifferenceEntry["status"]): InventoryDifferenceAction | null => {
+      if (status === "CORRECT") return "KEEP";
+      if (status === "WARN") return "SU";
+      return null;
+    };
+
     const mapped = rawDiffs.map((d) => {
-      const derivedAction = d.action ?? (d.status === "CORRECT" ? "KEEP" : d.status === "WARN" ? "SU" : null);
+      const derivedAction = d.action ?? getDerivedAction(d.status);
       if (d.action == null && derivedAction) {
         toInit.push({ cardId: d.cardId, action: derivedAction });
       }
@@ -83,6 +89,11 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawDiffs, writeOffMethods]);
 
+  /** Replace a single entry in the local state by cardId. */
+  const replaceEntry = (cardId: number, replacement: InventoryDifferenceEntry) => {
+    setEntries((prev) => prev.map((e) => (e.cardId === cardId ? replacement : e)));
+  };
+
   /** Optimistically update a single entry locally and persist the change. */
   const updateEntryAndSave = (cardId: number, patch: Partial<InventoryDifferenceEntry>) => {
     const prevEntry = entries.find((e) => e.cardId === cardId);
@@ -97,7 +108,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
       nextEntry.writeOffMethodId = (writeOffMethods.find((m) => m.id === "A")?.id || writeOffMethods[0]?.id) ?? null;
     }
 
-    setEntries((prev) => prev.map((e) => (e.cardId === cardId ? nextEntry : e)));
+    replaceEntry(cardId, nextEntry);
 
     // Build PATCH payload
     const payload: PatchDifferenceBody = {};
@@ -130,7 +141,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
       {
         onError: (err: unknown) => {
           // Rollback on failure
-          setEntries((prev) => prev.map((e) => (e.cardId === cardId ? prevEntry : e)));
+          replaceEntry(cardId, prevEntry);
           onError(translateError(extractErrorMessage(err)));
         },
       },

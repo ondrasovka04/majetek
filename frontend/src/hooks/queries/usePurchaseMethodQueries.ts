@@ -14,6 +14,7 @@ export function usePurchaseMethods() {
   return useQuery({
     queryKey: QUERY_KEY,
     queryFn: getPurchaseMethods,
+    staleTime: Infinity,
   });
 }
 

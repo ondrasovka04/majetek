@@ -26,7 +26,7 @@ export function useCardSearch(cards: Card[], search: string, showWrittenOff: boo
         includeScore: false,
         minMatchCharLength: 1,
         ignoreLocation: true,
-        threshold: 0.0,
+        threshold: 0,
       }),
     [searchableCards],
   );

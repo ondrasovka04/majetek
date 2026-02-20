@@ -100,7 +100,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
       ];
       for (const field of dateFields) {
         const val = filters[field];
-        if (val && isNaN(new Date(val as string | Date).getTime())) {
+        if (val && Number.isNaN(new Date(val as string | Date).getTime())) {
           onError(`Neplatné datum (${field}).`);
           return;
         }
@@ -266,7 +266,7 @@ const CardListPanel = forwardRef<CardListPanelHandle, Props>(
                 </TableHead>
                 <TableBody
                   style={{
-                    opacity: search !== deferredSearch ? 0.5 : 1,
+                    opacity: search === deferredSearch ? 1 : 0.5,
                     transition: "opacity 300ms",
                   }}>
                   {sortedAndFilteredCards.map((card) => (

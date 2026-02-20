@@ -35,12 +35,57 @@ const CardPage = () => {
   const { data: rawWriteOffMethods = [] } = useWriteOffMethods();
   const { data: rawUsers = [] } = useUsers();
 
-  const locations = useMemo(() => sortById(rawLocations), [rawLocations]);
-  const classes = useMemo(() => sortById(rawClasses), [rawClasses]);
-  const groups = useMemo(() => sortById(rawGroups), [rawGroups]);
-  const purchaseMethods = useMemo(() => sortById(rawPurchaseMethods), [rawPurchaseMethods]);
-  const writeOffMethods = useMemo(() => sortById(rawWriteOffMethods), [rawWriteOffMethods]);
-  const users = useMemo(() => sortById(rawUsers), [rawUsers]);
+  const dictProps = {
+    locations: useMemo(() => sortById(rawLocations), [rawLocations]),
+    classes: useMemo(() => sortById(rawClasses), [rawClasses]),
+    groups: useMemo(() => sortById(rawGroups), [rawGroups]),
+    purchaseMethods: useMemo(() => sortById(rawPurchaseMethods), [rawPurchaseMethods]),
+    writeOffMethods: useMemo(() => sortById(rawWriteOffMethods), [rawWriteOffMethods]),
+    users: useMemo(() => sortById(rawUsers), [rawUsers]),
+  };
+
+  const renderDetailPanel = () => {
+    if (selectedCardId === "NEW") {
+      return (
+        <CardCreateView
+          prefillCard={duplicatedCard ?? undefined}
+          onCreated={() => {
+            setDuplicatedCard(null);
+            setSelectedCardId(null);
+            listRef.current?.refilter();
+          }}
+          onError={notifyError}
+          onSuccess={(msg: string) => notify(msg, "success")}
+          {...dictProps}
+        />
+      );
+    }
+    if (selectedCardId) {
+      return (
+        <CardDetailView
+          cardId={selectedCardId}
+          onChange={() => {
+            queryClient.invalidateQueries({ queryKey: ["cards"] });
+            notify("Změny byly úspěšně uloženy.", "success");
+          }}
+          onDeleted={() => {
+            setSelectedCardId(null);
+            notify("Karta byla úspěšně smazána.", "success");
+          }}
+          onDuplicate={(dup) => {
+            setDuplicatedCard(dup);
+            setSelectedCardId("NEW");
+          }}
+          {...dictProps}
+        />
+      );
+    }
+    return (
+      <Typography variant="h6" color="textSecondary">
+        Vyberte kartu vlevo pro zobrazení detailu
+      </Typography>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -57,50 +102,7 @@ const CardPage = () => {
         />
 
         <Paper className="w-2/3 p-4" elevation={3}>
-          {selectedCardId === "NEW" ? (
-            <CardCreateView
-              prefillCard={duplicatedCard ?? undefined}
-              onCreated={() => {
-                setDuplicatedCard(null);
-                setSelectedCardId(null);
-                listRef.current?.refilter();
-              }}
-              onError={notifyError}
-              onSuccess={(msg: string) => notify(msg, "success")}
-              locations={locations}
-              groups={groups}
-              classes={classes}
-              purchaseMethods={purchaseMethods}
-              writeOffMethods={writeOffMethods}
-              users={users}
-            />
-          ) : selectedCardId ? (
-            <CardDetailView
-              cardId={selectedCardId}
-              onChange={() => {
-                queryClient.invalidateQueries({ queryKey: ["cards"] });
-                notify("Změny byly úspěšně uloženy.", "success");
-              }}
-              onDeleted={() => {
-                setSelectedCardId(null);
-                notify("Karta byla úspěšně smazána.", "success");
-              }}
-              onDuplicate={(dup) => {
-                setDuplicatedCard(dup);
-                setSelectedCardId("NEW");
-              }}
-              locations={locations}
-              groups={groups}
-              classes={classes}
-              purchaseMethods={purchaseMethods}
-              writeOffMethods={writeOffMethods}
-              users={users}
-            />
-          ) : (
-            <Typography variant="h6" color="textSecondary">
-              Vyberte kartu vlevo pro zobrazení detailu
-            </Typography>
-          )}
+          {renderDetailPanel()}
         </Paper>
       </div>
     </div>

@@ -23,17 +23,17 @@ import { extractErrorMessage } from "../../utils/extractErrorMessage";
 import { dictionaryTheme } from "../../theme";
 
 interface DictionaryPageProps<T extends DictionaryEntity> {
-  title: string;
-  addDialogTitle: string;
+  readonly title: string;
+  readonly addDialogTitle: string;
   /** Maximum length of the ID field in the add dialog (default: 20) */
-  maxIdLength?: number;
-  useItems: () => UseQueryResult<T[]>;
-  useCreate: () => UseMutationResult<T, unknown, T, unknown>;
-  useUpdate: () => UseMutationResult<unknown, unknown, { id: string; name: string | null }, unknown>;
-  useDelete: () => UseMutationResult<unknown, unknown, string, unknown>;
+  readonly maxIdLength?: number;
+  readonly useItems: () => UseQueryResult<T[]>;
+  readonly useCreate: () => UseMutationResult<T, unknown, T, unknown>;
+  readonly useUpdate: () => UseMutationResult<unknown, unknown, { id: string; name: string | null }, unknown>;
+  readonly useDelete: () => UseMutationResult<unknown, unknown, string, unknown>;
   /** Optional render function for extra actions per row (e.g. print button on Location).
    *  Receives notify helpers from the page's notification system. */
-  extraRowActions?: (
+  readonly extraRowActions?: (
     item: T,
     helpers: { notify: (msg: string, severity?: "success" | "error") => void; notifyError: (msg: string) => void },
   ) => React.ReactNode;

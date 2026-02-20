@@ -7,12 +7,12 @@ import { createDictionarySchema, DictionaryFormValues, DictionaryFormOutput } fr
 import { defaultTheme } from "../../theme";
 
 interface Props<T extends DictionaryEntity> {
-  open: boolean;
-  onClose: () => void;
-  onCreate: (item: T) => Promise<void>;
-  title: string;
+  readonly open: boolean;
+  readonly onClose: () => void;
+  readonly onCreate: (item: T) => Promise<void>;
+  readonly title: string;
   /** Maximum length of the ID field (default: 20) */
-  maxIdLength?: number;
+  readonly maxIdLength?: number;
 }
 
 export default function AddDictionaryDialog<T extends DictionaryEntity>({

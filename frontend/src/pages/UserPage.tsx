@@ -56,11 +56,9 @@ const UserPage = () => {
             {user?.name}
           </Typography>
           {user?.role === "ADMIN" && (
-            <>
-              <Button variant="contained" onClick={() => setAdminDialogOpen(true)}>
-                Vytvořit nového uživatele
-              </Button>
-            </>
+            <Button variant="contained" onClick={() => setAdminDialogOpen(true)}>
+              Vytvořit nového uživatele
+            </Button>
           )}
         </div>
         <hr className="my-4 border-gray-300" />

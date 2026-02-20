@@ -43,7 +43,7 @@ class ErrorBoundary extends Component<Props, State> {
             variant="contained"
             onClick={() => {
               this.setState({ hasError: false, error: null });
-              window.location.reload();
+              globalThis.location.reload();
             }}>
             Obnovit stránku
           </Button>

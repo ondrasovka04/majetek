@@ -85,8 +85,8 @@ const CardFormFields = ({
               fullWidth
               value={field.value ?? ""}
               onChange={(e) => {
-                const v = parseFloat(e.target.value);
-                field.onChange(isNaN(v) ? null : v);
+                const v = Number.parseFloat(e.target.value);
+                field.onChange(Number.isNaN(v) ? null : v);
               }}
               error={!!errors.quantity}
               helperText={errors.quantity?.message}
@@ -118,7 +118,7 @@ const CardFormFields = ({
               select
               required
               fullWidth
-              value={field.value}
+              value={field.value ?? ""}
               onChange={field.onChange}
               error={!!errors.locationId}
               helperText={errors.locationId?.message}
@@ -173,7 +173,7 @@ const CardFormFields = ({
               select
               required
               fullWidth
-              value={field.value}
+              value={field.value ?? ""}
               onChange={field.onChange}
               error={!!errors.groupId}
               helperText={errors.groupId?.message}
@@ -326,7 +326,10 @@ const CardFormFields = ({
             <TextField
               label="Vytvořeno"
               fullWidth
-              value={watch("createdDate") ? new Date(watch("createdDate")!).toLocaleDateString("cs-CZ") : ""}
+              value={(() => {
+                const created = watch("createdDate");
+                return created ? new Date(created).toLocaleDateString("cs-CZ") : "";
+              })()}
               disabled
             />
           </Grid>
