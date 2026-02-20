@@ -406,6 +406,56 @@ class CardSpecificationIntegrationTest {
         assertEquals("Monitor LG", result.getFirst().getName());
     }
 
+    @Test
+    void filter_ByBlankName_ShouldReturnAllCards() {
+        CardFilterQuery q = new CardFilterQuery();
+        q.setName("   ");
+
+        List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
+
+        assertEquals(4, result.size());
+    }
+
+    @Test
+    void filter_ByBlankNote_ShouldReturnAllCards() {
+        CardFilterQuery q = new CardFilterQuery();
+        q.setNote("");
+
+        List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
+
+        assertEquals(4, result.size());
+    }
+
+    @Test
+    void filter_ByNameWithSpecialChars_ShouldNotCrash() {
+        CardFilterQuery q = new CardFilterQuery();
+        q.setName("100%");
+
+        List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void filter_ByBlankFulltextSearch_ShouldReturnAllCards() {
+        CardFilterQuery q = new CardFilterQuery();
+        q.setFulltextSearch("   ");
+
+        List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
+
+        assertEquals(4, result.size());
+    }
+
+    @Test
+    void filter_IncludeWriteOffNull_ShouldReturnAllCards() {
+        CardFilterQuery q = new CardFilterQuery();
+        q.setIncludeWriteOff(null);
+
+        List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
+
+        assertEquals(4, result.size());
+    }
+
     // --- Write-off filters ---
 
     @Test
