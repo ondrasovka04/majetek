@@ -112,6 +112,16 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void handleUserException_WithoutUserId_ShouldReturnBadRequest() {
+        UserException exception = new UserException("No users found");
+
+        ResponseEntity<ErrorResponse> response = exceptionHandler.handleUserException(exception);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        verify(errorResponseUtils).buildErrorResponse(HttpStatus.BAD_REQUEST, "No users found");
+    }
+
+    @Test
     void handleAuthException_ShouldReturnUnauthorized() {
         AuthException exception = new AuthException("Invalid credentials");
 
@@ -143,6 +153,16 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void handleAssetGroupException_WithoutId_ShouldReturnBadRequest() {
+        AssetGroupException exception = new AssetGroupException("No asset groups");
+
+        ResponseEntity<ErrorResponse> response = exceptionHandler.handleAssetGroupException(exception);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        verify(errorResponseUtils).buildErrorResponse(HttpStatus.BAD_REQUEST, "No asset groups");
+    }
+
+    @Test
     void handleLocationException_ShouldReturnNotFound() {
         LocationException exception = LocationException.notFound("loc1");
 
@@ -150,6 +170,16 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.NOT_FOUND), anyString());
+    }
+
+    @Test
+    void handleLocationException_WithoutId_ShouldReturnBadRequest() {
+        LocationException exception = new LocationException("No locations");
+
+        ResponseEntity<ErrorResponse> response = exceptionHandler.handleLocationException(exception);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        verify(errorResponseUtils).buildErrorResponse(HttpStatus.BAD_REQUEST, "No locations");
     }
 
     @Test
@@ -262,9 +292,21 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void handleClassEntityException_WithoutId_ShouldReturnBadRequest() {
+        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleClassEntityException(new ClassEntityException("No classes"));
+        assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
+    }
+
+    @Test
     void handlePurchaseMethodException_ShouldReturnNotFound() {
         ResponseEntity<ErrorResponse> resp = exceptionHandler.handlePurchaseMethodException(PurchaseMethodException.notFound("PM1"));
         assertEquals(HttpStatus.NOT_FOUND, resp.getStatusCode());
+    }
+
+    @Test
+    void handlePurchaseMethodException_WithoutId_ShouldReturnBadRequest() {
+        ResponseEntity<ErrorResponse> resp = exceptionHandler.handlePurchaseMethodException(new PurchaseMethodException("No methods"));
+        assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
     }
 
     @Test
@@ -274,9 +316,21 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void handleWriteOffMethodException_WithoutId_ShouldReturnBadRequest() {
+        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleWriteOffMethodException(new WriteOffMethodException("No methods"));
+        assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
+    }
+
+    @Test
     void handleInventoryAuditException_ShouldReturnBadRequest() {
         ResponseEntity<ErrorResponse> resp = exceptionHandler.handleInventoryAuditException(new InventoryAuditException("audit error"));
         assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
+    }
+
+    @Test
+    void handleInventoryAuditException_WithCardId_ShouldReturnNotFound() {
+        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleInventoryAuditException(InventoryAuditException.notFound(42));
+        assertEquals(HttpStatus.NOT_FOUND, resp.getStatusCode());
     }
 
     @Test

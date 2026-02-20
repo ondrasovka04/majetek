@@ -315,8 +315,24 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(140)
     void inventoryAudit_project_withMissingAudits_shouldReturnError() throws Exception {
-        // project() throws exception when any card doesn't have an inventory audit record
-        // In integration tests, we have cards without audits, so this returns error
+        // Create a card that has NO inventory audit record
+        String cardJson = String.format("""
+                {
+                    "name": "Card Without Audit",
+                    "price": 1000.00,
+                    "quantity": 1,
+                    "locationId": "ALOC1",
+                    "purchaseDate": "%s"
+                }
+                """, LocalDate.now());
+
+        mockMvc.perform(post("/api/card")
+                        .header("Authorization", bearerAdmin())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(cardJson))
+                .andExpect(status().isCreated());
+
+        // project() should throw because this new card has no audit
         var result = mockMvc.perform(post("/api/inventory-audit/project")
                         .header("Authorization", bearerAdmin()))
                 .andReturn();

@@ -115,6 +115,48 @@ class AttachmentServiceTest {
     }
 
     @Test
+    void upload_WithNullFilename_ShouldThrowException() {
+        MultipartFile file = new MockMultipartFile(
+                "file",
+                null,
+                "application/pdf",
+                "test content".getBytes()
+        );
+
+        when(cardRepository.findByIdForUpdate(1)).thenReturn(Optional.of(testCard));
+
+        assertThrows(AttachmentException.class, () -> attachmentService.upload(1, file));
+        verify(attachmentRepository, never()).save(any(Attachment.class));
+    }
+
+    @Test
+    void upload_WithBlankFilename_ShouldThrowException() {
+        MultipartFile file = new MockMultipartFile(
+                "file",
+                "   ",
+                "application/pdf",
+                "test content".getBytes()
+        );
+
+        when(cardRepository.findByIdForUpdate(1)).thenReturn(Optional.of(testCard));
+
+        assertThrows(AttachmentException.class, () -> attachmentService.upload(1, file));
+        verify(attachmentRepository, never()).save(any(Attachment.class));
+    }
+
+    @Test
+    void upload_WithIOException_ShouldThrowAttachmentException() throws IOException {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getOriginalFilename()).thenReturn("test.pdf");
+        doThrow(new IOException("disk full")).when(file).transferTo(any(Path.class));
+
+        when(cardRepository.findByIdForUpdate(1)).thenReturn(Optional.of(testCard));
+
+        assertThrows(AttachmentException.class, () -> attachmentService.upload(1, file));
+        verify(attachmentRepository, never()).save(any(Attachment.class));
+    }
+
+    @Test
     void getAttachments_ShouldReturnAllAttachmentsForCard() {
         List<Attachment> attachments = List.of(testAttachment);
         List<AttachmentDto> attachmentDtos = List.of(testAttachmentDto);
