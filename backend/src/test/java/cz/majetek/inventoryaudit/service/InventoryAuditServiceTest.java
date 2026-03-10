@@ -298,7 +298,7 @@ class InventoryAuditServiceTest {
     @Test
     void patch_WithNoExistingAudit_ShouldCreateNew() {
         InventoryAuditPatchDto patchDto = new InventoryAuditPatchDto();
-        patchDto.setAction(InventoryAuditAction.SU);
+        patchDto.setAction(InventoryAuditAction.RL);
 
         when(cardRepository.findById(1)).thenReturn(Optional.of(testCard));
         when(inventoryAuditRepository.findById(1)).thenReturn(Optional.empty());
@@ -310,8 +310,8 @@ class InventoryAuditServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void project_WithSUAction_ShouldUpdateLocation() {
-        testAudit.setAction(InventoryAuditAction.SU);
+    void project_WithRLAction_ShouldUpdateLocation() {
+        testAudit.setAction(InventoryAuditAction.RL);
         testAudit.setRealLocation(realLocation);
         testCard.setInventoryAudit(testAudit);
 
@@ -367,8 +367,8 @@ class InventoryAuditServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void project_WithOUAction_ShouldNotModifyCard() {
-        testAudit.setAction(InventoryAuditAction.OU);
+    void project_WithELAction_ShouldNotModifyCard() {
+        testAudit.setAction(InventoryAuditAction.EL);
         testCard.setInventoryAudit(testAudit);
 
         when(cardRepository.findAll(any(Specification.class))).thenReturn(List.of(testCard));

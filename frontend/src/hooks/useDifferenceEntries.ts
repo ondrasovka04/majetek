@@ -3,7 +3,7 @@
  *
  * Responsibilities:
  * - Fetches raw differences from the server via TanStack Query.
- * - Derives default actions (KEEP / SU) for rows that haven't been assigned yet.
+ * - Derives default actions (KEEP / RL) for rows that haven't been assigned yet.
  * - Persists derived defaults back to the backend automatically.
  * - Provides `updateEntryAndSave` for optimistic local update + server patch.
  * - Exposes derived summary counts (writeOff, warn, wrong) and a validation flag.
@@ -52,7 +52,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
 
     const getDerivedAction = (status: InventoryDifferenceEntry["status"]): InventoryDifferenceAction | null => {
       if (status === "CORRECT") return "KEEP";
-      if (status === "WARN") return "SU";
+      if (status === "WARN") return "RL";
       return null;
     };
 

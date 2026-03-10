@@ -2,7 +2,7 @@
 export type InventoryDifferenceStatus = "CORRECT" | "WARN" | "WRONG";
 
 // Actions the user can assign to a given inventory difference row
-export type InventoryDifferenceAction = "KEEP" | "SU" | "OU" | "WRITE_OFF" | null;
+export type InventoryDifferenceAction = "KEEP" | "RL" | "EL" | "WRITE_OFF" | null;
 
 /** Single row in the inventory differences comparison table. */
 export interface InventoryDifferenceEntry {

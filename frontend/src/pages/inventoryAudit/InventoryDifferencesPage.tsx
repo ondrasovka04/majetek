@@ -1,7 +1,7 @@
 /**
  * Inventory differences page (DataGrid).
  * Compares expected vs. actual locations, lets users choose actions
- * (KEEP / SU / OU / WRITE_OFF) per card, and project changes to the database.
+ * (KEEP / RL / EL / WRITE_OFF) per card, and project changes to the database.
  */
 import { useMemo, useState } from "react";
 import {
@@ -80,7 +80,7 @@ const InventoryDifferencesPage = () => {
   const getDefaultAction = (entry: InventoryDifferenceEntry): InventoryDifferenceAction | "" => {
     if (entry.action) return entry.action;
     if (entry.status === "CORRECT") return "KEEP";
-    if (entry.status === "WARN") return "SU";
+    if (entry.status === "WARN") return "RL";
     return "";
   };
 
@@ -98,14 +98,14 @@ const InventoryDifferencesPage = () => {
 
   const selectableActions = (status: InventoryDifferenceStatus): Exclude<InventoryDifferenceAction, null>[] => {
     if (status === "CORRECT") return ["KEEP"];
-    if (status === "WARN") return ["SU", "OU", "WRITE_OFF"];
-    return ["OU", "WRITE_OFF"]; // WRONG
+    if (status === "WARN") return ["RL", "EL", "WRITE_OFF"];
+    return ["EL", "WRITE_OFF"]; // WRONG
   };
 
   const actionLabel: Record<Exclude<InventoryDifferenceAction, null>, string> = {
     KEEP: "Nechat",
-    SU: "Skutečné umístění",
-    OU: "Očekávané umístění",
+    RL: "Skutečné umístění",
+    EL: "Očekávané umístění",
     WRITE_OFF: "Vyřadit",
   };
 
@@ -163,8 +163,8 @@ const InventoryDifferencesPage = () => {
       type: "singleSelect",
       valueOptions: [
         { value: "KEEP", label: "Nechat" },
-        { value: "SU", label: "Skutečné umístění" },
-        { value: "OU", label: "Očekávané umístění" },
+        { value: "RL", label: "Skutečné umístění" },
+        { value: "EL", label: "Očekávané umístění" },
         { value: "WRITE_OFF", label: "Vyřadit" },
       ],
       renderCell: (params) => {

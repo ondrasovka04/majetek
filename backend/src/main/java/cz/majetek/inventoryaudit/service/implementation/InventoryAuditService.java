@@ -132,8 +132,8 @@ public class InventoryAuditService implements IInventoryAuditService {
             InventoryAudit audit = card.getInventoryAudit();
             if (audit.getAction() == null) return;
             switch (audit.getAction()) {
-                case KEEP, OU -> { /* no-op */ }
-                case SU -> card.setLocation(audit.getRealLocation());
+                case KEEP, EL -> { /* no-op */ }
+                case RL -> card.setLocation(audit.getRealLocation());
                 case WRITE_OFF -> {
                     card.setWriteOffDate(audit.getWriteOffDate());
                     card.setWriteOffMethod(audit.getWriteOffMethod());

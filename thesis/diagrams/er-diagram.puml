@@ -1,0 +1,98 @@
+@startuml
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 40
+
+entity "user_" as user {
+    * id : VARCHAR (PK)
+    --
+    * username : VARCHAR (unique)
+    * password : VARCHAR
+    name : VARCHAR
+    * role : VARCHAR {USER, ADMIN}
+}
+
+entity "card" as card {
+    * id : INTEGER (PK)
+    --
+    * name : VARCHAR
+    price : DECIMAL
+    quantity : DECIMAL
+    serial_number : VARCHAR
+    * purchase_date : DATE
+    purchase_invoice : VARCHAR
+    write_off_date : DATE
+    created_date : DATE
+    note : TEXT
+    --
+    * location_id : VARCHAR (FK)
+    * group_id : VARCHAR (FK)
+    class_id : VARCHAR (FK)
+    purchase_method_id : VARCHAR (FK)
+    write_off_method_id : VARCHAR (FK)
+    created_by : VARCHAR (FK)
+    responsible_person : VARCHAR (FK)
+}
+
+entity "location" as location {
+    * id : VARCHAR (PK)
+    --
+    name : VARCHAR
+}
+
+entity "asset_group" as asset_group {
+    * id : VARCHAR (PK)
+    --
+    name : VARCHAR
+}
+
+entity "class" as class_entity {
+    * id : VARCHAR (PK)
+    --
+    name : VARCHAR
+}
+
+entity "purchase_method" as purchase_method {
+    * id : VARCHAR (PK)
+    --
+    name : VARCHAR
+}
+
+entity "write_off_method" as write_off_method {
+    * id : VARCHAR (PK)
+    --
+    name : VARCHAR
+}
+
+entity "attachment" as attachment {
+    * id : INTEGER (PK)
+    * card_id : INTEGER (PK, FK)
+    --
+    name : VARCHAR
+    file_path : VARCHAR
+}
+
+entity "inventory_audit" as inventory_audit {
+    * card_id : INTEGER (PK, FK)
+    --
+    real_location_id : VARCHAR (FK)
+    timestamp : TIMESTAMP
+    action : VARCHAR
+    write_off_date : DATE
+    write_off_method_id : VARCHAR (FK)
+}
+
+card }|--|| location
+card }|--|| asset_group
+card }|--o| class_entity
+card }|--o| purchase_method
+card }|--o| write_off_method
+card }|--o| user
+
+attachment }|--|| card
+
+inventory_audit |o--|| card
+inventory_audit }|--o| location
+inventory_audit }|--o| write_off_method
+
+@enduml
