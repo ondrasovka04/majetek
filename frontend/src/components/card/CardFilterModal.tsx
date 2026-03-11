@@ -12,15 +12,15 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useMemo, useState } from "react";
-import { CardFilterQuery } from "../../types/card/cardFilterQuery";
-import { PriceInput } from "./PriceInput";
-import { useLocations } from "../../hooks/queries/useLocationQueries";
-import { useClasses } from "../../hooks/queries/useClassQueries";
-import { useAssetGroups } from "../../hooks/queries/useAssetGroupQueries";
-import { usePurchaseMethods } from "../../hooks/queries/usePurchaseMethodQueries";
-import { useWriteOffMethods } from "../../hooks/queries/useWriteOffMethodQueries";
-import { useUsers } from "../../hooks/queries/useCardQueries";
-import { sortById } from "../../utils/czech";
+import { CardFilterQuery } from "@/types/card/cardFilterQuery";
+import { PriceInput } from "@/components/card/PriceInput";
+import { useLocations } from "@/hooks/queries/useLocationQueries";
+import { useClasses } from "@/hooks/queries/useClassQueries";
+import { useAssetGroups } from "@/hooks/queries/useAssetGroupQueries";
+import { usePurchaseMethods } from "@/hooks/queries/usePurchaseMethodQueries";
+import { useWriteOffMethods } from "@/hooks/queries/useWriteOffMethodQueries";
+import { useUsers } from "@/hooks/queries/useCardQueries";
+import { sortById } from "@/utils/czech";
 
 interface Props {
   open: boolean;

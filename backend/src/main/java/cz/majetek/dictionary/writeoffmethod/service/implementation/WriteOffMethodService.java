@@ -57,7 +57,6 @@ public class WriteOffMethodService implements IWriteOffMethodService {
     }
 
     @Override
-    @Transactional
     @CacheEvict(value = "writeOffMethods", allEntries = true)
     public void delete(String id) {
         try {

@@ -26,15 +26,15 @@ import PrintIcon from "@mui/icons-material/Print";
 import CloudIcon from "@mui/icons-material/Cloud";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import DownloadIcon from "@mui/icons-material/Download";
-import { Card } from "../../types/card/card";
-import { CardFilterQuery } from "../../types/card/cardFilterQuery";
-import { translateError } from "../../utils/errorTranslations";
-import { extractErrorMessage } from "../../utils/extractErrorMessage";
-import { useCards, useFilterCards, usePrintCards, useExportCardsExcel } from "../../hooks/queries/useCardQueries";
-import CardRow from "./CardRow";
-import CardFilterModal from "./CardFilterModal";
-import ConfirmDialog from "./ConfirmDialog";
-import { useCardSearch } from "../../hooks/useCardSearch";
+import { Card } from "@/types/card/card";
+import { CardFilterQuery } from "@/types/card/cardFilterQuery";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
+import { useCards, useFilterCards, usePrintCards, useExportCardsExcel } from "@/hooks/queries/useCardQueries";
+import CardRow from "@/components/card/CardRow";
+import CardFilterModal from "@/components/card/CardFilterModal";
+import ConfirmDialog from "@/components/card/ConfirmDialog";
+import { useCardSearch } from "@/hooks/useCardSearch";
 
 // --- Types ---
 

@@ -9,17 +9,17 @@
  * - Exposes derived summary counts (writeOff, warn, wrong) and a validation flag.
  */
 import { useEffect, useMemo, useState } from "react";
-import { InventoryDifferenceEntry, InventoryDifferenceAction } from "../types/inventoryAudit/inventoryDifference";
-import type { PatchDifferenceBody } from "../services/inventoryAuditService";
-import { toIsoDateString } from "../utils/formatDate";
-import { translateError } from "../utils/errorTranslations";
-import { extractErrorMessage } from "../utils/extractErrorMessage";
+import { InventoryDifferenceEntry, InventoryDifferenceAction } from "@/types/inventoryAudit/inventoryDifference";
+import type { PatchDifferenceBody } from "@/services/inventoryAuditService";
+import { toIsoDateString } from "@/utils/formatDate";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
 import {
   useInventoryDifferences,
   usePatchInventoryDifference,
   useProjectInventoryDifferences,
-} from "./queries/useInventoryAuditQueries";
-import { useWriteOffMethods } from "./queries/useWriteOffMethodQueries";
+} from "@/hooks/queries/useInventoryAuditQueries";
+import { useWriteOffMethods } from "@/hooks/queries/useWriteOffMethodQueries";
 
 export function useDifferenceEntries(onError: (msg: string) => void) {
   const [entries, setEntries] = useState<InventoryDifferenceEntry[]>([]);

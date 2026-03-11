@@ -1,6 +1,6 @@
 /** TanStack Query hooks for card attachment operations (list, upload, delete). */
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAttachments, uploadAttachment, deleteAttachment } from "../../services/attachmentService";
+import { getAttachments, uploadAttachment, deleteAttachment } from "@/services/attachmentService";
 
 export function useAttachments(cardId: string | null) {
   return useQuery({

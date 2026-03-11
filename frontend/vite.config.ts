@@ -1,8 +1,14 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
+  },
   test: {
     globals: true,
     environment: "jsdom",
@@ -10,7 +16,8 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    open: false,
+    host: !!process.env.VITE_HOST,
+    allowedHosts: process.env.VITE_ALLOWED_HOSTS?.split(",") ?? [],
   },
   build: {
     outDir: "build",
@@ -20,16 +27,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           "vendor-react": ["react", "react-dom", "react-router-dom"],
-          "vendor-mui": [
-            "@mui/material",
-            "@mui/icons-material",
-            "@mui/x-date-pickers",
-            "@mui/x-data-grid",
-          ],
-          "vendor-pdf": [
-            "@react-pdf-viewer/core",
-            "@react-pdf-viewer/default-layout",
-          ],
+          "vendor-mui": ["@mui/material", "@mui/icons-material", "@mui/x-date-pickers", "@mui/x-data-grid"],
+          "vendor-pdf": ["@react-pdf-viewer/core", "@react-pdf-viewer/default-layout"],
           "vendor-query": ["@tanstack/react-query"],
         },
       },

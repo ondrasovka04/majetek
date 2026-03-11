@@ -5,8 +5,8 @@ import {
   createPurchaseMethod,
   updatePurchaseMethod,
   deletePurchaseMethod,
-} from "../../services/purchaseMethodService";
-import { PurchaseMethod } from "../../types/purchaseMethod";
+} from "@/services/purchaseMethodService";
+import { PurchaseMethod } from "@/types/purchaseMethod";
 
 const QUERY_KEY = ["purchaseMethods"] as const;
 

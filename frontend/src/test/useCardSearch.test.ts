@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { useCardSearch } from "../hooks/useCardSearch";
-import { Card } from "../types/card/card";
+import { useCardSearch } from "@/hooks/useCardSearch";
+import { Card } from "@/types/card/card";
 
 const makeCard = (id: string, name: string, writeOffDate: Date | null = null): Card => ({
   id,

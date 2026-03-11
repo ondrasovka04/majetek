@@ -57,7 +57,6 @@ public class PurchaseMethodService implements IPurchaseMethodService {
     }
 
     @Override
-    @Transactional
     @CacheEvict(value = "purchaseMethods", allEntries = true)
     public void delete(String id) {
         try {

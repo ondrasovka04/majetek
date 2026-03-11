@@ -1,7 +1,7 @@
 /** API service functions for authentication — login, token refresh, password change, and user registration. */
 import axios from "axios";
-import { LoginResponse, User, ChangePasswordDto, RegisterUserDto } from "../types/auth";
-import authorizedRequest from "../utils/authorizedRequest";
+import { LoginResponse, User, ChangePasswordDto, RegisterUserDto } from "@/types/auth";
+import authorizedRequest from "@/utils/authorizedRequest";
 
 const API_URL = import.meta.env.VITE_API_URL;
 

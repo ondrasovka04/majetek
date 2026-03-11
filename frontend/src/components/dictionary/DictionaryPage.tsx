@@ -1,3 +1,4 @@
+/** Reusable dictionary CRUD page — table with inline edit, add dialog, delete confirmation, and notification bar. */
 import { useState } from "react";
 import {
   Typography,
@@ -12,15 +13,15 @@ import {
   CssBaseline,
 } from "@mui/material";
 import { UseQueryResult, UseMutationResult } from "@tanstack/react-query";
-import MenuBar from "../MenuBar";
-import { DictionaryEntity } from "../../types/dictionary";
-import DictionaryRow from "./DictionaryRow";
-import AddDictionaryDialog from "./AddDictionaryDialog";
-import { useNotification } from "../../hooks/useNotification";
-import { useSortableData } from "../../hooks/useSortableData";
-import { translateError } from "../../utils/errorTranslations";
-import { extractErrorMessage } from "../../utils/extractErrorMessage";
-import { dictionaryTheme } from "../../theme";
+import MenuBar from "@/components/MenuBar";
+import { DictionaryEntity } from "@/types/dictionary";
+import DictionaryRow from "@/components/dictionary/DictionaryRow";
+import AddDictionaryDialog from "@/components/dictionary/AddDictionaryDialog";
+import { useNotification } from "@/hooks/useNotification";
+import { useSortableData } from "@/hooks/useSortableData";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
+import { dictionaryTheme } from "@/theme";
 
 interface DictionaryPageProps<T extends DictionaryEntity> {
   readonly title: string;

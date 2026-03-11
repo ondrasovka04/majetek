@@ -1,22 +1,22 @@
 /** PDF report generation page. Offers group, location, and individual card reports with an embedded PDF viewer. */
 import { useState } from "react";
 import { Paper, Typography, List, ListItemButton, CircularProgress } from "@mui/material";
-import MenuBar from "../components/MenuBar";
-import { translateError } from "../utils/errorTranslations";
-import { extractErrorMessage } from "../utils/extractErrorMessage";
+import MenuBar from "@/components/MenuBar";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
-import GroupReportModal, { ALL_GROUPS } from "../components/report/GroupReportModal";
-import czechLocalization from "../utils/czechLocalization";
-import LocationReportModal from "../components/report/LocationReportModal";
-import CardReportModal from "../components/report/CardReportModal";
-import { useNotification } from "../hooks/useNotification";
-import { useAssetGroups } from "../hooks/queries/useAssetGroupQueries";
-import { useLocations } from "../hooks/queries/useLocationQueries";
-import { useExportCardPdf, useExportGroupPdf, useExportLocationPdf } from "../hooks/queries/useCardQueries";
-import { sortById } from "../utils/czech";
+import GroupReportModal, { ALL_GROUPS } from "@/components/report/GroupReportModal";
+import czechLocalization from "@/utils/czechLocalization";
+import LocationReportModal from "@/components/report/LocationReportModal";
+import CardReportModal from "@/components/report/CardReportModal";
+import { useNotification } from "@/hooks/useNotification";
+import { useAssetGroups } from "@/hooks/queries/useAssetGroupQueries";
+import { useLocations } from "@/hooks/queries/useLocationQueries";
+import { useExportCardPdf, useExportGroupPdf, useExportLocationPdf } from "@/hooks/queries/useCardQueries";
+import { sortById } from "@/utils/czech";
 
 type ActiveModal = "group" | "location" | "card" | null;
 

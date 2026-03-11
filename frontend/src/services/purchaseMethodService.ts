@@ -1,6 +1,6 @@
 /** API service for purchase method (způsob pořízení) dictionary CRUD operations. */
-import authorizedRequest from "../utils/authorizedRequest";
-import { PurchaseMethod } from "../types/purchaseMethod";
+import authorizedRequest from "@/utils/authorizedRequest";
+import { PurchaseMethod } from "@/types/purchaseMethod";
 
 export const getPurchaseMethods = async (): Promise<PurchaseMethod[]> => {
   const res = await authorizedRequest.get("/purchase-method");

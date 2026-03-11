@@ -1,3 +1,4 @@
+/** Zod schemas and types for user-related forms (registration, password change). */
 import { z } from "zod";
 
 /** Schema for the "register new user" admin dialog. */

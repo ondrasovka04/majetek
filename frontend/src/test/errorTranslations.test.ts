@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { translateError } from "../utils/errorTranslations";
+import { translateError } from "@/utils/errorTranslations";
 
 describe("translateError", () => {
   // --- Regex patterns ---

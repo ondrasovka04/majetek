@@ -3,14 +3,14 @@ import { useState } from "react";
 import { Typography, TextField, Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuthStore } from "../store/authStore";
-import { translateError } from "../utils/errorTranslations";
-import { extractErrorMessage } from "../utils/extractErrorMessage";
-import MenuBar from "../components/MenuBar";
-import AdminUserDialog from "../components/AdminUserDialog";
-import { changePasswordSchema, ChangePasswordFormValues } from "../schemas/userSchema";
-import { useNotification } from "../hooks/useNotification";
-import { useChangePassword } from "../hooks/queries/useAuthQueries";
+import { useAuthStore } from "@/store/authStore";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
+import MenuBar from "@/components/MenuBar";
+import AdminUserDialog from "@/components/AdminUserDialog";
+import { changePasswordSchema, ChangePasswordFormValues } from "@/schemas/userSchema";
+import { useNotification } from "@/hooks/useNotification";
+import { useChangePassword } from "@/hooks/queries/useAuthQueries";
 
 const UserPage = () => {
   const user = useAuthStore((state) => state.user);

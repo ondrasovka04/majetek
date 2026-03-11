@@ -1,7 +1,7 @@
 /** Single row in the card list table. Shows a red dot if the card has been written off. Memoized to avoid re-renders on parent state changes. */
 import { memo } from "react";
 import { TableRow, TableCell } from "@mui/material";
-import { Card } from "../../types/card/card";
+import { Card } from "@/types/card/card";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 interface Props {

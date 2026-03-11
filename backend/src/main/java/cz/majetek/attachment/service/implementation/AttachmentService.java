@@ -10,6 +10,7 @@ import cz.majetek.entity.Card;
 import cz.majetek.exception.attachment.AttachmentException;
 import cz.majetek.exception.card.CardException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -24,6 +25,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AttachmentService implements IAttachmentService {
@@ -86,18 +88,17 @@ public class AttachmentService implements IAttachmentService {
     }
 
     @Override
-    @Transactional
     public void delete(Integer cardId, Integer id) {
         Attachment attachment = attachmentRepository.findById(new Attachment.AttachmentId(id, cardId))
                 .orElseThrow(() -> new AttachmentException("Attachment not found"));
 
+        attachmentRepository.delete(attachment);
+
         try {
             Files.deleteIfExists(Path.of(attachment.getFilePath()));
         } catch (IOException e) {
-            throw new AttachmentException("File deletion failed");
+            log.warn("Failed to delete attachment file: {}", attachment.getFilePath(), e);
         }
-
-        attachmentRepository.delete(attachment);
     }
 }
 

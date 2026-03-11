@@ -1,6 +1,10 @@
 package cz.majetek.card.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
+import com.alibaba.excel.annotation.format.NumberFormat;
+import com.alibaba.excel.annotation.write.style.HeadStyle;
+import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +15,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @AllArgsConstructor
+@HeadStyle(horizontalAlignment = HorizontalAlignmentEnum.LEFT)
 public class CardExportDto {
 
     @ExcelProperty("ID")
@@ -20,6 +25,7 @@ public class CardExportDto {
     private String name;
 
     @ExcelProperty("Cena")
+    @NumberFormat("#,##0.00")
     private BigDecimal price;
 
     @ExcelProperty("Seriové číslo")
@@ -35,9 +41,11 @@ public class CardExportDto {
     private String purchaseInvoice;
 
     @ExcelProperty("Datum pořízení")
+    @DateTimeFormat("dd.MM.yyyy")
     private LocalDate purchaseDate;
 
     @ExcelProperty("Datum vyřazení")
+    @DateTimeFormat("dd.MM.yyyy")
     private LocalDate writeOffDate;
 
     @ExcelProperty("Způsob pořízení")
@@ -53,6 +61,7 @@ public class CardExportDto {
     private String note;
 
     @ExcelProperty("Vytvořeno")
+    @DateTimeFormat("dd.MM.yyyy")
     private LocalDate created;
 
     @ExcelProperty("Vytvořil")

@@ -1,8 +1,9 @@
+/** Editable table row for a dictionary entity — inline name editing with validation and delete action. */
 import { useState, useRef, memo } from "react";
 import { TableRow, TableCell, TextField, IconButton, Box } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { DictionaryEntity } from "../../types/dictionary";
-import { dictionaryNameSchema } from "../../schemas/dictionarySchema";
+import { DictionaryEntity } from "@/types/dictionary";
+import { dictionaryNameSchema } from "@/schemas/dictionarySchema";
 
 interface Props<T extends DictionaryEntity> {
   readonly item: T;

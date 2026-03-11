@@ -1,14 +1,15 @@
+/** Shared form fields for card create/edit views — text inputs, selects, date pickers, and price inputs. */
 import { TextField, Grid, MenuItem, Box } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Controller, useFormContext } from "react-hook-form";
-import { PriceInput } from "./PriceInput";
-import { CardFormValues } from "../../schemas/cardSchema";
-import { Location } from "../../types/location";
-import { AssetGroup } from "../../types/assetGroup";
-import { Class } from "../../types/class";
-import { PurchaseMethod } from "../../types/purchaseMethod";
-import { WriteOffMethod } from "../../types/writeOffMethod";
-import { User } from "../../types/auth";
+import { PriceInput } from "@/components/card/PriceInput";
+import { CardFormValues } from "@/schemas/cardSchema";
+import { Location } from "@/types/location";
+import { AssetGroup } from "@/types/assetGroup";
+import { Class } from "@/types/class";
+import { PurchaseMethod } from "@/types/purchaseMethod";
+import { WriteOffMethod } from "@/types/writeOffMethod";
+import { User } from "@/types/auth";
 
 interface Props {
   locations: Location[];

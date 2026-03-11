@@ -3,8 +3,8 @@
  * `attemptRehydrate` tries to restore the session from the httpOnly refresh cookie on app start.
  */
 import { create } from "zustand";
-import { User } from "../types/auth";
-import { refresh } from "../services/authService";
+import { User } from "@/types/auth";
+import { refresh } from "@/services/authService";
 
 interface AuthState {
   user: User | null;

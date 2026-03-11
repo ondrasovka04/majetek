@@ -6,19 +6,19 @@
 import { useMemo, useRef, useState } from "react";
 import { Typography, Paper } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
-import MenuBar from "../components/MenuBar";
-import CardDetailView from "../components/card/CardDetailView";
-import CardCreateView from "../components/card/CardCreateView";
-import CardListPanel, { CardListPanelHandle } from "../components/card/CardListPanel";
-import { CardFormValues } from "../schemas/cardSchema";
-import { useNotification } from "../hooks/useNotification";
-import { useUsers } from "../hooks/queries/useCardQueries";
-import { useLocations } from "../hooks/queries/useLocationQueries";
-import { useClasses } from "../hooks/queries/useClassQueries";
-import { useAssetGroups } from "../hooks/queries/useAssetGroupQueries";
-import { usePurchaseMethods } from "../hooks/queries/usePurchaseMethodQueries";
-import { useWriteOffMethods } from "../hooks/queries/useWriteOffMethodQueries";
-import { sortById } from "../utils/czech";
+import MenuBar from "@/components/MenuBar";
+import CardDetailView from "@/components/card/CardDetailView";
+import CardCreateView from "@/components/card/CardCreateView";
+import CardListPanel, { CardListPanelHandle } from "@/components/card/CardListPanel";
+import { CardFormValues } from "@/schemas/cardSchema";
+import { useNotification } from "@/hooks/useNotification";
+import { useUsers } from "@/hooks/queries/useCardQueries";
+import { useLocations } from "@/hooks/queries/useLocationQueries";
+import { useClasses } from "@/hooks/queries/useClassQueries";
+import { useAssetGroups } from "@/hooks/queries/useAssetGroupQueries";
+import { usePurchaseMethods } from "@/hooks/queries/usePurchaseMethodQueries";
+import { useWriteOffMethods } from "@/hooks/queries/useWriteOffMethodQueries";
+import { sortById } from "@/utils/czech";
 
 const CardPage = () => {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);

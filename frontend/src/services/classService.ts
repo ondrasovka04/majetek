@@ -1,6 +1,6 @@
 /** API service for class (třída) dictionary CRUD operations. */
-import authorizedRequest from "../utils/authorizedRequest";
-import { Class } from "../types/class";
+import authorizedRequest from "@/utils/authorizedRequest";
+import { Class } from "@/types/class";
 
 export const getClasses = async (): Promise<Class[]> => {
   const res = await authorizedRequest.get("/class");

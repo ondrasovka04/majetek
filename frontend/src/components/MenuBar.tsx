@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Menu, MenuItem, Button, IconButton } from 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "@/store/authStore";
 
 const MenuBar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

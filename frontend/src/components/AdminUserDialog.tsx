@@ -2,10 +2,10 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerUserSchema, RegisterUserFormValues, RegisterUserFormOutput } from "../schemas/userSchema";
-import { translateError } from "../utils/errorTranslations";
-import { extractErrorMessage } from "../utils/extractErrorMessage";
-import { useRegisterUser } from "../hooks/queries/useAuthQueries";
+import { registerUserSchema, RegisterUserFormValues, RegisterUserFormOutput } from "@/schemas/userSchema";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
+import { useRegisterUser } from "@/hooks/queries/useAuthQueries";
 
 interface Props {
   open: boolean;

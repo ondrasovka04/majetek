@@ -5,8 +5,8 @@ import {
   createWriteOffMethod,
   updateWriteOffMethod,
   deleteWriteOffMethod,
-} from "../../services/writeOffMethodService";
-import { WriteOffMethod } from "../../types/writeOffMethod";
+} from "@/services/writeOffMethodService";
+import { WriteOffMethod } from "@/types/writeOffMethod";
 
 const QUERY_KEY = ["writeOffMethods"] as const;
 

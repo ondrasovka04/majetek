@@ -16,23 +16,23 @@ import {
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import MenuBar from "../../components/MenuBar";
-import { defaultTheme } from "../../theme";
-import ProjectionConfirmDialog from "../../components/inventoryAudit/ProjectionConfirmDialog";
+import MenuBar from "@/components/MenuBar";
+import { defaultTheme } from "@/theme";
+import ProjectionConfirmDialog from "@/components/inventoryAudit/ProjectionConfirmDialog";
 import {
   InventoryDifferenceEntry,
   InventoryDifferenceAction,
   InventoryDifferenceStatus,
-} from "../../types/inventoryAudit/inventoryDifference";
-import { translateError } from "../../utils/errorTranslations";
-import { extractErrorMessage } from "../../utils/extractErrorMessage";
+} from "@/types/inventoryAudit/inventoryDifference";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
 
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { csCZ as dataGridCsCZ } from "@mui/x-data-grid/locales";
 import { useNavigate } from "react-router-dom";
 
-import { useDifferenceEntries } from "../../hooks/useDifferenceEntries";
-import { useNotification } from "../../hooks/useNotification";
+import { useDifferenceEntries } from "@/hooks/useDifferenceEntries";
+import { useNotification } from "@/hooks/useNotification";
 
 const statusTranslation: Record<InventoryDifferenceStatus, string> = {
   CORRECT: "Správně",

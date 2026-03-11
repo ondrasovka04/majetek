@@ -4,8 +4,8 @@
  * On 401, automatically attempts a token refresh and retries the original request once.
  */
 import axios, { AxiosHeaders, InternalAxiosRequestConfig } from "axios";
-import { useAuthStore } from "../store/authStore";
-import { refresh } from "../services/authService";
+import { useAuthStore } from "@/store/authStore";
+import { refresh } from "@/services/authService";
 
 interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;

@@ -16,6 +16,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ class LocationServiceExportTest {
     }
 
     @Test
-    void exportLocation_WithValidId_ShouldReturnResource() {
+    void exportLocation_WithValidId_ShouldReturnResource() throws IOException {
         Location loc = new Location();
         loc.setId("LOC1");
         loc.setName("Test Location");
@@ -56,6 +57,7 @@ class LocationServiceExportTest {
         InputStreamResource result = locationService.exportLocation("LOC1");
 
         assertNotNull(result);
+        result.getInputStream().close();
         verify(labelPrinter).generateZplFromLocation(loc);
         verify(labelPrinter).sendToZebraCloud(any(File.class));
     }

@@ -1,7 +1,7 @@
 /** Class (třída) dictionary page. */
-import DictionaryPage from "../components/dictionary/DictionaryPage";
-import { Class } from "../types/class";
-import { useClasses, useCreateClass, useUpdateClass, useDeleteClass } from "../hooks/queries/useClassQueries";
+import DictionaryPage from "@/components/dictionary/DictionaryPage";
+import { Class } from "@/types/class";
+import { useClasses, useCreateClass, useUpdateClass, useDeleteClass } from "@/hooks/queries/useClassQueries";
 
 const ClassPage = () => (
   <DictionaryPage<Class>

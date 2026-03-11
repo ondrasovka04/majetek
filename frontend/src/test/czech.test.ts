@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { normalizeString, sortById, czechCollator, czechCollatorBase } from "../utils/czech";
+import { normalizeString, sortById, czechCollator, czechCollatorBase } from "@/utils/czech";
 
 describe("normalizeString", () => {
   it("strips Czech diacritics", () => {

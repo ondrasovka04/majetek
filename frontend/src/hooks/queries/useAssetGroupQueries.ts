@@ -1,7 +1,7 @@
 /** TanStack Query hooks for asset group (skupina majetku) CRUD with cache invalidation. */
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAssetGroups, createAssetGroup, updateAssetGroup, deleteAssetGroup } from "../../services/assetGroupService";
-import { AssetGroup } from "../../types/assetGroup";
+import { getAssetGroups, createAssetGroup, updateAssetGroup, deleteAssetGroup } from "@/services/assetGroupService";
+import { AssetGroup } from "@/types/assetGroup";
 
 const QUERY_KEY = ["assetGroups"] as const;
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { toIsoDateString } from "../utils/formatDate";
+import { toIsoDateString } from "@/utils/formatDate";
 
 describe("toIsoDateString", () => {
   it("formats a Date object to yyyy-MM-dd", () => {

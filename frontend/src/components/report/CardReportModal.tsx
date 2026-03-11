@@ -11,7 +11,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { filterCards } from "../../services/cardService";
+import { filterCards } from "@/services/cardService";
 
 type CardOption = {
   id: number;

@@ -7,6 +7,9 @@ import cz.majetek.card.dto.CardChangeDto;
 import cz.majetek.card.dto.CardDto;
 import cz.majetek.card.dto.CardExportDto;
 import cz.majetek.card.dto.CardFilterQuery;
+import cz.majetek.card.export.CalibriStyleStrategy;
+import cz.majetek.card.export.ColumnWidthStrategy;
+import cz.majetek.card.export.FreezeFirstRowHandler;
 import cz.majetek.card.mapper.ICardMapper;
 import cz.majetek.card.repository.ICardRepository;
 import cz.majetek.card.service.ICardService;
@@ -24,6 +27,7 @@ import cz.majetek.exception.auth.UserException;
 import cz.majetek.exception.card.CardException;
 import cz.majetek.exception.dictionary.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -50,6 +54,7 @@ import java.util.stream.Stream;
 
 import static com.alibaba.excel.EasyExcelFactory.write;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CardService implements ICardService {
@@ -148,14 +153,12 @@ public class CardService implements ICardService {
     }
 
     @Override
-    @Transactional
     public void deleteCard(Integer id) {
         if (!cardRepository.existsById(id)) throw CardException.notFound(id);
 
         cardRepository.deleteById(id);
 
         Path cardFolder = Path.of(uploadRoot, String.valueOf(id));
-
         if (Files.exists(cardFolder)) {
             try (Stream<Path> walk = Files.walk(cardFolder)) {
                 walk.sorted(Comparator.reverseOrder())
@@ -163,11 +166,11 @@ public class CardService implements ICardService {
                             try {
                                 Files.delete(path);
                             } catch (IOException e) {
-                                throw new CardException("Failed to delete file: " + path);
+                                log.warn("Failed to delete file: {}", path, e);
                             }
                         });
             } catch (IOException e) {
-                throw new CardException("Failed to delete attachment folder for card ID: " + id);
+                log.warn("Failed to traverse attachment folder for card ID: {}", id, e);
             }
         }
     }
@@ -178,12 +181,14 @@ public class CardService implements ICardService {
         List<Card> cards = cardRepository.findAll(CardSpecification.filter(query), Sort.by(Sort.Direction.ASC, "id"));
         if (cards.isEmpty()) throw new CardException("No cards found");
 
-
         List<CardExportDto> exportList = getExportListFromCards(cards);
 
         try {
             Path excelPath = Path.of(exportPath, "cards-" + Instant.now().toEpochMilli() + ".xlsx");
             write(excelPath.toFile(), CardExportDto.class)
+                    .registerWriteHandler(new CalibriStyleStrategy())
+                    .registerWriteHandler(new ColumnWidthStrategy())
+                    .registerWriteHandler(new FreezeFirstRowHandler())
                     .sheet("Karty")
                     .doWrite(exportList);
 

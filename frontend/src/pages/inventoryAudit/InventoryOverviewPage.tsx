@@ -11,14 +11,14 @@ import {
   ThemeProvider,
   CssBaseline,
 } from "@mui/material";
-import MenuBar from "../../components/MenuBar";
-import { InventoryAuditEntry } from "../../types/inventoryAudit/inventoryAudit";
-import { defaultTheme } from "../../theme";
-import { useInventoryAudit } from "../../hooks/queries/useInventoryAuditQueries";
-import { useNotification } from "../../hooks/useNotification";
-import { translateError } from "../../utils/errorTranslations";
-import { extractErrorMessage } from "../../utils/extractErrorMessage";
-import SortableHeaderCell from "../../components/inventoryAudit/SortableHeaderCell";
+import MenuBar from "@/components/MenuBar";
+import { InventoryAuditEntry } from "@/types/inventoryAudit/inventoryAudit";
+import { defaultTheme } from "@/theme";
+import { useInventoryAudit } from "@/hooks/queries/useInventoryAuditQueries";
+import { useNotification } from "@/hooks/useNotification";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
+import SortableHeaderCell from "@/components/inventoryAudit/SortableHeaderCell";
 
 const InventoryOverviewPage = () => {
   const { data: entries = [], isLoading, error } = useInventoryAudit();

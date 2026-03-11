@@ -295,7 +295,7 @@ class CardServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void exportLabel_LocalExport_ShouldReturnResource() {
+    void exportLabel_LocalExport_ShouldReturnResource() throws IOException {
         when(cardRepository.findAll(any(Specification.class))).thenReturn(List.of(testCard));
         when(labelPrinter.generateZplFromCards(anyList())).thenReturn("^XA^XZ");
 
@@ -303,12 +303,13 @@ class CardServiceTest {
         InputStreamResource result = cardService.exportLabel(q, false);
 
         assertNotNull(result);
+        result.getInputStream().close();
         verify(labelPrinter, never()).sendToZebraCloud(any(File.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    void exportLabel_CloudPrint_ShouldSendToCloud() {
+    void exportLabel_CloudPrint_ShouldSendToCloud() throws IOException {
         when(cardRepository.findAll(any(Specification.class))).thenReturn(List.of(testCard));
         when(labelPrinter.generateZplFromCards(anyList())).thenReturn("^XA^XZ");
 
@@ -316,6 +317,7 @@ class CardServiceTest {
         InputStreamResource result = cardService.exportLabel(q, true);
 
         assertNotNull(result);
+        result.getInputStream().close();
         verify(labelPrinter).sendToZebraCloud(any(File.class));
     }
 
@@ -331,17 +333,18 @@ class CardServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void exportExcel_WithCards_ShouldReturnResource() {
+    void exportExcel_WithCards_ShouldReturnResource() throws IOException {
         when(cardRepository.findAll(any(Specification.class), any(Sort.class))).thenReturn(List.of(testCard));
 
         CardFilterQuery q = new CardFilterQuery();
         InputStreamResource result = cardService.exportExcel(q);
         assertNotNull(result);
+        result.getInputStream().close();
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    void exportExcel_WithNullableFields_ShouldHandle() {
+    void exportExcel_WithNullableFields_ShouldHandle() throws IOException {
         Card cardWithNulls = new Card();
         cardWithNulls.setId(2);
         cardWithNulls.setName("Null Card");
@@ -359,6 +362,7 @@ class CardServiceTest {
 
         InputStreamResource result = cardService.exportExcel(new CardFilterQuery());
         assertNotNull(result);
+        result.getInputStream().close();
     }
 
     // --- exportGroupReport ---

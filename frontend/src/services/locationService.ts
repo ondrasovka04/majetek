@@ -1,6 +1,6 @@
 /** API service functions for location CRUD and label printing. */
-import authorizedRequest from "../utils/authorizedRequest";
-import { Location } from "../types/location";
+import authorizedRequest from "@/utils/authorizedRequest";
+import { Location } from "@/types/location";
 
 export const getLocations = async (): Promise<Location[]> => {
   const res = await authorizedRequest.get("/location");
