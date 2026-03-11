@@ -59,7 +59,7 @@ export const PriceInput = ({ value, label, onChange }: PriceInputProps) => {
       onChange={handleChange}
       type="text"
       slotProps={{
-        htmlInput: { inputMode: "decimal", pattern: "\\d*[.,]?\\d*" },
+        htmlInput: { inputMode: "decimal", pattern: String.raw`\d*[.,]?\d*` },
       }}
     />
   );

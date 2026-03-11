@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
+/**
+ * REST controller for card attachment upload, download and deletion.
+ */
 @RestController
 @RequestMapping("/api/card/{cardId}/attachments")
 @RequiredArgsConstructor
@@ -29,6 +32,9 @@ public class AttachmentController {
 
     private final IAttachmentService attachmentService;
 
+    /**
+     * Upload attachment for a card.
+     */
     @PostMapping
     @Operation(summary = "Upload attachment", description = "Upload attachment for given card")
     @ApiResponse(responseCode = "201", description = "Attachment uploaded successfully")
@@ -38,6 +44,9 @@ public class AttachmentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(attachmentService.upload(cardId, file));
     }
 
+    /**
+     * List all attachments for a card.
+     */
     @GetMapping
     @Operation(summary = "List attachments", description = "List all attachments for the given card")
     @ApiResponse(responseCode = "200", description = "List of attachments",
@@ -48,6 +57,9 @@ public class AttachmentController {
         return ResponseEntity.ok(attachmentService.getAttachments(cardId));
     }
 
+    /**
+     * Download attachment by ID.
+     */
     @GetMapping("{id}")
     @Operation(summary = "Download attachment", description = "Download a specific attachment by its ID")
     public ResponseEntity<Resource> downloadAttachment(
@@ -73,6 +85,9 @@ public class AttachmentController {
                 .body(resource);
     }
 
+    /**
+     * Delete attachment by ID.
+     */
     @DeleteMapping("{id}")
     @Operation(summary = "Delete attachment", description = "Delete a specific attachment by its ID")
     @ApiResponse(responseCode = "204", description = "Attachment deleted")

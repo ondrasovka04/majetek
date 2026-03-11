@@ -2,6 +2,9 @@ package cz.majetek.exception.dictionary;
 
 import lombok.Getter;
 
+/**
+ * Exception thrown for purchase method validation or not-found errors.
+ */
 @Getter
 public final class PurchaseMethodException extends RuntimeException {
     private final String purchaseMethodId;

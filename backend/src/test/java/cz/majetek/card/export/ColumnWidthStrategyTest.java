@@ -83,7 +83,7 @@ class ColumnWidthStrategyTest {
         when(cell.getStringCellValue()).thenReturn("Jan");
         invokeSetColumnWidth(false);
 
-        verify(sheet, never()).setColumnWidth(eq(3), eq(4 * 256));
+        verify(sheet, never()).setColumnWidth(3, 4 * 256);
         // header width should remain
         verify(sheet).setColumnWidth(3, 25 * 256);
     }

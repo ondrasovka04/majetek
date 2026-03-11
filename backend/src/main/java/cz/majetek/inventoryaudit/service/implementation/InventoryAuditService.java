@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Service for inventory audit operations – scans, diffs and card state projections.
+ */
 @Service
 @RequiredArgsConstructor
 public class InventoryAuditService implements IInventoryAuditService {
@@ -45,6 +48,9 @@ public class InventoryAuditService implements IInventoryAuditService {
         return inventoryAuditRepository.findAllByRealLocationIsNotNull().stream().map(mapper::toDto).toList();
     }
 
+    /**
+     * Compute diffs between expected and scanned card locations.
+     */
     @Override
     @Transactional(readOnly = true)
     public List<InventoryAuditDiffDto> getDiffs() {
@@ -63,6 +69,9 @@ public class InventoryAuditService implements IInventoryAuditService {
                 .toList();
     }
 
+    /**
+     * Upsert audit records from mobile scans.
+     */
     @Override
     @Transactional
     public List<InventoryAuditInsertDto> insertMany(List<InventoryAuditInsertDto> items) {
@@ -113,6 +122,9 @@ public class InventoryAuditService implements IInventoryAuditService {
         inventoryAuditRepository.save(entity);
     }
 
+    /**
+     * Apply audit actions (relocate, write-off) to cards and clear audit data.
+     */
     @Override
     @Transactional
     public void project() {

@@ -12,6 +12,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * DTO for Excel export with EasyExcel column annotations.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

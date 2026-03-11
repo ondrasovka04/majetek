@@ -8,6 +8,9 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+/**
+ * Request DTO for generating an asset group PDF report.
+ */
 @Getter
 @Setter
 public class GroupReportRequest {

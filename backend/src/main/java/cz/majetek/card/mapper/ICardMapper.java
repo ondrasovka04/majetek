@@ -11,6 +11,9 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
+/**
+ * MapStruct mapper for card entity/DTO conversions with named reference resolvers.
+ */
 @Mapper(componentModel = "spring")
 public interface ICardMapper {
 

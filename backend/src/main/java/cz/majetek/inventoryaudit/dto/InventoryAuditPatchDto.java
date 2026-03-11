@@ -6,6 +6,9 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+/**
+ * DTO for patching an inventory audit record with an action.
+ */
 @Getter
 @Setter
 public class InventoryAuditPatchDto {

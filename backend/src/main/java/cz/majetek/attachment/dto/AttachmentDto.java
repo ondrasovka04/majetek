@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * DTO representing a card attachment in API responses.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

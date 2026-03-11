@@ -2,6 +2,9 @@ package cz.majetek.exception.inventoryaudit;
 
 import lombok.Getter;
 
+/**
+ * Exception thrown for inventory audit validation or not-found errors.
+ */
 @Getter
 public class InventoryAuditException extends RuntimeException {
     private final Integer cardId;

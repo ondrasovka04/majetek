@@ -5,6 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+/**
+ * Repository for InventoryAudit entity.
+ */
 public interface IInventoryAuditRepository extends JpaRepository<InventoryAudit, Integer> {
 
     List<InventoryAudit> findAllByRealLocationIsNotNull();

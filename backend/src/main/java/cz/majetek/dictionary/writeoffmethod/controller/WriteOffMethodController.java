@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for write-off method dictionary CRUD operations.
+ */
 @RestController
 @RequestMapping("/api/write-off-method")
 @RequiredArgsConstructor

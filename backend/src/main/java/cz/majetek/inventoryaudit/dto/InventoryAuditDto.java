@@ -5,6 +5,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO representing an inventory audit record in API responses.
+ */
 @Getter
 @Setter
 public class InventoryAuditDto {

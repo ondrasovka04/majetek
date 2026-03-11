@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for inventory audit scans and diff projections.
+ */
 @RestController
 @RequestMapping("/api/inventory-audit")
 @RequiredArgsConstructor
@@ -28,6 +31,9 @@ public class InventoryAuditController {
 
     private final IInventoryAuditService auditService;
 
+    /**
+     * Get all inventory audit records.
+     */
     @GetMapping
     @Operation(summary = "Get all inventory audit records", description = "Returns a list of all inventory audit records")
     @ApiResponse(responseCode = "200", description = "List of inventory audit records",
@@ -37,6 +43,9 @@ public class InventoryAuditController {
         return ResponseEntity.ok(auditService.getAll());
     }
 
+    /**
+     * Get inventory audit differences.
+     */
     @GetMapping("/differences")
     @Operation(summary = "Get all inventory audit differences", description = "Returns a list of all inventory audit differences")
     @ApiResponse(responseCode = "200", description = "List of inventory audit differences",
@@ -46,6 +55,9 @@ public class InventoryAuditController {
         return ResponseEntity.ok(auditService.getDiffs());
     }
 
+    /**
+     * Insert multiple audit scans.
+     */
     @PostMapping("/insert-many")
     @Operation(summary = "Insert multiple inventory audit records", description = "Creates multiple inventory audit entries in a single request")
     @ApiResponse(responseCode = "201", description = "Inventory audit records created",
@@ -58,6 +70,9 @@ public class InventoryAuditController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    /**
+     * Patch audit record action and write-off details.
+     */
     @PatchMapping("/{cardId}")
     @Operation(summary = "Update inventory audit record", description = "Updates action, write-off date and method for given card ID")
     @ApiResponse(responseCode = "200", description = "Inventory audit record updated")
@@ -69,6 +84,9 @@ public class InventoryAuditController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Project audit differences into card data.
+     */
     @PostMapping("/project")
     @Operation(summary = "Project inventory differences", description = "Projects inventory differences based on current inventory audit data")
     @ApiResponse(responseCode = "200", description = "Inventory differences projected",

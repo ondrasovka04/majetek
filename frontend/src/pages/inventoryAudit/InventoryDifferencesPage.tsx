@@ -193,11 +193,7 @@ const InventoryDifferencesPage = () => {
               }
               updateEntryAndSave(entry.cardId, patch);
             }}
-            renderValue={(value) =>
-              !value && entry.status === "WRONG"
-                ? "(zvolit)"
-                : actionLabel[value as Exclude<InventoryDifferenceAction, null>]
-            }>
+            renderValue={(value) => (!value && entry.status === "WRONG" ? "(zvolit)" : actionLabel[value])}>
             {entry.status === "WRONG" && <MenuItem value="">(zvolit)</MenuItem>}
             {actions.map((a) => (
               <MenuItem key={a} value={a}>
@@ -256,7 +252,7 @@ const InventoryDifferencesPage = () => {
               value={entry.writeOffMethodId ?? ""}
               onChange={(ev) =>
                 updateEntryAndSave(entry.cardId, {
-                  writeOffMethodId: (ev.target.value || null) as string | null,
+                  writeOffMethodId: ev.target.value || null,
                 })
               }>
               {writeOffMethods.map((m) => (

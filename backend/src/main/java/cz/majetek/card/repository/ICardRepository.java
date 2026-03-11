@@ -11,6 +11,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
+/**
+ * Repository for Card entity with custom max-ID and pessimistic locking queries.
+ */
 public interface ICardRepository extends JpaRepository<Card, Integer>, JpaSpecificationExecutor<Card> {
     @Query("SELECT COALESCE(MAX(c.id), 0) FROM Card c")
     int findMaxId();

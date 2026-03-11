@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Implementation of location service interface.
+ * Implementation of write-off method service interface.
  */
 @Service
 @RequiredArgsConstructor

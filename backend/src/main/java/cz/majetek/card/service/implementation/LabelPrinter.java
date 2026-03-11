@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Generates ZPL label code for cards and locations, optionally sends to Zebra Cloud.
+ */
 @Component
 public class LabelPrinter {
 
@@ -76,6 +79,9 @@ public class LabelPrinter {
         }
     }
 
+    /**
+     * Send ZPL file to Zebra Cloud Print API.
+     */
     public void sendToZebraCloud(File file) {
         HttpHeaders headers = new HttpHeaders();
 
@@ -106,11 +112,17 @@ public class LabelPrinter {
         }
     }
 
+    /**
+     * Check if text fits within the label width using font metrics.
+     */
     private boolean willFit(String text) {
         float width = new TextLayout(text, ZEBRA_FONT, FONT_RENDER_CONTEXT).getAdvance();
         return 33.6 > (width / 300) * 25.4;
     }
 
+    /**
+     * Split text into two lines that fit the label width.
+     */
     public String[] getLines(String text) {
         String[] words = text.split(" ");
         java.util.List<String> firstRow = new ArrayList<>();

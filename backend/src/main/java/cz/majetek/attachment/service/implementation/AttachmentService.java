@@ -25,6 +25,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Service for card attachment upload, download and deletion.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,6 +40,9 @@ public class AttachmentService implements IAttachmentService {
     @Value("${attachments.folder}")
     private String uploadRoot;
 
+    /**
+     * Upload file to card folder, guard against path traversal.
+     */
     @Override
     @Transactional
     public AttachmentDto upload(Integer cardId, MultipartFile file) {

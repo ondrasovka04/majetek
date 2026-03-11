@@ -6,6 +6,9 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+/**
+ * DTO representing a diff between expected and scanned card state.
+ */
 @Getter
 @Setter
 public class InventoryAuditDiffDto {

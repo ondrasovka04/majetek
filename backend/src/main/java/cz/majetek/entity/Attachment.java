@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.io.Serializable;
 
+/**
+ * File attachment linked to a card via composite key (id + cardId).
+ */
 @Entity
 @Table(name = "attachment")
 @Getter

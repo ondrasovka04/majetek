@@ -54,6 +54,9 @@ import java.util.stream.Stream;
 
 import static com.alibaba.excel.EasyExcelFactory.write;
 
+/**
+ * Service handling card CRUD, Excel/PDF exports and ZPL label generation.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -85,6 +88,9 @@ public class CardService implements ICardService {
     @Value("${max.labels.per.print}")
     private long maxLabelPerPrint;
 
+    /**
+     * Generate ZPL label, optionally send to Zebra Cloud.
+     */
     @Override
     @Transactional(readOnly = true)
     public InputStreamResource exportLabel(CardFilterQuery query, boolean printCloud) {
@@ -152,6 +158,9 @@ public class CardService implements ICardService {
         return cardMapper.toDto(saved);
     }
 
+    /**
+     * Delete card from DB, then clean up attachment files (best-effort).
+     */
     @Override
     public void deleteCard(Integer id) {
         if (!cardRepository.existsById(id)) throw CardException.notFound(id);
@@ -175,6 +184,9 @@ public class CardService implements ICardService {
         }
     }
 
+    /**
+     * Export filtered cards to XLSX using EasyExcel.
+     */
     @Override
     @Transactional(readOnly = true)
     public InputStreamResource exportExcel(CardFilterQuery query) {
@@ -320,6 +332,9 @@ public class CardService implements ICardService {
         }
     }
 
+    /**
+     * Verify all referenced dictionary/user entities exist before save.
+     */
     private void validateReferencesExist(
             String locationId,
             String classId,

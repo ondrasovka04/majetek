@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for class dictionary CRUD operations.
+ */
 @RestController
 @RequestMapping("/api/class")
 @RequiredArgsConstructor

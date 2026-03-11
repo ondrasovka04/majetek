@@ -2,6 +2,9 @@ package cz.majetek.exception.dictionary;
 
 import lombok.Getter;
 
+/**
+ * Exception thrown for location validation or not-found errors.
+ */
 @Getter
 public final class LocationException extends RuntimeException {
     private final String locationId;

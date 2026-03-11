@@ -12,6 +12,9 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
 
+/**
+ * MapStruct mapper for inventory audit entity/DTO conversions.
+ */
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
 public interface IInventoryAuditMapper {
 

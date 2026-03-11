@@ -8,6 +8,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Query parameters for filtering cards (location, group, price range, date, etc.).
+ */
 @Getter
 @Setter
 public class CardFilterQuery {

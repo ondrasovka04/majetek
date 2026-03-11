@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Response DTO wrapping a Zebra Cloud print job result.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
