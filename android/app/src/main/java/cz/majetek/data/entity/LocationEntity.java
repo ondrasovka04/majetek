@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+/**
+ * Room entity for locations.
+ */
 @Entity(tableName = "location")
 public class LocationEntity {
     @PrimaryKey

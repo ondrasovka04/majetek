@@ -29,6 +29,9 @@ import cz.majetek.data.network.LoginResult;
 import cz.majetek.util.BaseUrlStorage;
 import cz.majetek.util.TokenStorage;
 
+/**
+ * Orchestrates data synchronization between the API and local Room DB.
+ */
 public class DataSyncRepository {
     private ApiClient api;
     private String lastBaseUrl;
@@ -48,6 +51,9 @@ public class DataSyncRepository {
 
     private static final DateTimeFormatter TS_FMT_BASE = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").withZone(ZoneOffset.UTC);
 
+    /**
+     * Downloads locations + cards from the API and saves them to Room DB in a transaction.
+     */
     public void downloadToDevice(Context ctx, Callback cb) {
         io.execute(() -> {
             try {
@@ -68,6 +74,9 @@ public class DataSyncRepository {
         });
     }
 
+    /**
+     * Uploads inventory audit records as a JSON array to the server.
+     */
     public void uploadInventoryAudit(Context ctx, AuditUploadCallback cb) {
         io.execute(() -> {
             try {
@@ -87,6 +96,9 @@ public class DataSyncRepository {
         });
     }
 
+    /**
+     * Returns a valid JWT token – from cache or via fresh login.
+     */
     private String ensureToken(Context ctx) throws IOException {
         String token = TokenStorage.getValidToken(ctx);
         if (token != null && !token.isEmpty()) return token;
@@ -130,6 +142,9 @@ public class DataSyncRepository {
         return lr.token();
     }
 
+    /**
+     * Lazy ApiClient initialization – rebuilds when baseUrl changes.
+     */
     private ApiClient getApi(Context ctx) {
         String base = BaseUrlStorage.getBaseUrl(ctx);
         if (api == null || lastBaseUrl == null || !lastBaseUrl.equals(base)) {
@@ -139,6 +154,9 @@ public class DataSyncRepository {
         return api;
     }
 
+    /**
+     * Serializes inventory audit records to JSON with ISO timestamps (UTC).
+     */
     String buildAuditJson(List<InventoryAuditEntity> audits) {
         JsonArray arr = new JsonArray();
         for (InventoryAuditEntity a : audits) {

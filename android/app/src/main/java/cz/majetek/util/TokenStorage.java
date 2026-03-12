@@ -10,6 +10,9 @@ import androidx.security.crypto.MasterKey;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+/**
+ * EncryptedSharedPreferences wrapper for JWT token with expiration.
+ */
 public class TokenStorage {
     private static final String TAG = "TokenStorage";
     private static final String PREF = "auth_pref_enc";
@@ -21,26 +24,23 @@ public class TokenStorage {
     private TokenStorage() {
     }
 
+    /**
+     * Creates encrypted prefs (AES-256-GCM), falls back to plain on failure.
+     */
     private static SharedPreferences sp(Context ctx) {
         cleanLegacy(ctx);
         try {
-            MasterKey masterKey = new MasterKey.Builder(ctx)
-                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                    .build();
-            return EncryptedSharedPreferences.create(
-                    ctx,
-                    PREF,
-                    masterKey,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            );
+            MasterKey masterKey = new MasterKey.Builder(ctx).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
+            return EncryptedSharedPreferences.create(ctx, PREF, masterKey, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
         } catch (GeneralSecurityException | IOException e) {
             Log.e(TAG, "EncryptedSharedPreferences failed, falling back to plain", e);
             return ctx.getSharedPreferences(PREF + "_fallback", Context.MODE_PRIVATE);
         }
     }
 
-    /** Clears legacy unencrypted prefs (one-time migration). */
+    /**
+     * Clears legacy unencrypted prefs (one-time migration).
+     */
     private static void cleanLegacy(Context ctx) {
         if (!legacyCleaned) {
             legacyCleaned = true;
@@ -48,10 +48,16 @@ public class TokenStorage {
         }
     }
 
+    /**
+     * Saves the token + expiration epoch millis.
+     */
     public static void saveToken(Context ctx, String token, long expiryEpochMillis) {
         sp(ctx).edit().putString(KEY_TOKEN, token).putLong(KEY_EXPIRY, expiryEpochMillis).apply();
     }
 
+    /**
+     * Returns the token only if not expired (5s buffer for network request).
+     */
     public static String getValidToken(Context ctx) {
         SharedPreferences s = sp(ctx);
         String token = s.getString(KEY_TOKEN, null);

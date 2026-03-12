@@ -33,6 +33,9 @@ import cz.majetek.data.entity.InventoryAuditEntity;
 import cz.majetek.data.entity.LocationEntity;
 import cz.majetek.ui.view.CircularInventoryProgressView;
 
+/**
+ * Fragment for inventory – scan location, then assets with progress indication.
+ */
 public class InventoryScanFragment extends Fragment {
 
     private EditText inputLocation;
@@ -185,6 +188,9 @@ public class InventoryScanFragment extends Fragment {
         });
     }
 
+    /**
+     * Handles scanned location code – L-prefix validation, DB lookup, context setup.
+     */
     private void handleLocationScanned(String code) {
         if (code.isEmpty()) {
             inputLocation.requestFocus();
@@ -234,6 +240,9 @@ public class InventoryScanFragment extends Fragment {
         });
     }
 
+    /**
+     * Handles scanned asset – inventory audit record upsert, progress update.
+     */
     private void handleAssetScanned(String code) {
         if (code.isEmpty()) {
             inputAsset.requestFocus();
@@ -403,7 +412,9 @@ public class InventoryScanFragment extends Fragment {
 
     private void postUI(Runnable r) {
         Activity a = getActivity();
-        if (a != null) a.runOnUiThread(() -> { if (isAdded()) r.run(); });
+        if (a != null) a.runOnUiThread(() -> {
+            if (isAdded()) r.run();
+        });
     }
 
     private void setStatusOk(String msg) {

@@ -9,6 +9,9 @@ import java.util.List;
 
 import cz.majetek.data.entity.InventoryAuditEntity;
 
+/**
+ * DAO for inventory audit records – upsert, counts, deletion.
+ */
 @Dao
 public interface InventoryAuditDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

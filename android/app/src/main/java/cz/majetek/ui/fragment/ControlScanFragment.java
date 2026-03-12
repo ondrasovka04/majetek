@@ -29,6 +29,9 @@ import cz.majetek.R;
 import cz.majetek.data.db.AppDatabase;
 import cz.majetek.data.entity.CardEntity;
 
+/**
+ * Fragment for control scanning – card lookup by scanned ID.
+ */
 public class ControlScanFragment extends Fragment {
 
     private EditText input;
@@ -66,6 +69,9 @@ public class ControlScanFragment extends Fragment {
         io.shutdownNow();
     }
 
+    /**
+     * Suppresses the software keyboard – input comes from Zebra scanner as HW keyboard.
+     */
     private void setupFocusWithoutKeyboard() {
         requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -86,6 +92,9 @@ public class ControlScanFragment extends Fragment {
         });
     }
 
+    /**
+     * Sets up listeners for Enter/Tab from scanner + IME.
+     */
     private void setupInput() {
         input.addTextChangedListener(new TextWatcher() {
             @Override
@@ -123,6 +132,9 @@ public class ControlScanFragment extends Fragment {
         });
     }
 
+    /**
+     * Distinguishes location code (L-prefix) from card code (number), looks up in DB.
+     */
     private void handleScanned(String code) {
         if (code.isEmpty()) return;
         input.setText("");
@@ -183,6 +195,8 @@ public class ControlScanFragment extends Fragment {
 
     private void postUI(Runnable r) {
         Activity a = getActivity();
-        if (a != null) a.runOnUiThread(() -> { if (isAdded()) r.run(); });
+        if (a != null) a.runOnUiThread(() -> {
+            if (isAdded()) r.run();
+        });
     }
 }

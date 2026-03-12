@@ -9,6 +9,9 @@ import java.util.List;
 
 import cz.majetek.data.entity.CardEntity;
 
+/**
+ * DAO for accessing asset cards.
+ */
 @Dao
 public interface CardDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

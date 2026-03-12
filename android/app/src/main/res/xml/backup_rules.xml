@@ -6,7 +6,13 @@
    See https://developer.android.com/about/versions/12/backup-restore
 -->
 <full-backup-content>
-    <exclude domain="sharedpref" path="auth_pref.xml" />
-    <exclude domain="sharedpref" path="auth_pref_enc.xml" />
-    <exclude domain="sharedpref" path="auth_pref_enc_fallback.xml" />
+    <exclude
+        domain="sharedpref"
+        path="auth_pref.xml" />
+    <exclude
+        domain="sharedpref"
+        path="auth_pref_enc.xml" />
+    <exclude
+        domain="sharedpref"
+        path="auth_pref_enc_fallback.xml" />
 </full-backup-content>

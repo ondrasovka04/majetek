@@ -6,6 +6,9 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+/**
+ * Room entity for inventory audit records (actual location of a scanned card).
+ */
 @Entity(tableName = "inventory_audit", foreignKeys = {@ForeignKey(entity = CardEntity.class, parentColumns = "id", childColumns = "card_id"), @ForeignKey(entity = LocationEntity.class, parentColumns = "id", childColumns = "real_location_id")}, indices = {@Index(value = {"real_location_id"})})
 public class InventoryAuditEntity {
     @PrimaryKey

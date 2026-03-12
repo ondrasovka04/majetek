@@ -52,9 +52,7 @@ public class DataSyncRepositoryTest {
         assertTrue(obj.has("timestamp"));
 
         // Verify the timestamp value matches expected UTC ISO format
-        String expectedTs = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
-                .withZone(ZoneOffset.UTC)
-                .format(Instant.ofEpochMilli(ts));
+        String expectedTs = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").withZone(ZoneOffset.UTC).format(Instant.ofEpochMilli(ts));
         assertEquals(expectedTs, obj.get("timestamp").getAsString());
     }
 
@@ -97,7 +95,6 @@ public class DataSyncRepositoryTest {
 
         // Verify the format matches the pattern yyyy-MM-dd'T'HH:mm:ss.SSS
         assertTrue("Timestamp should contain 'T' separator", timestamp.contains("T"));
-        assertTrue("Timestamp should have milliseconds (dot followed by 3 digits)",
-                timestamp.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}"));
+        assertTrue("Timestamp should have milliseconds (dot followed by 3 digits)", timestamp.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}"));
     }
 }

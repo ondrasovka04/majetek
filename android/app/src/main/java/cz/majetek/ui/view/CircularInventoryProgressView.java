@@ -10,6 +10,9 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * Custom View – circular inventory progress bar (color-coded by percentage).
+ */
 public class CircularInventoryProgressView extends View {
     private final Paint bgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint progressPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -51,6 +54,9 @@ public class CircularInventoryProgressView extends View {
         textPaint.setTextSize(36f);
     }
 
+    /**
+     * Sets the scanned/total count and triggers a redraw.
+     */
     public void setData(int scanned, int total) {
         if (scanned < 0) scanned = 0;
         if (total < 0) total = 0;
@@ -60,6 +66,9 @@ public class CircularInventoryProgressView extends View {
         invalidate();
     }
 
+    /**
+     * Color by percentage: <25% red, ≥75% green, otherwise orange.
+     */
     private int chooseColor(float percent) {
         if (percent < 25f) return 0xFFF44336;
         if (percent >= 75f) return 0xFF4CAF50;

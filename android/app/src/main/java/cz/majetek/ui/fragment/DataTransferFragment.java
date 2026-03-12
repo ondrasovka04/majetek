@@ -31,6 +31,9 @@ import cz.majetek.data.db.AppDatabase;
 import cz.majetek.data.repository.DataSyncRepository;
 import cz.majetek.util.BaseUrlStorage;
 
+/**
+ * Fragment for data transfer – download/upload/clear inventory, URL configuration.
+ */
 public class DataTransferFragment extends Fragment {
 
     private Button btnDownload;
@@ -69,6 +72,9 @@ public class DataTransferFragment extends Fragment {
         io.shutdownNow();
     }
 
+    /**
+     * Shows a dialog to configure the backend URL.
+     */
     private void showConfigureUrlDialog() {
         Context ctx = requireContext().getApplicationContext();
         String current = BaseUrlStorage.getBaseUrl(ctx);
@@ -94,6 +100,9 @@ public class DataTransferFragment extends Fragment {
         }).setNegativeButton(R.string.common_cancel, null).show();
     }
 
+    /**
+     * Double confirmation dialog – irreversible deletion of inventory records.
+     */
     private void confirmClearInventory() {
         new AlertDialog.Builder(requireContext()).setTitle(R.string.dialog_clear_inventory_title).setMessage(R.string.dialog_clear_inventory_message).setPositiveButton(R.string.common_yes, (d, w) -> new AlertDialog.Builder(requireContext()).setTitle(R.string.dialog_confirmation_title).setMessage(R.string.dialog_confirmation_message_irreversible).setPositiveButton(R.string.common_yes, (d2, w2) -> clearInventory()).setNegativeButton(R.string.common_no, null).show()).setNegativeButton(R.string.common_no, null).show();
     }
@@ -115,6 +124,9 @@ public class DataTransferFragment extends Fragment {
         });
     }
 
+    /**
+     * Checks WiFi/Ethernet → audit state → downloads cards from API.
+     */
     private void startDownload() {
         if (isWifiDisconnected()) {
             setStatusWarn(getString(R.string.status_wifi_disconnected));
@@ -130,6 +142,9 @@ public class DataTransferFragment extends Fragment {
         setLoading(true);
     }
 
+    /**
+     * Checks whether the device has unsynchronized data.
+     */
     private void checkAuditState(AppDatabase db) {
         int auditCount = db.inventoryAuditDao().countCardsTotal();
         runOnUiThreadSafe(() -> handleAuditCount(auditCount));
@@ -167,7 +182,9 @@ public class DataTransferFragment extends Fragment {
 
     private void runOnUiThreadSafe(Runnable r) {
         Activity a = getActivity();
-        if (a != null) a.runOnUiThread(() -> { if (isAdded()) r.run(); });
+        if (a != null) a.runOnUiThread(() -> {
+            if (isAdded()) r.run();
+        });
     }
 
     private void startUpload() {

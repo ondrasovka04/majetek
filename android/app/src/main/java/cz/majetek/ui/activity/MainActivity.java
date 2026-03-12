@@ -16,6 +16,9 @@ import cz.majetek.ui.fragment.ControlScanFragment;
 import cz.majetek.ui.fragment.DataTransferFragment;
 import cz.majetek.ui.fragment.InventoryScanFragment;
 
+/**
+ * Single Activity – BottomNavigationView switches between 3 fragments.
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override

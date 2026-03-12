@@ -94,16 +94,14 @@ public class TokenStorageTest {
     @Test
     public void getValidToken_clearsLegacyPreferences() {
         // Write a value into the old unencrypted "auth_pref" file.
-        SharedPreferences legacyPrefs =
-                context.getSharedPreferences("auth_pref", Context.MODE_PRIVATE);
+        SharedPreferences legacyPrefs = context.getSharedPreferences("auth_pref", Context.MODE_PRIVATE);
         legacyPrefs.edit().putString("token", "legacySecret").commit();
 
         // Access TokenStorage — this should trigger legacy cleanup.
         TokenStorage.getValidToken(context);
 
         // Re-read the legacy file and verify it was cleared.
-        SharedPreferences legacyAfter =
-                context.getSharedPreferences("auth_pref", Context.MODE_PRIVATE);
+        SharedPreferences legacyAfter = context.getSharedPreferences("auth_pref", Context.MODE_PRIVATE);
         assertNull(legacyAfter.getString("token", null));
         assertEquals(0, legacyAfter.getAll().size());
     }
