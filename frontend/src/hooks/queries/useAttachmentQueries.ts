@@ -2,7 +2,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAttachments, uploadAttachment, deleteAttachment } from "@/services/attachmentService";
 
-export function useAttachments(cardId: string | null) {
+export function useAttachments(cardId: string | undefined) {
   return useQuery({
     queryKey: ["attachments", cardId],
     queryFn: () => getAttachments(cardId!),

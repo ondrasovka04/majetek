@@ -15,12 +15,12 @@ start
 :Stáhnout karty a lokace\ndo lokální Room databáze;
 
 repeat
-  :Naskenovat čárový kód lokace;
-  note right: Prefix "L" = lokace
+  :Naskenovat čárový kód umístění;
+  note right: Prefix "L" = umístění
   repeat
     :Naskenovat čárový kód majetku;
     note right: Číselné ID = karta
-    :Uložit záznam auditu\n(karta, lokace, čas)\ndo Room databáze;
+    :Uložit záznam auditu\n(karta, umístění, čas)\ndo Room databáze;
   repeat while (Naskenovány všechny\nmajetky v dané\nmístnosti?) is (Ne) not (Ano)
 repeat while (Naskenováno vše\nve všech\nmístnostech?) is (Ne) not (Ano)
 
@@ -31,16 +31,16 @@ repeat while (Naskenováno vše\nve všech\nmístnostech?) is (Ne) not (Ano)
 
 note right
   **Statusy:**
-  CORRECT -- lokace souhlasí
-  WARN -- lokace se liší
-  WRONG -- nenaskenováno
+  CORRECT — umístění souhlasí
+  WARN — umístění se liší
+  WRONG — nenaskenováno
 end note
 
 :Odvodit výchozí akce;
 note right
-  CORRECT -> KEEP (nelze změnit)
-  WARN -> RL (skutečné umístění)
-  WRONG -> bez akce (nutno zvolit)
+  CORRECT → KEEP (nelze změnit)
+  WARN → RL (skutečné umístění)
+  WRONG → bez akce (nutno zvolit)
 end note
 
 repeat

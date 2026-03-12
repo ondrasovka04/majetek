@@ -21,8 +21,8 @@ import { useWriteOffMethods } from "@/hooks/queries/useWriteOffMethodQueries";
 import { sortById } from "@/utils/czech";
 
 const CardPage = () => {
-  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
-  const [duplicatedCard, setDuplicatedCard] = useState<Partial<CardFormValues> | null>(null);
+  const [selectedCardId, setSelectedCardId] = useState<string | undefined>();
+  const [duplicatedCard, setDuplicatedCard] = useState<Partial<CardFormValues> | undefined>();
   const { notify, notifyError, NotificationBar } = useNotification();
   const queryClient = useQueryClient();
   const listRef = useRef<CardListPanelHandle>(null);
@@ -50,8 +50,8 @@ const CardPage = () => {
         <CardCreateView
           prefillCard={duplicatedCard ?? undefined}
           onCreated={() => {
-            setDuplicatedCard(null);
-            setSelectedCardId(null);
+            setDuplicatedCard(undefined);
+            setSelectedCardId(undefined);
             listRef.current?.refilter();
           }}
           onError={notifyError}
@@ -69,7 +69,7 @@ const CardPage = () => {
             notify("Změny byly úspěšně uloženy.", "success");
           }}
           onDeleted={() => {
-            setSelectedCardId(null);
+            setSelectedCardId(undefined);
             notify("Karta byla úspěšně smazána.", "success");
           }}
           onDuplicate={(dup) => {

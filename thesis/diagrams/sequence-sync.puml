@@ -8,7 +8,7 @@ skinparam sequenceFontSize 12
 title Synchronizace dat mezi mobilní aplikací a serverem
 
 participant "Mobilní aplikace\n(Zebra TC22)" as App
-participant "Room\ndatabáze" as Room
+database "Room\ndatabáze" as Room
 participant "REST API\n(Spring Boot)" as Server
 database "PostgreSQL" as DB
 
@@ -23,15 +23,15 @@ Server -> DB : SELECT karty
 Server --> App : JSON seznam karet
 
 App -> Server : GET /locations
-Server -> DB : SELECT lokace
-Server --> App : JSON seznam lokací
+Server -> DB : SELECT umístění
+Server --> App : JSON seznam umístění
 
-App -> Room : INSERT karty + lokace\n(REPLACE strategie)
+App -> Room : INSERT karty + umístění\n(REPLACE strategie)
 note right of Room : Atomická transakce\n– nejdříve smazat,\npak vložit vše
 
 == Skenování (offline) ==
 
-App -> Room : INSERT audit záznam\n(karta, lokace, čas)
+App -> Room : INSERT audit záznam\n(karta, umístění, čas)
 note right of App : Opakuje se pro\nkaždý naskenovaný kód
 
 == Nahrání dat (po inventuře) ==

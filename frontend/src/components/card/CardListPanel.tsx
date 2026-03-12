@@ -44,8 +44,8 @@ export interface CardListPanelHandle {
 }
 
 interface Props {
-  selectedCardId: string | null;
-  onSelectCard: (id: string | null) => void;
+  selectedCardId: string | undefined;
+  onSelectCard: (id: string | undefined) => void;
   onNewCard: () => void;
   onNotify: (msg: string, severity: "success" | "error") => void;
   onError: (msg: string) => void;

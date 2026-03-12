@@ -3,14 +3,10 @@ package cz.majetek.ui.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,6 +24,7 @@ import cz.majetek.MajetekApp;
 import cz.majetek.R;
 import cz.majetek.data.db.AppDatabase;
 import cz.majetek.data.entity.CardEntity;
+import cz.majetek.util.ScanInputHelper;
 
 /**
  * Fragment for control scanning – card lookup by scanned ID.
@@ -96,40 +93,7 @@ public class ControlScanFragment extends Fragment {
      * Sets up listeners for Enter/Tab from scanner + IME.
      */
     private void setupInput() {
-        input.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Intentionally empty, no pre-processing needed. Submission is handled by IME and key listeners.
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Intentionally empty, we avoid per-keystroke work to keep UI responsive and prevent duplicate scans.
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // Intentionally empty, we only submit on Enter or IME_ACTION_DONE to avoid partial scans.
-            }
-        });
-
-        input.setOnEditorActionListener((tv, actionId, event) -> {
-            boolean isEnter = (event != null && event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB)) || actionId == EditorInfo.IME_ACTION_DONE;
-
-            if (isEnter) {
-                handleScanned(tv.getText().toString().trim());
-                return true;
-            }
-            return false;
-        });
-
-        input.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_TAB)) {
-                handleScanned(input.getText().toString().trim());
-                return true;
-            }
-            return false;
-        });
+        ScanInputHelper.attachScanListeners(input, this::handleScanned);
     }
 
     /**

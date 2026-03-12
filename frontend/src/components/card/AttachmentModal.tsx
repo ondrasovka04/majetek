@@ -32,7 +32,7 @@ interface Props {
 }
 
 const AttachmentModal = ({ open, onClose, cardId, onError }: Props) => {
-  const { data: attachments = [] } = useAttachments(open ? cardId : null);
+  const { data: attachments = [] } = useAttachments(open ? cardId : undefined);
   const uploadMutation = useUploadAttachment(cardId);
   const deleteMutation = useDeleteAttachment(cardId);
   const inputRef = useRef<HTMLInputElement>(null);

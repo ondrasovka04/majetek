@@ -40,7 +40,7 @@
 %---------------------------------------------------------------
 
 \begin{chapterabstract}
-	Kapitola definuje funkční a~nefunkční požadavky na vyvíjený systém. Požadavky vycházejí ze~zadání práce, z~potřeb cílové organizace a~z~analýzy existujících řešení. Jelikož je systém již implementován, jsou požadavky formulovány tak, aby odpovídaly skutečnému rozsahu dodaného řešení.
+	Kapitola definuje funkční a~nefunkční požadavky na vyvíjený systém. Požadavky vycházejí ze~zadání práce, z~potřeb cílové organizace a~z~analýzy existujících řešení.
 \end{chapterabstract}
 
 Systém byl vyvíjen jako zakázka pro konkrétní základní školu, která dosud evidovala majetek v~tabulkových procesorech bez systematické inventarizace. Požadavky byly stanoveny na základě konzultací s~budoucími uživateli systému (účetní a~hospodářka školy) a~průběžně upřesňovány během vývoje.
@@ -49,7 +49,7 @@ Systém byl vyvíjen jako zakázka pro konkrétní základní školu, která dos
 \section{Funkční požadavky}
 %---------------------------------------------------------------
 
-Funkční požadavky popisují, co systém musí umožňovat z~pohledu uživatele. Jsou rozděleny do logických skupin odpovídajících hlavním oblastem funkcionality. Každý požadavek má přiřazen jedinečný identifikátor pro snadné odkazování v~dalších kapitolách.
+Požadavky jsou rozděleny do logických skupin a~každý má jedinečný identifikátor, na nějž se odkazují další kapitoly (zejména kapitola~\ref{chap:implementation}).
 
 \subsection{Evidence majetkových karet}
 
@@ -101,6 +101,8 @@ Etikety s~Data Matrix kódy slouží k~fyzické identifikaci majetku a~místnost
 
 \subsection{Reporty a~exporty}
 
+Systém umožňuje generovat přehledy a~sestavy ve~formátu PDF a~Excel pro potřeby účetní evidence a~kontroly majetku.
+
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{l|p{10cm}}
@@ -113,9 +115,9 @@ Etikety s~Data Matrix kódy slouží k~fyzické identifikaci majetku a~místnost
 \caption{Funkční požadavky -- reporty a~exporty}\label{tab:freq-reports}
 \end{table}
 
-\subsection{Inventarizace}
+\subsection{Inventura}
 
-Inventarizace je klíčový proces, při kterém se ověřuje skutečný stav majetku oproti evidenčnímu stavu. Proces probíhá ve~třech fázích: sběr dat v~terénu (mobilní aplikace), přenos dat na server a~vyhodnocení rozdílů (webová administrace).
+Inventura je klíčový proces, při kterém se ověřuje skutečný stav majetku oproti evidenčnímu stavu. Proces probíhá ve~třech fázích: sběr dat v~terénu (mobilní aplikace), přenos dat na server a~vyhodnocení rozdílů (webová administrace).
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
@@ -127,7 +129,7 @@ Inventarizace je klíčový proces, při kterém se ověřuje skutečný stav ma
 	F-20 & Mobilní aplikace umožní pracovat offline -- veškerá data jsou ukládána do~lokální databáze a~synchronizována se~serverem na vyžádání. \tabularnewline
 	F-21 & Mobilní aplikace umožní nahrát nasbíraná inventurní data na server. \tabularnewline
 \end{tabular}
-\caption{Funkční požadavky -- inventarizace (mobilní aplikace)}\label{tab:freq-inventory-mobile}
+\caption{Funkční požadavky -- inventura (mobilní aplikace)}\label{tab:freq-inventory-mobile}
 \end{table}
 
 \begin{table}[H]\centering
@@ -135,11 +137,11 @@ Inventarizace je klíčový proces, při kterém se ověřuje skutečný stav ma
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
 	F-22 & Webová administrace umožní zobrazit přehled naskenovaných položek s~časem skenování. \tabularnewline
-	F-23 & Webová administrace umožní zobrazit rozdíly mezi evidovaným a~skutečným umístěním majetku s~barevným rozlišením stavů (shodné, odlišná lokace, nenaskenováno). \tabularnewline
+	F-23 & Webová administrace umožní zobrazit rozdíly mezi evidovaným a~skutečným umístěním majetku s~barevným rozlišením stavů (shodné, odlišné umístění, nenaskenováno). \tabularnewline
 	F-24 & Webová administrace umožní u~každé karty s~nesouladem zvolit akci: přijmout skutečné umístění, ponechat evidované umístění, nebo majetek vyřadit. U~karet se~shodným umístěním lze rovněž zvolit vyřazení. \tabularnewline
 	F-25 & Webová administrace umožní po~potvrzení uživatelem promítnout zvolené akce do~databáze (aktualizace umístění, vyřazení majetku). \tabularnewline
 \end{tabular}
-\caption{Funkční požadavky -- inventarizace (vyhodnocení)}\label{tab:freq-inventory-web}
+\caption{Funkční požadavky -- inventura (vyhodnocení)}\label{tab:freq-inventory-web}
 \end{table}
 
 \needspace{6\baselineskip}
@@ -237,11 +239,11 @@ Inventura je hlavní proces systému a~probíhá ve~třech fázích.
 \textbf{Fáze 2 -- Sběr dat v~terénu (mobilní aplikace, offline):}
 \begin{enumerate}
 	\item Pracovník přejde na obrazovku inventurního snímání.
-	\item Pracovník naskenuje Data Matrix kód místnosti -- systém nastaví aktuální lokaci.
+	\item Pracovník naskenuje Data Matrix kód místnosti -- systém nastaví aktuální umístění.
 	\item Pracovník postupně skenuje kódy majetku v~dané místnosti.
-	\item U~každé naskenované karty systém zobrazí detail a~barevně signalizuje, zda karta evidenčně patří do~aktuální lokace (zelená), jiné lokace (oranžová), nebo nemá přiřazenou lokaci (červená).
-	\item Systém průběžně zobrazuje postup inventury (poměr naskenovaných a~celkových karet pro danou lokaci i~celkově).
-	\item Po dokončení místnosti pracovník opustí lokaci a~přejde do~další.
+	\item U~každé naskenované karty systém zobrazí detail a~barevně signalizuje, zda karta evidenčně patří do~aktuálního umístění (zelená), jiného umístění (oranžová), nebo nemá přiřazené umístění (červená).
+	\item Systém průběžně zobrazuje postup inventury (poměr naskenovaných a~celkových karet pro dané umístění i~celkově).
+	\item Po dokončení místnosti pracovník opustí umístění a~přejde do~dalšího.
 \end{enumerate}
 
 \medskip
@@ -252,7 +254,7 @@ Inventura je hlavní proces systému a~probíhá ve~třech fázích.
 	\item Systém zobrazí seznam všech karet s~barevným rozlišením:
 	\begin{itemize}
 		\item \textit{Shodné} (zelená) -- evidované umístění odpovídá skutečnosti.
-		\item \textit{Upozornění} (oranžová) -- karta nalezena na jiné lokaci, než je evidována.
+		\item \textit{Upozornění} (oranžová) -- karta nalezena na jiném umístění, než je evidována.
 		\item \textit{Chybné} (červená) -- karta nebyla při inventuře naskenována.
 	\end{itemize}
 	\item U~karet se~stavem \uv{upozornění} uživatel zvolí: přijmout skutečné umístění, ponechat evidované, nebo majetek vyřadit. U~karet se~stavem \uv{chybné} lze ponechat evidované umístění nebo majetek vyřadit. U~shodných karet lze rovněž zvolit vyřazení.
@@ -279,7 +281,7 @@ Inventura je hlavní proces systému a~probíhá ve~třech fázích.
 	Tato kapitola srovnává technologie a~frameworky vhodné pro implementaci jednotlivých částí aplikace. Pro každou vrstvu (backend, frontend, mobilní aplikace) je provedena analýza dostupných alternativ s~vyhodnocením výhod a~nevýhod. Kapitola je zakončena přehledem dalších klíčových knihoven použitých v~projektu.
 \end{chapterabstract}
 
-Vyvíjený systém se skládá ze tří hlavních komponent: serverové části (backend), webové administrace (frontend) a~mobilní aplikace pro inventarizaci (Android). Každá z~těchto komponent vyžaduje volbu vhodné technologie, přičemž je nutné zohlednit vzájemnou kompatibilitu, dostupnost knihoven a~také předchozí zkušenosti vývojáře.
+Vyvíjený systém se skládá ze tří hlavních komponent: serverové části (backend), webové administrace (frontend) a~mobilní aplikace pro inventuru (Android). Každá z~těchto komponent vyžaduje volbu vhodné technologie, přičemž je nutné zohlednit vzájemnou kompatibilitu a~dostupnost knihoven. Při volbě technologií byla zohledněna i~předchozí zkušenost autora, která umožnila efektivní vývoj v~omezeném čase bakalářské práce.
 
 %---------------------------------------------------------------
 \section{Backend}
@@ -295,19 +297,17 @@ Mezi hlavní přednosti Spring Boot patří rozsáhlý ekosystém. Spring Data J
 
 Nevýhodou Spring Boot je vyšší paměťová náročnost typická pro aplikace běžící na JVM a~delší doba studeného startu oproti interpretovaným jazykům. Pro aplikace s~nízkou frekvencí změn v~nasazení, jako je tento projekt, však tato nevýhoda není podstatná.
 
-\subsection{Express.js / NestJS (TypeScript)}
+\subsection{NestJS (TypeScript)}
 
-Express.js se označuje jako \uv{rychlý, neopinionated, minimalistický webový framework pro Node.js}~\cite{expressjs}. Jedná se o~tenkou vrstvu nad Node.js, která poskytuje základní routing a~middleware architekturu, zatímco veškeré další komponenty (ORM, autentizace, validace) je nutné volit z~knihoven třetích stran.
+NestJS~\cite{nestjs} je Node.js framework nabízející modulární architekturu inspirovanou Angularem, vestavěný systém Dependency Injection a~podporu TypeScriptu jako prvotřídního jazyka. Na rozdíl od minimalistického Express.js~\cite{expressjs}, nad kterým je postaven, poskytuje NestJS kompletní strukturu aplikace. Pro práci s~databází lze využít TypeORM nebo Prisma.
 
-NestJS~\cite{nestjs} tento nedostatek řeší -- jedná se o~\uv{progresivní Node.js framework pro budování efektivních, spolehlivých a~škálovatelných serverových aplikací}. NestJS nabízí modulární architekturu inspirovanou Angularem, vestavěný systém Dependency Injection a~podporu TypeScriptu jako prvotřídního jazyka. Pro práci s~databází lze využít TypeORM nebo Prisma.
-
-Hlavní výhodou obou řešení je možnost sdílení TypeScriptových typů mezi backendem a~frontendem. Nevýhodou je méně zralý ekosystém pro enterprise aplikace -- například absence nativního ORM srovnatelného s~JPA a~menší nabídka knihoven pro generování PDF, Excelu či ZPL etiket.
+Hlavní výhodou je možnost sdílení TypeScriptových typů mezi backendem a~frontendem. Nevýhodou je méně zralý ekosystém pro enterprise aplikace -- například absence nativního ORM srovnatelného s~JPA a~menší nabídka knihoven pro generování PDF, Excelu či ZPL etiket.
 
 \subsection{Django (Python)}
 
-Django je podle své domovské stránky \uv{webový framework na vysoké úrovni pro Python, který podporuje rychlý vývoj a~čistý, pragmatický návrh}~\cite{django}. Framework zastává filosofii \uv{batteries included} -- součástí je vestavěný ORM, administrační rozhraní, systém autentizace i~ochrana proti běžným bezpečnostním hrozbám (CSRF, SQL injection).
+Django~\cite{django} je plnohodnotný webový framework pro Python, zastávající filosofii \uv{batteries included} -- součástí je vestavěný ORM, administrační rozhraní, systém autentizace i~ochrana proti běžným bezpečnostním hrozbám (CSRF, SQL injection).
 
-Automaticky generované administrační rozhraní je výhodou pro projekty vyžadující rychlý prototyping. Pro vyvíjený systém je však Django méně vhodné kvůli omezení Global Inter\-pre\-ter Lock (GIL), které limituje skutečný paralelismus při zpracování více požadavků. Typový systém Pythonu je navíc oproti Javě méně striktní, což může vést k~obtížněji odhalitelným chybám v~rozsáhlejších projektech.
+Automaticky generované administrační rozhraní je výhodou pro projekty vyžadující rychlý prototyping. Nevýhodou Djanga je dynamický typový systém Pythonu, který oproti Javě nenabízí statickou kontrolu typů v~době kompilace, což může vést k~obtížněji odhalitelným chybám. Ekosystém knihoven pro generování PDF a~ZPL etiket je v~Pythonu rovněž méně rozvinutý než v~prostředí JVM.
 
 \subsection{Srovnání a~zdůvodnění volby}
 
@@ -321,7 +321,6 @@ Tabulka~\ref{tab:backend-comparison} shrnuje srovnání analyzovaných backend t
 	ORM & JPA (Hibernate) & TypeORM / Prisma & vlastní ORM \tabularnewline
 	Bezpečnostní framework & Spring Security & Passport.js & vestavěný \tabularnewline
 	Podpora PDF/Excel/ZPL & iText, EasyExcel & omezená & omezená \tabularnewline
-	Přístup & opinionated & opinionated & opinionated \tabularnewline
 \end{tabular}
 \caption{Srovnání backend technologií}\label{tab:backend-comparison}
 \end{table}
@@ -331,7 +330,6 @@ Pro implementaci backendu byl zvolen \textbf{Spring Boot} z~následujících dů
 	\item Robustní ekosystém pro enterprise aplikace -- Spring Data JPA pro databázovou vrstvu, Spring Security pro autentizaci a~autorizaci.
 	\item Dostupnost kvalitních knihoven pro generování PDF (iText~7), Excelu (EasyExcel) a~ZPL etiket -- klíčová funkčnost pro tento projekt.
 	\item Silná typová bezpečnost jazyka Java, která usnadňuje údržbu a~refaktoring.
-	\item Předchozí zkušenosti autora s~tímto frameworkem, což umožnilo efektivní vývoj v~omezeném čase.
 	\item Konzistence s~mobilní aplikací, která je rovněž implementována v~Javě.
 \end{itemize}
 
@@ -352,13 +350,13 @@ Nevýhodou Reactu je nutnost skládat aplikaci z~mnoha nezávislých knihoven, c
 
 \subsection{Angular}
 
-Angular je \uv{webový framework, který umožňuje vývojářům vytvářet rychlé a~spolehlivé aplikace}~\cite{angular}. Jedná se o~plnohodnotný, opinionated framework vyvíjený týmem ve společnosti Google. Angular poskytuje kompletní sadu nástrojů přímo v~základním balíčku -- vlastní router, HTTP klient, systém formulářů, De\-pen\-den\-cy In\-jec\-tion a~build toolchain.
+Angular~\cite{angular} je plnohodnotný, opinionated framework vyvíjený týmem ve společnosti Google. Angular poskytuje kompletní sadu nástrojů přímo v~základním balíčku -- vlastní router, HTTP klient, systém formulářů, De\-pen\-den\-cy In\-jec\-tion a~build toolchain.
 
 TypeScript je v~Angularu povinný, což zajišťuje silnou typovou bezpečnost. Framework dále nabízí reaktivní systém Angular Signals a~vestavěnou podporu pro \mbox{Server-Side} Rendering. Nevýhodou je strmější křivka učení a~větší režie pro menší projekty, kde plnohodnotný framework může být zbytečně komplexní.
 
 \subsection{Vue.js}
 
-Vue.js se prezentuje jako \uv{progresivní JavaScriptový framework}~\cite{vuejs}. Byl navržen s~důrazem na inkrementální adoptovatelnost -- lze jej použít jak jako jednoduchou knihovnu pro obohacení existujících stránek, tak jako základ pro plnohodnotnou SPA. Vue staví na standardním HTML, CSS a~JavaScriptu a~přidává deklarativní, komponentový programovací model.
+Vue.js~\cite{vuejs} je progresivní framework navržený s~důrazem na inkrementální adoptovatelnost -- lze jej použít jak jako jednoduchou knihovnu pro obohacení existujících stránek, tak jako základ pro plnohodnotnou SPA.
 
 Vue nabízí dvě API rozhraní: Options API (přívětivější pro začátečníky) a~Composition API (doporučené pro větší aplikace). Ekosystém obsahuje oficiální řešení pro routing (Vue Router) a~state management (Pinia). Oproti Reactu je ekosystém UI knihoven menší, i~když dostupné jsou například Vuetify nebo Quasar.
 
@@ -374,16 +372,15 @@ Tabulka~\ref{tab:frontend-comparison} shrnuje srovnání analyzovaných frontend
 	State management & Zustand, Redux & Signals, NgRx & Pinia \tabularnewline
 	UI knihovny & MUI, shadcn & Angular Material & Vuetify, Quasar \tabularnewline
 	Přístup & neopinionated & opinionated & progresivní \tabularnewline
-	Routing & React Router & vestavěný & Vue Router \tabularnewline
 \end{tabular}
 \caption{Srovnání frontend technologií}\label{tab:frontend-comparison}
 \end{table}
 
-Pro implementaci frontendu byl zvolen \textbf{React} s~jazykem \textbf{TypeScript}~\cite{typescript} z~následujících důvodů:
+Pro implementaci frontendu byla zvolena knihovna \textbf{React} společně s~jazykem
+\textbf{TypeScript}~\cite{typescript} z~následujících důvodů:
 \begin{itemize}
 	\item Největší ekosystém UI knihoven -- MUI~\cite{mui} poskytuje hotové komponenty odpovídající Material Design, včetně tabulek, dialogů a~formulářových prvků potřebných pro administrační rozhraní.
 	\item Flexibilita při výběru knihoven -- možnost zvolit optimální nástroj pro každou oblast (TanStack Query pro data fetching, React Hook Form + Zod pro formuláře, Zustand pro globální stav).
-	\item Předchozí zkušenosti autora s~Reactem.
 \end{itemize}
 
 Jako build nástroj byl zvolen \textbf{Vite}~\cite{vite}, který nabízí rychlý vývojový server s~Hot Module Re\-place\-ment a~optimalizovaný produkční build.
@@ -405,15 +402,13 @@ Nevýhodou je omezení na jedinou platformu a~větší množství boilerplate k�
 
 \subsection{Kotlin}
 
-Kotlin je podle oficiální stránky \uv{stručný, multiplatformní a~zábavný}~\cite{kotlin} programovací jazyk. Je to oficiálně doporučený jazyk pro vývoj Android aplikací. Nabízí modernější syntaxi než Java -- \texttt{null} safety na úrovni typového systému, korutiny pro asynchronní programování a~méně boilerplate kódu. Kotlin je plně interoperabilní s~Javou, což umožňuje postupnou migraci existujícího kódu.
+Kotlin~\cite{kotlin} je oficiálně doporučený jazyk pro vývoj Android aplikací. Nabízí modernější syntaxi než Java -- \texttt{null} safety na úrovni typového systému, korutiny pro asynchronní programování a~méně boilerplate kódu. Kotlin je plně interoperabilní s~Javou, což umožňuje postupnou migraci existujícího kódu.
 
 Pro tento projekt by Kotlin nepřinesl zásadní výhody. Aplikace je architektonicky jednoduchá (jedna Activity, tři fragmenty) a~nevyužívá složité asynchronní vzory, pro které jsou korutiny navrženy. Zavedení dalšího jazyka do projektu by zvýšilo komplexitu bez odpovídajícího přínosu.
 
 \subsection{Flutter / React Native}
 
-Flutter~\cite{flutter} je \uv{open-source framework pro tvorbu krásných, nativně kompilovaných, multiplatformních aplikací z~jediného codebase}. Používá jazyk Dart a~vlastní vykreslovací engine, který obchází nativní UI komponenty platformy.
-
-React Native~\cite{reactnative} zastává filosofii \uv{nauč se jednou, piš kdekoli} -- JavaScriptový kód je vykreslován prostřednictvím nativních komponent platformy. Doporučeným meta-frameworkem je Expo.
+Flutter~\cite{flutter} je multiplatformní framework od Google, který používá jazyk Dart a~vlastní vykreslovací engine obcházející nativní UI komponenty platformy. React Native~\cite{reactnative} vykresluje JavaScriptový kód prostřednictvím nativních komponent; doporučeným meta-frameworkem je Expo.
 
 Obě technologie nabízejí multiplatformní vývoj, který však v~tomto projektu není potřeba -- cílovým zařízením je výhradně Zebra TC22 s~Androidem. Zásadním problémem je omezená podpora pro specifický hardware: vstup ze skeneru Zebra přichází jako události hardwarové klávesnice (Enter/Tab), což vyžaduje přímý přístup k~nativním listenerům (\texttt{OnKeyListener}, \texttt{OnEditorActionListener}). Abstrakční vrstva multiplatformních frameworků by tento přístup komplikovala.
 
@@ -428,7 +423,6 @@ Tabulka~\ref{tab:mobile-comparison} shrnuje srovnání analyzovaných mobilních
 	Přístup k~HW skeneru & přímý & přímý & přes bridge \tabularnewline
 	Offline DB & Room (SQLite) & Room (SQLite) & SQLite plugin \tabularnewline
 	Složitost & nízká & nízká & střední \tabularnewline
-	Jazyk backendu & stejný (Java) & odlišný & odlišný \tabularnewline
 \end{tabular}
 \caption{Srovnání mobilních technologií}\label{tab:mobile-comparison}
 \end{table}
@@ -439,7 +433,6 @@ Pro implementaci mobilní aplikace byl zvolen \textbf{nativní Android v~Javě} 
 	\item Plná kontrola nad lifecycle komponent -- aplikace pracuje offline s~lokální Room databází a~vyžaduje přesnou správu synchronizace dat.
 	\item Jednoduchost -- pro aplikaci s~jednou Activity a~třemi fragmenty není potřeba složitý framework.
 	\item Konzistence s~backendem -- oba projekty sdílejí jazyk Java, což usnadňuje přechod mezi jednotlivými částmi projektu.
-	\item Předchozí zkušenosti autora s~vývojem Android aplikací v~Javě.
 \end{itemize}
 
 
@@ -451,15 +444,15 @@ Systém využívá relační databázi pro ukládání majetkových karet, slovn
 
 \subsection{PostgreSQL}
 
-PostgreSQL se prezentuje jako \uv{nejpokročilejší open-source relační databáze na světě}~\cite{postgresql}. Jedná se o~objektově-relační databázový systém s~více než 35 lety aktivního vývoje. PostgreSQL nabízí podporu komplexních datových typů (JSONB, pole), fulltextové vyhledávání, rozšiřitelnost prostřednictvím vlastních funkcí a~vysokou spolehlivost.
+PostgreSQL~\cite{postgresql} je objektově-relační databázový systém s~více než 35 lety aktivního vývoje. Nabízí podporu komplexních datových typů (JSONB, pole), fulltextové vyhledávání, rozšiřitelnost prostřednictvím vlastních funkcí (např.\ \texttt{unaccent} pro vyhledávání bez diakritiky) a~vysokou spolehlivost.
 
 \subsection{MySQL}
 
-MySQL je podle své domovské stránky \uv{nejpopulárnější open-source databáze na světě}~\cite{mysql}. V~porovnání s~PostgreSQL nabízí jednodušší správu a~širší podporu u~hostingových poskytovatelů. Pro účely tohoto projektu by MySQL poskytoval dostatečnou funkčnost, nicméně PostgreSQL nabízí pokročilejší funkce, které mohou být užitečné pro budoucí rozšíření systému.
+MySQL~\cite{mysql} je nejrozšířenější open-source relační databáze s~širokou podporou u~hostingových poskytovatelů. Pro účely tohoto projektu by MySQL poskytoval dostatečnou funkčnost -- oba systémy pokrývají potřeby aplikace. PostgreSQL byl zvolen díky lepší integraci se Spring Data JPA (podpora funkce \texttt{unaccent} pro fulltextové vyhledávání bez diakritiky) a~předchozí zkušenosti autora.
 
 \subsection{H2 a~Room}
 
-Pro automatizované testování backendu byla zvolena in-memory databáze \textbf{H2}~\cite{h2database}, která je kompatibilní s~JPA a~nevyžaduje žádnou externí infrastrukturu. Testy tak běží izolovaně a~reproducibilně.
+Pro automatizované testování backendu byla zvolena in-memory databáze \textbf{H2}~\cite{h2database} v~PostgreSQL compatibility mode. H2 je kompatibilní s~JPA a~nevyžaduje žádnou externí infrastrukturu, testy tak běží izolovaně a~reproducibilně. Testy ověřují business logiku a~JPA dotazy; SQL specifika PostgreSQL (např.\ funkce \texttt{unaccent}) jsou testována prostřednictvím integračních testů.
 
 Na mobilním zařízení je využita knihovna \textbf{Room}~\cite{androidroom} jako abstrakce nad SQLite. Room poskytuje ověřování SQL dotazů v~době kompilace, automatické mapování mezi Java objekty a~databázovými tabulkami prostřednictvím anotací (\texttt{@Entity}, \texttt{@Dao}, \texttt{@Query}) a~podporu migrací.
 
@@ -508,7 +501,7 @@ Systém se skládá ze tří hlavních komponent, které spolu komunikují prost
 \begin{itemize}
 	\item \textbf{Backend} -- serverová aplikace (Spring Boot) poskytující REST API, business logiku, generování exportů a~přístup k~databázi PostgreSQL. Backend je nasazen na linuxovém VPS serveru za reverse proxy Nginx.
 	\item \textbf{Frontend} -- jednostránková webová aplikace (React), která slouží jako administrační rozhraní. Komunikuje výhradně s~backendem prostřednictvím REST API.
-	\item \textbf{Mobilní aplikace} -- nativní Android aplikace pro inventarizaci v~terénu. Disponuje vlastní lokální databází (Room/SQLite) pro offline režim a~se serverem se synchronizuje na vyžádání.
+	\item \textbf{Mobilní aplikace} -- nativní Android aplikace pro inventuru v~terénu. Disponuje vlastní lokální databází (Room/SQLite) pro offline režim a~se serverem se synchronizuje na vyžádání.
 \end{itemize}
 
 \begin{figure}[H]\centering
@@ -613,7 +606,7 @@ Aplikace využívá jednu \texttt{MainActivity}, která hostuje tři fragmenty p
 
 \begin{enumerate}
 	\item \textbf{ControlScanFragment} -- kontrolní snímání. Umožňuje naskenovat kód majetku a~zobrazit jeho detail bez zápisu do inventury. Slouží pro rychlé ověření identity položky.
-	\item \textbf{InventoryScanFragment} -- inventurní snímání. Dvoustupňový proces: nejprve se naskenuje kód místnosti (nastavení aktuální lokace), poté se postupně skenují kódy majetku. Každé naskenování vytvoří záznam v~lokální databázi.
+	\item \textbf{InventoryScanFragment} -- inventurní snímání. Dvoustupňový proces: nejprve se naskenuje kód místnosti (nastavení aktuálního umístění), poté se postupně skenují kódy majetku. Každé naskenování vytvoří záznam v~lokální databázi.
 	\item \textbf{DataTransferFragment} -- přenos dat. Umožňuje stáhnout aktuální data ze~serveru, nahrát inventurní záznamy zpět a~konfigurovat URL serveru.
 \end{enumerate}
 
@@ -663,7 +656,7 @@ Datový model systému je tvořen devíti tabulkami v~relační databázi Postgr
 
 
 %---------------------------------------------------------------
-\chapter{Implementace}
+\chapter{Implementace}\label{chap:implementation}
 %---------------------------------------------------------------
 
 \begin{chapterabstract}
@@ -716,9 +709,11 @@ private static void handleFulltext(
 
   predicates.add(cb.or(
       cb.like(name,
-          cb.concat("%", cb.concat(term, "%"))),
+          cb.concat("%", cb.concat(term, "%")),
+          '\\'),
       cb.like(paddedId,
-          cb.concat("%", cb.concat(term, "%")))
+          cb.concat("%", cb.concat(term, "%")),
+          '\\')
   ));
 }
 \end{minted}
@@ -832,17 +827,17 @@ Celý inventurní proces od založení inventury přes skenování až po promí
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.75\textwidth]{images/activity-inventory.pdf}
-	\caption{Diagram aktivity -- inventurní proces}
+	\caption{Diagram aktivit -- inventurní proces}
 	\label{fig:activity-inventory}
 \end{figure}
 
 \subsubsection{Import dat}
 
-Endpoint \texttt{POST /api/inventory-audit/insert-many} přijímá hromadný zápis inventurních záznamů z~mobilní aplikace. Každý záznam obsahuje identifikátor karty, identifikátor reálné lokace a~časové razítko naskenování. Záznamy jsou vloženy do tabulky \texttt{inventory\_audit} s~vazbou na existující kartu.
+Endpoint \texttt{POST /api/inventory-audit/insert-many} přijímá hromadný zápis inventurních záznamů z~mobilní aplikace. Každý záznam obsahuje identifikátor karty, identifikátor reálného umístění a~časové razítko naskenování. Záznamy jsou vloženy do tabulky \texttt{inventory\_audit} s~vazbou na existující kartu.
 
 \subsubsection{Výpočet rozdílů}
 
-Klíčovou částí inventurního procesu je porovnání skutečného stavu (naskenované lokace) s~evidovaným stavem (lokace v~databázi). Toto porovnání provádí MapStruct mapper:
+Klíčovou částí inventurního procesu je porovnání skutečného stavu (naskenovaného umístění) s~evidovaným stavem (umístění v~databázi). Toto porovnání provádí MapStruct mapper:
 
 \begin{listing}[H]
 \caption{Výpočet inventurního statusu v~mapperu}\label{lst:mapstatus}
@@ -868,7 +863,7 @@ Mapper vrací tři stavy: \texttt{CORRECT} (lokace souhlasí), \texttt{WARN} (lo
 
 \subsubsection{Projekce změn}
 
-Endpoint \texttt{POST /api/inventory-audit/project} aplikuje rozhodnutí uživatele na databázi. Pro akci \texttt{RL} je aktualizována lokace karty, pro \texttt{WRITE\_OFF} jsou nastaveny datum a~způsob vyřazení. Po dokončení projekce jsou inventurní záznamy smazány.
+Endpoint \texttt{POST /api/inventory-audit/project} aplikuje rozhodnutí uživatele na databázi. Pro akci \texttt{RL} je aktualizováno umístění karty, pro \texttt{WRITE\_OFF} jsou nastaveny datum a~způsob vyřazení. Po dokončení projekce jsou inventurní záznamy smazány.
 
 \subsection{Cachování slovníků}
 
@@ -964,7 +959,7 @@ Stránka pro správu karet (požadavky F-01 až F-09) využívá master-detail l
 \begin{minted}[fontsize=\small]{tsx}
 const CardPage = () => {
   const [selectedCardId, setSelectedCardId] =
-    useState<string | null>(null);
+    useState<string | undefined>();
   return (
     <div className="p-6 flex">
       <CardListPanel
@@ -1070,7 +1065,7 @@ Stránka pro vyhodnocení inventury (požadavky F-22 až F-28, viz obrázek~\ref
 Stavovou logiku zapouzdřuje custom hook \texttt{useDifferenceEntries}. Ten zajišťuje:
 \begin{itemize}
 	\item Načtení rozdílů ze serveru prostřednictvím TanStack Query.
-	\item Odvození výchozích akcí: \texttt{CORRECT} automaticky \texttt{KEEP} (nelze změnit), \texttt{WARN} automaticky \texttt{RL} (přijmout skutečnou lokaci), \texttt{WRONG} vyžaduje manuální rozhodnutí.
+	\item Odvození výchozích akcí: \texttt{CORRECT} automaticky \texttt{KEEP} (nelze změnit), \texttt{WARN} automaticky \texttt{RL} (přijmout skutečné umístění), \texttt{WRONG} vyžaduje manuální rozhodnutí.
 	\item Optimistické aktualizace -- změna akce se okamžitě projeví v~UI a~zároveň je odeslána na server. Při chybě je stav vrácen zpět.
 	\item Validaci před projekcí -- tlačítko \uv{Promítnout} je zablokováno, pokud existuje karta se statusem \texttt{WRONG} bez zvolené akce, nebo karta s~akcí \texttt{WRITE\_OFF} bez vyplněného data či způsobu vyřazení.
 \end{itemize}
@@ -1089,8 +1084,7 @@ Autentizační stav (uživatel, JWT token, expirace) je spravován knihovnou Zus
 \begin{listing}[H]
 \caption{Axios interceptor pro automatické obnovení tokenu}\label{lst:interceptor}
 \begin{minted}[fontsize=\small]{typescript}
-authorizedRequest.interceptors.request.use(
-  async (config) => {
+authorizedRequest.interceptors.request.use(async (config) => {
   const { token, expiresIn, setAuth, clearAuth }
     = useAuthStore.getState();
   if (token && expiresIn
@@ -1137,38 +1131,32 @@ Hardwarový skener Zebra TC22 emuluje klávesnici -- naskenovaný kód je odesl�
 \begin{listing}[H]
 \caption{Dual-listener pro zachycení vstupu ze skeneru Zebra}\label{lst:duallistener}
 \begin{minted}[fontsize=\small]{java}
-inputLocation.setOnEditorActionListener(
-    (tv, actionId, event) -> {
-  boolean isEnter = (event != null
-      && event.getAction() == KeyEvent.ACTION_DOWN
-      && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER
-          || event.getKeyCode() == KeyEvent.KEYCODE_TAB))
-      || actionId == EditorInfo.IME_ACTION_DONE;
-  if (isEnter) {
-    handleLocationScanned(tv.getText().toString().trim());
-    return true;
-  }
-  return false;
-});
-
-inputLocation.setOnKeyListener((v, keyCode, event) -> {
-  if (event.getAction() == KeyEvent.ACTION_DOWN
-      && (keyCode == KeyEvent.KEYCODE_ENTER
-          || keyCode == KeyEvent.KEYCODE_TAB)) {
-    handleLocationScanned(
-        inputLocation.getText().toString().trim());
-    return true;
-  }
-  return false;
-});
+private void attachScanListeners(
+    EditText input, Consumer<String> handler) {
+  input.setOnEditorActionListener(
+      (tv, actionId, event) -> {
+    if (isConfirmAction(event, actionId)) {
+      handler.accept(tv.getText().toString().trim());
+      return true;
+    }
+    return false;
+  });
+  input.setOnKeyListener((v, keyCode, event) -> {
+    if (isHardwareEnter(event, keyCode)) {
+      handler.accept(input.getText().toString().trim());
+      return true;
+    }
+    return false;
+  });
+}
 \end{minted}
 \end{listing}
 
-\texttt{OnEditorActionListener} zachytává událost \texttt{IME\_ACTION\_DONE} z~softwarové klávesnice, zatímco \texttt{OnKeyListener} reaguje na hardwarové klávesy skeneru. Kombinací obou listenerů je zajištěno, že žádný sken nebude ztracen.
+Metoda \texttt{attachScanListeners()} registruje dva listenery na vstupní pole: \texttt{OnEditorActionListener} zachytává událost \texttt{IME\_ACTION\_DONE} ze softwarové klávesnice, zatímco \texttt{OnKeyListener} reaguje na hardwarové klávesy skeneru (Enter/Tab). Kombinací obou listenerů je zajištěno, že žádný sken nebude ztracen. Metoda je volána pro obě vstupní pole (umístění i~majetek) s~příslušným handlerem.
 
-Naskenované kódy jsou rozlišeny podle formátu: kódy začínající prefixem \uv{L} identifikují lokaci (místnost), čistě numerické kódy identifikují majetkovou kartu. Po naskenování karty aplikace vizuálně signalizuje výsledek barvou pozadí: zelená pokud je karta ve správné lokaci, oranžová pokud je v~jiné lokaci a~červená pokud karta nebyla nalezena v~databázi.
+Naskenované kódy jsou rozlišeny podle formátu: kódy začínající prefixem \uv{L} identifikují umístění (místnost), čistě numerické kódy identifikují majetkovou kartu. Po naskenování karty aplikace vizuálně signalizuje výsledek barvou pozadí: zelená pokud je karta ve správném umístění, oranžová pokud je v~jiném umístění a~červená pokud karta nebyla nalezena v~databázi.
 
-Inventurní postup je vizualizován kruhovým ukazatelem průběhu (počet naskenovaných karet z~celkového počtu v~dané lokaci), který vykresluje vlastní komponenta \mbox{\texttt{CircularInventoryProgressView}}. Celá obrazovka skenování je zachycena na obrázku~\ref{fig:scanning-page}.
+Inventurní postup je vizualizován kruhovým ukazatelem průběhu (počet naskenovaných karet z~celkového počtu v~daném umístění), který vykresluje vlastní komponenta \mbox{\texttt{CircularInventoryProgressView}}. Celá obrazovka skenování je zachycena na obrázku~\ref{fig:scanning-page}.
 
 \begin{figure}[H]
 	\centering

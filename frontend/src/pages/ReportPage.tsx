@@ -18,13 +18,13 @@ import { useLocations } from "@/hooks/queries/useLocationQueries";
 import { useExportCardPdf, useExportGroupPdf, useExportLocationPdf } from "@/hooks/queries/useCardQueries";
 import { sortById } from "@/utils/czech";
 
-type ActiveModal = "group" | "location" | "card" | null;
+type ActiveModal = "group" | "location" | "card" | undefined;
 
 const ReportPage = () => {
   const [selectedGroup, setSelectedGroup] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [activeModal, setActiveModal] = useState<ActiveModal>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | undefined>();
+  const [activeModal, setActiveModal] = useState<ActiveModal>();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
   const { notifyError, NotificationBar } = useNotification();
@@ -117,7 +117,7 @@ const ReportPage = () => {
   };
 
   const handleCloseModal = () => {
-    setActiveModal(null);
+    setActiveModal(undefined);
     resetModalState();
   };
 
@@ -126,7 +126,7 @@ const ReportPage = () => {
       notifyError("Musíte vybrat skupinu.");
       return;
     }
-    setActiveModal(null);
+    setActiveModal(undefined);
     const groupId = selectedGroup === ALL_GROUPS ? "" : selectedGroup;
     groupPdfMutation.mutate(
       { groupId, selectedDate },
@@ -147,7 +147,7 @@ const ReportPage = () => {
       notifyError("Musíte vybrat místnost.");
       return;
     }
-    setActiveModal(null);
+    setActiveModal(undefined);
     locationPdfMutation.mutate(
       { locationId: selectedLocation, selectedDate },
       {
@@ -163,7 +163,7 @@ const ReportPage = () => {
   };
 
   const handleGenerateCardPdf = (cardId: number) => {
-    setActiveModal(null);
+    setActiveModal(undefined);
     cardPdfMutation.mutate(cardId, {
       onSuccess: (result) => {
         setPdfUrl(result.url);

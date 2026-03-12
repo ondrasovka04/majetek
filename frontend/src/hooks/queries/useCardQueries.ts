@@ -28,7 +28,7 @@ export function useCards() {
   });
 }
 
-export function useCardDetail(cardId: string | null) {
+export function useCardDetail(cardId: string | undefined) {
   return useQuery({
     queryKey: ["card", cardId],
     queryFn: () => getCardById(cardId!),
