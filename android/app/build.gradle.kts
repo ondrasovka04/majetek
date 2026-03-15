@@ -1,11 +1,5 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
-}
-
-val localProps = Properties().apply {
-    load(rootProject.file("local.properties").inputStream())
 }
 
 android {
@@ -21,10 +15,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        val adminUser = localProps.getProperty("ADMIN_USER", "")
-        val adminPass = localProps.getProperty("ADMIN_PASS", "")
-        buildConfigField("String", "ADMIN_USER", "\"$adminUser\"")
-        buildConfigField("String", "ADMIN_PASS", "\"$adminPass\"")
     }
 
     buildTypes {
@@ -35,9 +25,6 @@ android {
                 "proguard-rules.pro"
             )
         }
-    }
-    buildFeatures {
-        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21

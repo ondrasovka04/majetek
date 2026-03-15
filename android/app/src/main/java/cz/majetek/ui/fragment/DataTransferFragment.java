@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import cz.majetek.R;
 import cz.majetek.data.db.AppDatabase;
 import cz.majetek.data.repository.DataSyncRepository;
 import cz.majetek.util.BaseUrlStorage;
+import cz.majetek.util.TokenStorage;
 
 /**
  * Fragment for data transfer – download/upload/clear inventory, URL configuration.
@@ -61,7 +63,7 @@ public class DataTransferFragment extends Fragment {
         btnDownload.setOnClickListener(view -> startDownload());
         btnUpload.setOnClickListener(view -> startUpload());
         btnClear.setOnClickListener(view -> confirmClearInventory());
-        btnConfigureUrl.setOnClickListener(view -> showConfigureUrlDialog());
+        btnConfigureUrl.setOnClickListener(view -> showConfigureServerDialog());
         return v;
     }
 
@@ -73,31 +75,56 @@ public class DataTransferFragment extends Fragment {
     }
 
     /**
-     * Shows a dialog to configure the backend URL.
+     * Shows a dialog to configure the backend URL and login credentials.
      */
-    private void showConfigureUrlDialog() {
+    private void showConfigureServerDialog() {
         Context ctx = requireContext().getApplicationContext();
-        String current = BaseUrlStorage.getBaseUrl(ctx);
 
-        EditText input = new EditText(requireContext());
-        input.setText(current);
-        input.setHint(getString(R.string.hint_base_url));
-        input.setSingleLine(true);
+        EditText inputUrl = new EditText(requireContext());
+        inputUrl.setText(BaseUrlStorage.getBaseUrl(ctx));
+        inputUrl.setHint(getString(R.string.hint_base_url));
+        inputUrl.setSingleLine(true);
+
+        EditText inputUser = new EditText(requireContext());
+        String savedUser = TokenStorage.getUsername(ctx);
+        if (savedUser != null) inputUser.setText(savedUser);
+        inputUser.setHint(getString(R.string.hint_username));
+        inputUser.setSingleLine(true);
+
+        EditText inputPass = new EditText(requireContext());
+        String savedPass = TokenStorage.getPassword(ctx);
+        if (savedPass != null) inputPass.setText(savedPass);
+        inputPass.setHint(getString(R.string.hint_password));
+        inputPass.setSingleLine(true);
+        inputPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         LinearLayout container = new LinearLayout(requireContext());
         container.setOrientation(LinearLayout.VERTICAL);
         int pad = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
         container.setPadding(pad, pad, pad, pad);
-        container.addView(input, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.bottomMargin = pad / 2;
+        container.addView(inputUrl, lp);
+        container.addView(inputUser, new LinearLayout.LayoutParams(lp));
+        container.addView(inputPass, new LinearLayout.LayoutParams(lp));
 
-        new AlertDialog.Builder(requireContext()).setTitle(R.string.dialog_base_url_title).setView(container).setPositiveButton(R.string.common_set, (d, w) -> {
-            String entered = input.getText() != null ? input.getText().toString().trim() : "";
-            if (BaseUrlStorage.setBaseUrl(ctx, entered)) {
-                setStatusOk(getString(R.string.status_base_url_set));
-            } else {
-                setStatusError(getString(R.string.error_invalid_base_url));
-            }
-        }).setNegativeButton(R.string.common_cancel, null).show();
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.dialog_server_title)
+                .setView(container)
+                .setPositiveButton(R.string.common_set, (d, w) -> {
+                    String url = inputUrl.getText() != null ? inputUrl.getText().toString().trim() : "";
+                    String user = inputUser.getText() != null ? inputUser.getText().toString().trim() : "";
+                    String pass = inputPass.getText() != null ? inputPass.getText().toString().trim() : "";
+                    if (!BaseUrlStorage.setBaseUrl(ctx, url)) {
+                        setStatusError(getString(R.string.error_invalid_base_url));
+                        return;
+                    }
+                    TokenStorage.saveCredentials(ctx, user, pass);
+                    setStatusOk(getString(R.string.status_server_configured));
+                })
+                .setNegativeButton(R.string.common_cancel, null)
+                .show();
     }
 
     /**

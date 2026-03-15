@@ -15,7 +15,7 @@
     <string name="btn_to_device">Do čtečky</string>
     <string name="btn_from_device">Ze čtečky</string>
     <string name="btn_clear_inventory">Vymazat data inventury</string>
-    <string name="btn_configure_base_url">Nastavit server</string>
+    <string name="btn_configure_base_url">Nastavit připojení</string>
 
     <!-- Menu -->
     <string name="menu_control">Kontrola</string>
@@ -78,7 +78,11 @@
     <string name="status_ready">Připraveno</string>
     <string name="status_ok">V pořádku</string>
     <string name="status_base_url_set">Adresa serveru nastavena</string>
+    <string name="status_server_configured">Připojení nastaveno</string>
     <string name="error_invalid_base_url">Neplatná adresa (musí začínat https://)</string>
     <string name="dialog_base_url_title">Adresa serveru</string>
+    <string name="dialog_server_title">Nastavení připojení</string>
     <string name="hint_base_url">https://domena.cz/api</string>
+    <string name="hint_username">Uživatelské jméno</string>
+    <string name="hint_password">Heslo</string>
 </resources>

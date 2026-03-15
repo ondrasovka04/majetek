@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import cz.majetek.BuildConfig;
 import cz.majetek.data.db.AppDatabase;
 import cz.majetek.data.entity.CardEntity;
 import cz.majetek.data.entity.InventoryAuditEntity;
@@ -132,7 +131,11 @@ public class DataSyncRepository {
     }
 
     private String login(Context ctx) throws IOException {
-        String credentials = BuildConfig.ADMIN_USER + ":" + BuildConfig.ADMIN_PASS;
+        String user = TokenStorage.getUsername(ctx);
+        String pass = TokenStorage.getPassword(ctx);
+        if (user == null || user.isEmpty() || pass == null || pass.isEmpty())
+            throw new IOException("Přihlašovací údaje nejsou nastaveny");
+        String credentials = user + ":" + pass;
         String basic = encodeToString(credentials.getBytes(), NO_WRAP);
         LoginResult lr = getApi(ctx).login(basic);
         if (lr == null || lr.token() == null || lr.token().isEmpty())
