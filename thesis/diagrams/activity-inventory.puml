@@ -6,7 +6,7 @@ skinparam swimlaneTitleFontStyle bold
 
 title Inventurní proces
 
-|Webová administrace|
+|Webová aplikace|
 start
 :Založit novou inventuru;
 
@@ -26,7 +26,7 @@ repeat while (Naskenováno vše\nve všech\nmístnostech?) is (Ne) not (Ano)
 
 :Nahrát inventurní data\nna server (POST);
 
-|Webová administrace|
+|Webová aplikace|
 :Zobrazit rozdíly\n(diff evidovaného\nvs. naskenovaného stavu);
 
 note right

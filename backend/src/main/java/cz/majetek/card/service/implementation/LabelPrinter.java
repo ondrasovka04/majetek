@@ -58,11 +58,20 @@ public class LabelPrinter {
 
     private static final FontRenderContext FONT_RENDER_CONTEXT = new FontRenderContext(new AffineTransform(), true, true);
 
+    /** Maximum printable label width in mm (Zebra ZD621d, 40mm label stock). */
+    private static final double MAX_PRINT_WIDTH_MM = 33.6;
+    /** Zebra printer resolution in dots per inch. */
+    private static final double PRINTER_DPI = 300;
+    /** Millimeters per inch, used for DPI to mm conversion. */
+    private static final double MM_PER_INCH = 25.4;
+    /** Font size in points matching ZPL font E (Swiss 721) at printer resolution. */
+    private static final float ZEBRA_FONT_SIZE_PT = 29.17f;
+
     static {
         try {
             try (InputStream is = CardService.class.getResourceAsStream("/fonts/Zebra_Swiss.ttf")) {
                 if (is == null) throw new CardException("Unable to load Zebra Swiss font");
-                ZEBRA_FONT = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(29.17f);
+                ZEBRA_FONT = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(ZEBRA_FONT_SIZE_PT);
             }
 
             try (InputStream is = CardService.class.getResourceAsStream("/templates/label.zpl")) {
@@ -117,7 +126,7 @@ public class LabelPrinter {
      */
     private boolean willFit(String text) {
         float width = new TextLayout(text, ZEBRA_FONT, FONT_RENDER_CONTEXT).getAdvance();
-        return 33.6 > (width / 300) * 25.4;
+        return MAX_PRINT_WIDTH_MM > (width / PRINTER_DPI) * MM_PER_INCH;
     }
 
     /**

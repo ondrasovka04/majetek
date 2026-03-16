@@ -59,6 +59,8 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(HttpServletResponse response) {
         LoginResponse loginResponse = authService.login();
         String refreshToken = tokenProvider.generateRefreshToken(getContext().getAuthentication());
+        String jti = tokenProvider.getJtiFromRefreshToken(refreshToken);
+        authService.saveRefreshJti(getContext().getAuthentication().getName(), jti);
         Date refreshExp = tokenProvider.getExpirationDateFromRefreshToken(refreshToken);
         Cookie cookie = refreshTokenCookieFactory.build(refreshToken, refreshExp);
         response.addCookie(cookie);
@@ -79,6 +81,8 @@ public class AuthController {
         LoginResponse newAccess = authService.refresh(refreshToken);
         String username = tokenProvider.getUsernameFromRefreshToken(refreshToken);
         String newRefresh = tokenProvider.generateRefreshTokenFromUsername(username);
+        String newJti = tokenProvider.getJtiFromRefreshToken(newRefresh);
+        authService.saveRefreshJti(username, newJti);
         Date refreshExp = tokenProvider.getExpirationDateFromRefreshToken(newRefresh);
         Cookie cookie = refreshTokenCookieFactory.build(newRefresh, refreshExp);
         response.addCookie(cookie);

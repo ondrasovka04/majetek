@@ -68,13 +68,18 @@ public class AuthService implements IAuthService {
     }
 
     @Override
+    @Transactional
     public LoginResponse refresh(String refreshToken) {
         if (!tokenProvider.validateRefreshToken(refreshToken)) {
             throw new AuthException("Invalid refresh token");
         }
+        String jti = tokenProvider.getJtiFromRefreshToken(refreshToken);
         String username = tokenProvider.getUsernameFromRefreshToken(refreshToken);
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (jti == null || !jti.equals(user.getRefreshJti())) {
+            throw new AuthException("Refresh token has been revoked");
+        }
         UserPrincipal principal = UserPrincipal.create(user);
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
         String newAccess = tokenProvider.generateToken(authentication);
@@ -100,6 +105,15 @@ public class AuthService implements IAuthService {
                 registerRequest.getName(),
                 UserRole.USER));
         return userMapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional
+    public void saveRefreshJti(String username, String jti) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        user.setRefreshJti(jti);
+        userRepository.save(user);
     }
 
     @Override

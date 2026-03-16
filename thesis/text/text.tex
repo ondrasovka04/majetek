@@ -300,7 +300,7 @@ Nevýhodou Spring Boot je vyšší paměťová náročnost typická pro aplikace
 
 \subsection{NestJS (TypeScript)}
 
-NestJS~\cite{nestjs} je Node.js framework nabízející modulární architekturu inspirovanou Angularem, vestavěný systém Dependency Injection a~podporu TypeScriptu jako prvotřídního jazyka. Na rozdíl od minimalistického Express.js~\cite{expressjs}, nad kterým je postaven, poskytuje NestJS kompletní strukturu aplikace. Pro práci s~databází lze využít TypeORM nebo Prisma.
+NestJS~\cite{nestjs} je Node.js framework nabízející modulární architekturu inspirovanou Angularem, vestavěný systém Dependency Injection a~podporu TypeScriptu jako prvotřídního jazyka. Je postaven nad minimalistickým Express.js~\cite{expressjs}, ale na rozdíl od něj poskytuje kompletní strukturu aplikace. Pro práci s~databází lze využít TypeORM nebo Prisma.
 
 Hlavní výhodou je možnost sdílení TypeScriptových typů mezi backendem a~frontendem. Nevýhodou je méně zralý ekosystém pro enterprise aplikace -- například absence nativního ORM srovnatelného s~JPA a~menší nabídka knihoven pro generování PDF, Excelu či ZPL etiket.
 
@@ -321,7 +321,7 @@ Tabulka~\ref{tab:backend-comparison} shrnuje srovnání analyzovaných backend t
 	Typová bezpečnost & silná & silná & dynamická \tabularnewline
 	ORM & JPA (Hibernate) & TypeORM / Prisma & vlastní ORM \tabularnewline
 	Bezpečnostní framework & Spring Security & Passport.js & vestavěný \tabularnewline
-	Podpora PDF/Excel/ZPL & iText, EasyExcel & omezená & omezená \tabularnewline
+	Podpora PDF/Excel/ZPL & iText 8, EasyExcel & omezená & omezená \tabularnewline
 \end{tabular}
 \caption{Srovnání backend technologií}\label{tab:backend-comparison}
 \end{table}
@@ -329,7 +329,7 @@ Tabulka~\ref{tab:backend-comparison} shrnuje srovnání analyzovaných backend t
 Pro implementaci backendu byl zvolen \textbf{Spring Boot} z~následujících důvodů:
 \begin{itemize}
 	\item Robustní ekosystém pro enterprise aplikace -- Spring Data JPA pro databázovou vrstvu, Spring Security pro autentizaci a~autorizaci.
-	\item Dostupnost kvalitních knihoven pro generování PDF (iText~7), Excelu (EasyExcel) a~ZPL etiket -- klíčová funkčnost pro tento projekt.
+	\item Dostupnost kvalitních knihoven pro generování PDF (iText~8), Excelu (EasyExcel) a~ZPL etiket -- klíčová funkčnost pro tento projekt.
 	\item Silná typová bezpečnost jazyka Java, která usnadňuje údržbu a~refaktoring.
 	\item Konzistence s~mobilní aplikací, která je rovněž implementována v~Javě.
 \end{itemize}
@@ -351,9 +351,9 @@ Nevýhodou Reactu je nutnost skládat aplikaci z~mnoha nezávislých knihoven, c
 
 \subsection{Angular}
 
-Angular~\cite{angular} je plnohodnotný, opinionated framework vyvíjený týmem ve společnosti Google. Angular poskytuje kompletní sadu nástrojů přímo v~základním balíčku -- vlastní router, HTTP klient, systém formulářů, De\-pen\-den\-cy In\-jec\-tion a~build toolchain.
+Angular~\cite{angular} je plnohodnotný, opinionated framework vyvíjený týmem ve společnosti Google. Angular poskytuje kompletní sadu nástrojů přímo v~základním balíčku -- vlastní router, HTTP klient, systém formulářů, Dependency Injection a~build toolchain.
 
-TypeScript je v~Angularu povinný, což zajišťuje silnou typovou bezpečnost. Framework dále nabízí reaktivní systém Angular Signals a~vestavěnou podporu pro \mbox{Server-Side} Rendering. Nevýhodou je strmější křivka učení a~větší režie pro menší projekty, kde plnohodnotný framework může být zbytečně komplexní.
+TypeScript je v~Angularu povinný, což zajišťuje silnou typovou bezpečnost. Framework dále nabízí reaktivní systém Angular Signals a~vestavěnou podporu pro Server-Side Rendering. Nevýhodou je strmější křivka učení a~větší režie pro menší projekty, kde plnohodnotný framework může být zbytečně komplexní.
 
 \subsection{Vue.js}
 
@@ -384,7 +384,7 @@ Pro implementaci frontendu byla zvolena knihovna \textbf{React} společně s~jaz
 	\item Flexibilita při výběru knihoven -- možnost zvolit optimální nástroj pro každou oblast (TanStack Query pro data fetching, React Hook Form + Zod pro formuláře, Zustand pro globální stav).
 \end{itemize}
 
-Jako build nástroj byl zvolen \textbf{Vite}~\cite{vite}, který nabízí rychlý vývojový server s~Hot Module Re\-place\-ment a~optimalizovaný produkční build.
+Jako build nástroj byl zvolen \textbf{Vite}~\cite{vite}, který nabízí rychlý vývojový server s~Hot Module Replacement a~optimalizovaný produkční build.
 
 
 %---------------------------------------------------------------
@@ -411,7 +411,7 @@ Pro tento projekt by Kotlin nepřinesl zásadní výhody. Aplikace je architekto
 
 Flutter~\cite{flutter} je multiplatformní framework od Google, který používá jazyk Dart a~vlastní vykreslovací engine obcházející nativní UI komponenty platformy. React Native~\cite{reactnative} vykresluje JavaScriptový kód prostřednictvím nativních komponent; doporučeným meta-frameworkem je Expo.
 
-Obě technologie nabízejí multiplatformní vývoj, který však v~tomto projektu není potřeba -- cílovým zařízením je výhradně Zebra TC22 s~Androidem. Zásadním problémem je omezená podpora pro specifický hardware: vstup ze skeneru Zebra přichází jako události hardwarové klávesnice (Enter/Tab), což vyžaduje přímý přístup k~nativním listenerům (\texttt{OnKeyListener}, \texttt{OnEditorActionListener}). Abstrakční vrstva multiplatformních frameworků by tento přístup komplikovala.
+Obě technologie nabízejí multiplatformní vývoj, který však v~tomto projektu není potřeba -- cílovým zařízením je výhradně Zebra TC22 se systémem Android. Zásadním problémem je omezená podpora specifického hardwaru: vstup ze skeneru přichází jako události hardwarové klávesnice zakončené klávesou Enter nebo Tab, což vyžaduje přímý přístup k~nativním listenerům (\texttt{OnKeyListener}, \texttt{OnEditorActionListener}). Abstrakční vrstva multiplatformních frameworků by tento přístup komplikovala.
 
 \subsection{Srovnání a~zdůvodnění volby}
 
@@ -497,7 +497,7 @@ Kromě hlavních technologií popsaných výše projekt využívá řadu special
 \section{Přehled systému}
 %---------------------------------------------------------------
 
-Systém se skládá ze tří hlavních komponent, které spolu komunikují prostřednictvím REST API přes protokol HTTPS:
+Systém se skládá ze tří hlavních komponent, které spolu komunikují prostřednictvím REST API přes protokol HTTPS (viz obrázek~\ref{fig:system-architecture}):
 
 \begin{itemize}
 	\item \textbf{Backend} -- serverová aplikace (Spring Boot) poskytující REST API, business logiku, generování exportů a~přístup k~databázi PostgreSQL. Backend je nasazen na linuxovém VPS serveru za reverse proxy Nginx.
@@ -524,7 +524,7 @@ Každý modul dodržuje konzistentní třívrstvý vzor:
 
 \begin{enumerate}
 	\item \textbf{Controller} (\texttt{@RestController}) -- přijímá HTTP požadavky, provádí vstupní validaci prostřednictvím anotace \texttt{@Valid} a~deleguje zpracování na service vrstvu. Vrací \texttt{ResponseEntity} s~příslušným HTTP kódem.
-	\item \textbf{Service} -- definovaný jako rozhraní (\texttt{IXxxService}) s~implementací v~podbalíčku \texttt{implementation}. Oddělení rozhraní od implementace je běžný vzor ve Spring ekosystému, který dodržuje princip Dependency Inversion (SOLID), usnadňuje mockování v~unit testech a~zjednodušuje případné rozšíření o~alternativní implementaci. Service obsahuje business logiku a~řídí transakce prostřednictvím anotace \texttt{@Transactional}.
+	\item \textbf{Service} -- definovaný jako rozhraní (\texttt{IXxxService}) s~implementací v~podbalíčku \texttt{implementation}. Oddělení rozhraní od implementace je běžný vzor ve Spring ekosystému -- dodržuje SOLID princip Dependency Inversion, usnadňuje mockování v~unit testech a~zjednodušuje případné rozšíření o~alternativní implementaci. Service obsahuje business logiku a~řídí transakce prostřednictvím anotace \texttt{@Transactional}.
 	\item \textbf{Repository} -- rozhraní rozšiřující \texttt{JpaRepository}, které poskytuje přístup k~databázi. Dotazy jsou buď odvozeny z~názvu metody, nebo definovány explicitně anotací \texttt{@Query}.
 \end{enumerate}
 
@@ -541,7 +541,7 @@ Backend je rozdělen do následujících modulů:
 	\item \textbf{inventoryaudit} -- import inventurních dat z~mobilní aplikace, výpočet rozdílů, projekce změn
 	\item \textbf{dictionary} -- pět slovníkových podmodulů (umístění, skupiny, třídy, způsoby pořízení, způsoby vyřazení), každý se shodnou strukturou
 	\item \textbf{entity} -- centralizované JPA entity sdílené napříč moduly
-	\item \textbf{exception} -- globální zpracování výjimek (\texttt{@RestControllerAdvice})
+	\item \textbf{exception} -- globální zpracování výjimek (\texttt{@RestControllerAdvice}). Doménové výjimky jsou převedeny na strukturované JSON odpovědi s~příslušným HTTP kódem. Na frontendu jsou chyby zobrazeny toast notifikacemi, v~mobilní aplikaci barevně odlišenými stavovými zprávami.
 	\item \textbf{config} -- konfigurace aplikace (OpenAPI dokumentace, kódování hesel)
 \end{itemize}
 
@@ -551,10 +551,10 @@ Autentizace je realizována pomocí JSON Web Tokenů (JWT)~\cite{jwt}. Systém v
 
 \begin{enumerate}
 	\item \textbf{Basic Auth chain} -- zachytává výhradně požadavek na přihlášení (\texttt{POST /api/auth/login}). Po ověření přihlašovacích údajů vygeneruje access token (krátká platnost) a~refresh token (delší platnost).
-	\item \textbf{JWT Bearer chain} -- zachytává všechny ostatní API požadavky. Filtr \texttt{Jwt\-Authentication\-Filter} extrahuje token z~hlavičky \texttt{Authorization: Bearer}, ověří jeho platnost a~nastaví bezpečnostní kontext.
+	\item \textbf{JWT Bearer chain} -- zachytává všechny ostatní API požadavky. Filtr \texttt{JwtAuthenticationFilter} extrahuje token z~hlavičky \texttt{Authorization: Bearer}, ověří jeho platnost a~nastaví bezpečnostní kontext.
 \end{enumerate}
 
-Access token je přenášen v~HTTP hlavičce, refresh token výhradně v~\texttt{httpOnly} cookie s~příznakem \texttt{Secure} a~\texttt{SameSite=Strict}. Při každém obnovení tokenů (endpoint \texttt{/api/\allowbreak auth/\allowbreak refresh}) jsou vygenerovány oba tokeny nové -- jedná se o~tzv.\ rotaci tokenů, která zvyšuje bezpečnost.
+Access token je přenášen v~HTTP hlavičce, refresh token výhradně v~\texttt{httpOnly} cookie s~příznakem \texttt{Secure} a~\texttt{SameSite=Strict}. Při obnovení (endpoint \texttt{/api/\allowbreak auth/\allowbreak refresh}) server ověří platnost refresh tokenu, zkontroluje jeho jedinečný identifikátor (\texttt{jti}) oproti hodnotě uložené v~databázi a~vygeneruje nový pár tokenů. Starý refresh token je tímto invalidován -- jedná se o~tzv.\ rotaci tokenů, která prodlužuje session při aktivním používání a~zároveň zajišťuje, že kompromitovaný token nelze opakovaně použít. Celý autentizační tok je znázorněn na obrázku~\ref{fig:jwt-auth-flow}.
 
 \begin{figure}[H]\centering
 	\includegraphics[width=\textwidth]{images/jwt-auth-flow.pdf}
@@ -593,17 +593,17 @@ Všechny chráněné stránky jsou obaleny komponentou \texttt{PrivateRoute}, kt
 
 \subsection{Generický vzor pro slovníky}
 
-Pět slovníkových stránek sdílí generickou komponentu \texttt{DictionaryPage<T>}, parametrizovanou typem entity. Komponenta přijímá query a~mutation hooky jako vlastnosti a~vykresluje tabulku s~operacemi vytvoření, přejmenování a~smazání. Konkrétní stránky (např.\ \texttt{LocationPage}) jsou pouze tenké wrappery, které předávají příslušné hooky a~volitelné rozšíření (např.\ tlačítko tisku etikety u~lokací).
+Pět slovníkových stránek sdílí generickou komponentu \texttt{DictionaryPage<T>}, parametrizovanou typem entity. Komponenta přijímá hooky pro query a~mutace jako vlastnosti a~vykresluje tabulku s~operacemi vytvoření, přejmenování a~smazání. Konkrétní stránky (např.\ \texttt{LocationPage}) jsou pouze wrappery, které předávají příslušné hooky a~volitelné rozšíření (např.\ tlačítko tisku etikety u~lokací).
 
 %---------------------------------------------------------------
-\section{Architektura mobilní aplikace}
+\section{Architektura mobilní aplikace}\label{sec:mobile-arch}
 %---------------------------------------------------------------
 
 Mobilní aplikace je navržena jako jednoduchá nativní Android aplikace s~jednou Activity a~třemi fragmenty. Architektura je přizpůsobena specifickým požadavkům -- offline režim, vstup z~hardwarového skeneru a~provoz na enterprise zařízení Zebra TC22.
 
 \subsection{Struktura uživatelského rozhraní}
 
-Aplikace využívá jednu \texttt{MainActivity}, která hostuje tři fragmenty přepínané prostřednictvím spodní navigační lišty (\texttt{Bottom\-Navigation\-View}):
+Aplikace využívá jednu \texttt{MainActivity}, která hostuje tři fragmenty přepínané prostřednictvím spodní navigační lišty (\texttt{BottomNavigationView}):
 
 \begin{enumerate}
 	\item \textbf{ControlScanFragment} -- kontrolní snímání. Umožňuje naskenovat kód majetku a~zobrazit jeho detail bez zápisu do inventury. Slouží pro rychlé ověření identity položky.
@@ -622,7 +622,7 @@ Tabulka \texttt{inventory\_audit} má primární klíč \texttt{card\_id} -- ka�
 Synchronizace probíhá výhradně na explicitní pokyn uživatele:
 
 \begin{itemize}
-	\item \textbf{Stažení dat} -- aplikace ověří připojení k~síti, přihlásí se na server (\mbox{Basic Auth}), stáhne aktuální karty a~lokace a~atomicky je uloží do lokální databáze v~rámci jedné transakce.
+	\item \textbf{Stažení dat} -- aplikace ověří připojení k~síti, autentizuje se prostřednictvím Basic Auth, stáhne aktuální karty a~lokace a~atomicky je uloží do lokální databáze v~rámci jedné transakce.
 	\item \textbf{Odeslání inventury} -- aplikace načte všechny lokální inventurní záznamy, serializuje je do formátu JSON a~odešle hromadným požadavkem na server (\texttt{POST /api/inventory-audit/insert-many}).
 \end{itemize}
 
@@ -630,13 +630,13 @@ Stažení nových dat je zablokováno, pokud v~lokální databázi existují neo
 
 \subsection{Bezpečnost na mobilním zařízení}
 
-Autentizační tokeny i~přihlašovací údaje jsou na mobilním zařízení uloženy v~šifrovaném úložišti (\texttt{Encrypted\-Shared\-Preferences}) s~šifrováním AES-256-GCM. Přihlašovací údaje uživatel zadá jednorázově v~dialogu nastavení připojení a~nejsou součástí sestavené aplikace. Síťová konfigurace aplikace zakazuje nešifrovanou komunikaci (\texttt{clear\-text traffic}).
+Autentizační tokeny i~přihlašovací údaje jsou na mobilním zařízení uloženy v~šifrovaném úložišti \texttt{EncryptedSharedPreferences} (AES-256-GCM). Uživatel je zadá jednorázově v~dialogu nastavení připojení. Síťová konfigurace zakazuje nešifrovanou komunikaci (\texttt{cleartext traffic}).
 
 %---------------------------------------------------------------
 \section{Datový model}
 %---------------------------------------------------------------
 
-Datový model systému tvoří devět tabulek v~relační databázi PostgreSQL. Centrální entitou je tabulka \texttt{card} (majetková karta), na~kterou se váží slovníkové tabulky, přílohy a~inventurní záznamy.
+Datový model systému tvoří devět tabulek v~relační databázi PostgreSQL (viz obrázek~\ref{fig:er-diagram}). Centrální entitou je tabulka \texttt{card} (majetková karta), na~kterou se váží slovníkové tabulky, přílohy a~inventurní záznamy.
 
 \begin{figure}[H]\centering
 	\includegraphics[width=\textwidth]{images/er-diagram.pdf}
@@ -661,7 +661,7 @@ Datový model systému tvoří devět tabulek v~relační databázi PostgreSQL. 
 %---------------------------------------------------------------
 
 \begin{chapterabstract}
-	Kapitola popisuje klíčové implementační detaily jednotlivých částí systému.
+	Kapitola popisuje klíčové implementační detaily jednotlivých částí systému. Zaměřuje se na netriviální části implementace, jejichž řešení vyžadovalo specifický přístup -- například dynamické filtrování pomocí JPA Specification, generování ZPL etiket, bezpečné ukládání přihlašovacích údajů na mobilním zařízení nebo zpracování vstupu z~hardwarového skeneru.
 \end{chapterabstract}
 
 \section{Backend}
@@ -680,11 +680,11 @@ Backend je implementován jako Spring Boot aplikace s~Maven build systémem a~Ja
 }
 
 \medskip
-Každý feature balíček dodržuje třívrstvou strukturu popsanou v~kapitole~\ref{sec:backend-arch}: controller, service (rozhraní + implementace), repository a~mapper.
+Struktura každého modulu odpovídá třívrstvému vzoru z~kapitoly~\ref{sec:backend-arch}, tedy vrstvy controller, service (rozhraní + implementace), repository a~mapper.
 
 \subsection{Filtrování karet majetku}
 
-Filtrování karet (požadavek F-06, viz tabulka~\ref{tab:freq-cards}) je realizováno prostřednictvím JPA Specification API. Třída \texttt{CardSpecification} dynamicky sestavuje predikáty na základě parametrů dotazu -- rozsahy ID, cen, dat, shoda cizích klíčů a~fulltextové vyhledávání.
+Filtrování karet (požadavky F-04 a~F-05, viz tabulka~\ref{tab:freq-cards}) je realizováno prostřednictvím JPA Specification API. Třída \texttt{CardSpecification} dynamicky sestavuje predikáty na základě parametrů dotazu -- rozsahy ID, cen, dat, shoda cizích klíčů a~fulltextové vyhledávání.
 
 \begin{listing}[H]
 \caption{Fulltextové vyhledávání s~podporou české diakritiky}\label{lst:fulltext}
@@ -747,7 +747,7 @@ Systém generuje tři typy exportů: PDF reporty (požadavky F-13 až F-15, viz 
 
 \subsubsection{PDF reporty}
 
-PDF dokumenty jsou generovány knihovnou iText~8 ve třídě \texttt{Pdf\-Generator}. Reporty jsou vytvářeny v~paměti prostřednictvím \texttt{Byte\-Array\-Output\-Stream} a~vráceny jako pole bajtů. Pro správné zobrazení českých znaků je použit font Calibri a~čísla jsou formátována s~českou lokalizací.
+PDF dokumenty jsou generovány knihovnou iText~8 ve třídě \texttt{PdfGenerator}. Reporty jsou vytvářeny v~paměti prostřednictvím \texttt{ByteArrayOutputStream} a~vráceny jako pole bajtů. Pro správné zobrazení českých znaků je použit font Calibri a~čísla jsou formátována s~českou lokalizací.
 
 Systém nabízí tři typy reportů:
 \begin{itemize}
@@ -800,12 +800,12 @@ private boolean willFit(String text) {
   float width = new TextLayout(
       text, ZEBRA_FONT, FONT_RENDER_CONTEXT)
       .getAdvance();
-  return 33.6 > (width / 300) * 25.4;
+  return MAX_PRINT_WIDTH_MM > (width / PRINTER_DPI) * MM_PER_INCH;
 }
 \end{minted}
 \end{listing}
 
-Metoda převádí šířku z~bodů na milimetry (dělení 300~DPI, násobení 25,4~mm/palec) a~porovnává ji s~maximální šířkou tisknutelné oblasti etikety (33,6~mm). Text je poté rozdělen po slovech na dva řádky tak, aby se každý vešel na etiketu. Ukázka vytištěných etiket je na obrázku~\ref{fig:labels}.
+Metoda převádí šířku z~bodů na milimetry a~porovnává ji s~konstantou \texttt{MAX\_PRINT\_WIDTH\_MM} (maximální šířka tisknutelné oblasti etikety). Text je poté rozdělen po slovech na dva řádky tak, aby se každý vešel na etiketu. Ukázka vytištěných etiket je na obrázku~\ref{fig:labels}.
 
 \begin{figure}[H]
 	\centering
@@ -817,7 +817,7 @@ Metoda převádí šířku z~bodů na milimetry (dělení 300~DPI, násobení 25
 Hotové etikety jsou odeslány na tiskárnu Zebra prostřednictvím Zebra Cloud API (\texttt{POST} na \texttt{api.zebra.com}). Vzhledem k~tomu, že bezplatný tarif API umožňuje pouze 100~požadavků denně, je alternativně nabídnuto stažení ZPL souboru pro lokální tisk.
 
 \subsection{Inventurní audit}
-Inventurní audit (požadavky F-17 až F-29, viz tabulky~\ref{tab:freq-inventory-mobile} a~\ref{tab:freq-inventory-web}) je implementován ve~dvou fázích:
+Inventurní audit (požadavky F-17 až F-26, viz tabulky~\ref{tab:freq-inventory-mobile} a~\ref{tab:freq-inventory-web}) je na straně backendu implementován ve~dvou fázích:
 \begin{enumerate}
 	\item Import dat z~mobilní aplikace.
 	\item Vyhodnocení s~projekcí změn.
@@ -868,7 +868,7 @@ Endpoint \texttt{POST /api/inventory-audit/project} aplikuje rozhodnutí uživat
 
 \subsection{Cachování slovníků}
 
-Slovníkové entity (lokace, skupiny, třídy, způsoby nákupu a~vyřazení) se mění zřídka, ale jsou načítány při každém zobrazení formuláře nebo tabulky. Pro snížení zátěže databáze je implementováno cachování prostřednictvím Spring Cache a~knihovny Caffeine:
+Slovníkové entity (lokace, skupiny, třídy, způsoby pořízení a~vyřazení) se mění zřídka, ale jsou načítány při každém zobrazení formuláře nebo tabulky. Pro snížení zátěže databáze je implementováno cachování prostřednictvím Spring Cache a~knihovny Caffeine:
 
 \begin{listing}[H]
 \caption{Cachování slovníkových dat}\label{lst:cache}
@@ -901,7 +901,7 @@ public interface ICardMapper {
   @Mapping(source = "location.name", target = "locationName")
   @Mapping(source = "group.id", target = "groupId")
   @Mapping(source = "group.name", target = "groupName")
-  // ... dalsi mapovani
+  // ...
   CardDto toDto(Card card);
 
   @Mapping(source = "locationId", target = "location",
@@ -946,7 +946,7 @@ Frontend je vytvořen nástrojem Vite s~Reactem~19 a~TypeScriptem. Zdrojový kó
 
 \subsection{Správa karet majetku}
 
-Stránka pro správu karet (požadavky F-01 až F-09) využívá master-detail layout (viz obrázek~\ref{fig:card-page}). Levý panel (\texttt{CardListPanel}) zobrazuje seznam karet s~fulltextovým vyhledáváním, třídění a~pokročilým filtrováním. Pravý panel zobrazuje detail vybrané karty nebo formulář pro vytvoření nové:
+Stránka pro správu karet (požadavky F-01 až F-07, viz obrázek~\ref{fig:card-page}) využívá rozložení master-detail. Levý panel (\texttt{CardListPanel}) zobrazuje seznam karet s~fulltextovým vyhledáváním, třídění a~pokročilým filtrováním. Pravý panel zobrazuje detail vybrané karty nebo formulář pro vytvoření nové:
 
 \begin{figure}[H]
 	\centering
@@ -957,22 +957,31 @@ Stránka pro správu karet (požadavky F-01 až F-09) využívá master-detail l
 
 \begin{listing}[H]
 \caption{Master-detail layout stránky karet (zkráceno)}\label{lst:cardpage}
-\begin{minted}[fontsize=\small]{tsx}
+\begin{minted}[fontsize=\small,escapeinside=@@]{tsx}
+type CardSelection =
+  | { type: "existing"; id: string }
+  | { type: "new" };
+
 const CardPage = () => {
-  const [selectedCardId, setSelectedCardId] =
-    useState<string | undefined>();
+  const [selection, setSelection] =
+    useState<CardSelection>();
+  const selectedId = selection?.type === "existing"
+    ? selection.id : undefined;
   return (
     <div className="p-6 flex">
       <CardListPanel
-        selectedCardId={selectedCardId}
-        onSelectCard={setSelectedCardId}
-        onNewCard={() => setSelectedCardId("NEW")}
+        selectedCardId={selectedId}
+        onSelectCard={(id) => setSelection(
+          id ? { type: "existing", id } : @\textcolor[HTML]{8F2200}{\textbf{undefined}}@)}
+        onNewCard={() =>
+          setSelection({ type: "new" })}
       />
       <Paper className="w-2/3 p-4" elevation={3}>
-        {selectedCardId === "NEW" ? (
+        {selection?.type === "new" ? (
           <CardCreateView ... />
-        ) : selectedCardId ? (
-          <CardDetailView cardId={selectedCardId} ... />
+        ) : selection?.type === "existing" ? (
+          <CardDetailView
+            cardId={selection.id} ... />
         ) : (
           <Typography>Vyberte kartu vlevo</Typography>
         )}
@@ -987,7 +996,7 @@ Client-side vyhledávání využívá knihovnu Fuse.js pro fuzzy matching a~Reac
 
 \subsection{Generický vzor pro slovníky}
 
-Pět slovníkových stránek (lokace, skupiny, třídy, způsoby nákupu a~vyřazení) sdílí jedinou generickou komponentu \texttt{DictionaryPage<T>}. Komponenta přijímá query a~mutation hooky jako vlastnosti a~vykresluje tabulku s~operacemi vytvoření, přejmenování a~smazání:
+Pět slovníkových stránek (lokace, skupiny, třídy, způsoby pořízení a~vyřazení) sdílí jedinou generickou komponentu \texttt{DictionaryPage<T>}. Komponenta přijímá query a~mutační hooky jako vlastnosti a~vykresluje tabulku s~operacemi vytvoření, přejmenování a~smazání:
 
 \begin{listing}[H]
 \caption{Typové rozhraní generické slovníkové komponenty}\label{lst:dictprops}
@@ -1061,7 +1070,12 @@ Schéma je propojeno s~formulářem prostřednictvím resolveru \texttt{zodResol
 
 \subsection{Vyhodnocení inventury}
 
-Stránka pro vyhodnocení inventury (požadavky F-23 až F-26, viz obrázek~\ref{fig:differences-page}) zobrazuje tabulku (MUI DataGrid) s~barevně odlišenými řádky podle statusu: zelená pro \texttt{CORRECT}, oranžová pro \texttt{WARN} a~červená pro \texttt{WRONG}.
+Stránka pro vyhodnocení inventury (požadavky F-23 až F-26, viz obrázek~\ref{fig:differences-page}) zobrazuje tabulku (MUI DataGrid) s~barevně odlišenými řádky podle statusu:
+\begin{itemize}
+	\item zelená -- \texttt{CORRECT} (umístění souhlasí),
+	\item oranžová -- \texttt{WARN} (umístění se liší),
+	\item červená -- \texttt{WRONG} (karta nebyla naskenována).
+\end{itemize}
 
 Stavovou logiku zapouzdřuje custom hook \texttt{useDifferenceEntries}. Ten zajišťuje:
 \begin{itemize}
@@ -1085,13 +1099,22 @@ Autentizační stav (uživatel, JWT token, expirace) je spravován knihovnou Zus
 \begin{listing}[H]
 \caption{Axios interceptor pro automatické obnovení tokenu}\label{lst:interceptor}
 \begin{minted}[fontsize=\small]{typescript}
+let refreshPromise: Promise<AuthResponse> | null = null;
+function refreshOnce() {
+  if (!refreshPromise) {
+    refreshPromise = refresh()
+      .finally(() => { refreshPromise = null; });
+  }
+  return refreshPromise;
+}
+
 authorizedRequest.interceptors.request.use(async (config) => {
   const { token, expiresIn, setAuth, clearAuth }
     = useAuthStore.getState();
   if (token && expiresIn
       && new Date(expiresIn) <= new Date()) {
     try {
-      const refreshed = await refresh();
+      const refreshed = await refreshOnce();
       setAuth(refreshed.user, refreshed.token,
               refreshed.expiresIn);
       config.headers.Authorization =
@@ -1108,22 +1131,17 @@ authorizedRequest.interceptors.request.use(async (config) => {
 \end{minted}
 \end{listing}
 
-Interceptor před každým požadavkem zkontroluje expiraci tokenu. Pokud token vypršel, zavolá endpoint \texttt{/api/auth/refresh} (refresh token je přenášen v~\texttt{httpOnly} cookie) a~po úspěšné obnově pokračuje s~novým tokenem. Odpovědi se stavovým kódem 401 jsou zachyceny response interceptorem, který provede stejný proces a~zopakuje původní požadavek.
+Interceptor před každým požadavkem zkontroluje expiraci tokenu. Pokud token vypršel, zavolá endpoint \texttt{/api/auth/refresh} (refresh token je přenášen v~\texttt{httpOnly} cookie) a~po úspěšné obnově pokračuje s~novým tokenem. Jelikož server při každém refresh vygeneruje nový refresh token a~starý invaliduje (rotace), je nutné zajistit, aby se refresh volal nejvýše jednou -- při více souběžných požadavcích sdílejí všechny jeden \texttt{Promise} (mutex pattern). Odpovědi se stavovým kódem 401 jsou zachyceny response interceptorem, který provede stejný proces a~zopakuje původní požadavek.
 
 Všechny chráněné stránky jsou obaleny komponentou \texttt{PrivateRoute}, která ověřuje přítomnost platného tokenu v~Zustand store a~nepřihlášeného uživatele přesměruje na přihlašovací stránku.
 
 %---------------------------------------------------------------
+\needspace{8\baselineskip}
 \section{Mobilní aplikace}
 
 \subsection{Struktura projektu}
 
-Mobilní aplikace je nativní Android projekt v~Javě~21 s~build systémem Gradle (Kotlin DSL). Aplikace sestává z~jedné Activity a~tří fragmentů přepínaných prostřednictvím spodní navigace (\texttt{BottomNavigationView}):
-
-\begin{itemize}
-	\item \textbf{ControlScanFragment} -- rychlé ověření karty naskenováním (bez záznamu).
-	\item \textbf{InventoryScanFragment} -- hlavní inventurní skenování s~ukládáním záznamů do lokální databáze.
-	\item \textbf{DataTransferFragment} -- stažení dat ze serveru, odeslání inventury, konfigurace URL.
-\end{itemize}
+Mobilní aplikace je nativní Android projekt v~Javě~21 s~build systémem Gradle (Kotlin DSL). Architektura aplikace (jedna Activity, tři fragmenty, lokální databáze) byla popsána v~kapitole~\ref{sec:mobile-arch}. Tato sekce se zaměřuje na implementační detaily.
 
 \subsection{Integrace se čtečkou Zebra}
 
@@ -1157,7 +1175,7 @@ Metoda \texttt{attachScanListeners()} registruje dva listenery na vstupní pole:
 
 Naskenované kódy jsou rozlišeny podle formátu: kódy začínající prefixem \uv{L} identifikují umístění (místnost), čistě numerické kódy identifikují majetkovou kartu. Po naskenování karty aplikace vizuálně signalizuje výsledek barvou pozadí: zelená pokud je karta ve správném umístění, oranžová pokud je v~jiném umístění a~červená pokud karta nebyla nalezena v~databázi.
 
-Inventurní postup je vizualizován kruhovým ukazatelem průběhu (počet naskenovaných karet z~celkového počtu v~daném umístění), který vykresluje vlastní komponenta \mbox{\texttt{CircularInventoryProgressView}}. Celá obrazovka skenování je zachycena na obrázku~\ref{fig:scanning-page}.
+Inventurní postup je vizualizován kruhovým ukazatelem průběhu (počet naskenovaných karet z~celkového počtu v~daném umístění), který vykresluje vlastní komponenta \texttt{CircularInventoryProgressView}. Celá obrazovka skenování je zachycena na obrázku~\ref{fig:scanning-page}.
 
 \begin{figure}[H]
 	\centering
@@ -1195,8 +1213,7 @@ Opakované naskenování téže karty aktualizuje existující záznam díky str
 
 \subsection{Synchronizace se serverem}
 
-Synchronizace probíhá na explicitní pokyn uživatele prostřednictvím fragmentu
-\mbox{\texttt{DataTransferFragment}} (viz obrázek~\ref{fig:data-transfer-page}). Komunikaci mezi mobilní aplikací a~serverem znázorňuje sekvenční diagram~\ref{fig:sequence-sync}. Celý proces orchestruje třída \mbox{\texttt{DataSyncRepository}}, přičemž databáze je implementována jako singleton sdílený napříč celou aplikací:
+Synchronizace dat probíhá na explicitní pokyn uživatele (viz obrázek~\ref{fig:data-transfer-page}). Komunikaci znázorňuje sekvenční diagram~\ref{fig:sequence-sync}. Celý proces orchestruje třída \texttt{DataSyncRepository}; databáze je implementována jako singleton sdílený napříč aplikací:
 
 \begin{figure}[H]
 	\centering
@@ -1244,7 +1261,7 @@ Odeslání inventury serializuje záznamy do JSON s~časovými razítky ve form�
 
 \subsection{Bezpečnost mobilní aplikace}
 
-Šifrování AES-256-GCM pro hodnoty a~AES-256-SIV pro klíče zajišťuje třída \mbox{\texttt{EncryptedSharedPreferences}}, ve~které jsou uloženy autentizační tokeny:
+Šifrování AES-256-GCM pro hodnoty a~AES-256-SIV pro klíče zajišťuje třída \texttt{EncryptedSharedPreferences}, ve~které jsou uloženy autentizační tokeny:
 
 \begin{listing}[H]
 \caption{Inicializace šifrovaného úložiště}\label{lst:tokenstorage}

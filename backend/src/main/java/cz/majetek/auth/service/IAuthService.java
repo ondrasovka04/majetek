@@ -66,4 +66,13 @@ public interface IAuthService {
      * @throws BadCredentialsException   if the current password does not match the stored password
      */
     UserDto changePassword(ChangePasswordRequest changePasswordRequest);
+
+    /**
+     * Saves the JTI (unique identifier) of a newly issued refresh token.
+     * Used for token rotation – only the most recent refresh token is accepted.
+     *
+     * @param username the username whose refresh JTI to update
+     * @param jti      the JWT ID of the new refresh token
+     */
+    void saveRefreshJti(String username, String jti);
 } 

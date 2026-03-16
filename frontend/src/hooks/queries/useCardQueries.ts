@@ -32,7 +32,7 @@ export function useCardDetail(cardId: string | undefined) {
   return useQuery({
     queryKey: ["card", cardId],
     queryFn: () => getCardById(cardId!),
-    enabled: !!cardId && cardId !== "NEW",
+    enabled: !!cardId,
   });
 }
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Provider for JWT token operations.
@@ -113,6 +114,7 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + refreshExpirationInMs);
         return Jwts.builder()
                 .subject(username)
+                .id(UUID.randomUUID().toString())
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(refreshKey)
@@ -141,6 +143,18 @@ public class JwtTokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
         return claims.getSubject();
+    }
+
+    /**
+     * Extract JTI (unique identifier) from refresh token.
+     */
+    public String getJtiFromRefreshToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(refreshKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.getId();
     }
 
     /**
