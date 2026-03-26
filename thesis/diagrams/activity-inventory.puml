@@ -21,8 +21,8 @@ repeat
     :Naskenovat čárový kód majetku;
     note right: Číselné ID = karta
     :Uložit záznam auditu\n(karta, umístění, čas)\ndo Room databáze;
-  repeat while (Naskenovány všechny\nmajetky v dané\nmístnosti?) is (Ne) not (Ano)
-repeat while (Naskenováno vše\nve všech\nmístnostech?) is (Ne) not (Ano)
+  repeat while (Naskenovány všechny\nmajetky v dané\nmístnosti?) is ([Ne]) not ([Ano])
+repeat while (Naskenováno vše\nve všech\nmístnostech?) is ([Ne]) not ([Ano])
 
 :Nahrát inventurní data\nna server (POST);
 
@@ -44,18 +44,19 @@ note right
 end note
 
 repeat
-  if (Status karty?) then (CORRECT)
+  switch (Status karty?)
+  case ( [CORRECT])
     :Akce = KEEP\n(zamčeno);
-  elseif (WARN) then
+  case (        [WARN])
     :Zvolit akci:\nSkutečné umístění /\nOčekávané umístění /\nVyřadit;
-  else (WRONG)
+  case ( [WRONG])
     :Zvolit akci:\nOčekávané umístění /\nVyřadit;
-  endif
-  if (Akce = Vyřadit?) then (Ano)
+  endswitch
+  if (Akce = Vyřadit?) then ([Ano])
     :Vyplnit datum\na způsob vyřazení;
-  else (Ne)
+  else ([Ne])
   endif
-repeat while (Všechny WRONG mají akci?\nVšechny vyřazené mají\ndatum a způsob?) is (Ne) not (Ano)
+repeat while (Všechny WRONG mají akci?\nVšechny vyřazené mají\ndatum a způsob?) is ([Ne]) not ([Ano])
 
 
 :Promítnout změny\ndo databáze;

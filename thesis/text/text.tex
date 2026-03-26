@@ -40,7 +40,7 @@
 %---------------------------------------------------------------
 
 \begin{chapterabstract}
-	Kapitola definuje funkční a~nefunkční požadavky na vyvíjený systém. Požadavky vycházejí ze~zadání práce, z~potřeb cílové organizace a~z~analýzy existujících řešení.
+	Kapitola definuje funkční a~obecné požadavky na vyvíjený systém. Požadavky vycházejí ze~zadání práce, z~potřeb cílové organizace a~z~analýzy existujících řešení.
 \end{chapterabstract}
 
 Systém byl vyvíjen jako zakázka pro konkrétní základní školu, která dosud evidovala majetek v~tabulkových procesorech bez systematické inventarizace. Požadavky byly stanoveny na základě konzultací s~budoucími uživateli systému (účetní a~hospodářka školy) a~průběžně upřesňovány během vývoje.
@@ -70,18 +70,18 @@ Majetková karta je základní datová jednotka systému. Každá karta reprezen
 \caption{Funkční požadavky -- evidence majetkových karet}\label{tab:freq-cards}
 \end{table}
 
-\subsection{Správa slovníků}
+\subsection{Správa číselníků}
 
-Slovníky (číselníky) definují přípustné hodnoty pro atributy majetkových karet. Systém pracuje s~pěti slovníky: umístění (místnosti), skupiny majetku, třídy majetku, způsoby pořízení a~způsoby vyřazení.
+Číselníky definují přípustné hodnoty pro atributy majetkových karet. Systém pracuje s~pěti číselníky: umístění (místnosti), skupiny majetku, třídy majetku, způsoby pořízení a~způsoby vyřazení.
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
-	F-08 & Systém umožní vytvořit, přejmenovat a~smazat položku v~každém z~pěti slovníků (umístění, skupiny, třídy, způsoby pořízení, způsoby vyřazení). \tabularnewline
-	F-09 & Systém umožní pro slovník umístění vytisknout etiketu s~identifikačním kódem místnosti. \tabularnewline
+	F-08 & Systém umožní vytvořit, přejmenovat a~smazat položku v~každém z~pěti číselníků (umístění, skupiny, třídy, způsoby pořízení, způsoby vyřazení). \tabularnewline
+	F-09 & Systém umožní pro číselník umístění vytisknout etiketu s~identifikačním kódem místnosti. \tabularnewline
 \end{tabular}
-\caption{Funkční požadavky -- správa slovníků}\label{tab:freq-dictionaries}
+\caption{Funkční požadavky -- správa číselníků}\label{tab:freq-dictionaries}
 \end{table}
 
 \subsection{Generování a~tisk etiket}
@@ -94,7 +94,7 @@ Etikety s~Data Matrix kódy slouží k~fyzické identifikaci majetku a~místnost
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
 	F-10 & Systém umožní generovat ZPL etikety s~Data Matrix kódem pro majetkové karty. Etiketa obsahuje identifikátor karty, název majetku a~název organizace. \tabularnewline
 	F-11 & Systém umožní hromadný tisk etiket pro vybrané karty majetku. \tabularnewline
-	F-12 & Systém umožní generovat ZPL etikety pro místnosti (slovník umístění). \tabularnewline
+	F-12 & Systém umožní generovat ZPL etikety pro místnosti (číselník umístění). \tabularnewline
 \end{tabular}
 \caption{Funkční požadavky -- generování a~tisk etiket}\label{tab:freq-labels}
 \end{table}
@@ -126,9 +126,8 @@ Inventura je klíčový proces, při kterém se ověřuje skutečný stav majetk
 	F-17 & Mobilní aplikace umožní stáhnout aktuální data karet a~lokací ze~serveru do~lokální databáze. \tabularnewline
 	F-18 & Mobilní aplikace umožní skenovat Data Matrix kódy místností a~majetkových karet pomocí hardwarové čtečky. \tabularnewline
 	F-19 & Mobilní aplikace umožní zaznamenat dvojici \uv{karta -- skutečné umístění} s~časovým razítkem. Opakované skenování téže karty aktualizuje existující záznam. \tabularnewline
-	F-20 & Mobilní aplikace umožní pracovat offline -- veškerá data jsou ukládána do~lokální databáze a~synchronizována se~serverem na vyžádání. \tabularnewline
-	F-21 & Mobilní aplikace umožní nahrát nasbíraná inventurní data na server. \tabularnewline
-	F-22 & Mobilní aplikace umožní ověřit evidované umístění karty naskenováním jejího kódu -- systém zobrazí detail karty a~porovná evidované umístění se~skutečným. \tabularnewline
+	F-20 & Mobilní aplikace umožní nahrát nasbíraná inventurní data na server. \tabularnewline
+	F-21 & Mobilní aplikace umožní ověřit evidované umístění karty naskenováním jejího kódu -- systém zobrazí detail karty a~porovná evidované umístění se~skutečným. \tabularnewline
 \end{tabular}
 \caption{Funkční požadavky -- inventura (mobilní aplikace)}\label{tab:freq-inventory-mobile}
 \end{table}
@@ -137,10 +136,10 @@ Inventura je klíčový proces, při kterém se ověřuje skutečný stav majetk
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
-	F-23 & Webová aplikace umožní zobrazit přehled naskenovaných položek s~časem skenování. \tabularnewline
-	F-24 & Webová aplikace umožní zobrazit rozdíly mezi evidovaným a~skutečným umístěním majetku s~barevným rozlišením stavů (shodné, odlišné umístění, nenaskenováno). \tabularnewline
-	F-25 & Webová aplikace umožní u~každé karty s~nesouladem zvolit akci: přijmout skutečné umístění, ponechat evidované umístění, nebo majetek vyřadit. U~karet se~shodným umístěním lze rovněž zvolit vyřazení. \tabularnewline
-	F-26 & Webová aplikace umožní po~potvrzení uživatelem promítnout zvolené akce do~databáze (aktualizace umístění, vyřazení majetku). \tabularnewline
+	F-22 & Webová aplikace umožní zobrazit přehled naskenovaných položek s~časem skenování. \tabularnewline
+	F-23 & Webová aplikace umožní zobrazit rozdíly mezi evidovaným a~skutečným umístěním majetku s~barevným rozlišením stavů (shodné, odlišné umístění, nenaskenováno). \tabularnewline
+	F-24 & Webová aplikace umožní u~každé karty s~nesouladem zvolit akci: přijmout skutečné umístění, ponechat evidované umístění, nebo majetek vyřadit. U~karet se~shodným umístěním lze rovněž zvolit vyřazení. \tabularnewline
+	F-25 & Webová aplikace umožní po~potvrzení uživatelem promítnout zvolené akce do~databáze (aktualizace umístění, vyřazení majetku). \tabularnewline
 \end{tabular}
 \caption{Funkční požadavky -- inventura (vyhodnocení)}\label{tab:freq-inventory-web}
 \end{table}
@@ -152,37 +151,37 @@ Inventura je klíčový proces, při kterém se ověřuje skutečný stav majetk
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
-	F-27 & Systém umožní přihlášení uživatele pomocí uživatelského jména a~hesla. \tabularnewline
-	F-28 & Systém umožní přihlášenému uživateli změnit vlastní heslo. \tabularnewline
-	F-29 & Administrátor může vytvářet nové uživatelské účty. Běžní uživatelé tuto možnost nemají. \tabularnewline
+	F-26 & Systém umožní přihlášení uživatele pomocí uživatelského jména a~hesla. \tabularnewline
+	F-27 & Systém umožní přihlášenému uživateli změnit vlastní heslo. \tabularnewline
+	F-28 & Administrátor může vytvářet nové uživatelské účty. Běžní uživatelé tuto možnost nemají. \tabularnewline
 \end{tabular}
 \caption{Funkční požadavky -- správa uživatelů}\label{tab:freq-users}
 \end{table}
 
 %---------------------------------------------------------------
 \clearpage
-\section{Nefunkční požadavky}
+\section{Obecné požadavky}
 %---------------------------------------------------------------
 
-Nefunkční požadavky definují kvalitativní vlastnosti systému -- jak se systém chová, nikoliv co dělá. Jsou klíčové pro použitelnost a~spolehlivost řešení v~reálném provozu.
+Obecné požadavky definují kvalitativní vlastnosti systému -- jak se systém chová, nikoliv co dělá. Jsou klíčové pro použitelnost a~spolehlivost řešení v~reálném provozu.
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{l|l|p{8.4cm}}
 	\textbf{ID} & \textbf{Kategorie} & \textbf{Popis požadavku} \tabularnewline \hline
-	N-01 & Bezpečnost & Komunikace mezi klientem a~serverem je šifrována prostřednictvím HTTPS. \tabularnewline
-	N-02 & Bezpečnost & Autentizace je realizována pomocí JWT tokenů s~omezenou dobou platnosti. Refresh token je přenášen výhradně v~\texttt{httpOnly} cookie. \tabularnewline
-	N-03 & Bezpečnost & Na mobilním zařízení jsou autentizační tokeny uloženy v~šifrovaném úložišti. \tabularnewline
-	N-04 & Bezpečnost & Přístup k~API vyžaduje platný JWT token. Registrace nových uživatelů je omezena na roli administrátora. \tabularnewline
-	N-05 & Použitelnost & Webová aplikace je přístupná z~libovolného standardního webového prohlížeče bez instalace dalšího software. \tabularnewline
-	N-06 & Použitelnost & Veškeré texty uživatelského rozhraní jsou v~českém jazyce. \tabularnewline
-	N-07 & Offline režim & Mobilní aplikace pracuje bez připojení k~síti. Data jsou synchronizována se~serverem na explicitní pokyn uživatele. \tabularnewline
-	N-08 & Kompatibilita & Mobilní aplikace je kompatibilní se~zařízeními Zebra s~operačním systémem Android. Vstup z~hardwarového skeneru je zpracován jako klávesnicové události. \tabularnewline
-	N-09 & Udržovatelnost & Zdrojový kód backendu je pokryt automatickými testy s~pokrytím řádků alespoň 80\,\% a~pokrytím větví alespoň 75\,\%. \tabularnewline
-	N-10 & Udržovatelnost & Projekt využívá průběžnou integraci (CI) se~statickou analýzou kódu. \tabularnewline
-	N-11 & Nasaditelnost & Backend, frontend i~databáze jsou nasaditelné na~linuxovém VPS serveru. Android aplikace je distribuována jako APK soubor. \tabularnewline
+	O-01 & Bezpečnost & Komunikace mezi klientem a~serverem je šifrována prostřednictvím HTTPS. \tabularnewline
+	O-02 & Bezpečnost & Autentizace je realizována pomocí JWT tokenů s~omezenou dobou platnosti. Refresh token je přenášen výhradně v~\texttt{httpOnly} cookie. \tabularnewline
+	O-03 & Bezpečnost & Na mobilním zařízení jsou autentizační tokeny uloženy v~šifrovaném úložišti. \tabularnewline
+	O-04 & Bezpečnost & Přístup k~API vyžaduje platný JWT token. Registrace nových uživatelů je omezena na roli administrátora. \tabularnewline
+	O-05 & Použitelnost & Webová aplikace je přístupná z~libovolného standardního webového prohlížeče bez instalace dalšího software. \tabularnewline
+	O-06 & Použitelnost & Veškeré texty uživatelského rozhraní jsou v~českém jazyce. \tabularnewline
+	O-07 & Offline režim & Mobilní aplikace pracuje bez připojení k~síti. Veškerá data jsou ukládána do~lokální databáze a~synchronizována se~serverem na explicitní pokyn uživatele. \tabularnewline
+	O-08 & Kompatibilita & Mobilní aplikace je kompatibilní se~zařízeními Zebra s~operačním systémem Android. Vstup z~hardwarového skeneru je zpracován jako klávesnicové události. \tabularnewline
+	O-09 & Udržovatelnost & Zdrojový kód backendu je pokryt automatickými testy s~pokrytím řádků alespoň 80\,\% a~pokrytím větví alespoň 75\,\%. \tabularnewline
+	O-10 & Udržovatelnost & Projekt využívá průběžnou integraci (CI) se~statickou analýzou kódu. \tabularnewline
+	O-11 & Nasaditelnost & Backend, frontend i~databáze jsou nasaditelné na~linuxovém VPS serveru. Android aplikace je distribuována jako APK soubor. \tabularnewline
 \end{tabular}
-\caption{Nefunkční požadavky}\label{tab:nfreq}
+\caption{Obecné požadavky}\label{tab:nfreq}
 \end{table}
 
 %---------------------------------------------------------------
@@ -200,89 +199,80 @@ Systém rozlišuje dva typy uživatelů (aktérů):
 	\caption{Diagram případů užití}\label{fig:use-case-diagram}
 \end{figure}
 
-Diagram případů užití je znázorněn na obrázku~\ref{fig:use-case-diagram}. Následující podsekce popisují klíčové scénáře použití systému.
+Diagram případů užití je znázorněn na obrázku~\ref{fig:use-case-diagram}. Následující podsekce popisují klíčové scénáře. U~všech scénářů se předpokládá, že uživatel je přihlášen.
 
 \subsection{Správa majetkové karty}
 
+\textbf{Cíl:} Vytvořit, upravit nebo duplikovat majetkovou kartu v~evidenci.
+
 \begin{enumerate}
-	\item Uživatel se přihlásí do webové aplikace.
 	\item Systém zobrazí seznam majetkových karet v~levém panelu.
 	\item Uživatel klikne na tlačítko pro vytvoření nové karty.
 	\item Systém zobrazí formulář s~povinnými poli (název, umístění, skupina, datum pořízení) a~volitelnými poli.
 	\item Uživatel vyplní údaje a~potvrdí uložení.
-	\item Systém validuje vstup, vytvoří kartu a~zobrazí ji v~seznamu.
+	\item Systém ověří správnost zadaných dat (povinná pole, formáty) a~vytvoří kartu.
 \end{enumerate}
 
 \textit{Alternativní scénář:} Uživatel vybere existující kartu ze~seznamu, upraví její atributy a~uloží změny. Pro rychlé zadávání podobného majetku může existující kartu duplikovat.
 
 \subsection{Tisk etiket}
 
+\textbf{Cíl:} Vytisknout etikety s~Data Matrix kódy pro vybrané karty majetku nebo místnosti.
+
 \begin{enumerate}
-	\item Uživatel na stránce majetkových karet vyhledá požadované karty pomocí fulltextového vyhledávání nebo filtrů.
-	\item Uživatel klikne na tlačítko tisku.
-	\item Systém vygeneruje ZPL etikety pro viditelné karty a~odešle je na tiskárnu Zebra prostřednictvím cloudového tisku, případně nabídne ke~stažení jako \texttt{.zpl} soubor, který lze využít pro lokální tisk na tiskárně Zebra.
+	\item Uživatel vyhledá požadované karty pomocí fulltextového vyhledávání nebo filtrů a~klikne na tlačítko tisku.
+	\item Systém vygeneruje ZPL etikety a~odešle je na tiskárnu Zebra prostřednictvím cloudového tisku, případně nabídne ke~stažení jako \texttt{.zpl} soubor pro lokální tisk.
 	\item Uživatel nalepí vytištěné etikety na příslušné položky majetku. Etikety místností se lepí na zárubně dveří.
 \end{enumerate}
 
-\subsection{Provedení inventury}
+\subsection{Sběr inventurních dat}
 
-Inventura je hlavní proces systému a~probíhá ve~třech fázích.
+\textbf{Cíl:} Zaznamenat skutečné umístění majetku v~terénu pomocí mobilní aplikace.
 
-\medskip\medskip
-\textbf{Fáze 1 -- Příprava (mobilní aplikace):}
 \begin{enumerate}
-	\item Pracovník spustí mobilní aplikaci na zařízení Zebra.
-	\item Pracovník ověří připojení k~síti a~stáhne aktuální data ze~serveru.
-	\item Aplikace stáhne karty a~umístění do~lokální databáze.
-\end{enumerate}
-
-\medskip
-\textbf{Fáze 2 -- Sběr dat v~terénu (mobilní aplikace, offline):}
-\begin{enumerate}
-	\item Pracovník přejde na obrazovku inventurního snímání.
+	\item Pracovník stáhne aktuální data ze~serveru do~lokální databáze mobilní aplikace.
 	\item Pracovník naskenuje Data Matrix kód místnosti -- systém nastaví aktuální umístění.
-	\item Pracovník postupně skenuje kódy majetku v~dané místnosti.
-	\item U~každé naskenované karty systém zobrazí detail a~barevně signalizuje, zda karta evidenčně patří do~aktuálního umístění (zelená), jiného umístění (oranžová), nebo nebyla v~databázi nalezena (červená).
-	\item Systém průběžně zobrazuje postup inventury (poměr naskenovaných a~celkových karet pro dané umístění i~celkově).
-	\item Po dokončení místnosti pracovník opustí umístění a~přejde do~dalšího.
+	\item Pracovník postupně skenuje kódy majetku v~dané místnosti. U~každé naskenované karty systém barevně signalizuje, zda karta evidenčně patří do~aktuálního umístění (zelená), jiného umístění (oranžová), nebo nebyla v~databázi nalezena (červená).
+	\item Po dokončení místnosti pracovník přejde do~další a~opakuje kroky 2--3.
+	\item Po dokončení sběru pracovník nahraje inventurní data na server.
 \end{enumerate}
 
-\medskip
-\textbf{Fáze 3 -- Vyhodnocení (webová aplikace):}
+\subsection{Vyhodnocení inventury}
+
+\textbf{Cíl:} Porovnat evidovaný stav majetku se skutečným a~promítnout změny do~databáze.
+
 \begin{enumerate}
-	\item Pracovník nahraje inventurní data z~mobilní aplikace na server.
-	\item Uživatel otevře stránku inventurních rozdílů ve~webové aplikaci.
 	\item Systém zobrazí seznam všech karet s~barevným rozlišením:
 	\begin{itemize}
 		\item \textit{Shodné} (zelená) -- evidované umístění odpovídá skutečnosti.
-		\item \textit{Upozornění} (oranžová) -- karta nalezena na jiném umístění, než je evidována.
+		\item \textit{Upozornění} (oranžová) -- karta nalezena na jiném umístění.
 		\item \textit{Chybné} (červená) -- karta nebyla při inventuře naskenována.
 	\end{itemize}
 	\item U~karet se~stavem \uv{upozornění} uživatel zvolí: přijmout skutečné umístění, ponechat evidované, nebo majetek vyřadit. U~karet se~stavem \uv{chybné} lze ponechat evidované umístění nebo majetek vyřadit. U~shodných karet lze rovněž zvolit vyřazení.
 	\item Po rozhodnutí u~všech karet s~nesouladem uživatel potvrdí promítnutí změn.
-	\item Systém aplikuje zvolené akce do~databáze.
+	\item Systém ověří, že každá karta se~stavem \uv{chybné} má zvolenou akci a~každá vyřazovaná karta má vyplněné datum a~způsob vyřazení. Poté aplikuje změny do~databáze.
 \end{enumerate}
 
 \subsection{Generování reportů}
 
+\textbf{Cíl:} Vygenerovat přehledovou sestavu majetku pro potřeby účetnictví.
+
 \begin{enumerate}
-	\item Uživatel přejde na stránku sestav.
-	\item Uživatel zvolí typ sestavy: podle skupiny majetku, podle místnosti, nebo pro konkrétní kartu.
-	\item Uživatel vyplní parametry (výběr skupiny/místnosti/karty, případně datum).
+	\item Uživatel zvolí typ sestavy (podle skupiny majetku, podle místnosti, nebo pro konkrétní kartu) a~vyplní parametry.
 	\item Systém vygeneruje PDF dokument a~zobrazí jej přímo v~prohlížeči.
 	\item Uživatel si může sestavu stáhnout nebo vytisknout.
 \end{enumerate}
 
 
 %---------------------------------------------------------------
-\chapter{Analýza a~volba technologií}
+\chapter{Volba technologií}
 %---------------------------------------------------------------
 
 \begin{chapterabstract}
-	Tato kapitola srovnává technologie a~frameworky vhodné pro implementaci jednotlivých částí aplikace. Pro každou vrstvu (backend, frontend, mobilní aplikace) je provedena analýza dostupných alternativ s~vyhodnocením výhod a~nevýhod. Kapitola je zakončena přehledem dalších klíčových knihoven použitých v~projektu.
+	Tato kapitola srovnává technologie a~frameworky vhodné pro implementaci jednotlivých částí aplikace. Pro každou vrstvu (backend, frontend, mobilní aplikace) jsou porovnány dostupné alternativy s~vyhodnocením výhod a~nevýhod. Kapitola je zakončena přehledem dalších klíčových knihoven použitých v~projektu.
 \end{chapterabstract}
 
-Vyvíjený systém se skládá ze tří hlavních komponent: serverové části (backend), webové aplikace (frontend) a~mobilní aplikace pro inventuru (Android). Každá z~těchto komponent vyžaduje volbu vhodné technologie, přičemž je nutné zohlednit vzájemnou kompatibilitu a~dostupnost knihoven. Při volbě technologií byla zohledněna i~předchozí zkušenost autora, která umožnila efektivní vývoj.
+Vyvíjený systém se skládá ze tří hlavních komponent: serverové části (backend), webové aplikace (frontend) a~mobilní aplikace pro inventuru (Android). Každá z~těchto komponent vyžaduje volbu vhodné technologie, přičemž je nutné zohlednit vzájemnou kompatibilitu a~dostupnost knihoven. Všechny zvažované technologie jsou open-source a~bezplatné. Při volbě byla zohledněna i~předchozí zkušenost autora, která umožnila efektivní vývoj.
 
 %---------------------------------------------------------------
 \section{Backend}
@@ -302,7 +292,7 @@ Nevýhodou Spring Boot je vyšší paměťová náročnost typická pro aplikace
 
 NestJS~\cite{nestjs} je Node.js framework nabízející modulární architekturu inspirovanou Angularem, vestavěný systém Dependency Injection a~podporu TypeScriptu jako prvotřídního jazyka. Je postaven nad minimalistickým Express.js~\cite{expressjs}, ale na rozdíl od něj poskytuje kompletní strukturu aplikace. Pro práci s~databází lze využít TypeORM nebo Prisma.
 
-Hlavní výhodou je možnost sdílení TypeScriptových typů mezi backendem a~frontendem. Nevýhodou je méně zralý ekosystém pro enterprise aplikace -- například absence nativního ORM srovnatelného s~JPA a~menší nabídka knihoven pro generování PDF, Excelu či ZPL etiket.
+Hlavní výhodou je možnost sdílení TypeScriptových typů mezi backendem a~frontendem. Pro tento projekt je nevýhodou absence knihoven srovnatelných s~iText (generování PDF) a~EasyExcel (export do XLSX) v~ekosystému Node.js -- dostupné alternativy (např.\ PDFKit, ExcelJS) nenabízejí stejnou úroveň podpory pro složitější tabulkové reporty a~lokalizaci.
 
 \subsection{Django (Python)}
 
@@ -339,7 +329,7 @@ Pro implementaci backendu byl zvolen \textbf{Spring Boot} z~následujících dů
 \section{Frontend}
 %---------------------------------------------------------------
 
-Webová aplikace slouží jako hlavní rozhraní pro správu majetkových karet, slovníků, uživatelů a~vyhodnocení inventurních dat. Jedná se o~jednostránkovou aplikaci (SPA) komunikující s~backendem prostřednictvím REST API. Pro její implementaci byly zvažovány tři přední JavaScriptové technologie.
+Webová aplikace slouží jako hlavní rozhraní pro správu majetkových karet, číselníků, uživatelů a~vyhodnocení inventurních dat. Jedná se o~jednostránkovou aplikaci (SPA) komunikující s~backendem prostřednictvím REST API. Pro její implementaci byly zvažovány tři přední JavaScriptové technologie.
 
 \subsection{React}
 
@@ -380,7 +370,7 @@ Tabulka~\ref{tab:frontend-comparison} shrnuje srovnání analyzovaných frontend
 Pro implementaci frontendu byla zvolena knihovna \textbf{React} společně s~jazykem
 \textbf{TypeScript}~\cite{typescript} z~následujících důvodů:
 \begin{itemize}
-	\item Největší ekosystém UI knihoven -- MUI~\cite{mui} poskytuje hotové komponenty odpovídající Material Design, včetně tabulek, dialogů a~formulářových prvků potřebných pro administrační rozhraní.
+	\item Největší ekosystém UI knihoven -- MUI~\cite{mui} poskytuje hotové komponenty odpovídající Material Design, včetně tabulek, dialogů a~formulářových prvků potřebných pro správu dat.
 	\item Flexibilita při výběru knihoven -- možnost zvolit optimální nástroj pro každou oblast (TanStack Query pro data fetching, React Hook Form + Zod pro formuláře, Zustand pro globální stav).
 \end{itemize}
 
@@ -441,15 +431,15 @@ Pro implementaci mobilní aplikace byl zvolen \textbf{nativní Android v~Javě} 
 \section{Databázový systém}
 %---------------------------------------------------------------
 
-Systém využívá relační databázi pro ukládání majetkových karet, slovníků, uživatelů a~inventurních záznamů. Na mobilním zařízení je navíc potřeba lokální databáze pro offline režim. Pro produkční nasazení byly zvažovány dva databázové systémy.
+Systém využívá relační databázi pro ukládání majetkových karet, číselníků, uživatelů a~inventurních záznamů. Na mobilním zařízení je navíc potřeba lokální databáze pro offline režim. Pro produkční nasazení byly zvažovány dva databázové systémy.
 
 \subsection{PostgreSQL}
 
 PostgreSQL~\cite{postgresql} je objektově-relační databázový systém s~více než 35 lety aktivního vývoje. Nabízí podporu komplexních datových typů (JSONB, pole), fulltextové vyhledávání, rozšiřitelnost prostřednictvím vlastních funkcí (např.\ \texttt{unaccent} pro vyhledávání bez diakritiky) a~vysokou spolehlivost.
 
-\subsection{MySQL}
+\subsection{MySQL / MariaDB}
 
-MySQL~\cite{mysql} je nejrozšířenější open-source relační databáze s~širokou podporou u~hostingových poskytovatelů. Pro účely tohoto projektu by MySQL poskytoval dostatečnou funkčnost -- oba systémy pokrývají potřeby aplikace. PostgreSQL byl zvolen díky lepší integraci se Spring Data JPA (podpora funkce \texttt{unaccent} pro fulltextové vyhledávání bez diakritiky) a~předchozí zkušenosti autora.
+MySQL~\cite{mysql} je nejrozšířenější open-source relační databáze s~širokou podporou u~hostingových poskytovatelů. MariaDB~\cite{mariadb} je komunitní fork MySQL se zpětnou kompatibilitou, který MySQL v~open-source prostředí postupně nahrazuje. Pro účely tohoto projektu by oba systémy poskytovaly dostatečnou funkčnost. PostgreSQL byl zvolen díky podpoře funkce \texttt{unaccent} pro vyhledávání bez diakritiky a~předchozí zkušenosti autora.
 
 \subsection{H2 a~Room}
 
@@ -459,7 +449,7 @@ Na mobilním zařízení je využita knihovna \textbf{Room}~\cite{androidroom} j
 
 \subsection{Zdůvodnění volby}
 
-Pro produkční nasazení byl zvolen \textbf{PostgreSQL} díky zralosti, spolehlivosti a~výborné integraci se Spring Data JPA. Kombinace PostgreSQL (produkce), H2 (testy) a~Room/SQLite (mobilní zařízení) pokrývá potřeby všech tří prostředí.
+Pro produkční nasazení byl zvolen \textbf{PostgreSQL} díky zralosti, spolehlivosti a~výborné integraci se Spring Data JPA. Všechny zvažované databázové systémy jsou open-source a~bezplatné, takže náklady na licence nebyly rozhodovacím faktorem. Kombinace PostgreSQL (produkce), H2 (testy) a~Room/SQLite (mobilní zařízení) pokrývá potřeby všech tří prostředí.
 
 
 %---------------------------------------------------------------
@@ -501,7 +491,7 @@ Systém se skládá ze tří hlavních komponent, které spolu komunikují prost
 
 \begin{itemize}
 	\item \textbf{Backend} -- serverová aplikace (Spring Boot) poskytující REST API, business logiku, generování exportů a~přístup k~databázi PostgreSQL. Backend je nasazen na linuxovém VPS serveru za reverse proxy Nginx.
-	\item \textbf{Frontend} -- jednostránková webová aplikace (React), která slouží jako administrační rozhraní. Komunikuje výhradně s~backendem prostřednictvím REST API.
+	\item \textbf{Frontend} -- jednostránková webová aplikace (React) pro správu majetku, uživatelů a~vyhodnocení inventury. Komunikuje výhradně s~backendem prostřednictvím REST API.
 	\item \textbf{Mobilní aplikace} -- nativní Android aplikace pro inventuru v~terénu. Disponuje vlastní lokální databází (Room/SQLite) pro offline režim a~se serverem se synchronizuje na vyžádání.
 \end{itemize}
 
@@ -516,7 +506,7 @@ Frontend ani mobilní aplikace spolu přímo nekomunikují -- veškerá výměna
 \section{Architektura backendu}\label{sec:backend-arch}
 %---------------------------------------------------------------
 
-Backend je organizován jako modulární monolitická aplikace -- každá doménová oblast (karty majetku, autentizace, slovníky, inventurní audit, přílohy) má vlastní balíček obsahující celý vertikální řez od kontroleru po repozitář. Tento přístup byl zvolen oproti klasickému vrstvovému uspořádání (všechny kontrolery v~jednom balíčku, všechny služby v~druhém), protože drží související kód pohromadě a~usnadňuje orientaci v~projektu -- při práci na konkrétní funkčnosti není nutné přecházet mezi vzdálenými částmi stromu zdrojových souborů.
+Backend je organizován jako modulární monolitická aplikace -- každá doménová oblast (karty majetku, autentizace, číselníky, inventurní audit, přílohy) má vlastní balíček obsahující celý vertikální řez od kontroleru po repozitář. Tento přístup byl zvolen oproti klasickému vrstvovému uspořádání (všechny kontrolery v~jednom balíčku, všechny služby v~druhém), protože drží související kód pohromadě a~usnadňuje orientaci v~projektu -- při práci na konkrétní funkčnosti není nutné přecházet mezi vzdálenými částmi stromu zdrojových souborů.
 
 \subsection{Vrstvená architektura}
 
@@ -539,11 +529,18 @@ Backend je rozdělen do následujících modulů:
 	\item \textbf{card} -- CRUD operace nad kartami majetku, filtrování, generování exportů (PDF, Excel, ZPL)
 	\item \textbf{attachment} -- správa souborových příloh ke~kartám majetku
 	\item \textbf{inventoryaudit} -- import inventurních dat z~mobilní aplikace, výpočet rozdílů, projekce změn
-	\item \textbf{dictionary} -- pět slovníkových podmodulů (umístění, skupiny, třídy, způsoby pořízení, způsoby vyřazení), každý se shodnou strukturou
+	\item \textbf{dictionary} -- pět číselníkových podmodulů (umístění, skupiny, třídy, způsoby pořízení, způsoby vyřazení), každý se shodnou strukturou
 	\item \textbf{entity} -- centralizované JPA entity sdílené napříč moduly
 	\item \textbf{exception} -- globální zpracování výjimek (\texttt{@RestControllerAdvice}). Doménové výjimky jsou převedeny na strukturované JSON odpovědi s~příslušným HTTP kódem. Na frontendu jsou chyby zobrazeny toast notifikacemi, v~mobilní aplikaci barevně odlišenými stavovými zprávami.
 	\item \textbf{config} -- konfigurace aplikace (OpenAPI dokumentace, kódování hesel)
 \end{itemize}
+
+Struktura balíčků je znázorněna na obrázku~\ref{fig:package-backend}. Všechny doménové moduly závisí na balíčku \texttt{entity}, který obsahuje sdílené JPA entity.
+
+\begin{figure}[H]\centering
+	\includegraphics[width=\textwidth]{images/package-backend.pdf}
+	\caption{Diagram balíčků backendu}\label{fig:package-backend}
+\end{figure}
 
 \subsection{Bezpečnostní model}
 
@@ -583,17 +580,15 @@ Frontend je jednostránková aplikace (SPA) v~Reactu a~TypeScriptu. Architektura
 Aplikace rozlišuje dva typy stavu:
 
 \begin{itemize}
-	\item \textbf{Serverový stav} je spravován knihovnou TanStack Query. Veškerá data z~API (karty, slovníky, inventurní záznamy) jsou cachována s~dobou platnosti dvě minuty. Mutace po úspěchu buď invalidují příslušné cache klíče (plný refetch), nebo optimisticky aktualizují cache přímo.
+	\item \textbf{Serverový stav} je spravován knihovnou TanStack Query. Veškerá data z~API (karty, číselníky, inventurní záznamy) jsou cachována s~dobou platnosti dvě minuty. Mutace po úspěchu buď invalidují příslušné cache klíče (plný refetch), nebo optimisticky aktualizují cache přímo.
 	\item \textbf{Klientský stav} je omezen na autentizační údaje (přihlášený uživatel, JWT token, expirace). Tyto údaje spravuje jediný Zustand store. Axios interceptor automaticky obnovuje vypršelý token prostřednictvím refresh endpointu před odesláním požadavku.
 \end{itemize}
 
-\subsection{Směrování a~ochrana tras}
+Všechny chráněné stránky jsou obaleny komponentou \texttt{PrivateRoute}, která ověřuje přítomnost platného JWT tokenu v~Zustand store a~nepřihlášeného uživatele přesměruje na přihlašovací stránku. Chráněné stránky jsou načítány líně (\texttt{React.lazy}) -- jejich kód se stáhne až při prvním přístupu, což zkracuje počáteční dobu načtení.
 
-Všechny chráněné stránky jsou obaleny komponentou \texttt{PrivateRoute}, která ověřuje přítomnost platného JWT tokenu v~Zustand store. Nepřihlášený uživatel je přesměrován na přihlašovací stránku. Chráněné stránky jsou načítány líně (\texttt{React.lazy}) -- jejich kód se stáhne až při prvním přístupu, což zkracuje počáteční dobu načtení aplikace.
+\subsection{Generický vzor pro číselníky}
 
-\subsection{Generický vzor pro slovníky}
-
-Pět slovníkových stránek sdílí generickou komponentu \texttt{DictionaryPage<T>}, parametrizovanou typem entity. Komponenta přijímá hooky pro query a~mutace jako vlastnosti a~vykresluje tabulku s~operacemi vytvoření, přejmenování a~smazání. Konkrétní stránky (např.\ \texttt{LocationPage}) jsou pouze wrappery, které předávají příslušné hooky a~volitelné rozšíření (např.\ tlačítko tisku etikety u~lokací).
+Pět číselníkových stránek sdílí generickou komponentu \texttt{DictionaryPage<T>}, parametrizovanou typem entity. Komponenta přijímá hooky pro query a~mutace jako vlastnosti a~vykresluje tabulku s~operacemi vytvoření, přejmenování a~smazání. Konkrétní stránky (např.\ \texttt{LocationPage}) jsou pouze wrappery, které předávají příslušné hooky a~volitelné rozšíření (např.\ tlačítko tisku etikety u~lokací).
 
 %---------------------------------------------------------------
 \section{Architektura mobilní aplikace}\label{sec:mobile-arch}
@@ -611,13 +606,9 @@ Aplikace využívá jednu \texttt{MainActivity}, která hostuje tři fragmenty p
 	\item \textbf{DataTransferFragment} -- přenos dat. Umožňuje stáhnout aktuální data ze~serveru, nahrát inventurní záznamy zpět a~konfigurovat URL serveru.
 \end{enumerate}
 
-\subsection{Lokální databáze a~offline režim}
+\subsection{Offline režim a~synchronizace}
 
-Mobilní aplikace využívá knihovnu Room jako abstrakci nad SQLite. Lokální databáze obsahuje tři tabulky: \texttt{card} (karty majetku), \texttt{location} (lokace) a~\texttt{inventory\_audit} (inventurní záznamy). Data karet a~lokací jsou stažena ze~serveru před zahájením inventury; inventurní záznamy vznikají lokálně při skenování.
-
-Tabulka \texttt{inventory\_audit} má primární klíč \texttt{card\_id} -- každá karta může mít nejvýše jeden inventurní záznam. Opakované naskenování téže karty aktualizuje existující záznam (strategie \texttt{REPLACE}).
-
-\subsection{Synchronizace se~serverem}
+Mobilní aplikace využívá knihovnu Room jako abstrakci nad SQLite. Lokální databáze obsahuje tři tabulky: \texttt{card} (karty majetku), \texttt{location} (lokace) a~\texttt{inventory\_audit} (inventurní záznamy). Data karet a~lokací jsou stažena ze~serveru před zahájením inventury; inventurní záznamy vznikají lokálně při skenování. Tabulka \texttt{inventory\_audit} má primární klíč \texttt{card\_id} -- každá karta může mít nejvýše jeden inventurní záznam. Opakované naskenování téže karty aktualizuje existující záznam (strategie \texttt{REPLACE}).
 
 Synchronizace probíhá výhradně na explicitní pokyn uživatele:
 
@@ -626,17 +617,13 @@ Synchronizace probíhá výhradně na explicitní pokyn uživatele:
 	\item \textbf{Odeslání inventury} -- aplikace načte všechny lokální inventurní záznamy, serializuje je do formátu JSON a~odešle hromadným požadavkem na server (\texttt{POST /api/inventory-audit/insert-many}).
 \end{itemize}
 
-Stažení nových dat je zablokováno, pokud v~lokální databázi existují neodeslaná inventurní data -- tím je zabráněno nechtěné ztrátě práce.
-
-\subsection{Bezpečnost na mobilním zařízení}
-
-Autentizační tokeny i~přihlašovací údaje jsou na mobilním zařízení uloženy v~šifrovaném úložišti \texttt{EncryptedSharedPreferences} (AES-256-GCM). Uživatel je zadá jednorázově v~dialogu nastavení připojení. Síťová konfigurace zakazuje nešifrovanou komunikaci (\texttt{cleartext traffic}).
+Stažení nových dat je zablokováno, pokud v~lokální databázi existují neodeslaná inventurní data -- tím je zabráněno nechtěné ztrátě práce. Autentizační tokeny i~přihlašovací údaje jsou uloženy v~šifrovaném úložišti \texttt{EncryptedSharedPreferences} (AES-256-GCM). Síťová konfigurace zakazuje nešifrovanou komunikaci (\texttt{cleartext traffic}).
 
 %---------------------------------------------------------------
 \section{Datový model}
 %---------------------------------------------------------------
 
-Datový model systému tvoří devět tabulek v~relační databázi PostgreSQL (viz obrázek~\ref{fig:er-diagram}). Centrální entitou je tabulka \texttt{card} (majetková karta), na~kterou se váží slovníkové tabulky, přílohy a~inventurní záznamy.
+Datový model systému tvoří devět tabulek v~relační databázi PostgreSQL (viz obrázek~\ref{fig:er-diagram}). Centrální entitou je tabulka \texttt{card} (majetková karta), na~kterou se váží číselníkové tabulky, přílohy a~inventurní záznamy.
 
 \begin{figure}[H]\centering
 	\includegraphics[width=\textwidth]{images/er-diagram.pdf}
@@ -645,9 +632,9 @@ Datový model systému tvoří devět tabulek v~relační databázi PostgreSQL (
 
 \subsection{Popis entit}
 
-\textbf{Card} (majetková karta) je hlavní entita systému. Identifikátor karty je celočíselný, přiřazovaný aplikační logikou. Toto číslo se tiskne na etiketu a~slouží jako inventární číslo v~účetní evidenci. Karta dále obsahuje název, cenu, množství, sériové číslo, datum pořízení, fakturu, poznámku a~vazby na slovníkové entity (umístění, třída, skupina, způsob pořízení, způsob vyřazení) a~uživatele (kdo kartu vytvořil, zodpovědná osoba).
+\textbf{Card} (majetková karta) je hlavní entita systému. Identifikátor karty je celočíselný, přiřazovaný aplikační logikou. Toto číslo se tiskne na etiketu a~slouží jako inventární číslo v~účetní evidenci. Karta dále obsahuje název, cenu, množství, sériové číslo, datum pořízení, fakturu, poznámku a~vazby na číselníkové entity (umístění, třída, skupina, způsob pořízení, způsob vyřazení) a~uživatele (kdo kartu vytvořil, zodpovědná osoba).
 
-\textbf{Slovníkové entity} (Location, AssetGroup, ClassEntity, PurchaseMethod, WriteOffMethod) sdílejí shodnou strukturu -- textový identifikátor (primární klíč) a~název. Použití přirozeného klíče (natural key) místo umělého auto-increment identifikátoru je záměrné a~inspirováno přístupem ERP systémů -- kódy zadává uživatel ručně (např.\ číslo místnosti, zkratka skupiny) a~v~celém systému se s~nimi pracuje přímo, bez nutnosti překladu přes umělé ID. Slovníkové entity definují přípustné hodnoty pro atributy majetkových karet.
+\textbf{Číselníkové entity} (Location, AssetGroup, ClassEntity, PurchaseMethod, WriteOffMethod) sdílejí shodnou strukturu -- textový identifikátor (primární klíč) a~název. Použití přirozeného klíče (natural key) místo umělého auto-increment identifikátoru je záměrné a~inspirováno přístupem ERP systémů -- kódy zadává uživatel ručně (např.\ číslo místnosti, zkratka skupiny) a~v~celém systému se s~nimi pracuje přímo, bez nutnosti překladu přes umělé ID. Číselníkové entity definují přípustné hodnoty pro atributy majetkových karet.
 
 \textbf{Attachment} (příloha) umožňuje připojit soubory ke~kartě majetku. Využívá kompozitní primární klíč složený z~identifikátoru přílohy a~identifikátoru karty.
 
@@ -672,7 +659,7 @@ Backend je implementován jako Spring Boot aplikace s~Maven build systémem a~Ja
 .1 cz.majetek.
 .2 auth\DTcomment{autentizace, JWT, Spring Security}.
 .2 card\DTcomment{CRUD karet, filtrování, exporty}.
-.2 dictionary\DTcomment{slovníky (lokace, skupiny, třídy, \ldots)}.
+.2 dictionary\DTcomment{číselníky (lokace, skupiny, třídy, \ldots)}.
 .2 inventoryaudit\DTcomment{inventurní audit}.
 .2 entity\DTcomment{JPA entity sdílené napříč moduly}.
 .2 exception\DTcomment{globální zpracování chyb}.
@@ -817,7 +804,7 @@ Metoda převádí šířku z~bodů na milimetry a~porovnává ji s~konstantou \t
 Hotové etikety jsou odeslány na tiskárnu Zebra prostřednictvím Zebra Cloud API (\texttt{POST} na \texttt{api.zebra.com}). Vzhledem k~tomu, že bezplatný tarif API umožňuje pouze 100~požadavků denně, je alternativně nabídnuto stažení ZPL souboru pro lokální tisk.
 
 \subsection{Inventurní audit}
-Inventurní audit (požadavky F-17 až F-26, viz tabulky~\ref{tab:freq-inventory-mobile} a~\ref{tab:freq-inventory-web}) je na straně backendu implementován ve~dvou fázích:
+Inventurní audit (požadavky F-17 až F-25, viz tabulky~\ref{tab:freq-inventory-mobile} a~\ref{tab:freq-inventory-web}) je na straně backendu implementován ve~dvou fázích:
 \begin{enumerate}
 	\item Import dat z~mobilní aplikace.
 	\item Vyhodnocení s~projekcí změn.
@@ -866,12 +853,12 @@ Mapper vrací tři stavy: \texttt{CORRECT} (lokace souhlasí), \texttt{WARN} (lo
 
 Endpoint \texttt{POST /api/inventory-audit/project} aplikuje rozhodnutí uživatele na databázi. Pro akci \texttt{RL} je aktualizováno umístění karty, pro \texttt{WRITE\_OFF} jsou nastaveny datum a~způsob vyřazení. Po dokončení projekce jsou inventurní záznamy smazány.
 
-\subsection{Cachování slovníků}
+\subsection{Cachování číselníků}
 
-Slovníkové entity (lokace, skupiny, třídy, způsoby pořízení a~vyřazení) se mění zřídka, ale jsou načítány při každém zobrazení formuláře nebo tabulky. Pro snížení zátěže databáze je implementováno cachování prostřednictvím Spring Cache a~knihovny Caffeine:
+Číselníkové entity (lokace, skupiny, třídy, způsoby pořízení a~vyřazení) se mění zřídka, ale jsou načítány při každém zobrazení formuláře nebo tabulky. Pro snížení zátěže databáze je implementováno cachování prostřednictvím Spring Cache a~knihovny Caffeine:
 
 \begin{listing}[H]
-\caption{Cachování slovníkových dat}\label{lst:cache}
+\caption{Cachování číselníkových dat}\label{lst:cache}
 \begin{minted}[fontsize=\small]{java}
 @Cacheable("locations")
 public List<Location> getAll() {
@@ -886,7 +873,7 @@ public Location create(Location location) {
 \end{minted}
 \end{listing}
 
-Cache je nakonfigurována s~maximální kapacitou 500 záznamů a~expirací 10 minut po zápisu. Při jakékoliv modifikaci slovníku (vytvoření, přejmenování, smazání) jsou všechny záznamy příslušné cache invalidovány anotací \texttt{@CacheEvict}.
+Cache je nakonfigurována s~maximální kapacitou 500 záznamů a~expirací 10 minut po zápisu. Při jakékoliv modifikaci číselníku (vytvoření, přejmenování, smazání) jsou všechny záznamy příslušné cache invalidovány anotací \texttt{@CacheEvict}.
 
 \subsection{Mapování DTO}
 
@@ -933,7 +920,7 @@ Frontend je vytvořen nástrojem Vite s~Reactem~19 a~TypeScriptem. Zdrojový kó
 .1 src/.
 .2 components\DTcomment{UI komponenty podle domény}.
 .3 card\DTcomment{správa karet majetku}.
-.3 dictionary\DTcomment{generické slovníkové komponenty}.
+.3 dictionary\DTcomment{generické číselníkové komponenty}.
 .3 inventoryAudit\DTcomment{vyhodnocení inventury}.
 .3 report\DTcomment{modální okna pro reporty}.
 .2 hooks/queries\DTcomment{TanStack Query hooky}.
@@ -946,7 +933,7 @@ Frontend je vytvořen nástrojem Vite s~Reactem~19 a~TypeScriptem. Zdrojový kó
 
 \subsection{Správa karet majetku}
 
-Stránka pro správu karet (požadavky F-01 až F-07, viz obrázek~\ref{fig:card-page}) využívá rozložení master-detail. Levý panel (\texttt{CardListPanel}) zobrazuje seznam karet s~fulltextovým vyhledáváním, třídění a~pokročilým filtrováním. Pravý panel zobrazuje detail vybrané karty nebo formulář pro vytvoření nové:
+Stránka pro správu karet (požadavky F-01 až F-07, viz obrázek~\ref{fig:card-page}) využívá rozložení master-detail. Levý panel (\texttt{CardListPanel}) zobrazuje seznam karet s~fulltextovým vyhledáváním, tříděním a~pokročilým filtrováním. Pravý panel zobrazuje detail vybrané karty nebo formulář pro vytvoření nové:
 
 \begin{figure}[H]
 	\centering
@@ -994,12 +981,12 @@ const CardPage = () => {
 
 Client-side vyhledávání využívá knihovnu Fuse.js pro fuzzy matching a~React hook \texttt{useDeferredValue} pro odložení vykreslení při rychlém psaní, čímž je zajištěna plynulost uživatelského rozhraní.
 
-\subsection{Generický vzor pro slovníky}
+\subsection{Generický vzor pro číselníky}
 
-Pět slovníkových stránek (lokace, skupiny, třídy, způsoby pořízení a~vyřazení) sdílí jedinou generickou komponentu \texttt{DictionaryPage<T>}. Komponenta přijímá query a~mutační hooky jako vlastnosti a~vykresluje tabulku s~operacemi vytvoření, přejmenování a~smazání:
+Pět číselníkových stránek (lokace, skupiny, třídy, způsoby pořízení a~vyřazení) sdílí jedinou generickou komponentu \texttt{DictionaryPage<T>}. Komponenta přijímá query a~mutační hooky jako vlastnosti a~vykresluje tabulku s~operacemi vytvoření, přejmenování a~smazání:
 
 \begin{listing}[H]
-\caption{Typové rozhraní generické slovníkové komponenty}\label{lst:dictprops}
+\caption{Typové rozhraní generické číselníkové komponenty}\label{lst:dictprops}
 \begin{minted}[fontsize=\small]{tsx}
 interface DictionaryPageProps<T extends DictionaryEntity> {
   readonly title: string;
@@ -1040,7 +1027,7 @@ Stránka lokací navíc přidává tlačítko tisku etikety prostřednictvím vl
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{images/location_page.png}
-	\caption{Slovníková stránka Umístění -- instance generické komponenty \texttt{DictionaryPage}}
+	\caption{Číselníková stránka Umístění -- instance generické komponenty \texttt{DictionaryPage}}
 	\label{fig:location-page}
 \end{figure}
 
@@ -1049,7 +1036,7 @@ Stránka lokací navíc přidává tlačítko tisku etikety prostřednictvím vl
 Formuláře v~aplikaci využívají knihovnu React Hook Form v~kombinaci s~validační knihovnou Zod. Validační schéma slouží zároveň jako dokumentace očekávaného formátu dat:
 
 \begin{listing}[H]
-\caption{Zod validační schéma pro slovníkový záznam}\label{lst:zodschema}
+\caption{Zod validační schéma pro číselníkový záznam}\label{lst:zodschema}
 \begin{minted}[fontsize=\small]{typescript}
 export function createDictionarySchema(maxIdLength = 20) {
   return z.object({
@@ -1070,7 +1057,7 @@ Schéma je propojeno s~formulářem prostřednictvím resolveru \texttt{zodResol
 
 \subsection{Vyhodnocení inventury}
 
-Stránka pro vyhodnocení inventury (požadavky F-23 až F-26, viz obrázek~\ref{fig:differences-page}) zobrazuje tabulku (MUI DataGrid) s~barevně odlišenými řádky podle statusu:
+Stránka pro vyhodnocení inventury (požadavky F-22 až F-25, viz obrázek~\ref{fig:differences-page}) zobrazuje tabulku (MUI DataGrid) s~barevně odlišenými řádky podle statusu:
 \begin{itemize}
 	\item zelená -- \texttt{CORRECT} (umístění souhlasí),
 	\item oranžová -- \texttt{WARN} (umístění se liší),
@@ -1175,7 +1162,7 @@ Metoda \texttt{attachScanListeners()} registruje dva listenery na vstupní pole:
 
 Naskenované kódy jsou rozlišeny podle formátu: kódy začínající prefixem \uv{L} identifikují umístění (místnost), čistě numerické kódy identifikují majetkovou kartu. Po naskenování karty aplikace vizuálně signalizuje výsledek barvou pozadí: zelená pokud je karta ve správném umístění, oranžová pokud je v~jiném umístění a~červená pokud karta nebyla nalezena v~databázi.
 
-Inventurní postup je vizualizován kruhovým ukazatelem průběhu (počet naskenovaných karet z~celkového počtu v~daném umístění), který vykresluje vlastní komponenta \texttt{CircularInventoryProgressView}. Celá obrazovka skenování je zachycena na obrázku~\ref{fig:scanning-page}.
+Inventurní postup je vizualizován dvěma kruhovými ukazateli průběhu, které vykresluje vlastní komponenta \texttt{CircularInventoryProgressView} -- levý zobrazuje poměr naskenovaných karet v~aktuálním umístění, pravý celkový postup inventury napříč všemi umístěními. Celá obrazovka skenování je zachycena na obrázku~\ref{fig:scanning-page}.
 
 \begin{figure}[H]
 	\centering
