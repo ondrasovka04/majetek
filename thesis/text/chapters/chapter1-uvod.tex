@@ -1,0 +1,23 @@
+\chapter{Úvod}
+\setcounter{page}{1}
+
+Správa majetku je nedílnou součástí provozu každé organizace. Zahrnuje evidenci hmotných položek, sledování jejich umístění, stavu a~životního cyklu od pořízení přes inventarizaci až po vyřazení. V~mnoha organizacích, zejména ve školách a~menších institucích, je tato evidence vedena v~tabulkových procesorech bez systematické podpory inventarizace.
+
+Tato práce vznikla na základě konkrétní potřeby základní školy, která dosud evidovala majetek v~tabulkách aplikace Microsoft Excel. Při tisících položek rozmístěných v~desítkách místností je ruční inventura časově náročná a~náchylná k~chybám. Škola proto hledala řešení, které by umožnilo automatizovanou inventarizaci pomocí čtečky čárových kódů, generování etiket pro označení majetku a~přehlednou správu evidence prostřednictvím webové aplikace.
+
+Cílem práce je navrhnout a~implementovat systém pro správu majetku, který splňuje následující body zadání:
+
+\begin{enumerate}
+	\item Provést rešerši existujících řešení, která se obdobnou problematikou zabývají.
+	\item Analyzovat a~popsat požadavky, které by měla nová aplikace splňovat.
+	\item Popsat architekturu aplikace a~provést její implementaci.
+	\item Implementované řešení otestovat a~připravit pro nasazení.
+\end{enumerate}
+
+Výsledný systém se skládá ze tří komponent: serverové aplikace (REST API), webové aplikace pro správu dat a~nativní mobilní aplikace pro offline inventarizaci v~terénu pomocí průmyslové čtečky Zebra.
+
+\medskip
+
+Práce je strukturována následovně. Kapitola~\ref{chap:research} analyzuje existující přístupy ke~správě majetku a~zdůvodňuje vývoj vlastního řešení. Kapitola~\ref{chap:requirements} definuje funkční a~obecné požadavky a~popisuje případy užití. Kapitola~\ref{chap:technologies} srovnává technologie a~zdůvodňuje jejich volbu. Kapitola~\ref{chap:architecture} popisuje návrh architektury systému včetně datového modelu. Kapitola~\ref{chap:implementation} se zaměřuje na klíčové implementační detaily. Kapitola~\ref{chap:testing} pokrývá testování a~nasazení do produkčního prostředí. Kapitola~\ref{chap:conclusion} shrnuje dosažené výsledky a~navrhuje možnosti dalšího rozvoje.
+
+

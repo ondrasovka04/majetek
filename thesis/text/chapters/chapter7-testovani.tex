@@ -1,0 +1,149 @@
+\chapter{Testování a~nasazení}\label{chap:testing}
+
+\begin{chapterabstract}
+	Kapitola popisuje strategii testování jednotlivých částí systému, měření pokrytí kódu, průběžnou integraci a~proces nasazení aplikace do produkčního prostředí.
+\end{chapterabstract}
+
+\section{Testování backendu}
+
+Backend je testován na třech úrovních: unit testy izolovaných komponent, testy datové vrstvy nad in-memory databází a~integrační testy celého API. Celkem obsahuje 447 testovacích metod ve~44 testovacích třídách.
+
+\subsection{Unit testy}
+
+Unit testy ověřují business logiku service vrstvy a~chování kontrolerů v~izolaci. Jsou implementovány pomocí JUnit~5 a~knihovny Mockito, která umožňuje nahradit závislosti (repozitáře, mappery) simulovanými objekty (\texttt{@Mock}).
+
+Kontrolery jsou testovány prostřednictvím \texttt{MockMvc} -- Spring testovací framework, který simuluje HTTP požadavky bez spuštění skutečného serveru. Testy ověřují správné HTTP kódy, formát odpovědí a~validaci vstupních dat. Service testy ověřují business logiku včetně chybových scénářů (neexistující entita, duplicitní identifikátor, neplatné přihlašovací údaje).
+
+\subsection{Testy datové vrstvy}
+
+Repozitáře a~JPA Specification jsou testovány anotací \texttt{@DataJpaTest}, která spouští pouze datovou vrstvu nad in-memory databází H2 v~PostgreSQL compatibility mode. Testy ověřují správnost dotazů odvozených z~názvů metod, explicitních \texttt{@Query} anotací a~dynamických predikátů ve~třídě \texttt{CardSpecification}.
+
+\subsection{Integrační testy}
+
+Integrační testy spouštějí celou Spring Boot aplikaci (\texttt{@SpringBootTest}) včetně bezpečnostní konfigurace, serializace a~databázové vrstvy. Pokrývají kompletní API flow od autentizace přes CRUD operace až po inventurní projekci. Všechny integrační testy dědí ze~společné třídy \texttt{BaseIntegrationTest}, která zajišťuje vytvoření testovacích uživatelů a~přihlášení.
+
+\subsection{Pokrytí kódu}
+
+Pokrytí kódu je měřeno nástrojem JaCoCo s~následujícími minimálními prahy:
+
+\begin{itemize}
+	\item pokrytí řádků: alespoň 80\,\%,
+	\item pokrytí větví: alespoň 75\,\%.
+\end{itemize}
+
+Z~měření jsou vyloučeny třídy, které neobsahují testovatelnou logiku: DTO, JPA entity, konfigurační třídy a~MapStruct mappery (generovaný kód). Konfigurace prahových hodnot je znázorněna ve~výpisu~\ref{lst:jacoco}. Při nesplnění build selže.
+
+\begin{listing}[H]
+\caption{Konfigurace JaCoCo -- minimální pokrytí kódu}\label{lst:jacoco}
+\begin{minted}[fontsize=\small]{xml}
+<rule>
+  <element>PACKAGE</element>
+  <limits>
+    <limit>
+      <counter>LINE</counter>
+      <value>COVEREDRATIO</value>
+      <minimum>0.80</minimum>
+    </limit>
+    <limit>
+      <counter>BRANCH</counter>
+      <value>COVEREDRATIO</value>
+      <minimum>0.75</minimum>
+    </limit>
+  </limits>
+</rule>
+\end{minted}
+\end{listing}
+
+\section{Testování frontendu}
+
+Frontend je testován knihovnou Vitest (7 testovacích souborů, 54 testovacích metod). Testy pokrývají kritickou business logiku -- utility funkce (formátování dat, české řazení, extrakce chybových hlášek), validační schémata a~vybrané React komponenty. Komponentové testy využívají \texttt{@testing-library/react} pro renderování a~simulaci uživatelských interakcí. Správnost UI komponent je dále zajištěna statickou typovou kontrolou TypeScriptu v~režimu \texttt{strict}.
+
+Statická typová kontrola prostřednictvím TypeScriptu v~režimu \texttt{strict} slouží jako doplňková vrstva ověření -- při každém buildu kompilátor zkontroluje typovou konzistenci celé aplikace.
+
+\section{Testování mobilní aplikace}
+
+Mobilní aplikace obsahuje dva typy testů:
+
+\begin{itemize}
+	\item \textbf{Unit testy} (3 soubory) -- testují síťovou komunikaci (\texttt{ApiClient\-Test} s~knihovnou MockWebServer), synchronizační logiku (\texttt{DataSync\-Repository\-Test}) a~správu konfigurace (\texttt{BaseUrl\-Storage\-Test}). Běží na JVM bez emulátoru.
+	\item \textbf{Instrumentované testy} (2 soubory) -- vyžadují prostředí Android a~běží na emulátoru nebo fyzickém zařízení. Testují Room DAO operace (\texttt{DaoTest}: vkládání, dotazování, mazání, upsert) a~šifrované úložiště (\texttt{TokenStorageTest}: ukládání a~čtení tokenů, migrace z~nešifrovaného úložiště).
+\end{itemize}
+
+Rozsah testů odpovídá jednoduchosti aplikace (jedna Activity, tři fragmenty). Uživatelské rozhraní je průběžně ověřováno manuálním testováním na cílovém zařízení Zebra TC22.
+
+\section{Průběžná integrace}
+
+Projekt využívá GitHub Actions pro automatizované sestavení, testování a~statickou analýzu kódu. Workflow \texttt{sonarcloud.yml} se spouští při každém push do větve \texttt{main} a~sestává ze~čtyř kroků:
+
+\begin{enumerate}
+	\item \textbf{Backend} -- sestavení a~spuštění testů příkazem \texttt{mvn clean verify}. Výstupem jsou zkompilované třídy, výsledky testů a~JaCoCo report.
+	\item \textbf{Android} -- sestavení a~spuštění unit testů příkazem \texttt{gradlew assembleDebug testDebugUnitTest}. Instrumentované testy vyžadující emulátor nejsou v~CI zahrnuty a~jsou spouštěny lokálně.
+	\item \textbf{Frontend} -- instalace závislostí (\texttt{npm ci}) a~spuštění testů (\texttt{npm run test}).
+	\item \textbf{SonarCloud} -- po úspěšném dokončení předchozích kroků se spustí statická analýza kódu nad všemi třemi moduly. SonarCloud vyhodnocuje kvalitu kódu, bezpečnostní zranitelnosti a~duplicity.
+\end{enumerate}
+
+Zkrácená ukázka CI workflow je ve~výpisu~\ref{lst:ci}.
+
+\begin{listing}[H]
+\caption{GitHub Actions workflow pro průběžnou integraci (zkráceno)}\label{lst:ci}
+\begin{minted}[fontsize=\small]{yaml}
+name: SonarCloud Analysis
+on:
+  push:
+    branches: [main]
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { java-version: '21' }
+      - run: mvn -B -f pom.xml clean verify
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - run: ./gradlew assembleDebug testDebugUnitTest
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm ci && npm run test
+  sonarcloud:
+    needs: [backend, android, frontend]
+    steps:
+      - uses: SonarSource/sonarqube-scan-action@v4
+\end{minted}
+\end{listing}
+
+\section{Nasazení}
+
+Systém je nasazen na linuxovém VPS serveru (Ubuntu), jehož architektura je znázorněna na obrázku~\ref{fig:system-architecture}. Nasazení je realizováno dvěma způsoby: automatizovaně prostřednictvím GitHub Actions workflow \texttt{deploy.yml} (spouštěného manuálně tlačítkem v~rozhraní GitHubu), nebo ručně přímým připojením na server přes SSH.
+
+\subsection{Serverová infrastruktura}
+
+Na serveru běží tři služby:
+
+\begin{itemize}
+	\item \textbf{Nginx} -- reverse proxy, která obsluhuje HTTPS požadavky. Statické soubory frontendu jsou obsluhovány přímo z~adresáře \texttt{/var/www/majetek} s~SPA fallback (\texttt{try\_files}). Požadavky na \texttt{/api/} jsou přesměrovány na backend (\texttt{proxy\_pass http://localhost:8080}). SSL certifikát je vydán autoritou Let's Encrypt s~automatickou obnovou.
+	\item \textbf{Spring Boot backend} -- běží jako systemd služba na portu 8080. Komunikuje s~databází prostřednictvím JDBC.
+	\item \textbf{PostgreSQL} -- databázový server s~automatickým denním zálohováním prostřednictvím cron úlohy.
+\end{itemize}
+
+Přístup k~serveru je zabezpečen SSH na nestandardním portu s~autentizací výhradně klíčem (heslo zakázáno). Přímý přístup přes IP adresu vrací HTTP kód 404.
+
+\subsection{Proces nasazení}
+
+Deployment workflow provede následující kroky:
+
+\begin{enumerate}
+	\item Sestaví backend JAR soubor příkazem \texttt{mvn clean package}.
+	\item Sestaví frontend příkazem \texttt{npm run build}.
+	\item Nahraje JAR na server prostřednictvím SCP.
+	\item Synchronizuje frontendové soubory na server prostřednictvím rsync.
+	\item Restartuje backendovou systemd službu.
+\end{enumerate}
+
+\subsection{Distribuce mobilní aplikace}
+
+Android aplikace je distribuována jako APK soubor, který se na cílové zařízení Zebra TC22 nahrává ručně prostřednictvím USB. Aplikace není publikována na Google Play -- jedná se o~interní nástroj určený pro jedno konkrétní zařízení.
+
+

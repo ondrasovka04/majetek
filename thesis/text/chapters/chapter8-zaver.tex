@@ -1,0 +1,28 @@
+\chapter{Závěr}\label{chap:conclusion}
+
+Cílem práce bylo navrhnout a~implementovat systém pro správu majetku zahrnující webovou aplikaci, serverové REST API a~mobilní aplikaci pro offline inventarizaci. Systém byl vyvinut ve spolupráci s~konkrétní základní školou a~je nasazen v~produkčním prostředí.
+
+\section*{Splnění cílů zadání}
+
+\textbf{Rešerše existujících řešení} (kapitola~\ref{chap:research}) analyzovala tři kategorie přístupů: tabulkové procesory, komerční systémy (EVIDEI, Správce Majetku) a~open-source řešení (Snipe-IT). Analýza ukázala, že žádné z~existujících řešení nepokrývá všechny potřeby cílové organizace, a~zdůvodnila vývoj vlastního systému.
+
+\textbf{Analýza požadavků} (kapitola~\ref{chap:requirements}) definovala 28 funkčních a~11 obecných požadavků rozdělených do logických skupin. Pro klíčové scénáře byly vytvořeny případy užití. Požadavky vycházely z~konzultací s~budoucími uživateli systému.
+
+\textbf{Návrh a~implementace} (kapitoly~\ref{chap:technologies}--\ref{chap:implementation}) popisují volbu technologií (Spring Boot, React, nativní Android v~Javě, PostgreSQL), architekturu systému a~klíčové implementační detaily. Backend je organizován jako modulární monolitická aplikace s~bezpečnostním modelem založeným na JWT tokenech s~rotací. Frontend využívá knihovnu React s~TypeScriptem a~TanStack Query pro správu serverového stavu. Mobilní aplikace pracuje offline s~lokální Room databází a~integruje se s~průmyslovou čtečkou Zebra TC22.
+
+\textbf{Testování a~nasazení} (kapitola~\ref{chap:testing}) popisuje testovací strategii zahrnující 447 backendových testů (unit, datová vrstva, integrační), 54 frontendových testů a~testy mobilní aplikace. Pokrytí kódu backendu dosahuje alespoň 80\,\% řádků a~75\,\% větví. Systém je nasazen na VPS serveru s~automatizovaným deployment pipeline prostřednictvím GitHub Actions.
+
+\section*{Limity práce}
+
+Systém je navržen pro jednu organizaci s~jedním zařízením Zebra -- nepodporuje souběžnou inventuru více pracovníky. Mobilní aplikace je distribuována ručně prostřednictvím USB, což je pro daný scénář dostačující, ale pro větší nasazení by bylo vhodné zvážit řešení pro vzdálenou správu zařízení (MDM). Frontendové testy pokrývají především utility funkce a~validační logiku; UI komponenty jsou ověřovány typovou kontrolou TypeScriptu a~manuálním testováním. Projekt neobsahuje end-to-end testy (např.\ Cypress nebo Playwright), které by ověřovaly celý uživatelský flow od rozhraní přes API až po databázi.
+
+\section*{Možnosti dalšího rozvoje}
+
+Systém nabízí prostor pro rozšíření v~několika směrech:
+
+\begin{itemize}
+	\item \textbf{Import dat} -- možnost hromadného importu majetkových karet z~existujících tabulek (CSV, Excel) pro usnadnění migrace z~tabulkových procesorů.
+	\item \textbf{Historie změn} -- zaznamenávání všech operací nad kartami majetku pro účely auditu.
+	\item \textbf{Podpora RFID} -- rozšíření identifikace majetku o~RFID technologii pro rychlejší hromadné skenování.
+	\item \textbf{Plánování údržby} -- evidence revizí a~plánování pravidelné údržby majetku s~automatickými připomínkami.
+\end{itemize}
