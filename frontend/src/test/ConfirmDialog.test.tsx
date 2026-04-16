@@ -6,8 +6,8 @@ describe("ConfirmDialog", () => {
   it("renders title and description when open", () => {
     render(<ConfirmDialog open={true} description="Opravdu smazat?" onCancel={vi.fn()} onConfirm={vi.fn()} />);
 
-    screen.getByText("Potvrzení akce");
-    screen.getByText("Opravdu smazat?");
+    expect(screen.getByText("Potvrzení akce")).toBeInTheDocument();
+    expect(screen.getByText("Opravdu smazat?")).toBeInTheDocument();
   });
 
   it("renders custom title", () => {
@@ -15,7 +15,7 @@ describe("ConfirmDialog", () => {
       <ConfirmDialog open={true} title="Vlastní titul" description="Text" onCancel={vi.fn()} onConfirm={vi.fn()} />,
     );
 
-    screen.getByText("Vlastní titul");
+    expect(screen.getByText("Vlastní titul")).toBeInTheDocument();
   });
 
   it("does not render content when closed", () => {

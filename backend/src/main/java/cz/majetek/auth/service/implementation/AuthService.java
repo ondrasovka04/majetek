@@ -36,6 +36,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthService implements IAuthService {
 
+    private static final String USER_NOT_FOUND = "User not found";
+
     private final JwtTokenProvider tokenProvider;
     private final IUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -76,7 +78,7 @@ public class AuthService implements IAuthService {
         String jti = tokenProvider.getJtiFromRefreshToken(refreshToken);
         String username = tokenProvider.getUsernameFromRefreshToken(refreshToken);
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
         if (jti == null || !jti.equals(user.getRefreshJti())) {
             throw new AuthException("Refresh token has been revoked");
         }
@@ -111,7 +113,7 @@ public class AuthService implements IAuthService {
     @Transactional
     public void saveRefreshJti(String username, String jti) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
         user.setRefreshJti(jti);
         userRepository.save(user);
     }
@@ -126,7 +128,7 @@ public class AuthService implements IAuthService {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         User user = userRepository.findByUsername(userPrincipal.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             throw new BadCredentialsException("Current password is incorrect");
