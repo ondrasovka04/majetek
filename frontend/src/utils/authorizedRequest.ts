@@ -20,11 +20,9 @@ const authorizedRequest = axios.create({
 let refreshPromise: Promise<Awaited<ReturnType<typeof refresh>>> | null = null;
 
 function refreshOnce() {
-  if (!refreshPromise) {
-    refreshPromise = refresh().finally(() => {
-      refreshPromise = null;
-    });
-  }
+  refreshPromise ??= refresh().finally(() => {
+    refreshPromise = null;
+  });
   return refreshPromise;
 }
 
