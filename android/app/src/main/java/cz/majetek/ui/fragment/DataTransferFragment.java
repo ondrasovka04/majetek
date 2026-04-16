@@ -120,7 +120,12 @@ public class DataTransferFragment extends Fragment {
                         setStatusError(getString(R.string.error_invalid_base_url));
                         return;
                     }
-                    TokenStorage.saveCredentials(ctx, user, pass);
+                    try {
+                        TokenStorage.saveCredentials(ctx, user, pass);
+                    } catch (IllegalStateException e) {
+                        setStatusError(getString(R.string.error_encrypted_storage));
+                        return;
+                    }
                     setStatusOk(getString(R.string.status_server_configured));
                 })
                 .setNegativeButton(R.string.common_cancel, null)

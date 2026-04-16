@@ -80,6 +80,7 @@
     <string name="status_base_url_set">Adresa serveru nastavena</string>
     <string name="status_server_configured">Připojení nastaveno</string>
     <string name="error_invalid_base_url">Neplatná adresa (musí začínat https://)</string>
+    <string name="error_encrypted_storage">Šifrované úložiště není dostupné</string>
     <string name="dialog_base_url_title">Adresa serveru</string>
     <string name="dialog_server_title">Nastavení připojení</string>
     <string name="hint_base_url">https://domena.cz/api</string>
