@@ -34,7 +34,7 @@ public class TokenStorage {
             return EncryptedSharedPreferences.create(ctx, PREF, masterKey, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
         } catch (GeneralSecurityException | IOException e) {
             Log.e(TAG, "EncryptedSharedPreferences failed", e);
-            throw new RuntimeException("Cannot create encrypted storage", e);
+            throw new IllegalStateException("Cannot create encrypted storage", e);
         }
     }
 
@@ -53,24 +53,41 @@ public class TokenStorage {
     }
 
     /**
-     * Returns saved username, or null if not set.
+     * Returns saved username, or null if storage is unavailable or not set.
      */
     public static String getUsername(Context ctx) {
-        return sp(ctx).getString(KEY_USERNAME, null);
+        try {
+            return sp(ctx).getString(KEY_USERNAME, null);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "Cannot read username", e);
+            return null;
+        }
     }
 
     /**
-     * Returns saved password, or null if not set.
+     * Returns saved password, or null if storage is unavailable or not set.
      */
     public static String getPassword(Context ctx) {
-        return sp(ctx).getString(KEY_PASSWORD, null);
+        try {
+            return sp(ctx).getString(KEY_PASSWORD, null);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "Cannot read password", e);
+            return null;
+        }
     }
 
     /**
      * Returns the token only if not expired (5s buffer for network request).
+     * Returns null if storage is unavailable.
      */
     public static String getValidToken(Context ctx) {
-        SharedPreferences s = sp(ctx);
+        SharedPreferences s;
+        try {
+            s = sp(ctx);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "Cannot read token", e);
+            return null;
+        }
         String token = s.getString(KEY_TOKEN, null);
         long exp = s.getLong(KEY_EXPIRY, 0L);
         if (token == null) return null;

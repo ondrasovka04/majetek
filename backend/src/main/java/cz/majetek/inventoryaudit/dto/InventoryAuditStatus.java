@@ -1,7 +1,8 @@
 package cz.majetek.inventoryaudit.dto;
 
 /**
- * Status of an inventory audit record (NEW, FOUND, MISSING, etc.).
+ * Result status of an inventory audit comparison: CORRECT (location matches),
+ * WARN (location differs), WRONG (card not scanned).
  */
 public enum InventoryAuditStatus {
     CORRECT, WARN, WRONG
