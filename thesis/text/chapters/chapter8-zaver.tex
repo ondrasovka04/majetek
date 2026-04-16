@@ -14,7 +14,7 @@ Cílem práce bylo navrhnout a~implementovat systém pro správu majetku zahrnuj
 
 \section*{Limity práce}
 
-Systém je navržen pro jednu organizaci s~jedním zařízením Zebra -- nepodporuje souběžnou inventuru více pracovníky. Mobilní aplikace je distribuována ručně prostřednictvím USB, což je pro daný scénář dostačující, ale pro větší nasazení by bylo vhodné zvážit řešení pro vzdálenou správu zařízení (MDM). Frontendové testy pokrývají především utility funkce a~validační logiku; UI komponenty jsou ověřovány typovou kontrolou TypeScriptu a~manuálním testováním. Projekt neobsahuje end-to-end testy (např.\ Cypress nebo Playwright), které by ověřovaly celý uživatelský flow od rozhraní přes API až po databázi.
+Systém je navržen pro jednu organizaci s~jedním zařízením Zebra -- nepodporuje souběžnou inventuru více pracovníky. Mobilní aplikace je distribuována ručně prostřednictvím USB, což je pro jedno zařízení dostačující. Frontendové testy pokrývají především utility funkce a~validační logiku; UI komponenty jsou ověřovány typovou kontrolou TypeScriptu a~manuálním testováním. Projekt neobsahuje end-to-end testy (např.\ Cypress nebo Playwright), které by ověřovaly celý uživatelský flow od rozhraní přes API až po databázi.
 
 \section*{Možnosti dalšího rozvoje}
 
@@ -25,4 +25,5 @@ Systém nabízí prostor pro rozšíření v~několika směrech:
 	\item \textbf{Historie změn} -- zaznamenávání všech operací nad kartami majetku pro účely auditu.
 	\item \textbf{Podpora RFID} -- rozšíření identifikace majetku o~RFID technologii pro rychlejší hromadné skenování.
 	\item \textbf{Plánování údržby} -- evidence revizí a~plánování pravidelné údržby majetku s~automatickými připomínkami.
+	\item \textbf{Vzdálená správa zařízení} -- při nasazení na více zařízeních by distribuce APK prostřednictvím MDM nahradila ruční instalaci přes USB.
 \end{itemize}

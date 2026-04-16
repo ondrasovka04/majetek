@@ -12,9 +12,7 @@ import CardCreateView from "@/components/card/CardCreateView";
 import CardListPanel, { CardListPanelHandle } from "@/components/card/CardListPanel";
 import { CardFormValues } from "@/schemas/cardSchema";
 
-type CardSelection =
-  | { type: "existing"; id: string }
-  | { type: "new" };
+type CardSelection = { type: "existing"; id: string } | { type: "new" };
 import { useNotification } from "@/hooks/useNotification";
 import { useUsers } from "@/hooks/queries/useCardQueries";
 import { useLocations } from "@/hooks/queries/useLocationQueries";

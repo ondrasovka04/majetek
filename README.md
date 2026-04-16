@@ -63,7 +63,7 @@ npm install
 npm run dev
 ```
 
-The frontend dev server runs at `http://localhost:5173`.
+The frontend dev server runs at `http://localhost:3000`.
 
 ## Nginx (Local Development)
 
@@ -81,7 +81,7 @@ server {
     }
 
     location / {
-        proxy_pass http://localhost:5173;
+        proxy_pass http://localhost:3000;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
     }

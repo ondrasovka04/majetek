@@ -25,15 +25,16 @@ public class TokenStorage {
     }
 
     /**
-     * Creates encrypted prefs (AES-256-GCM), falls back to plain on failure.
+     * Creates encrypted prefs (AES-256-GCM). Throws on failure — credentials
+     * must never be stored unencrypted.
      */
     private static SharedPreferences sp(Context ctx) {
         try {
             MasterKey masterKey = new MasterKey.Builder(ctx).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build();
             return EncryptedSharedPreferences.create(ctx, PREF, masterKey, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
         } catch (GeneralSecurityException | IOException e) {
-            Log.e(TAG, "EncryptedSharedPreferences failed, falling back to plain", e);
-            return ctx.getSharedPreferences(PREF + "_fallback", Context.MODE_PRIVATE);
+            Log.e(TAG, "EncryptedSharedPreferences failed", e);
+            throw new RuntimeException("Cannot create encrypted storage", e);
         }
     }
 
