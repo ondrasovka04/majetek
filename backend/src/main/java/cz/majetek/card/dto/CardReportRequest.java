@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Request DTO for generating a single-card PDF report.
+ */
 @Getter
 @Setter
 public class CardReportRequest {

@@ -12,6 +12,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * HTTP client for backend REST API communication (OkHttp + Gson).
+ */
 public class ApiClient {
     private final String baseUrl;
     private final OkHttpClient client = new OkHttpClient();
@@ -20,6 +23,9 @@ public class ApiClient {
         this.baseUrl = baseUrl;
     }
 
+    /**
+     * Authenticates via Basic Auth, returns token + expiration.
+     */
     public LoginResult login(String basicAuth) throws IOException {
         Request request = new Request.Builder().url(baseUrl + "/auth/login").post(RequestBody.create(new byte[0], MediaType.parse("application/json"))).addHeader("Authorization", "Basic " + basicAuth).build();
         try (Response r = client.newCall(request).execute()) {

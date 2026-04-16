@@ -5,31 +5,31 @@
  * everything in an ErrorBoundary.
  */
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import PrivateRoute from "./components/PrivateRoute";
+import PrivateRoute from "@/components/PrivateRoute";
 import { lazy, Suspense, useEffect } from "react";
-import { useAuthStore } from "./store/authStore";
+import { useAuthStore } from "@/store/authStore";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { cs } from "date-fns/locale";
 import { ThemeProvider, CssBaseline, CircularProgress } from "@mui/material";
-import { defaultTheme } from "./theme";
+import { defaultTheme } from "@/theme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import ErrorBoundary from "./components/ErrorBoundary";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 // Lazy-loaded pages — only the login page is loaded eagerly
-import LoginPage from "./pages/LoginPage";
+import LoginPage from "@/pages/LoginPage";
 
-const CardPage = lazy(() => import("./pages/CardPage"));
-const ReportPage = lazy(() => import("./pages/ReportPage"));
-const InventoryOverviewPage = lazy(() => import("./pages/inventoryAudit/InventoryOverviewPage"));
-const InventoryDifferencesPage = lazy(() => import("./pages/inventoryAudit/InventoryDifferencesPage"));
-const LocationPage = lazy(() => import("./pages/LocationPage"));
-const AssetGroupPage = lazy(() => import("./pages/AssetGroupPage"));
-const ClassPage = lazy(() => import("./pages/ClassPage"));
-const PurchaseMethodPage = lazy(() => import("./pages/PurchaseMethodPage"));
-const WriteOffMethodPage = lazy(() => import("./pages/WriteOffMethodPage"));
-const UserPage = lazy(() => import("./pages/UserPage"));
+const CardPage = lazy(() => import("@/pages/CardPage"));
+const ReportPage = lazy(() => import("@/pages/ReportPage"));
+const InventoryOverviewPage = lazy(() => import("@/pages/inventoryAudit/InventoryOverviewPage"));
+const InventoryDifferencesPage = lazy(() => import("@/pages/inventoryAudit/InventoryDifferencesPage"));
+const LocationPage = lazy(() => import("@/pages/LocationPage"));
+const AssetGroupPage = lazy(() => import("@/pages/AssetGroupPage"));
+const ClassPage = lazy(() => import("@/pages/ClassPage"));
+const PurchaseMethodPage = lazy(() => import("@/pages/PurchaseMethodPage"));
+const WriteOffMethodPage = lazy(() => import("@/pages/WriteOffMethodPage"));
+const UserPage = lazy(() => import("@/pages/UserPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {

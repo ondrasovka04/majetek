@@ -1,7 +1,7 @@
 /** API service functions for inventory audit — overview, differences, patching actions, and projecting results. */
-import authorizedRequest from "../utils/authorizedRequest";
-import { InventoryAuditEntry } from "../types/inventoryAudit/inventoryAudit";
-import { InventoryDifferenceEntry, InventoryDifferenceAction } from "../types/inventoryAudit/inventoryDifference";
+import authorizedRequest from "@/utils/authorizedRequest";
+import { InventoryAuditEntry } from "@/types/inventoryAudit/inventoryAudit";
+import { InventoryDifferenceEntry, InventoryDifferenceAction } from "@/types/inventoryAudit/inventoryDifference";
 
 export const getInventoryAudit = async (): Promise<InventoryAuditEntry[]> => {
   const res = await authorizedRequest.get("/inventory-audit");

@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Request DTO for changing a user's password.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

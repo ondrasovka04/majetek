@@ -1,0 +1,34 @@
+@startuml
+actor Klient
+participant "Nginx" as nginx
+participant "Spring Security\n(Filter Chain)" as security
+participant "AuthController" as auth
+participant "JwtTokenProvider" as jwt
+database "PostgreSQL" as db
+
+== Přihlášení (Basic Auth) ==
+Klient -> nginx : POST /api/auth/login\nAuthorization: Basic <base64>
+nginx -> security : HTTP Basic Auth filter
+security -> db : ověření uživatele
+security -> auth : login()
+auth -> jwt : generateAccessToken()
+auth -> jwt : generateRefreshToken()
+auth --> Klient : 200 OK\n{ token, expiresIn }\n+ Set-Cookie: refreshToken (HttpOnly)
+
+== Autorizovaný požadavek ==
+Klient -> nginx : GET /api/card\nAuthorization: Bearer <token>
+nginx -> security : JwtAuthenticationFilter
+security -> jwt : validateToken()
+jwt --> security : OK
+security -> db : loadUserByUsername()
+security --> Klient : 200 OK + data
+
+== Obnova tokenu ==
+Klient -> nginx : POST /api/auth/refresh\nCookie: refreshToken=<token>
+nginx -> auth : refresh()
+auth -> jwt : validateRefreshToken()
+auth -> jwt : generateAccessToken()
+auth -> jwt : generateRefreshToken()
+auth --> Klient : 200 OK\n{ token, expiresIn }\n+ Set-Cookie: refreshToken (nový)
+
+@enduml

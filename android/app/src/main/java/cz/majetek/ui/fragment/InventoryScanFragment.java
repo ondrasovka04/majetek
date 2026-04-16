@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,7 +30,11 @@ import cz.majetek.data.entity.CardEntity;
 import cz.majetek.data.entity.InventoryAuditEntity;
 import cz.majetek.data.entity.LocationEntity;
 import cz.majetek.ui.view.CircularInventoryProgressView;
+import cz.majetek.util.ScanInputHelper;
 
+/**
+ * Fragment for inventory – scan location, then assets with progress indication.
+ */
 public class InventoryScanFragment extends Fragment {
 
     private EditText inputLocation;
@@ -127,44 +129,8 @@ public class InventoryScanFragment extends Fragment {
     }
 
     private void setupInputs() {
-        setupLocationInputs();
-        setupAssetInputs();
-    }
-
-    private void setupLocationInputs() {
-        inputLocation.setOnEditorActionListener((tv, actionId, event) -> {
-            boolean isEnter = (event != null && event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB)) || actionId == EditorInfo.IME_ACTION_DONE;
-            if (isEnter) {
-                handleLocationScanned(tv.getText().toString().trim());
-                return true;
-            }
-            return false;
-        });
-        inputLocation.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_TAB)) {
-                handleLocationScanned(inputLocation.getText().toString().trim());
-                return true;
-            }
-            return false;
-        });
-    }
-
-    private void setupAssetInputs() {
-        inputAsset.setOnEditorActionListener((tv, actionId, event) -> {
-            boolean isEnter = (event != null && event.getAction() == KeyEvent.ACTION_DOWN && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_TAB)) || actionId == EditorInfo.IME_ACTION_DONE;
-            if (isEnter) {
-                handleAssetScanned(tv.getText().toString().trim());
-                return true;
-            }
-            return false;
-        });
-        inputAsset.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_TAB)) {
-                handleAssetScanned(inputAsset.getText().toString().trim());
-                return true;
-            }
-            return false;
-        });
+        ScanInputHelper.attachScanListeners(inputLocation, this::handleLocationScanned);
+        ScanInputHelper.attachScanListeners(inputAsset, this::handleAssetScanned);
     }
 
     private void setupButtons() {
@@ -185,6 +151,9 @@ public class InventoryScanFragment extends Fragment {
         });
     }
 
+    /**
+     * Handles scanned location code – L-prefix validation, DB lookup, context setup.
+     */
     private void handleLocationScanned(String code) {
         if (code.isEmpty()) {
             inputLocation.requestFocus();
@@ -234,6 +203,9 @@ public class InventoryScanFragment extends Fragment {
         });
     }
 
+    /**
+     * Handles scanned asset – inventory audit record upsert, progress update.
+     */
     private void handleAssetScanned(String code) {
         if (code.isEmpty()) {
             inputAsset.requestFocus();
@@ -403,7 +375,9 @@ public class InventoryScanFragment extends Fragment {
 
     private void postUI(Runnable r) {
         Activity a = getActivity();
-        if (a != null) a.runOnUiThread(() -> { if (isAdded()) r.run(); });
+        if (a != null) a.runOnUiThread(() -> {
+            if (isAdded()) r.run();
+        });
     }
 
     private void setStatusOk(String msg) {

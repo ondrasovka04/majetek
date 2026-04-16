@@ -2,11 +2,11 @@
 import { Button, TextField, Card, Typography, CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { login } from "../services/authService";
-import { useAuthStore } from "../store/authStore";
+import { login } from "@/services/authService";
+import { useAuthStore } from "@/store/authStore";
 import { useNavigate } from "react-router-dom";
-import { translateError } from "../utils/errorTranslations";
-import { extractErrorMessage } from "../utils/extractErrorMessage";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
 
 interface LoginFormValues {
   username: string;

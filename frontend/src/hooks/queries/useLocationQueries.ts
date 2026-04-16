@@ -6,8 +6,8 @@ import {
   updateLocation,
   deleteLocation,
   printLocation,
-} from "../../services/locationService";
-import { Location } from "../../types/location";
+} from "@/services/locationService";
+import { Location } from "@/types/location";
 
 const QUERY_KEY = ["locations"] as const;
 

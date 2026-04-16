@@ -2,6 +2,9 @@ package cz.majetek.exception.auth;
 
 import lombok.Getter;
 
+/**
+ * Exception thrown for user validation or not-found errors.
+ */
 @Getter
 public final class UserException extends RuntimeException {
     private final String userId;

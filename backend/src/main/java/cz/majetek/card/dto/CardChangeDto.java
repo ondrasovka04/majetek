@@ -11,6 +11,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * DTO for creating or updating a card.
+ */
 @Getter
 @Setter
 public class CardChangeDto {

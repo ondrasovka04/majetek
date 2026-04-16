@@ -12,11 +12,11 @@ import {
   exportCardPdf,
   exportGroupPdf,
   exportLocationPdf,
-} from "../../services/cardService";
-import { Card } from "../../types/card/card";
-import { CardFormOutput } from "../../schemas/cardSchema";
-import { CardFilterQuery } from "../../types/card/cardFilterQuery";
-import { getUsers } from "../../services/authService";
+} from "@/services/cardService";
+import { Card } from "@/types/card/card";
+import { CardFormOutput } from "@/schemas/cardSchema";
+import { CardFilterQuery } from "@/types/card/cardFilterQuery";
+import { getUsers } from "@/services/authService";
 
 const CARDS_KEY = ["cards"] as const;
 const USERS_KEY = ["users"] as const;
@@ -28,11 +28,11 @@ export function useCards() {
   });
 }
 
-export function useCardDetail(cardId: string | null) {
+export function useCardDetail(cardId: string | undefined) {
   return useQuery({
     queryKey: ["card", cardId],
     queryFn: () => getCardById(cardId!),
-    enabled: !!cardId && cardId !== "NEW",
+    enabled: !!cardId,
   });
 }
 
@@ -60,8 +60,9 @@ export function useUpdateCard() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, card }: { id: string; card: CardFormOutput }) => updateCard(id, card),
-    onSuccess: () => {
+    onSuccess: (_data, { id }) => {
       qc.invalidateQueries({ queryKey: CARDS_KEY });
+      qc.invalidateQueries({ queryKey: ["card", id] });
     },
   });
 }

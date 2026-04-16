@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Request DTO for printing a location label via Zebra Cloud.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

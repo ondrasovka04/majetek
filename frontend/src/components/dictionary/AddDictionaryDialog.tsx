@@ -1,10 +1,11 @@
+/** Dialog for creating a new dictionary entity with Zod-validated ID and name fields. */
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, ThemeProvider } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo } from "react";
-import { DictionaryEntity } from "../../types/dictionary";
-import { createDictionarySchema, DictionaryFormValues, DictionaryFormOutput } from "../../schemas/dictionarySchema";
-import { defaultTheme } from "../../theme";
+import { DictionaryEntity } from "@/types/dictionary";
+import { createDictionarySchema, DictionaryFormValues, DictionaryFormOutput } from "@/schemas/dictionarySchema";
+import { defaultTheme } from "@/theme";
 
 interface Props<T extends DictionaryEntity> {
   readonly open: boolean;

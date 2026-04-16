@@ -11,7 +11,7 @@ import {
   Box,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Location } from "../../types/location";
+import { Location } from "@/types/location";
 
 interface LocationReportModalProps {
   open: boolean;

@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+/**
+ * Dictionary entity representing a write-off method.
+ */
 @Entity
 @Table(name = "write_off_method")
 @Getter

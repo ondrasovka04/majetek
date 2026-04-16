@@ -14,8 +14,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
-   private String id;
-   private String name;
-   private String username;
-   private UserRole role;
+    private String id;
+    private String name;
+    private String username;
+    private UserRole role;
 }

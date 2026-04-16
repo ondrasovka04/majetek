@@ -1,6 +1,6 @@
 /** Sortable table header cell with ascending/descending indicator. */
 import { TableCell } from "@mui/material";
-import { InventoryAuditEntry } from "../../types/inventoryAudit/inventoryAudit";
+import { InventoryAuditEntry } from "@/types/inventoryAudit/inventoryAudit";
 
 interface SortableHeaderCellProps {
   label: string;

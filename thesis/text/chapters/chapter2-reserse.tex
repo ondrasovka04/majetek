@@ -1,0 +1,72 @@
+\chapter{Rešerše existujících řešení}\label{chap:research}
+
+\begin{chapterabstract}
+	Tato kapitola analyzuje existující přístupy ke~správě majetku a~inventarizaci. Srovnání slouží jako základ pro definici požadavků na vlastní řešení.
+\end{chapterabstract}
+
+Před zahájením vývoje vlastního systému byly prozkoumány dostupné způsoby evidence majetku -- od tabulkových procesorů přes komerční specializované systémy až po open-source řešení.
+
+\section{Tabulkové procesory}
+
+Cílová organizace (základní škola) dosud evidovala majetek v~tabulkovém procesoru Microsoft Excel. Tento přístup nevyžaduje žádné dodatečné náklady a~je snadno dostupný. Umožňuje základní operace -- seznam majetku, filtrování a~řazení.
+
+Zásadní nevýhodou je absence podpory pro inventarizaci s~čtečkou čárových kódů. Inventura probíhala ručním porovnáváním vytištěných seznamů se skutečným stavem, což je při tisících položek časově náročné a~náchylné k~chybám. Tabulkový procesor dále neposkytuje historii změn ani správu uživatelských rolí.
+
+\section{Komerční řešení}
+
+Na trhu existuje řada komerčních systémů pro evidenci a~inventarizaci majetku. Následující sekce popisují dvě řešení, která byla zvažována pro cílovou organizaci.
+
+\subsection{EVIDEI}
+
+EVIDEI~\cite{evidei} je specializovaný systém pro evidenci a~inventarizaci majetku vyvíjený českou společností KODYS~\cite{kodys}, která je zároveň certifikovaným partnerem výrobce Zebra Technologies. Systém je provozován jako cloudová služba na platformě Microsoft Azure s~mobilní aplikací pro iOS a~Android.
+
+EVIDEI nabízí kompletní životní cyklus majetku -- od založení karty přes přesuny a~inventury až po vyřazení. Podporuje identifikaci pomocí čárových kódů (1D i~2D), QR kódů a~RFID technologie. Mobilní aplikace umožňuje skenování přímo prostřednictvím průmyslových terminálů Zebra nebo běžných mobilních zařízení. Součástí je také foto dokumentace, víceúrovňové členění umístění a~integrace s~ERP systémy prostřednictvím API.
+
+Cena systému není veřejně dostupná a~závisí na počtu spravovaných položek a~délce předplatného. Cílová organizace obdržela cenovou nabídku, která však přesahovala její rozpočtové možnosti.
+
+\subsection{Správce Majetku}
+
+Správce Majetku~\cite{spravce-majetku} je české webové řešení pro evidenci majetku s~podporou QR kódů. Aplikace je přístupná prostřednictvím webového prohlížeče a~nabízí kategorizaci majetku, sledování umístění, plánování údržby a~automatické připomínky revizí.
+
+Systém nabízí zvýhodněný tarif pro školy a~veřejné instituce. Cena se odvíjí od počtu uživatelů a~spravovaných položek; pro organizace s~větším rozsahem majetku je k~dispozici individuální nabídka. Identifikace majetku probíhá prostřednictvím QR kódů snímaných kamerou běžného mobilního telefonu.
+
+Nevýhodou je absence podpory průmyslových čtecích terminálů Zebra a~offline režimu -- aplikace vyžaduje stálé připojení k~internetu. Pro organizaci disponující dedikovaným hardwarem Zebra tak není plně využitelná.
+
+\section{Open-source řešení}
+
+Alternativou ke komerčním produktům jsou open-source systémy, které lze provozovat na vlastním serveru bez licenčních poplatků.
+
+\subsection{Snipe-IT}
+
+Snipe-IT~\cite{snipeit} je nejrozšířenější open-source systém pro správu majetku, dostupný pod licencí MIT~\cite{snipeit-github}. Je implementován v~jazyce PHP s~využitím frameworku Laravel. Systém lze provozovat na vlastním serveru zdarma, případně využít placenou cloudovou variantu (od 39,99~USD měsíčně).
+
+Snipe-IT podporuje generování QR a~čárových kódů, nabízí REST API, kompletní audit log a~lokalizaci do více než 55 jazyků. Mobilní přístup je realizován prostřednictvím responzivního webového rozhraní; nativní mobilní aplikace pro offline inventuru není součástí projektu.
+
+Hlavní nevýhodou pro účely tohoto projektu je zaměření primárně na IT majetek (počítače, licence, příslušenství). Systém neposkytuje nativní podporu pro průmyslové čtečky Zebra ani offline režim při inventuře v~terénu. Provoz na vlastním serveru navíc vyžaduje průběžnou údržbu a~aktualizace.
+
+\section{Srovnání a~zdůvodnění vlastního řešení}
+
+Tabulka~\ref{tab:comparison} shrnuje srovnání analyzovaných řešení s~vlastním systémem podle klíčových kritérií vycházejících z~potřeb cílové organizace.
+
+\begin{table}[H]\centering\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{l|c|c|c|c|c}
+	\textbf{Kritérium} & \textbf{Excel} & \textbf{EVIDEI} & \textbf{Správce M.} & \textbf{Snipe-IT} & \textbf{Vlastní} \tabularnewline \hline
+	Cena & zdarma & vysoká & nízká & zdarma & zdarma \tabularnewline
+	Inventura s~čtečkou & ne & ano & ne & ne & ano \tabularnewline
+	Offline režim & -- & ano & ne & ne & ano \tabularnewline
+	Tisk ZPL etiket & ne & ano & ne & ne & ano \tabularnewline
+	Český jazyk & ano & ano & ano & částečně & ano \tabularnewline
+	Webové rozhraní & ne & ano & ano & ano & ano \tabularnewline
+	Přizpůsobitelnost & -- & ne & ne & částečně & ano \tabularnewline
+\end{tabular}
+\caption{Srovnání existujících řešení pro správu majetku}\label{tab:comparison}
+\end{table}
+
+Žádné z~analyzovaných řešení nepokrývá všechny potřeby cílové organizace za přijatelnou cenu. Tabulkový procesor postrádá podporu inventarizace. Komerční systém EVIDEI nabízí požadovanou funkcionalitu včetně integrace se Zebra zařízeními, ale jeho cena přesahuje rozpočet základní školy. Správce Majetku je cenově dostupný, ale nepodporuje průmyslové čtečky ani offline inventuru. Snipe-IT je zaměřen na IT majetek a~postrádá offline mobilní aplikaci.
+
+Volba dedikované průmyslové čtečky Zebra TC22 místo běžného mobilního telefonu s~kamerou je motivována povahou inventarizace -- při skenování tisíců položek je hardwarový skener výrazně rychlejší a~spolehlivější než kamera telefonu, zejména u~poškozených nebo špatně přístupných štítků. Enterprise zařízení je navíc odolnější vůči náročnějším podmínkám ve~školním prostředí (sklady, dílny). Offline režim je nezbytný, protože Wi-Fi pokrytí v~budově školy není úplné a~mobilní data nemusí být ve~všech prostorách dostupná.
+
+Na základě tohoto srovnání bylo rozhodnuto o~vývoji vlastního řešení, které přesně odpovídá požadavkům organizace -- včetně integrace s~hardwarem Zebra (čtečka TC22, tiskárna ZD621d), offline inventury a~generování ZPL etiket.
+
+

@@ -3,17 +3,17 @@ import { Typography, IconButton, CircularProgress, Tooltip } from "@mui/material
 import SaveIcon from "@mui/icons-material/Save";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { translateError } from "../../utils/errorTranslations";
-import { Class } from "../../types/class";
-import { AssetGroup } from "../../types/assetGroup";
-import { Location } from "../../types/location";
-import { PurchaseMethod } from "../../types/purchaseMethod";
-import { WriteOffMethod } from "../../types/writeOffMethod";
-import { User } from "../../types/auth";
-import { cardSchema, CardFormValues, CardFormOutput, defaultCardValues } from "../../schemas/cardSchema";
-import CardFormFields from "./CardFormFields";
-import { extractErrorMessage } from "../../utils/extractErrorMessage";
-import { useCreateCard } from "../../hooks/queries/useCardQueries";
+import { translateError } from "@/utils/errorTranslations";
+import { Class } from "@/types/class";
+import { AssetGroup } from "@/types/assetGroup";
+import { Location } from "@/types/location";
+import { PurchaseMethod } from "@/types/purchaseMethod";
+import { WriteOffMethod } from "@/types/writeOffMethod";
+import { User } from "@/types/auth";
+import { cardSchema, CardFormValues, CardFormOutput, defaultCardValues } from "@/schemas/cardSchema";
+import CardFormFields from "@/components/card/CardFormFields";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
+import { useCreateCard } from "@/hooks/queries/useCardQueries";
 
 interface Props {
   onCreated: () => void;

@@ -1,11 +1,11 @@
 /** API service functions for asset cards — CRUD, filtering, printing, and PDF/Excel export. */
-import authorizedRequest from "../utils/authorizedRequest";
-import { Card } from "../types/card/card";
-import { CardFilterQuery } from "../types/card/cardFilterQuery";
+import authorizedRequest from "@/utils/authorizedRequest";
+import { Card } from "@/types/card/card";
+import { CardFilterQuery } from "@/types/card/cardFilterQuery";
 import { saveAs } from "file-saver";
-import { CardDetail } from "../types/card/cardDetail";
-import { CardFormOutput } from "../schemas/cardSchema";
-import { toIsoDateString } from "../utils/formatDate";
+import { CardDetail } from "@/types/card/cardDetail";
+import { CardFormOutput } from "@/schemas/cardSchema";
+import { toIsoDateString } from "@/utils/formatDate";
 
 export const getCards = async (): Promise<Card[]> => {
   const res = await authorizedRequest.get("/card");

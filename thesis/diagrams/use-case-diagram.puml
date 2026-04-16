@@ -1,0 +1,32 @@
+@startuml
+left to right direction
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+
+actor "Uživatel" as U
+actor "Administrátor" as A
+
+rectangle "Systém pro správu majetku" {
+    usecase "Spravovat majetkové karty" as UC1
+    usecase "Spravovat přílohy karet" as UC2
+    usecase "Spravovat slovníky" as UC3
+    usecase "Tisknout etikety (ZPL)" as UC4
+    usecase "Generovat reporty\n(PDF / Excel)" as UC5
+    usecase "Provést inventuru\n(mobilní aplikace)" as UC6
+    usecase "Vyhodnotit inventurní\nrozdíly" as UC7
+    usecase "Změnit heslo" as UC8
+    usecase "Vytvořit uživatelský\núčet" as UC9
+}
+
+U -- UC1
+U -- UC2
+U -- UC3
+U -- UC4
+U -- UC5
+U -- UC6
+U -- UC7
+U -- UC8
+
+A -- UC9
+A --|> U
+@enduml

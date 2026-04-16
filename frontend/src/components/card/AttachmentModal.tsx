@@ -17,12 +17,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { useRef } from "react";
-import { downloadAttachment } from "../../services/attachmentService";
+import { downloadAttachment } from "@/services/attachmentService";
 import { saveAs } from "file-saver";
-import { translateError } from "../../utils/errorTranslations";
-import { extractErrorMessage } from "../../utils/extractErrorMessage";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
 import { AxiosError } from "axios";
-import { useAttachments, useUploadAttachment, useDeleteAttachment } from "../../hooks/queries/useAttachmentQueries";
+import { useAttachments, useUploadAttachment, useDeleteAttachment } from "@/hooks/queries/useAttachmentQueries";
 
 interface Props {
   open: boolean;
@@ -32,7 +32,7 @@ interface Props {
 }
 
 const AttachmentModal = ({ open, onClose, cardId, onError }: Props) => {
-  const { data: attachments = [] } = useAttachments(open ? cardId : null);
+  const { data: attachments = [] } = useAttachments(open ? cardId : undefined);
   const uploadMutation = useUploadAttachment(cardId);
   const deleteMutation = useDeleteAttachment(cardId);
   const inputRef = useRef<HTMLInputElement>(null);

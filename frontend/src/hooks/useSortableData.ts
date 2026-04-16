@@ -1,6 +1,6 @@
 /** Generic hook for sorting tabular data. Uses Czech locale collation and pushes empty names to the end. */
 import { useState, useMemo, useCallback } from "react";
-import { czechCollator } from "../utils/czech";
+import { czechCollator } from "@/utils/czech";
 
 type SortDirection = "asc" | "desc";
 

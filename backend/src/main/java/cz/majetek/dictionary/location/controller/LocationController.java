@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for location dictionary CRUD and label printing.
+ */
 @RestController
 @RequestMapping("/api/location")
 @RequiredArgsConstructor

@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+/**
+ * Dictionary entity representing an asset group.
+ */
 @Entity
 @Table(name = "asset_group")
 @Getter

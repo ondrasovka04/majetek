@@ -4,6 +4,9 @@ import android.app.Application;
 
 import cz.majetek.data.db.AppDatabase;
 
+/**
+ * Application singleton – holds the global Room database instance.
+ */
 public class MajetekApp extends Application {
     private AppDatabase db;
 

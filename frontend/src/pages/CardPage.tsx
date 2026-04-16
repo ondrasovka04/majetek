@@ -6,23 +6,25 @@
 import { useMemo, useRef, useState } from "react";
 import { Typography, Paper } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
-import MenuBar from "../components/MenuBar";
-import CardDetailView from "../components/card/CardDetailView";
-import CardCreateView from "../components/card/CardCreateView";
-import CardListPanel, { CardListPanelHandle } from "../components/card/CardListPanel";
-import { CardFormValues } from "../schemas/cardSchema";
-import { useNotification } from "../hooks/useNotification";
-import { useUsers } from "../hooks/queries/useCardQueries";
-import { useLocations } from "../hooks/queries/useLocationQueries";
-import { useClasses } from "../hooks/queries/useClassQueries";
-import { useAssetGroups } from "../hooks/queries/useAssetGroupQueries";
-import { usePurchaseMethods } from "../hooks/queries/usePurchaseMethodQueries";
-import { useWriteOffMethods } from "../hooks/queries/useWriteOffMethodQueries";
-import { sortById } from "../utils/czech";
+import MenuBar from "@/components/MenuBar";
+import CardDetailView from "@/components/card/CardDetailView";
+import CardCreateView from "@/components/card/CardCreateView";
+import CardListPanel, { CardListPanelHandle } from "@/components/card/CardListPanel";
+import { CardFormValues } from "@/schemas/cardSchema";
+
+type CardSelection = { type: "existing"; id: string } | { type: "new" };
+import { useNotification } from "@/hooks/useNotification";
+import { useUsers } from "@/hooks/queries/useCardQueries";
+import { useLocations } from "@/hooks/queries/useLocationQueries";
+import { useClasses } from "@/hooks/queries/useClassQueries";
+import { useAssetGroups } from "@/hooks/queries/useAssetGroupQueries";
+import { usePurchaseMethods } from "@/hooks/queries/usePurchaseMethodQueries";
+import { useWriteOffMethods } from "@/hooks/queries/useWriteOffMethodQueries";
+import { sortById } from "@/utils/czech";
 
 const CardPage = () => {
-  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
-  const [duplicatedCard, setDuplicatedCard] = useState<Partial<CardFormValues> | null>(null);
+  const [selection, setSelection] = useState<CardSelection>();
+  const [duplicatedCard, setDuplicatedCard] = useState<Partial<CardFormValues> | undefined>();
   const { notify, notifyError, NotificationBar } = useNotification();
   const queryClient = useQueryClient();
   const listRef = useRef<CardListPanelHandle>(null);
@@ -45,13 +47,13 @@ const CardPage = () => {
   };
 
   const renderDetailPanel = () => {
-    if (selectedCardId === "NEW") {
+    if (selection?.type === "new") {
       return (
         <CardCreateView
           prefillCard={duplicatedCard ?? undefined}
           onCreated={() => {
-            setDuplicatedCard(null);
-            setSelectedCardId(null);
+            setDuplicatedCard(undefined);
+            setSelection(undefined);
             listRef.current?.refilter();
           }}
           onError={notifyError}
@@ -60,21 +62,21 @@ const CardPage = () => {
         />
       );
     }
-    if (selectedCardId) {
+    if (selection?.type === "existing") {
       return (
         <CardDetailView
-          cardId={selectedCardId}
+          cardId={selection.id}
           onChange={() => {
             queryClient.invalidateQueries({ queryKey: ["cards"] });
             notify("Změny byly úspěšně uloženy.", "success");
           }}
           onDeleted={() => {
-            setSelectedCardId(null);
+            setSelection(undefined);
             notify("Karta byla úspěšně smazána.", "success");
           }}
           onDuplicate={(dup) => {
             setDuplicatedCard(dup);
-            setSelectedCardId("NEW");
+            setSelection({ type: "new" });
           }}
           {...dictProps}
         />
@@ -94,9 +96,9 @@ const CardPage = () => {
       <div className="p-6 flex">
         <CardListPanel
           ref={listRef}
-          selectedCardId={selectedCardId}
-          onSelectCard={setSelectedCardId}
-          onNewCard={() => setSelectedCardId("NEW")}
+          selectedCardId={selection?.type === "existing" ? selection.id : undefined}
+          onSelectCard={(id) => setSelection(id ? { type: "existing", id } : undefined)}
+          onNewCard={() => setSelection({ type: "new" })}
           onNotify={notify}
           onError={notifyError}
         />

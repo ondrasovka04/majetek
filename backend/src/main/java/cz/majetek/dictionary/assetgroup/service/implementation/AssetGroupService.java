@@ -58,7 +58,6 @@ public class AssetGroupService implements IAssetGroupService {
     }
 
     @Override
-    @Transactional
     @CacheEvict(value = "assetGroups", allEntries = true)
     public void delete(String id) {
         try {

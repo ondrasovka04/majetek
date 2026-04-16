@@ -57,7 +57,6 @@ public class ClassService implements IClassService {
     }
 
     @Override
-    @Transactional
     @CacheEvict(value = "classes", allEntries = true)
     public void delete(String id) {
         try {

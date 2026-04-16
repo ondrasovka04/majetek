@@ -4,8 +4,8 @@
  * On 401, automatically attempts a token refresh and retries the original request once.
  */
 import axios, { AxiosHeaders, InternalAxiosRequestConfig } from "axios";
-import { useAuthStore } from "../store/authStore";
-import { refresh } from "../services/authService";
+import { useAuthStore } from "@/store/authStore";
+import { refresh } from "@/services/authService";
 
 interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -17,14 +17,24 @@ const authorizedRequest = axios.create({
   baseURL: API_URL,
 });
 
+let refreshPromise: Promise<Awaited<ReturnType<typeof refresh>>> | null = null;
+
+function refreshOnce() {
+  if (!refreshPromise) {
+    refreshPromise = refresh().finally(() => {
+      refreshPromise = null;
+    });
+  }
+  return refreshPromise;
+}
+
 authorizedRequest.interceptors.request.use(async (config) => {
   const { token, expiresIn, setAuth, clearAuth } = useAuthStore.getState();
   const now = new Date();
 
   if (token && expiresIn && new Date(expiresIn) <= now) {
-    // Access expired: attempt refresh via HttpOnly cookie
     try {
-      const refreshed = await refresh();
+      const refreshed = await refreshOnce();
       setAuth(refreshed.user, refreshed.token, refreshed.expiresIn);
       config.headers.Authorization = `Bearer ${refreshed.token}`;
     } catch {
@@ -45,7 +55,7 @@ authorizedRequest.interceptors.response.use(
       const { clearAuth, setAuth } = useAuthStore.getState();
       originalRequest._retry = true;
       try {
-        const refreshed = await refresh();
+        const refreshed = await refreshOnce();
         setAuth(refreshed.user, refreshed.token, refreshed.expiresIn);
         originalRequest.headers = AxiosHeaders.from(originalRequest.headers ?? {});
         originalRequest.headers.set("Authorization", `Bearer ${refreshed.token}`);

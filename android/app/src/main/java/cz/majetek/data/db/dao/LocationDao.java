@@ -9,6 +9,9 @@ import java.util.List;
 
 import cz.majetek.data.entity.LocationEntity;
 
+/**
+ * DAO for locations.
+ */
 @Dao
 public interface LocationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

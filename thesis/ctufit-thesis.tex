@@ -1,0 +1,339 @@
+%% This is the ctufit-thesis example file. It is used to produce theses
+%% for submission to Czech Technical University, Faculty of Information Technology.
+%%
+%% This is version 1.6.2, built 25. 2. 2026.
+%% 
+%% Get the newest version from
+%% https://gitlab.fit.cvut.cz/theses-templates/FITthesis-LaTeX
+%%
+%%
+%% Copyright 2024, Tomas Novacek
+%% Copyright 2021, Eliska Sestakova and Ondrej Guth
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%  https://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The current maintainer of this work is Tomas Novacek (novacto3@fit.cvut.cz).
+%% Alternatively, submit bug reports to the tracker at
+%% https://gitlab.fit.cvut.cz/theses-templates/FITthesis-LaTeX/issues
+%%
+%%
+
+% arara: xelatex
+% arara: biber
+% arara: xelatex
+% arara: xelatex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CLASS OPTIONS
+% language: czech/english/slovak
+% thesis type: bachelor/master/dissertation/doctoral-report
+% electronic (oneside) or printed (twoside), twoside is default
+% paragraph - if passed, this optional argument sets paragraphs as the deepest level of headers, styles it, numbers it and adds it to Table of Content. Use with care! Normally, it is considered unwise to use it, since it is too deep.
+% colour: bw for black&white OR no option for default colour scheme
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[czech,bachelor,oneside]{ctufit-thesis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FILL IN THIS INFORMATION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ctufittitle{Software pro evidenci majetku}
+\ctufitauthorfull{Ondřej Kopáč}
+\ctufitauthorsurnames{Kopáč}
+\ctufitauthorgivennames{Ondřej}
+\ctufitsupervisor{Ing.\,Jiří Mlejnek}
+\ctufitdepartment{Katedra softwarového inženýrství}
+\ctufitprogram{Informatika}
+\ctufitspecialisation{Softwarové inženýrství}
+\ctufityear{2026}
+\ctufitdeclarationplace{Praze}
+\ctufitdeclarationdate{\today}
+\ctufitabstractCZE{Tato bakalářská práce se zabývá návrhem a~implementací systému pro správu majetku. Systém umožňuje evidenci majetkových karet, generování a~tisk etiket s~čárovými kódy, inventarizaci pomocí průmyslové čtečky Zebra a~generování reportů. Skládá se ze tří komponent: serverového REST API (Spring Boot, PostgreSQL), webové aplikace (React, TypeScript) a~mobilní aplikace pro offline inventarizaci (nativní Android, Room). Součástí práce je rešerše existujících řešení, analýza požadavků, volba technologií, návrh architektury, implementace klíčových částí a~testování. Systém je nasazen v~produkčním prostředí pro konkrétní základní školu.}
+\ctufitabstractENG{This bachelor's thesis presents the design and implementation of an asset management system. The system enables asset card management, barcode label generation and printing, inventory auditing using a Zebra industrial scanner, and report generation. It consists of three components: a~server-side REST API (Spring Boot, PostgreSQL), a~web application (React, TypeScript), and a~mobile application for offline inventory (native Android, Room). The thesis covers an analysis of existing solutions, requirements specification, technology selection, architecture design, implementation of key features, and testing. The system is deployed in a~production environment for a~specific primary school.}
+\ctufitkeywordsCZE{správa majetku, inventarizace, webová aplikace, mobilní aplikace, čárové kódy, tisk etiket, ZPL, Spring Boot, React}
+\ctufitkeywordsENG{asset management, inventory, web application, mobile application, barcodes, label printing, ZPL, Spring Boot, React}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% END FILL IN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CUSTOMIZATION of this template
+% Skip this part or alter it if you know what you are doing.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{iftex}[2020/03/06]
+\iftutex % XeLaTeX and LuaLaTeX
+    \RequirePackage{ellipsis}[2020/05/22] %ellipsis workaround for XeLaTeX
+\else
+    \errmessage{Only compilation with XeLaTeX or LuaLaTeX is allowed}
+    \stop
+\fi
+
+% hyperlinks
+\hypersetup{
+    pdfpagelayout=TwoPageRight,
+    colorlinks=false,
+    allcolors=decoration,
+    pdfborder={0 0 0.1}
+}
+
+% uncomment the following to hide all hyperlinks
+%\hypersetup{hidelinks}
+
+% uncomment the following to change the colour of all hyperlinks to CTU blue
+%\hypersetup{allbordercolors=decoration}
+
+\RequirePackage{pdfpages}[2020/01/28]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CUSTOMIZATION of this template END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+% PACKAGES SETTINGS
+% You may choose to modify this part.
+%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{dirtree}
+\usepackage{lipsum,tikz}
+\usepackage[style=iso-numeric]{biblatex}
+\addbibresource{text/bib-database.bib}
+\usepackage{xurl}
+\usepackage{listings} % typesetting of sources
+\AddToHook{begindocument/end}{%
+  \lstset{
+    keywordstyle=\color[rgb]{0,0,0.6}\bfseries,
+    commentstyle=\color[rgb]{0,0.5,0}\itshape,
+    stringstyle=\color[rgb]{0.64,0.08,0.08},
+    showstringspaces=false,
+    backgroundcolor=\color{white},
+  }%
+}
+\lstdefinelanguage{TypeScript}{
+  keywords={const, let, var, function, return, if, else, for, while, do, switch, case, break, continue, new, throw, try, catch, finally, typeof, instanceof, in, of, class, extends, implements, interface, type, export, import, from, default, async, await, yield, readonly, enum, as, null, undefined, true, false, void},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  morestring=[b]`,
+}
+\usepackage{minted}
+\usemintedstyle{friendly}
+\AtBeginEnvironment{minted}{\renewcommand{\fcolorbox}[4][]{#4}}
+\counterwithin{listing}{chapter}
+\usepackage{csquotes}
+\usepackage{needspace}
+\usepackage{float}
+
+\hyphenation{
+	backend backendu backende backendem
+	frontend frontendu frontende frontendem
+	framework frameworky frameworků frameworkem
+	TypeScript TypeScriptu TypeScriptem TypeScriptový TypeScriptových TypeScriptové
+	JavaScript JavaScriptu JavaScriptem JavaScriptový JavaScriptových JavaScriptové
+	EasyExcel
+	Vuetify
+	MapStruct
+	PostgreSQL
+	boilerplate
+	lifecycle
+	toolchain
+	opinionated neopinionated
+	cleartext
+	refetch refetching
+	interceptor
+	business
+	listenerů listenery listenerům
+	features
+	Specification
+	fulltextové fulltextového fulltextovým
+	React Reactu Reactem
+}
+
+% Povolit LaTeXu mírně roztáhnout mezery místo přetečení řádku
+\emergencystretch=2em
+
+%%%%%%%%%%%%%%%%%%%%%%
+% PACKAGES SETTINGS END
+%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\frontmatter\frontmatterinit % do not remove these two commands
+
+\thispagestyle{empty}\maketitle\thispagestyle{empty}\cleardoublepage % do not remove these four commands
+
+\includepdf[pages={1-}]{assignment-include.pdf}
+
+\imprintpage % do not remove this command
+\stopTOCentries
+
+%%%%%%%%%%%%%%%%%%%
+% ACKNOWLEDGMENT
+% FILL IN / MODIFY
+% This is a place to thank people for helping you. It is common to thank your supervisor.
+%%%%%%%%%%%%%%%%%%%
+\begin{acknowledgmentpage}
+	Chtěl bych poděkovat především sit amet, consectetuer adipiscing elit. Curabitur sagittis hendrerit ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Cras pede libero, dapibus nec, pretium sit amet, tempor quis. Sed vel lectus. Donec odio tempus molestie, porttitor ut, iaculis quis, sem. Suspendisse sagittis ultrices augue.
+\end{acknowledgmentpage}
+%%%%%%%%%%%%%%%%%%%
+% ACKNOWLEDGMENT END
+%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%
+% DECLARATION
+% FILL IN / MODIFY
+%%%%%%%%%%%%%%%%%%%
+% INSTRUCTIONS
+% ENG: choose one of approved texts of the declaration. DO NOT CREATE YOUR OWN. Find the approved texts at https://courses.fit.cvut.cz/SFE/download/index.html#_documents (document Declaration for FT in English)
+% CZE/SLO: Vyberte jedno z fakultou schvalenych prohlaseni. NEVKLADEJTE VLASTNI TEXT. Schvalena prohlaseni najdete zde: https://courses.fit.cvut.cz/SZZ/dokumenty/index.html#_dokumenty (prohlášení do ZP)
+\begin{declarationpage}
+	Prohlašuji, že jsem předloženou práci vypracoval samostatně a~že jsem uvedl veškeré použité informační zdroje v~souladu s~Metodickým pokynem o~dodržování etických principů při přípravě vysokoškolských závěrečných prací.
+
+	Beru na vědomí, že se na moji práci vztahují práva a~povinnosti vyplývající ze zákona č.~121/2000~Sb., autorského zákona, ve znění pozdějších předpisů, zejména skutečnost, že České vysoké učení technické v~Praze má právo na uzavření licenční smlouvy o~užití této práce jako školního díla podle §~60 odst.~1 citovaného zákona.
+\end{declarationpage}
+%%%%%%%%%%%%%%%%%%%
+% DECLARATION END
+%%%%%%%%%%%%%%%%%%%
+
+% Use one of the two following commands. The first prints abstracts+keywords on two pages, the second puts them on one page (if possible). \printonepageabstract can also accept optional argument that specifies a vertical space before both abstracts (the default is 18 mm).
+\printtwopageabstract
+%\printonepageabstract 
+
+%%%%%%%%%%%%%%%%%%%
+% SUMMARY
+% FILL IN / MODIFY
+% OR REMOVE ENTIRELY (upon agreement with your supervisor)
+% (appropriate to remove in most theses)
+%%%%%%%%%%%%%%%%%%%
+% \begin{summarypage}
+% \section*{Summary section}
+% 
+% \lipsum[1][1-8]
+% 
+% \section*{Summary section}
+% 
+% \lipsum[2][1-6]
+% 
+% \section*{Summary section}
+% 
+% \lipsum[3]
+% 
+% \section*{Summary section}
+% 
+% \lipsum[2]
+% 
+% \section*{Summary section}
+% 
+% \lipsum[1][1-8] Lorem lorem lorem.
+% \end{summarypage}
+%%%%%%%%%%%%%%%%%%%
+% SUMMARY END
+%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents % do not remove this command
+%%%%%%%%%%%%%%%%%%%%%%
+% list of other contents: figures, tables, code listings, algorithms, etc.
+% add/remove commands accordingly
+%%%%%%%%%%%%%%%%%%%%%%
+\listoffigures % list of figures
+\begingroup
+\let\clearpage\relax
+\listoftables % list of tables. Remove if you do not have any.
+\thectufitlistingscommand{} % list of code listings. Remove if you do not have any.
+\thectufitlistofalgorithmscommand{} % list of algorithm pseudocodes defined using the algorithm package.
+\endgroup
+%%%%%%%%%%%%%%%%%%%%%%
+% list of other contents END
+%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%
+% ABBREVIATIONS
+% FILL IN / MODIFY
+% OR REMOVE ENTIRELY
+% List the abbreviations in lexicography order.
+%%%%%%%%%%%%%%%%%%%
+\chapter{\thectufitabbreviationlabel}
+
+\begin{tabular}{rl}
+	AES    & Advanced Encryption Standard                     \\
+	API    & Application Programming Interface               \\
+	APK    & Android Package Kit                             \\
+	AWS    & Amazon Web Services                             \\
+	CI/CD  & Continuous Integration / Continuous Deployment   \\
+	CRUD   & Create, Read, Update, Delete                    \\
+	CSRF   & Cross-Site Request Forgery                      \\
+	CSS    & Cascading Style Sheets                          \\
+	CSV    & Comma-Separated Values                          \\
+	DAO    & Data Access Object                              \\
+	DB     & Database                                        \\
+	DTO    & Data Transfer Object                            \\
+	ERP    & Enterprise Resource Planning                    \\
+	FK     & Foreign Key                                     \\
+	GCM    & Galois/Counter Mode                             \\
+	HTML   & HyperText Markup Language                       \\
+	HTTP   & HyperText Transfer Protocol                     \\
+	HTTPS  & HyperText Transfer Protocol Secure              \\
+	HW     & Hardware                                        \\
+	JDBC   & Java Database Connectivity                      \\
+	JSON   & JavaScript Object Notation                      \\
+	JPA    & Jakarta Persistence API                         \\
+	JVM    & Java Virtual Machine                            \\
+	JWT    & JSON Web Token                                  \\
+	KMP    & Kotlin Multiplatform                            \\
+\end{tabular}
+
+\begin{tabular}{rl}
+	MDM    & Mobile Device Management                        \\
+	MIT    & Massachusetts Institute of Technology            \\
+	MUI    & Material UI                                     \\
+	ORM    & Object-Relational Mapping                       \\
+	PDF    & Portable Document Format                        \\
+	PHP    & PHP: Hypertext Preprocessor                     \\
+	PK     & Primary Key                                     \\
+	REST   & Representational State Transfer                 \\
+	RFID   & Radio-Frequency Identification                  \\
+	RN     & React Native                                    \\
+	SCP    & Secure Copy Protocol                            \\
+	SOLID  & Five principles of object-oriented design                                    \\
+	SPA    & Single Page Application                         \\
+	SQL    & Structured Query Language                       \\
+	SSH    & Secure Shell                                    \\
+	SSL    & Secure Sockets Layer                            \\
+	UI     & User Interface                                  \\
+	USB    & Universal Serial Bus                            \\
+	VPS    & Virtual Private Server                          \\
+	XLSX   & Excel Open XML Spreadsheet                      \\
+	ZPL    & Zebra Programming Language
+\end{tabular}
+%%%%%%%%%%%%%%%%%%%
+% ABBREVIATIONS END
+%%%%%%%%%%%%%%%%%%%
+\resumeTOCentries
+\mainmatter\mainmatterinit % do not remove these two commands
+%%%%%%%%%%%%%%%%%%%
+% THE THESIS
+% MODIFY ANYTHING BELOW THIS LINE
+%%%%%%%%%%%%%%%%%%%
+
+\include{text/text} % include `text.tex' from `text/' subdirectory
+
+\appendix\appendixinit % do not remove these two commands
+
+%\include{text/appendix} % include `appendix.tex' from `text/' subdirectory
+
+\backmatter % do not remove this command
+
+\printbibliography[heading=bibintoc] % print out the BibLaTeX-generated bibliography list
+
+\include{text/medium} % include `medium.tex' from `text/' subdirectory
+
+\end{document}

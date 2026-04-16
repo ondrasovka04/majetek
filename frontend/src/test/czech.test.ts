@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { normalizeString, sortById, czechCollator, czechCollatorBase } from "../utils/czech";
+import { normalizeString, sortById, czechCollator, czechCollatorBase } from "@/utils/czech";
 
 describe("normalizeString", () => {
   it("strips Czech diacritics", () => {
@@ -54,8 +54,8 @@ describe("sortById", () => {
     // czechCollator (sensitivity: "variant") distinguishes č from c
     const sortedVariant = sortById(items, czechCollator);
     // Both should put "d" last in Czech
-    expect(sortedBase[sortedBase.length - 1].id).toBe("d");
-    expect(sortedVariant[sortedVariant.length - 1].id).toBe("d");
+    expect(sortedBase.at(-1)?.id).toBe("d");
+    expect(sortedVariant.at(-1)?.id).toBe("d");
   });
 });
 

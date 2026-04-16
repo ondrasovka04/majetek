@@ -144,7 +144,10 @@ class AuthServiceTest {
     @Test
     void refresh_WithValidToken_ShouldReturnNewAccessToken() {
         String refreshToken = "validRefreshToken";
+        String jti = "test-jti-123";
+        testUser.setRefreshJti(jti);
         when(tokenProvider.validateRefreshToken(refreshToken)).thenReturn(true);
+        when(tokenProvider.getJtiFromRefreshToken(refreshToken)).thenReturn(jti);
         when(tokenProvider.getUsernameFromRefreshToken(refreshToken)).thenReturn("testuser");
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
         when(tokenProvider.generateToken(any(Authentication.class))).thenReturn("newAccessToken");

@@ -1,7 +1,7 @@
 /** Login page. Redirects already-authenticated users to /card. */
-import LoginForm from "../components/LoginForm";
+import LoginForm from "@/components/LoginForm";
 import { Navigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "@/store/authStore";
 
 const LoginPage = () => {
   const token = useAuthStore((state) => state.token);

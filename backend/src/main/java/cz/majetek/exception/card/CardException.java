@@ -2,6 +2,9 @@ package cz.majetek.exception.card;
 
 import lombok.Getter;
 
+/**
+ * Exception thrown for card validation, not-found or export errors.
+ */
 @Getter
 public final class CardException extends RuntimeException {
     private final Integer cardId;

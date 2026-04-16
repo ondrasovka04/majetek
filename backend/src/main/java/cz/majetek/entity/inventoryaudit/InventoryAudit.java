@@ -9,6 +9,9 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Inventory audit record capturing scanned card state during stocktaking.
+ */
 @Entity
 @Table(name = "inventory_audit")
 @Getter

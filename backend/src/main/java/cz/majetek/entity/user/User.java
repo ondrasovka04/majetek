@@ -31,4 +31,15 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
+    @Column(name = "refresh_jti", length = 36)
+    private String refreshJti = null;
+
+    public User(String id, String username, String password, String name, UserRole role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.role = role;
+    }
+
 } 

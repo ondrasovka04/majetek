@@ -8,6 +8,9 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
+/**
+ * MapStruct mapper for user entity/DTO conversions.
+ */
 @Mapper(componentModel = "spring")
 public interface IUserMapper {
 

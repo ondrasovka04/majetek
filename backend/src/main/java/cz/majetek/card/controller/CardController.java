@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * REST controller for card CRUD, filtering, exports and label printing.
+ */
 @RestController
 @RequestMapping("/api/card")
 @RequiredArgsConstructor
@@ -29,6 +32,9 @@ public class CardController {
 
     private final ICardService cardService;
 
+    /**
+     * Get all cards.
+     */
     @GetMapping()
     @Operation(summary = "Get all cards", description = "Returns a list of all cards")
     @ApiResponse(responseCode = "200", description = "List of cards",
@@ -38,6 +44,9 @@ public class CardController {
         return ResponseEntity.ok(cardService.getAllCards());
     }
 
+    /**
+     * Get card by ID.
+     */
     @GetMapping("{id}")
     @Operation(summary = "Get card by id", description = "Returns card by id")
     @ApiResponse(responseCode = "200", description = "Card",
@@ -47,6 +56,9 @@ public class CardController {
         return ResponseEntity.ok(cardService.getCardById(id));
     }
 
+    /**
+     * Filter cards by query parameters.
+     */
     @GetMapping("filter")
     @Operation(summary = "Filter cards", description = "Returns a list of cards matching the filter criteria")
     @ApiResponse(responseCode = "200", description = "List of filtered cards",
@@ -56,6 +68,9 @@ public class CardController {
         return ResponseEntity.ok(cardService.getFilteredCards(query));
     }
 
+    /**
+     * Export or print ZPL label.
+     */
     @PostMapping("print")
     @Operation(summary = "Export or print label", description = "Exports label as a file or prints to cloud, based on the parameter")
     @ApiResponse(responseCode = "200", description = "Label exported or printed successfully",
@@ -79,6 +94,9 @@ public class CardController {
                 .body(resource);
     }
 
+    /**
+     * Export cards to Excel.
+     */
     @PostMapping("export-excel")
     @Operation(summary = "Export cards to Excel", description = "Exports filtered cards to an XLSX file")
     @ApiResponse(responseCode = "200", description = "Excel file exported successfully",
@@ -95,6 +113,9 @@ public class CardController {
                 .body(resource);
     }
 
+    /**
+     * Export asset group report to PDF.
+     */
     @PostMapping("export-group-pdf")
     @Operation(summary = "Export group report to PDF", description = "Generates a PDF report for a given asset group")
     @ApiResponse(responseCode = "200", description = "PDF report exported successfully",
@@ -114,6 +135,9 @@ public class CardController {
                 .body(resource);
     }
 
+    /**
+     * Export location report to PDF.
+     */
     @PostMapping("export-location-pdf")
     @Operation(summary = "Export location report to PDF", description = "Generates a PDF report for a given location")
     @ApiResponse(responseCode = "200", description = "PDF report exported successfully",
@@ -132,6 +156,9 @@ public class CardController {
                 .body(resource);
     }
 
+    /**
+     * Export single-card report to PDF.
+     */
     @PostMapping("export-card-pdf")
     @Operation(summary = "Export card report to PDF", description = "Generates a PDF report for a given card")
     @ApiResponse(responseCode = "200", description = "PDF report exported successfully",
@@ -150,6 +177,9 @@ public class CardController {
                 .body(resource);
     }
 
+    /**
+     * Create a new card.
+     */
     @PostMapping
     @Operation(summary = "Create card", description = "Creates a new card")
     @ApiResponse(responseCode = "201", description = "Card created",
@@ -159,6 +189,9 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    /**
+     * Update existing card.
+     */
     @PatchMapping("{id}")
     @Operation(summary = "Update card", description = "Updates existing card by ID")
     @ApiResponse(responseCode = "200", description = "Updated card",
@@ -170,6 +203,9 @@ public class CardController {
         return ResponseEntity.ok(updated);
     }
 
+    /**
+     * Delete card by ID.
+     */
     @DeleteMapping("{id}")
     @Operation(summary = "Delete card", description = "Deletes card by ID")
     @ApiResponse(responseCode = "204", description = "Card deleted")

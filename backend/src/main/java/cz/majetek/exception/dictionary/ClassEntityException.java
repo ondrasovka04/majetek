@@ -2,6 +2,9 @@ package cz.majetek.exception.dictionary;
 
 import lombok.Getter;
 
+/**
+ * Exception thrown for class entity validation or not-found errors.
+ */
 @Getter
 public final class ClassEntityException extends RuntimeException {
     private final String classId;

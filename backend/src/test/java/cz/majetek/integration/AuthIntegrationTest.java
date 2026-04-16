@@ -96,6 +96,8 @@ class AuthIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(30)
     void refresh_withValidCookie_shouldReturnNewToken() throws Exception {
+        // Re-login to get a fresh cookie matching the current jti in DB
+        loginAsAdmin();
         assertNotNull(adminRefreshCookie, "Admin must be logged in first");
 
         mockMvc.perform(post("/api/auth/refresh")

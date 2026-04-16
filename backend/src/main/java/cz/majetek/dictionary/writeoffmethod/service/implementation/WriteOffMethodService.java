@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Implementation of location service interface.
+ * Implementation of write-off method service interface.
  */
 @Service
 @RequiredArgsConstructor
@@ -57,7 +57,6 @@ public class WriteOffMethodService implements IWriteOffMethodService {
     }
 
     @Override
-    @Transactional
     @CacheEvict(value = "writeOffMethods", allEntries = true)
     public void delete(String id) {
         try {

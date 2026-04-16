@@ -1,0 +1,199 @@
+\chapter{Volba technologií}\label{chap:technologies}
+
+\begin{chapterabstract}
+	Tato kapitola srovnává technologie a~frameworky vhodné pro implementaci jednotlivých částí aplikace. Pro každou vrstvu (backend, frontend, mobilní aplikace) jsou porovnány dostupné alternativy s~vyhodnocením výhod a~nevýhod. Kapitola je zakončena přehledem dalších klíčových knihoven použitých v~projektu.
+\end{chapterabstract}
+
+Vyvíjený systém se skládá ze tří hlavních komponent: serverové části (backend), webové aplikace (frontend) a~mobilní aplikace pro inventuru (Android). Každá z~těchto komponent vyžaduje volbu vhodné technologie, přičemž je nutné zohlednit vzájemnou kompatibilitu a~dostupnost knihoven. Všechny zvažované technologie jsou open-source a~bezplatné. Při volbě byla zohledněna i~předchozí zkušenost autora, která umožnila efektivní vývoj.
+
+\section{Backend}
+
+Backend aplikace zajišťuje veškerou business logiku, komunikaci s~databází, autentizaci uživatelů a~generování exportů. Jedná se o~REST API, které obsluhuje jak webovou aplikaci, tak mobilní aplikaci. Pro jeho implementaci byly zvažovány tři technologie.
+
+\subsection{Spring Boot (Java)}
+
+Spring Boot je framework postavený nad platformou Spring, který podle oficiální dokumentace \uv{pomáhá vytvářet samostatné, produkčně kvalitní aplikace založené na Springu s~minimálním úsilím} (překlad vlastní)~\cite{springboot}. Framework zastává tzv. opinionated přístup -- poskytuje rozumné výchozí konfigurace, které lze v~případě potřeby přepsat.
+
+Mezi hlavní přednosti Spring Boot patří rozsáhlý ekosystém. Spring Data JPA~\cite{springdatajpa} nabízí abstrakci nad databázovou vrstvou pomocí Jakarta Persistence API, Spring Security~\cite{springsecurity} poskytuje komplexní řešení autentizace a~autorizace včetně podpory JWT tokenů a~OAuth2. Framework dále disponuje vestavěným webovým serverem (Tomcat), automatickou konfigurací na základě přítomných závislostí a~robustní podporou pro testování prostřednictvím JUnit~5 a~Mockito.
+
+Nevýhodou Spring Boot je vyšší paměťová náročnost typická pro aplikace běžící na JVM a~delší doba studeného startu oproti interpretovaným jazykům. Pro aplikace s~nízkou frekvencí změn v~nasazení, jako je tento projekt, však tato nevýhoda není podstatná.
+
+\subsection{NestJS (TypeScript)}
+
+NestJS~\cite{nestjs} je Node.js framework nabízející modulární architekturu inspirovanou Angularem, vestavěný systém Dependency Injection a~podporu TypeScriptu jako prvotřídního jazyka. Je postaven nad minimalistickým Express.js~\cite{expressjs}, ale na rozdíl od něj poskytuje kompletní strukturu aplikace. Pro práci s~databází lze využít TypeORM nebo Prisma.
+
+Hlavní výhodou je možnost sdílení TypeScriptových typů mezi backendem a~frontendem. Pro tento projekt je nevýhodou absence knihoven srovnatelných s~iText (generování PDF) a~EasyExcel (export do XLSX) v~ekosystému Node.js -- dostupné alternativy (např.\ PDFKit, ExcelJS) nenabízejí stejnou úroveň podpory pro složitější tabulkové reporty a~lokalizaci.
+
+\subsection{Django (Python)}
+
+Django~\cite{django} je plnohodnotný webový framework pro Python, zastávající filozofii \uv{batteries included} -- součástí je vestavěný ORM, administrační rozhraní, systém autentizace i~ochrana proti běžným bezpečnostním hrozbám (CSRF, SQL injection).
+
+Automaticky generované administrační rozhraní je výhodou pro projekty vyžadující rychlý prototyping. Nevýhodou Djanga je dynamický typový systém Pythonu, který oproti Javě nenabízí statickou kontrolu typů v~době kompilace, což může vést k~obtížněji odhalitelným chybám. Ekosystém knihoven pro generování PDF a~ZPL etiket je v~Pythonu rovněž méně rozvinutý než v~prostředí JVM.
+
+\subsection{Srovnání a~zdůvodnění volby}
+
+Tabulka~\ref{tab:backend-comparison} shrnuje srovnání analyzovaných backend technologií.
+
+\begin{table}[htbp]\centering\footnotesize
+\begin{tabular}{l|c|c|c}
+	\textbf{Kritérium} & \textbf{Spring Boot} & \textbf{NestJS} & \textbf{Django} \tabularnewline \hline
+	Jazyk & Java & TypeScript & Python \tabularnewline
+	Typová bezpečnost & silná & silná & dynamická \tabularnewline
+	ORM & JPA (Hibernate) & TypeORM / Prisma & vlastní ORM \tabularnewline
+	Bezpečnostní framework & Spring Security & Passport.js & vestavěný \tabularnewline
+	Podpora PDF/Excel/ZPL & iText 8, EasyExcel & omezená & omezená \tabularnewline
+\end{tabular}
+\caption{Srovnání backend technologií}\label{tab:backend-comparison}
+\end{table}
+
+Pro implementaci backendu byl zvolen \textbf{Spring Boot} z~následujících důvodů:
+\begin{itemize}
+	\item Robustní ekosystém pro enterprise aplikace -- Spring Data JPA pro databázovou vrstvu, Spring Security pro autentizaci a~autorizaci.
+	\item Dostupnost kvalitních knihoven pro generování PDF (iText~8), Excelu (EasyExcel) a~ZPL etiket -- klíčová funkčnost pro tento projekt.
+	\item Silná typová bezpečnost jazyka Java, která usnadňuje údržbu a~refaktoring.
+	\item Konzistence s~mobilní aplikací, která je rovněž implementována v~Javě.
+\end{itemize}
+
+
+\section{Frontend}
+
+Webová aplikace slouží jako hlavní rozhraní pro správu majetkových karet, číselníků, uživatelů a~vyhodnocení inventurních dat. Jedná se o~jednostránkovou aplikaci (SPA) komunikující s~backendem prostřednictvím REST API. Pro její implementaci byly zvažovány tři přední JavaScriptové technologie.
+
+\subsection{React}
+
+React je podle své dokumentace \uv{knihovna pro tvorbu webových a~nativních uživatelských rozhraní} (překlad vlastní)~\cite{react}. Na rozdíl od Angularu se nejedná o~kompletní framework, ale o~knihovnu zaměřenou výhradně na vrstvu uživatelského rozhraní. Výběr ostatních nástrojů (routing, state management, formuláře) je ponechán na vývojáři.
+
+React využívá komponentovou architekturu a~deklarativní přístup prostřednictvím JSX syntaxe. Systém Hooks (\texttt{useState}, \texttt{useEffect}) umožňuje správu stavu a~vedlejších efektů ve funkcionálních komponentách. Ekosystém Reactu je největší ze srovnávaných technologií -- zahrnuje knihovny jako MUI~\cite{mui} pro komponentové UI, TanStack Query~\cite{tanstackquery} pro správu serverového stavu, React Hook Form~\cite{reacthookform} pro formuláře či Zustand~\cite{zustand} pro globální stav.
+
+Nevýhodou Reactu je nutnost skládat aplikaci z~mnoha nezávislých knihoven, což vyžaduje zkušenost s~výběrem a~integrací těchto nástrojů.
+
+\subsection{Angular}
+
+Angular~\cite{angular} je plnohodnotný, opinionated framework vyvíjený týmem ve společnosti Google. Angular poskytuje kompletní sadu nástrojů přímo v~základním balíčku -- vlastní router, HTTP klient, systém formulářů, Dependency Injection a~build toolchain.
+
+TypeScript je v~Angularu povinný, což zajišťuje silnou typovou bezpečnost. Framework dále nabízí reaktivní systém Angular Signals a~vestavěnou podporu pro Server-Side Rendering. Nevýhodou je strmější křivka učení a~větší režie pro menší projekty, kde plnohodnotný framework může být zbytečně komplexní.
+
+\subsection{Vue.js}
+
+Vue.js~\cite{vuejs} je progresivní framework navržený s~důrazem na inkrementální adoptovatelnost -- lze jej použít jak jako jednoduchou knihovnu pro obohacení existujících stránek, tak jako základ pro plnohodnotnou SPA.
+
+Vue nabízí dvě API rozhraní: Options API (přívětivější pro začátečníky) a~Composition API (doporučené pro větší aplikace). Ekosystém obsahuje oficiální řešení pro routing (Vue Router) a~state management (Pinia). Oproti Reactu je ekosystém UI knihoven menší, i~když dostupné jsou například Vuetify nebo Quasar.
+
+\subsection{Srovnání a~zdůvodnění volby}
+
+Tabulka~\ref{tab:frontend-comparison} shrnuje srovnání analyzovaných frontend technologií.
+
+\begin{table}[htbp]\centering\footnotesize
+\begin{tabular}{l|c|c|c}
+	\textbf{Kritérium} & \textbf{React} & \textbf{Angular} & \textbf{Vue.js} \tabularnewline \hline
+	Typ & knihovna & framework & framework \tabularnewline
+	TypeScript & volitelný & povinný & volitelný \tabularnewline
+	State management & Zustand, Redux & Signals, NgRx & Pinia \tabularnewline
+	UI knihovny & MUI, shadcn & Angular Material & Vuetify, Quasar \tabularnewline
+	Přístup & neopinionated & opinionated & progresivní \tabularnewline
+\end{tabular}
+\caption{Srovnání frontend technologií}\label{tab:frontend-comparison}
+\end{table}
+
+Pro implementaci frontendu byla zvolena knihovna \textbf{React} společně s~jazykem
+\textbf{TypeScript}~\cite{typescript} z~následujících důvodů:
+\begin{itemize}
+	\item Největší ekosystém UI knihoven -- MUI~\cite{mui} poskytuje hotové komponenty odpovídající Material Design, včetně tabulek, dialogů a~formulářových prvků potřebných pro správu dat.
+	\item Flexibilita při výběru knihoven -- možnost zvolit optimální nástroj pro každou oblast (TanStack Query pro data fetching, React Hook Form + Zod pro formuláře, Zustand pro globální stav).
+\end{itemize}
+
+Jako build nástroj byl zvolen \textbf{Vite}~\cite{vite}, který nabízí rychlý vývojový server s~Hot Module Replacement a~optimalizovaný produkční build.
+
+
+\section{Mobilní aplikace}
+
+Mobilní aplikace slouží k~provádění inventury v~terénu -- pracovník skenuje Data Matrix kódy na majetku pomocí čtečky Zebra TC22 a~zaznamenává skutečné umístění položek. Aplikace pracuje offline a~data synchronizuje se serverem, jakmile je dostupné připojení k~síti. Cílovým zařízením je výhradně Android.
+
+\subsection{Nativní Android (Java)}
+
+Nativní vývoj pro Android~\cite{android} v~jazyce Java poskytuje přímý přístup ke všem API platformy bez jakékoliv abstrakční vrstvy. Pro lokální ukládání dat je k~dispozici knihovna Room~\cite{androidroom}, která podle oficiální dokumentace \uv{poskytuje abstrakční vrstvu nad SQLite umožňující plynulý přístup k~databázi při využití plného potenciálu SQLite} (překlad vlastní). Room ověřuje SQL dotazy v~době kompilace a~minimalizuje boilerplate kód prostřednictvím anotací.
+
+Pro HTTP komunikaci lze využít knihovnu OkHttp~\cite{okhttp}, která podporuje synchronní i~asynchronní požadavky. Hlavní výhodou nativního přístupu je plná kontrola nad lifecycle komponent a~přímá kompatibilita se vstupem z~hardwarového skeneru, který posílá data jako klávesnicové události.
+
+Nevýhodou je omezení na jedinou platformu a~větší množství boilerplate kódu oproti modernějším alternativám.
+
+\subsection{Kotlin}
+
+Kotlin~\cite{kotlin} je oficiálně doporučený jazyk pro vývoj Android aplikací. Nabízí modernější syntaxi než Java -- \texttt{null} safety na úrovni typového systému, korutiny pro asynchronní programování a~méně boilerplate kódu. Kotlin je plně interoperabilní s~Javou, což umožňuje postupnou migraci existujícího kódu.
+
+Pro tento projekt by Kotlin nepřinesl zásadní výhody. Aplikace je architektonicky jednoduchá (jedna Activity, tři fragmenty) a~nevyužívá složité asynchronní vzory, pro které jsou korutiny navrženy. Zavedení dalšího jazyka do projektu by zvýšilo komplexitu bez odpovídajícího přínosu.
+
+\subsection{Flutter / React Native}
+
+Flutter~\cite{flutter} je multiplatformní framework od Google, který používá jazyk Dart a~vlastní vykreslovací engine obcházející nativní UI komponenty platformy. React Native~\cite{reactnative} vykresluje JavaScriptový kód prostřednictvím nativních komponent; doporučeným meta-frameworkem je Expo.
+
+Obě technologie nabízejí multiplatformní vývoj, který však v~tomto projektu není potřeba -- cílovým zařízením je výhradně Zebra TC22 se systémem Android. Zásadním problémem je omezená podpora specifického hardwaru: vstup ze skeneru přichází jako události hardwarové klávesnice zakončené klávesou Enter nebo Tab, což vyžaduje přímý přístup k~nativním listenerům (\texttt{OnKeyListener}, \texttt{OnEditorActionListener}). Abstrakční vrstva multiplatformních frameworků by tento přístup komplikovala.
+
+\subsection{Srovnání a~zdůvodnění volby}
+
+Tabulka~\ref{tab:mobile-comparison} shrnuje srovnání analyzovaných mobilních technologií.
+
+\begin{table}[htbp]\centering\footnotesize
+\begin{tabular}{l|c|c|c}
+	\textbf{Kritérium} & \textbf{Java (nativní)} & \textbf{Kotlin} & \textbf{Flutter / RN} \tabularnewline \hline
+	Platformy & Android & Android (+ KMP) & Android + iOS \tabularnewline
+	Přístup k~HW skeneru & přímý & přímý & přes bridge \tabularnewline
+	Offline DB & Room (SQLite) & Room (SQLite) & SQLite plugin \tabularnewline
+	Složitost & nízká & nízká & střední \tabularnewline
+\end{tabular}
+\caption{Srovnání mobilních technologií}\label{tab:mobile-comparison}
+\end{table}
+
+Pro implementaci mobilní aplikace byl zvolen \textbf{nativní Android v~Javě} z~následujících důvodů:
+\begin{itemize}
+	\item Přímý přístup k~hardwarovému skeneru Zebra -- vstup přichází jako klávesnicové události, které je nutné zpracovat prostřednictvím nativních listenerů.
+	\item Plná kontrola nad lifecycle komponent -- aplikace pracuje offline s~lokální Room databází a~vyžaduje přesnou správu synchronizace dat.
+	\item Jednoduchost -- pro aplikaci s~jednou Activity a~třemi fragmenty není potřeba složitý framework.
+	\item Konzistence s~backendem -- oba projekty sdílejí jazyk Java, což usnadňuje přechod mezi jednotlivými částmi projektu.
+\end{itemize}
+
+
+\section{Databázový systém}
+
+Systém využívá relační databázi pro ukládání majetkových karet, číselníků, uživatelů a~inventurních záznamů. Na mobilním zařízení je navíc potřeba lokální databáze pro offline režim. Pro produkční nasazení byly zvažovány dva databázové systémy.
+
+\subsection{PostgreSQL}
+
+PostgreSQL~\cite{postgresql} je objektově-relační databázový systém s~více než 35 lety aktivního vývoje. Nabízí podporu komplexních datových typů (JSONB, pole), fulltextové vyhledávání, rozšiřitelnost prostřednictvím vlastních funkcí (např.\ \texttt{unaccent} pro vyhledávání bez diakritiky) a~vysokou spolehlivost.
+
+\subsection{MySQL / MariaDB}
+
+MySQL~\cite{mysql} je nejrozšířenější open-source relační databáze s~širokou podporou u~hostingových poskytovatelů. MariaDB~\cite{mariadb} je komunitní fork MySQL se zpětnou kompatibilitou, který MySQL v~open-source prostředí postupně nahrazuje. Pro účely tohoto projektu by oba systémy poskytovaly dostatečnou funkčnost. PostgreSQL byl zvolen díky podpoře funkce \texttt{unaccent} pro vyhledávání bez diakritiky a~předchozí zkušenosti autora.
+
+\subsection{H2 a~Room}
+
+Pro automatizované testování backendu byla zvolena in-memory databáze \textbf{H2}~\cite{h2database} v~PostgreSQL compatibility mode. H2 je kompatibilní s~JPA a~nevyžaduje žádnou externí infrastrukturu, testy tak běží izolovaně a~reproducibilně. Testy ověřují business logiku a~JPA dotazy; SQL specifika PostgreSQL (např.\ funkce \texttt{unaccent}) jsou testována prostřednictvím integračních testů.
+
+Na mobilním zařízení je využita knihovna \textbf{Room}~\cite{androidroom} jako abstrakce nad SQLite. Room poskytuje ověřování SQL dotazů v~době kompilace, automatické mapování mezi Java objekty a~databázovými tabulkami prostřednictvím anotací (\texttt{@Entity}, \texttt{@Dao}, \texttt{@Query}) a~podporu migrací.
+
+\subsection{Zdůvodnění volby}
+
+Pro produkční nasazení byl zvolen \textbf{PostgreSQL} díky zralosti, spolehlivosti a~výborné integraci se Spring Data JPA. Všechny zvažované databázové systémy jsou open-source a~bezplatné, takže náklady na licence nebyly rozhodovacím faktorem. Kombinace PostgreSQL (produkce), H2 (testy) a~Room/SQLite (mobilní zařízení) pokrývá potřeby všech tří prostředí.
+
+
+\section{Další klíčové knihovny}
+
+Kromě hlavních technologií popsaných výše projekt využívá řadu specializovaných knihoven, které výrazně zefektivňují vývoj.
+
+\subsection{Backend knihovny}
+
+\textbf{MapStruct}~\cite{mapstruct} je generátor kódu pro mapování mezi Java beany (typicky DTO a~entity). Na rozdíl od reflexe-based řešení generuje mapovací kód v~době kompilace, což zajišťuje typovou bezpečnost a~vyšší výkon.
+
+\textbf{Project Lombok}~\cite{lombok} redukuje boilerplate kód prostřednictvím anotací~-- \texttt{@Getter}, \texttt{@Setter} a~\texttt{@RequiredArgsConstructor} generují gettery, settery a~konstruktory automaticky. Lombok je nakonfigurován tak, aby generovaný kód byl označen anotací \texttt{@Generated}, čímž je vyloučen z~měření pokrytí kódu testy.
+
+\subsection{Frontend knihovny}
+
+\textbf{TanStack Query}~\cite{tanstackquery} zajišťuje správu serverového stavu -- automatické cachování, invalidaci a~refetching dat z~API. Všechna data ve webové aplikaci jsou načítána výhradně prostřednictvím TanStack Query hooků.
+
+\textbf{React Hook Form}~\cite{reacthookform} v~kombinaci s~validační knihovnou \textbf{Zod}~\cite{zod} zajišťuje správu formulářů s~typově bezpečnou validací. Validační schémata definovaná v~Zod slouží zároveň jako dokumentace očekávaného formátu dat.
+
+\textbf{Zustand}~\cite{zustand} je minimalistická knihovna pro globální state management, využitá pro správu autentizačního stavu (uživatel, JWT token, expirace).
+
+\textbf{MUI}~\cite{mui} (Material UI) poskytuje hotové React komponenty implementující Material Design -- tabulky, dialogová okna, formulářové prvky a~navigaci. Díky MUI bylo možné rychle vytvořit konzistentní a~přístupné uživatelské rozhraní.
+
+

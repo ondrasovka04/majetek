@@ -70,7 +70,6 @@ public class LocationService implements ILocationService {
     }
 
     @Override
-    @Transactional
     @CacheEvict(value = "locations", allEntries = true)
     public void delete(String id) {
         try {

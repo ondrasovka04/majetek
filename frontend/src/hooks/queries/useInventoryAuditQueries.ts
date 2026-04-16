@@ -5,8 +5,8 @@ import {
   getInventoryDifferences,
   patchInventoryDifference,
   projectInventoryDifferences,
-} from "../../services/inventoryAuditService";
-import { InventoryDifferenceAction } from "../../types/inventoryAudit/inventoryDifference";
+} from "@/services/inventoryAuditService";
+import { InventoryDifferenceAction } from "@/types/inventoryAudit/inventoryDifference";
 
 export function useInventoryAudit() {
   return useQuery({

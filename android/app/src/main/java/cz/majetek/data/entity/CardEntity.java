@@ -7,6 +7,9 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 
+/**
+ * Room entity for asset cards (table card, FK to location).
+ */
 @Entity(tableName = "card", foreignKeys = @ForeignKey(entity = LocationEntity.class, parentColumns = "id", childColumns = "location_id"), indices = {@Index(value = {"location_id"})})
 public class CardEntity {
     @PrimaryKey

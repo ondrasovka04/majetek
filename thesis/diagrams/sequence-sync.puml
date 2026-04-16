@@ -1,0 +1,49 @@
+@startuml sequence-sync
+!theme plain
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 200
+skinparam participantFontSize 13
+skinparam sequenceFontSize 12
+
+title Synchronizace dat mezi mobilní aplikací a serverem
+
+participant "Mobilní aplikace\n(Zebra TC22)" as App
+database "Room\ndatabáze" as Room
+participant "REST API\n(Spring Boot)" as Server
+database "PostgreSQL" as DB
+
+== Stažení dat (před inventurou) ==
+
+App -> Server : POST /auth/login\n(Basic Auth)
+Server --> App : JWT access + refresh token
+App -> App : Uložit tokeny\n(EncryptedSharedPreferences)
+
+App -> Server : GET /cards
+Server -> DB : SELECT karty
+Server --> App : JSON seznam karet
+
+App -> Server : GET /locations
+Server -> DB : SELECT umístění
+Server --> App : JSON seznam umístění
+
+App -> Room : INSERT karty + umístění\n(REPLACE strategie)
+note right of Room : Atomická transakce\n– nejdříve smazat,\npak vložit vše
+
+== Skenování (offline) ==
+
+App -> Room : INSERT audit záznam\n(karta, umístění, čas)
+note right of App : Opakuje se pro\nkaždý naskenovaný kód
+
+== Nahrání dat (po inventuře) ==
+
+App -> Room : SELECT všechny audit záznamy
+Room --> App : List<InventoryAuditEntity>
+
+App -> Server : POST /inventory-audit/insert-many\n(JSON pole auditů)
+Server -> DB : Batch INSERT auditů
+Server --> App : 201 Created
+
+App -> Room : DELETE audit záznamy
+note right of Room : Lokální data\nvymazána po úspěšném uploadu
+
+@enduml

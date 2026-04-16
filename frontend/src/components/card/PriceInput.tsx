@@ -1,3 +1,4 @@
+/** Controlled price input that formats the value as Czech currency (CZK) on blur and parses it on focus. */
 import { TextField } from "@mui/material";
 import { useState, useCallback } from "react";
 
@@ -58,7 +59,7 @@ export const PriceInput = ({ value, label, onChange }: PriceInputProps) => {
       onChange={handleChange}
       type="text"
       slotProps={{
-        htmlInput: { inputMode: "decimal", pattern: "\\d*[.,]?\\d*" },
+        htmlInput: { inputMode: "decimal", pattern: String.raw`\d*[.,]?\d*` },
       }}
     />
   );

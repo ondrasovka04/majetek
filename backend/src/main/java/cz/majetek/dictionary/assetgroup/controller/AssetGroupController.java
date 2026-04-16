@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for asset group dictionary CRUD operations.
+ */
 @RestController
 @RequestMapping("/api/asset-group")
 @RequiredArgsConstructor

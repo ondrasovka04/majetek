@@ -5,29 +5,29 @@
  */
 import { Typography, CircularProgress, Tooltip, IconButton } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import AttachmentModal from "./AttachmentModal";
+import AttachmentModal from "@/components/card/AttachmentModal";
 import SaveIcon from "@mui/icons-material/Save";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useState, useEffect, useRef } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { translateError } from "../../utils/errorTranslations";
-import { Class } from "../../types/class";
-import { AssetGroup } from "../../types/assetGroup";
-import { Location } from "../../types/location";
-import { PurchaseMethod } from "../../types/purchaseMethod";
-import { WriteOffMethod } from "../../types/writeOffMethod";
-import { User } from "../../types/auth";
+import { translateError } from "@/utils/errorTranslations";
+import { Class } from "@/types/class";
+import { AssetGroup } from "@/types/assetGroup";
+import { Location } from "@/types/location";
+import { PurchaseMethod } from "@/types/purchaseMethod";
+import { WriteOffMethod } from "@/types/writeOffMethod";
+import { User } from "@/types/auth";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DownloadIcon from "@mui/icons-material/Download";
-import ConfirmDialog from "./ConfirmDialog";
+import ConfirmDialog from "@/components/card/ConfirmDialog";
 import { saveAs } from "file-saver";
-import { cardSchema, CardFormValues, CardFormOutput } from "../../schemas/cardSchema";
-import CardFormFields from "./CardFormFields";
-import { useNotification } from "../../hooks/useNotification";
-import { extractErrorMessage } from "../../utils/extractErrorMessage";
-import { useCardDetail, useUpdateCard, useDeleteCard, useExportCardPdf } from "../../hooks/queries/useCardQueries";
-import { useAttachments } from "../../hooks/queries/useAttachmentQueries";
+import { cardSchema, CardFormValues, CardFormOutput } from "@/schemas/cardSchema";
+import CardFormFields from "@/components/card/CardFormFields";
+import { useNotification } from "@/hooks/useNotification";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
+import { useCardDetail, useUpdateCard, useDeleteCard, useExportCardPdf } from "@/hooks/queries/useCardQueries";
+import { useAttachments } from "@/hooks/queries/useAttachmentQueries";
 
 interface Props {
   cardId: string;

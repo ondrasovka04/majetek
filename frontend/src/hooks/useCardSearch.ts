@@ -1,8 +1,8 @@
 /** Fuse.js-powered search, write-off filtering, and Czech-locale sorting for the card list. */
 import { useMemo } from "react";
 import Fuse from "fuse.js";
-import { Card } from "../types/card/card";
-import { normalizeString, czechCollatorBase } from "../utils/czech";
+import { Card } from "@/types/card/card";
+import { normalizeString, czechCollatorBase } from "@/utils/czech";
 
 interface SortConfig {
   key: keyof Card;

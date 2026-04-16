@@ -1,7 +1,7 @@
 /**
  * Inventory differences page (DataGrid).
  * Compares expected vs. actual locations, lets users choose actions
- * (KEEP / SU / OU / WRITE_OFF) per card, and project changes to the database.
+ * (KEEP / RL / EL / WRITE_OFF) per card, and project changes to the database.
  */
 import { useMemo, useState } from "react";
 import {
@@ -16,23 +16,23 @@ import {
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import MenuBar from "../../components/MenuBar";
-import { defaultTheme } from "../../theme";
-import ProjectionConfirmDialog from "../../components/inventoryAudit/ProjectionConfirmDialog";
+import MenuBar from "@/components/MenuBar";
+import { defaultTheme } from "@/theme";
+import ProjectionConfirmDialog from "@/components/inventoryAudit/ProjectionConfirmDialog";
 import {
   InventoryDifferenceEntry,
   InventoryDifferenceAction,
   InventoryDifferenceStatus,
-} from "../../types/inventoryAudit/inventoryDifference";
-import { translateError } from "../../utils/errorTranslations";
-import { extractErrorMessage } from "../../utils/extractErrorMessage";
+} from "@/types/inventoryAudit/inventoryDifference";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
 
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { csCZ as dataGridCsCZ } from "@mui/x-data-grid/locales";
 import { useNavigate } from "react-router-dom";
 
-import { useDifferenceEntries } from "../../hooks/useDifferenceEntries";
-import { useNotification } from "../../hooks/useNotification";
+import { useDifferenceEntries } from "@/hooks/useDifferenceEntries";
+import { useNotification } from "@/hooks/useNotification";
 
 const statusTranslation: Record<InventoryDifferenceStatus, string> = {
   CORRECT: "Správně",
@@ -80,7 +80,7 @@ const InventoryDifferencesPage = () => {
   const getDefaultAction = (entry: InventoryDifferenceEntry): InventoryDifferenceAction | "" => {
     if (entry.action) return entry.action;
     if (entry.status === "CORRECT") return "KEEP";
-    if (entry.status === "WARN") return "SU";
+    if (entry.status === "WARN") return "RL";
     return "";
   };
 
@@ -98,14 +98,14 @@ const InventoryDifferencesPage = () => {
 
   const selectableActions = (status: InventoryDifferenceStatus): Exclude<InventoryDifferenceAction, null>[] => {
     if (status === "CORRECT") return ["KEEP"];
-    if (status === "WARN") return ["SU", "OU", "WRITE_OFF"];
-    return ["OU", "WRITE_OFF"]; // WRONG
+    if (status === "WARN") return ["RL", "EL", "WRITE_OFF"];
+    return ["EL", "WRITE_OFF"]; // WRONG
   };
 
   const actionLabel: Record<Exclude<InventoryDifferenceAction, null>, string> = {
     KEEP: "Nechat",
-    SU: "Skutečné umístění",
-    OU: "Očekávané umístění",
+    RL: "Skutečné umístění",
+    EL: "Očekávané umístění",
     WRITE_OFF: "Vyřadit",
   };
 
@@ -163,8 +163,8 @@ const InventoryDifferencesPage = () => {
       type: "singleSelect",
       valueOptions: [
         { value: "KEEP", label: "Nechat" },
-        { value: "SU", label: "Skutečné umístění" },
-        { value: "OU", label: "Očekávané umístění" },
+        { value: "RL", label: "Skutečné umístění" },
+        { value: "EL", label: "Očekávané umístění" },
         { value: "WRITE_OFF", label: "Vyřadit" },
       ],
       renderCell: (params) => {
@@ -193,11 +193,10 @@ const InventoryDifferencesPage = () => {
               }
               updateEntryAndSave(entry.cardId, patch);
             }}
-            renderValue={(value) =>
-              !value && entry.status === "WRONG"
-                ? "(zvolit)"
-                : actionLabel[value as Exclude<InventoryDifferenceAction, null>]
-            }>
+            renderValue={(value) => {
+              if (!value && entry.status === "WRONG") return "(zvolit)";
+              return actionLabel[value as Exclude<InventoryDifferenceAction, null>];
+            }}>
             {entry.status === "WRONG" && <MenuItem value="">(zvolit)</MenuItem>}
             {actions.map((a) => (
               <MenuItem key={a} value={a}>
@@ -256,7 +255,7 @@ const InventoryDifferencesPage = () => {
               value={entry.writeOffMethodId ?? ""}
               onChange={(ev) =>
                 updateEntryAndSave(entry.cardId, {
-                  writeOffMethodId: (ev.target.value || null) as string | null,
+                  writeOffMethodId: ev.target.value || null,
                 })
               }>
               {writeOffMethods.map((m) => (

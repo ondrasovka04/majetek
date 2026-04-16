@@ -1,30 +1,30 @@
 /** PDF report generation page. Offers group, location, and individual card reports with an embedded PDF viewer. */
 import { useState } from "react";
 import { Paper, Typography, List, ListItemButton, CircularProgress } from "@mui/material";
-import MenuBar from "../components/MenuBar";
-import { translateError } from "../utils/errorTranslations";
-import { extractErrorMessage } from "../utils/extractErrorMessage";
+import MenuBar from "@/components/MenuBar";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
-import GroupReportModal, { ALL_GROUPS } from "../components/report/GroupReportModal";
-import czechLocalization from "../utils/czechLocalization";
-import LocationReportModal from "../components/report/LocationReportModal";
-import CardReportModal from "../components/report/CardReportModal";
-import { useNotification } from "../hooks/useNotification";
-import { useAssetGroups } from "../hooks/queries/useAssetGroupQueries";
-import { useLocations } from "../hooks/queries/useLocationQueries";
-import { useExportCardPdf, useExportGroupPdf, useExportLocationPdf } from "../hooks/queries/useCardQueries";
-import { sortById } from "../utils/czech";
+import GroupReportModal, { ALL_GROUPS } from "@/components/report/GroupReportModal";
+import czechLocalization from "@/utils/czechLocalization";
+import LocationReportModal from "@/components/report/LocationReportModal";
+import CardReportModal from "@/components/report/CardReportModal";
+import { useNotification } from "@/hooks/useNotification";
+import { useAssetGroups } from "@/hooks/queries/useAssetGroupQueries";
+import { useLocations } from "@/hooks/queries/useLocationQueries";
+import { useExportCardPdf, useExportGroupPdf, useExportLocationPdf } from "@/hooks/queries/useCardQueries";
+import { sortById } from "@/utils/czech";
 
-type ActiveModal = "group" | "location" | "card" | null;
+type ActiveModal = "group" | "location" | "card" | undefined;
 
 const ReportPage = () => {
   const [selectedGroup, setSelectedGroup] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [activeModal, setActiveModal] = useState<ActiveModal>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | undefined>();
+  const [activeModal, setActiveModal] = useState<ActiveModal>();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
   const { notifyError, NotificationBar } = useNotification();
@@ -117,7 +117,7 @@ const ReportPage = () => {
   };
 
   const handleCloseModal = () => {
-    setActiveModal(null);
+    setActiveModal(undefined);
     resetModalState();
   };
 
@@ -126,7 +126,7 @@ const ReportPage = () => {
       notifyError("Musíte vybrat skupinu.");
       return;
     }
-    setActiveModal(null);
+    setActiveModal(undefined);
     const groupId = selectedGroup === ALL_GROUPS ? "" : selectedGroup;
     groupPdfMutation.mutate(
       { groupId, selectedDate },
@@ -147,7 +147,7 @@ const ReportPage = () => {
       notifyError("Musíte vybrat místnost.");
       return;
     }
-    setActiveModal(null);
+    setActiveModal(undefined);
     locationPdfMutation.mutate(
       { locationId: selectedLocation, selectedDate },
       {
@@ -163,7 +163,7 @@ const ReportPage = () => {
   };
 
   const handleGenerateCardPdf = (cardId: number) => {
-    setActiveModal(null);
+    setActiveModal(undefined);
     cardPdfMutation.mutate(cardId, {
       onSuccess: (result) => {
         setPdfUrl(result.url);

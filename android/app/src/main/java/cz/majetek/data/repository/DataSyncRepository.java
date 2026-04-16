@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import cz.majetek.BuildConfig;
 import cz.majetek.data.db.AppDatabase;
 import cz.majetek.data.entity.CardEntity;
 import cz.majetek.data.entity.InventoryAuditEntity;
@@ -29,6 +28,9 @@ import cz.majetek.data.network.LoginResult;
 import cz.majetek.util.BaseUrlStorage;
 import cz.majetek.util.TokenStorage;
 
+/**
+ * Orchestrates data synchronization between the API and local Room DB.
+ */
 public class DataSyncRepository {
     private ApiClient api;
     private String lastBaseUrl;
@@ -48,6 +50,9 @@ public class DataSyncRepository {
 
     private static final DateTimeFormatter TS_FMT_BASE = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").withZone(ZoneOffset.UTC);
 
+    /**
+     * Downloads locations + cards from the API and saves them to Room DB in a transaction.
+     */
     public void downloadToDevice(Context ctx, Callback cb) {
         io.execute(() -> {
             try {
@@ -68,6 +73,9 @@ public class DataSyncRepository {
         });
     }
 
+    /**
+     * Uploads inventory audit records as a JSON array to the server.
+     */
     public void uploadInventoryAudit(Context ctx, AuditUploadCallback cb) {
         io.execute(() -> {
             try {
@@ -87,6 +95,9 @@ public class DataSyncRepository {
         });
     }
 
+    /**
+     * Returns a valid JWT token – from cache or via fresh login.
+     */
     private String ensureToken(Context ctx) throws IOException {
         String token = TokenStorage.getValidToken(ctx);
         if (token != null && !token.isEmpty()) return token;
@@ -120,7 +131,11 @@ public class DataSyncRepository {
     }
 
     private String login(Context ctx) throws IOException {
-        String credentials = BuildConfig.ADMIN_USER + ":" + BuildConfig.ADMIN_PASS;
+        String user = TokenStorage.getUsername(ctx);
+        String pass = TokenStorage.getPassword(ctx);
+        if (user == null || user.isEmpty() || pass == null || pass.isEmpty())
+            throw new IOException("Přihlašovací údaje nejsou nastaveny");
+        String credentials = user + ":" + pass;
         String basic = encodeToString(credentials.getBytes(), NO_WRAP);
         LoginResult lr = getApi(ctx).login(basic);
         if (lr == null || lr.token() == null || lr.token().isEmpty())
@@ -130,6 +145,9 @@ public class DataSyncRepository {
         return lr.token();
     }
 
+    /**
+     * Lazy ApiClient initialization – rebuilds when baseUrl changes.
+     */
     private ApiClient getApi(Context ctx) {
         String base = BaseUrlStorage.getBaseUrl(ctx);
         if (api == null || lastBaseUrl == null || !lastBaseUrl.equals(base)) {
@@ -139,6 +157,9 @@ public class DataSyncRepository {
         return api;
     }
 
+    /**
+     * Serializes inventory audit records to JSON with ISO timestamps (UTC).
+     */
     String buildAuditJson(List<InventoryAuditEntity> audits) {
         JsonArray arr = new JsonArray();
         for (InventoryAuditEntity a : audits) {

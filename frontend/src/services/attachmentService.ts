@@ -1,6 +1,6 @@
 /** API service for card attachment operations (list, download, upload, delete). */
-import authorizedRequest from "../utils/authorizedRequest";
-import { AttachmentDto } from "../types/attachment";
+import authorizedRequest from "@/utils/authorizedRequest";
+import { AttachmentDto } from "@/types/attachment";
 
 export const getAttachments = async (cardId: string): Promise<AttachmentDto[]> => {
   const res = await authorizedRequest.get(`card/${cardId}/attachments`);

@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 /**
  * Zod schema for card form validation.
  * Used as the source of truth with React Hook Form via zodResolver.
@@ -7,6 +5,7 @@ import { z } from "zod";
  * String fields that represent "empty" use empty string "" which the
  * `emptyToNull` transform converts to null before sending to the API.
  */
+import { z } from "zod";
 
 const emptyToNull = (v: string) => (v === "" ? null : v);
 const emptyToNullNum = (v: number | null | undefined) => (v == null || Number.isNaN(v) ? null : v);

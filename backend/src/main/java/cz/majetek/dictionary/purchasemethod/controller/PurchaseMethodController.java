@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for purchase method dictionary CRUD operations.
+ */
 @RestController
 @RequestMapping("/api/purchase-method")
 @RequiredArgsConstructor
@@ -82,7 +85,7 @@ public class PurchaseMethodController {
     @Operation(summary = "Delete purchase method ", description = "Deletes a purchase method by ID")
     @ApiResponse(responseCode = "204", description = "PurchaseMethod deleted")
     public ResponseEntity<Void> delete(
-            @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id) {
+            @PathVariable @Parameter(name = "id", required = true, in = ParameterIn.PATH) String id) {
         purchaseMethodService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

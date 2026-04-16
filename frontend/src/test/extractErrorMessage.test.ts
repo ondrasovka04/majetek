@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { extractErrorMessage } from "../utils/extractErrorMessage";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
 
 describe("extractErrorMessage", () => {
   it("extracts message from standard Error", () => {

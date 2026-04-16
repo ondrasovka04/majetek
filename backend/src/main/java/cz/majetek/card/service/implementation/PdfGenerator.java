@@ -41,6 +41,9 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * Utility for generating PDF reports (group, location, card) using iText.
+ */
 public final class PdfGenerator {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -62,6 +65,9 @@ public final class PdfGenerator {
     private PdfGenerator() {
     }
 
+    /**
+     * Generate PDF report for a single asset group with card table.
+     */
     public static byte[] generateGroupReport(AssetGroup group, List<Card> cards, LocalDate asOfDate) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             Document doc = createStyledDocument(baos);
@@ -84,6 +90,9 @@ public final class PdfGenerator {
         }
     }
 
+    /**
+     * Generate summary PDF listing all groups with totals.
+     */
     public static byte[] generateAllGroupsReport(List<Pair<String, Double>> groupTotals, LocalDate asOfDate) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             Document doc = createStyledDocument(baos);
@@ -115,6 +124,9 @@ public final class PdfGenerator {
         }
     }
 
+    /**
+     * Generate PDF inventory sheet for a specific location.
+     */
     public static byte[] generateLocationReport(Location location, List<Card> cards, LocalDate asOfDate) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             Document doc = createStyledDocument(baos);
@@ -138,6 +150,9 @@ public final class PdfGenerator {
         }
     }
 
+    /**
+     * Generate PDF detail report (inventory card) for a single card.
+     */
     public static byte[] generateCardReport(Card card) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             Document doc = createStyledDocument(baos);

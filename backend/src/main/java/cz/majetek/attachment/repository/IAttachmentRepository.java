@@ -10,6 +10,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository for Attachment entity with composite key lookups.
+ */
 public interface IAttachmentRepository extends JpaRepository<Attachment, AttachmentId> {
     List<Attachment> findAllByIdCardId(Integer cardId);
 

@@ -1,17 +1,17 @@
 /** Location dictionary page with print report action button. */
 import { IconButton } from "@mui/material";
 import PrintIcon from "@mui/icons-material/Print";
-import DictionaryPage from "../components/dictionary/DictionaryPage";
-import { Location } from "../types/location";
+import DictionaryPage from "@/components/dictionary/DictionaryPage";
+import { Location } from "@/types/location";
 import {
   useLocations,
   useCreateLocation,
   useUpdateLocation,
   useDeleteLocation,
   usePrintLocation,
-} from "../hooks/queries/useLocationQueries";
-import { translateError } from "../utils/errorTranslations";
-import { extractErrorMessage } from "../utils/extractErrorMessage";
+} from "@/hooks/queries/useLocationQueries";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
 
 const LocationPage = () => {
   const printMutation = usePrintLocation();

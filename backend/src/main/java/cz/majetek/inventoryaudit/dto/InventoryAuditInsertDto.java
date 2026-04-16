@@ -7,6 +7,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO for inserting a new inventory audit scan from the mobile app.
+ */
 @Getter
 @Setter
 public class InventoryAuditInsertDto {

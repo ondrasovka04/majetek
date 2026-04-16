@@ -1,7 +1,7 @@
 /** TanStack Query hooks for class (třída) CRUD with cache invalidation. */
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getClasses, createClass, updateClass, deleteClass } from "../../services/classService";
-import { Class } from "../../types/class";
+import { getClasses, createClass, updateClass, deleteClass } from "@/services/classService";
+import { Class } from "@/types/class";
 
 const QUERY_KEY = ["classes"] as const;
 

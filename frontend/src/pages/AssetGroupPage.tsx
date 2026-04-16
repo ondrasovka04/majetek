@@ -1,12 +1,12 @@
 /** Asset group (skupina majetku) dictionary page. */
-import DictionaryPage from "../components/dictionary/DictionaryPage";
-import { AssetGroup } from "../types/assetGroup";
+import DictionaryPage from "@/components/dictionary/DictionaryPage";
+import { AssetGroup } from "@/types/assetGroup";
 import {
   useAssetGroups,
   useCreateAssetGroup,
   useUpdateAssetGroup,
   useDeleteAssetGroup,
-} from "../hooks/queries/useAssetGroupQueries";
+} from "@/hooks/queries/useAssetGroupQueries";
 
 const AssetGroupPage = () => (
   <DictionaryPage<AssetGroup>

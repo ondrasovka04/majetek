@@ -37,9 +37,7 @@ public class DaoTest {
     @Before
     public void setUp() {
         Context context = ApplicationProvider.getApplicationContext();
-        db = Room.inMemoryDatabaseBuilder(context, AppDatabase.class)
-                .allowMainThreadQueries()
-                .build();
+        db = Room.inMemoryDatabaseBuilder(context, AppDatabase.class).allowMainThreadQueries().build();
         cardDao = db.cardDao();
         locationDao = db.locationDao();
         inventoryAuditDao = db.inventoryAuditDao();
@@ -74,27 +72,16 @@ public class DaoTest {
         LocationEntity location = new LocationEntity("L1", "Location 1");
         locationDao.insertAll(Collections.singletonList(location));
 
-        cardDao.insertAll(Arrays.asList(
-                new CardEntity(1, "Card A", 10.0, 1.0, "L1"),
-                new CardEntity(2, "Card B", 20.0, 2.0, "L1"),
-                new CardEntity(3, "Card C", 30.0, 3.0, "L1")
-        ));
+        cardDao.insertAll(Arrays.asList(new CardEntity(1, "Card A", 10.0, 1.0, "L1"), new CardEntity(2, "Card B", 20.0, 2.0, "L1"), new CardEntity(3, "Card C", 30.0, 3.0, "L1")));
 
         assertEquals(3, cardDao.countAll());
     }
 
     @Test
     public void countByLocation_filtersCorrectly() {
-        locationDao.insertAll(Arrays.asList(
-                new LocationEntity("L1", "Location 1"),
-                new LocationEntity("L2", "Location 2")
-        ));
+        locationDao.insertAll(Arrays.asList(new LocationEntity("L1", "Location 1"), new LocationEntity("L2", "Location 2")));
 
-        cardDao.insertAll(Arrays.asList(
-                new CardEntity(1, "Card A", 10.0, 1.0, "L1"),
-                new CardEntity(2, "Card B", 20.0, 2.0, "L1"),
-                new CardEntity(3, "Card C", 30.0, 3.0, "L2")
-        ));
+        cardDao.insertAll(Arrays.asList(new CardEntity(1, "Card A", 10.0, 1.0, "L1"), new CardEntity(2, "Card B", 20.0, 2.0, "L1"), new CardEntity(3, "Card C", 30.0, 3.0, "L2")));
 
         assertEquals(2, cardDao.countByLocation("L1"));
         assertEquals(1, cardDao.countByLocation("L2"));
@@ -106,10 +93,7 @@ public class DaoTest {
         LocationEntity location = new LocationEntity("L1", "Location 1");
         locationDao.insertAll(Collections.singletonList(location));
 
-        cardDao.insertAll(Arrays.asList(
-                new CardEntity(1, "Card A", 10.0, 1.0, "L1"),
-                new CardEntity(2, "Card B", 20.0, 2.0, "L1")
-        ));
+        cardDao.insertAll(Arrays.asList(new CardEntity(1, "Card A", 10.0, 1.0, "L1"), new CardEntity(2, "Card B", 20.0, 2.0, "L1")));
 
         cardDao.clear();
         assertEquals(0, cardDao.countAll());
@@ -130,10 +114,7 @@ public class DaoTest {
 
     @Test
     public void clear_removesAllLocations() {
-        locationDao.insertAll(Arrays.asList(
-                new LocationEntity("L1", "Location 1"),
-                new LocationEntity("L2", "Location 2")
-        ));
+        locationDao.insertAll(Arrays.asList(new LocationEntity("L1", "Location 1"), new LocationEntity("L2", "Location 2")));
 
         locationDao.clear();
         assertNull(locationDao.getById("L1"));
@@ -158,16 +139,9 @@ public class DaoTest {
 
     @Test
     public void countCardsInLocation_filtersCorrectly() {
-        locationDao.insertAll(Arrays.asList(
-                new LocationEntity("L1", "Location 1"),
-                new LocationEntity("L2", "Location 2")
-        ));
+        locationDao.insertAll(Arrays.asList(new LocationEntity("L1", "Location 1"), new LocationEntity("L2", "Location 2")));
 
-        cardDao.insertAll(Arrays.asList(
-                new CardEntity(1, "Card A", 10.0, 1.0, "L1"),
-                new CardEntity(2, "Card B", 20.0, 2.0, "L1"),
-                new CardEntity(3, "Card C", 30.0, 3.0, "L2")
-        ));
+        cardDao.insertAll(Arrays.asList(new CardEntity(1, "Card A", 10.0, 1.0, "L1"), new CardEntity(2, "Card B", 20.0, 2.0, "L1"), new CardEntity(3, "Card C", 30.0, 3.0, "L2")));
 
         inventoryAuditDao.upsert(new InventoryAuditEntity(1, "L1", 1000L));
         inventoryAuditDao.upsert(new InventoryAuditEntity(2, "L1", 2000L));
@@ -182,10 +156,7 @@ public class DaoTest {
         LocationEntity location = new LocationEntity("L1", "Location 1");
         locationDao.insertAll(Collections.singletonList(location));
 
-        cardDao.insertAll(Arrays.asList(
-                new CardEntity(1, "Card A", 10.0, 1.0, "L1"),
-                new CardEntity(2, "Card B", 20.0, 2.0, "L1")
-        ));
+        cardDao.insertAll(Arrays.asList(new CardEntity(1, "Card A", 10.0, 1.0, "L1"), new CardEntity(2, "Card B", 20.0, 2.0, "L1")));
 
         inventoryAuditDao.upsert(new InventoryAuditEntity(1, "L1", 1000L));
         inventoryAuditDao.upsert(new InventoryAuditEntity(2, "L1", 2000L));
@@ -203,11 +174,7 @@ public class DaoTest {
         LocationEntity location = new LocationEntity("L1", "Location 1");
         locationDao.insertAll(Collections.singletonList(location));
 
-        cardDao.insertAll(Arrays.asList(
-                new CardEntity(1, "Card A", 10.0, 1.0, "L1"),
-                new CardEntity(2, "Card B", 20.0, 2.0, "L1"),
-                new CardEntity(3, "Card C", 30.0, 3.0, "L1")
-        ));
+        cardDao.insertAll(Arrays.asList(new CardEntity(1, "Card A", 10.0, 1.0, "L1"), new CardEntity(2, "Card B", 20.0, 2.0, "L1"), new CardEntity(3, "Card C", 30.0, 3.0, "L1")));
 
         inventoryAuditDao.upsert(new InventoryAuditEntity(1, "L1", 1000L));
         inventoryAuditDao.upsert(new InventoryAuditEntity(2, "L1", 3000L));

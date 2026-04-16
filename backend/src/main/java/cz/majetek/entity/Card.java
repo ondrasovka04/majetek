@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Main asset card entity with relations to location, group, attachments and audits.
+ */
 @Entity
 @Table(name = "card")
 @Getter

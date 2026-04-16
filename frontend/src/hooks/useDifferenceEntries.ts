@@ -3,23 +3,23 @@
  *
  * Responsibilities:
  * - Fetches raw differences from the server via TanStack Query.
- * - Derives default actions (KEEP / SU) for rows that haven't been assigned yet.
+ * - Derives default actions (KEEP / RL) for rows that haven't been assigned yet.
  * - Persists derived defaults back to the backend automatically.
  * - Provides `updateEntryAndSave` for optimistic local update + server patch.
  * - Exposes derived summary counts (writeOff, warn, wrong) and a validation flag.
  */
 import { useEffect, useMemo, useState } from "react";
-import { InventoryDifferenceEntry, InventoryDifferenceAction } from "../types/inventoryAudit/inventoryDifference";
-import type { PatchDifferenceBody } from "../services/inventoryAuditService";
-import { toIsoDateString } from "../utils/formatDate";
-import { translateError } from "../utils/errorTranslations";
-import { extractErrorMessage } from "../utils/extractErrorMessage";
+import { InventoryDifferenceEntry, InventoryDifferenceAction } from "@/types/inventoryAudit/inventoryDifference";
+import type { PatchDifferenceBody } from "@/services/inventoryAuditService";
+import { toIsoDateString } from "@/utils/formatDate";
+import { translateError } from "@/utils/errorTranslations";
+import { extractErrorMessage } from "@/utils/extractErrorMessage";
 import {
   useInventoryDifferences,
   usePatchInventoryDifference,
   useProjectInventoryDifferences,
-} from "./queries/useInventoryAuditQueries";
-import { useWriteOffMethods } from "./queries/useWriteOffMethodQueries";
+} from "@/hooks/queries/useInventoryAuditQueries";
+import { useWriteOffMethods } from "@/hooks/queries/useWriteOffMethodQueries";
 
 export function useDifferenceEntries(onError: (msg: string) => void) {
   const [entries, setEntries] = useState<InventoryDifferenceEntry[]>([]);
@@ -52,7 +52,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
 
     const getDerivedAction = (status: InventoryDifferenceEntry["status"]): InventoryDifferenceAction | null => {
       if (status === "CORRECT") return "KEEP";
-      if (status === "WARN") return "SU";
+      if (status === "WARN") return "RL";
       return null;
     };
 

@@ -1,15 +1,19 @@
 package cz.majetek.data.network;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 
 public class ApiClientTest {
     private MockWebServer server;
@@ -32,8 +36,7 @@ public class ApiClientTest {
     @Test
     public void login_success_returnsTokenAndExpiry() throws Exception {
         String json = "{\"token\":\"abc123\",\"expiresIn\":\"2025-01-01T00:00:00.000+00:00\"}";
-        server.enqueue(new MockResponse().setBody(json).setResponseCode(200)
-                .addHeader("Content-Type", "application/json"));
+        server.enqueue(new MockResponse().setBody(json).setResponseCode(200).addHeader("Content-Type", "application/json"));
 
         LoginResult result = client.login("dGVzdDp0ZXN0");
 
@@ -75,8 +78,7 @@ public class ApiClientTest {
     @Test
     public void downloadCards_success_returnsJsonString() throws Exception {
         String jsonArray = "[{\"id\":1,\"name\":\"Card1\"},{\"id\":2,\"name\":\"Card2\"}]";
-        server.enqueue(new MockResponse().setBody(jsonArray).setResponseCode(200)
-                .addHeader("Content-Type", "application/json"));
+        server.enqueue(new MockResponse().setBody(jsonArray).setResponseCode(200).addHeader("Content-Type", "application/json"));
 
         String result = client.downloadCards("bearer-token-123");
 
@@ -103,8 +105,7 @@ public class ApiClientTest {
     @Test
     public void downloadLocations_success_returnsJsonString() throws Exception {
         String jsonArray = "[{\"id\":10,\"name\":\"Loc1\"}]";
-        server.enqueue(new MockResponse().setBody(jsonArray).setResponseCode(200)
-                .addHeader("Content-Type", "application/json"));
+        server.enqueue(new MockResponse().setBody(jsonArray).setResponseCode(200).addHeader("Content-Type", "application/json"));
 
         String result = client.downloadLocations("bearer-token-456");
 
@@ -139,8 +140,7 @@ public class ApiClientTest {
     public void uploadInventoryAudit_httpError_throwsIOException() {
         server.enqueue(new MockResponse().setResponseCode(500));
 
-        IOException ex = assertThrows(IOException.class,
-                () -> client.uploadInventoryAudit("token", "[{}]"));
+        IOException ex = assertThrows(IOException.class, () -> client.uploadInventoryAudit("token", "[{}]"));
         assertNotNull(ex.getMessage());
         assertTrue(ex.getMessage().contains("HTTP 500"));
     }

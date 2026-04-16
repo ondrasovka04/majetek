@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * DTO representing a card in API responses.
+ */
 @Getter
 @Setter
 public class CardDto {

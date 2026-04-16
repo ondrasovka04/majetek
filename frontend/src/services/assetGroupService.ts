@@ -1,6 +1,6 @@
 /** API service for asset group (skupina majetku) dictionary CRUD operations. */
-import authorizedRequest from "../utils/authorizedRequest";
-import { AssetGroup } from "../types/assetGroup";
+import authorizedRequest from "@/utils/authorizedRequest";
+import { AssetGroup } from "@/types/assetGroup";
 
 export const getAssetGroups = async (): Promise<AssetGroup[]> => {
   const res = await authorizedRequest.get("/asset-group");

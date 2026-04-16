@@ -1,9 +1,6 @@
+/** Zod schema factory for dictionary entity forms (id + name). The `maxIdLength` parameter lets pages like ClassPage pass a custom limit. */
 import { z } from "zod";
 
-/**
- * Creates a Zod schema for dictionary entity forms (id + name).
- * The `maxIdLength` parameter lets pages like ClassPage pass a custom limit.
- */
 export function createDictionarySchema(maxIdLength = 20) {
   return z.object({
     id: z

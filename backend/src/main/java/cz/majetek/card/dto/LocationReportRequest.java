@@ -7,6 +7,9 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+/**
+ * Request DTO for generating a location PDF report.
+ */
 @Getter
 @Setter
 public class LocationReportRequest {

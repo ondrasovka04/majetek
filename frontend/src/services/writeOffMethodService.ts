@@ -1,6 +1,6 @@
 /** API service for write-off method (způsob vyřazení) dictionary CRUD operations. */
-import authorizedRequest from "../utils/authorizedRequest";
-import { WriteOffMethod } from "../types/writeOffMethod";
+import authorizedRequest from "@/utils/authorizedRequest";
+import { WriteOffMethod } from "@/types/writeOffMethod";
 
 export const getWriteOffMethods = async (): Promise<WriteOffMethod[]> => {
   const res = await authorizedRequest.get("/write-off-method");
