@@ -29,7 +29,7 @@ import { extractErrorMessage } from "@/utils/extractErrorMessage";
 
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { csCZ as dataGridCsCZ } from "@mui/x-data-grid/locales";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import { useDifferenceEntries } from "@/hooks/useDifferenceEntries";
 import { useNotification } from "@/hooks/useNotification";
@@ -123,7 +123,12 @@ const InventoryDifferencesPage = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: "cardId", headerName: "ID karty", width: 120, valueFormatter: (value: number) => String(value).padStart(4, "0") },
+    {
+      field: "cardId",
+      headerName: "ID karty",
+      width: 120,
+      valueFormatter: (value: number) => String(value).padStart(4, "0"),
+    },
     { field: "cardName", headerName: "Název", flex: 1, minWidth: 180 },
     {
       field: "realLocation",
@@ -280,9 +285,20 @@ const InventoryDifferencesPage = () => {
     }
     if (noRecords) {
       return (
-        <Box className="mt-8" display="flex" flexDirection="column" alignItems="center" gap={2}>
+        <Box
+          className="mt-8"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 2,
+          }}>
           <Typography variant="h6">Zatím nejsou k dispozici žádné záznamy inventury.</Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}>
             Jakmile budou naskenovány položky, objeví se zde rozdíly k vyhodnocení.
           </Typography>
         </Box>
@@ -320,7 +336,11 @@ const InventoryDifferencesPage = () => {
           <div className="flex justify-between items-center mb-4">
             <Typography variant="h4">Inventura — Rozdíly</Typography>
             {!noRecords && (
-              <Box display="flex" gap={2}>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 2,
+                }}>
                 <TextField
                   select
                   label="Status"

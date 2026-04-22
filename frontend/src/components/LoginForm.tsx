@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { login } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { translateError } from "@/utils/errorTranslations";
 import { extractErrorMessage } from "@/utils/extractErrorMessage";
 

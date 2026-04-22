@@ -1,7 +1,7 @@
 /** Top navigation bar with links to Cards, Reports, Dictionaries, Inventory, and User settings. */
 import { AppBar, Toolbar, Typography, Menu, MenuItem, Button, IconButton } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 

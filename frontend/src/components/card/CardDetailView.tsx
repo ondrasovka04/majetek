@@ -179,7 +179,7 @@ const CardDetailView = ({
           <Tooltip title="Uložit změny">
             <span>
               <IconButton
-                onClick={methods.handleSubmit(onSubmit, onInvalid)}
+                onClick={() => methods.handleSubmit(onSubmit, onInvalid)()}
                 color="primary"
                 disabled={updateMutation.isPending}>
                 {updateMutation.isPending ? <CircularProgress size={24} /> : <SaveIcon />}

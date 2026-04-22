@@ -70,7 +70,12 @@ const GroupReportModal = ({
             <MenuItem value={ALL_GROUPS}>Všechny skupiny</MenuItem>
             {groups.map((group) => (
               <MenuItem key={group.id} value={group.id}>
-                <Box display="flex" gap={2} width="100%">
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 2,
+                    width: "100%",
+                  }}>
                   <span style={{ minWidth: 60 }}>{group.id}</span>
                   <span>{group.name}</span>
                 </Box>

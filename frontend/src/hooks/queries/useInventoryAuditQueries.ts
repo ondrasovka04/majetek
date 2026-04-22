@@ -44,7 +44,11 @@ export function usePatchInventoryDifference() {
             ? {
                 ...entry,
                 ...body,
-                writeOffDate: body.writeOffDate ? new Date(body.writeOffDate) : body.writeOffDate === null ? null : entry.writeOffDate,
+                writeOffDate: body.writeOffDate
+                  ? new Date(body.writeOffDate)
+                  : body.writeOffDate === null
+                    ? null
+                    : entry.writeOffDate,
               }
             : entry,
         );
