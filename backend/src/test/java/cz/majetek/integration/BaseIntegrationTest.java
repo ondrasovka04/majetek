@@ -51,11 +51,11 @@ public abstract class BaseIntegrationTest {
     protected String userAccessToken;
     protected Cookie adminRefreshCookie;
 
-    protected static final String ADMIN_ID = "ADMIN01";
+    protected static final String ADMIN_ID = "ADM01";
     protected static final String ADMIN_USERNAME = "integrationAdmin";
     protected static final String ADMIN_PASSWORD = "adminPass123";
 
-    protected static final String USER_ID = "USER01";
+    protected static final String USER_ID = "USR01";
     protected static final String USER_USERNAME = "integrationUser";
     protected static final String USER_PASSWORD = "userPass123";
 

@@ -16,19 +16,20 @@ import lombok.*;
 public class User {
     @Id
     @EqualsAndHashCode.Include
+    @Column(length = 5)
     private String id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String password;
 
-    @Column
+    @Column(length = 50)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10)
     private UserRole role;
 
     @Column(name = "refresh_jti", length = 36)

@@ -28,12 +28,14 @@ public class Card {
     @EqualsAndHashCode.Include
     private Integer id;
 
+    @Column(length = 100)
     private String name;
 
     private BigDecimal price;
 
     private BigDecimal quantity;
 
+    @Column(length = 30)
     private String serialNumber;
 
     @ManyToOne
@@ -54,6 +56,7 @@ public class Card {
     @JoinColumn(name = "purchase_method_id")
     private PurchaseMethod purchaseMethod;
 
+    @Column(length = 30)
     private String purchaseInvoice;
 
     private LocalDate writeOffDate;

@@ -40,6 +40,7 @@ public class InventoryAudit {
     private LocalDateTime timestamp;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 16)
     private InventoryAuditAction action;
 
     private LocalDate writeOffDate;
