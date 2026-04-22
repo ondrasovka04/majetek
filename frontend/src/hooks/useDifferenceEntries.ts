@@ -60,7 +60,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
   // Derive entries from query data + local patches (no setState in effect)
   const entries = useMemo(() => {
     if (!rawDiffs || writeOffMethods.length === 0) return [] as InventoryDifferenceEntry[];
-    const defaultWriteOffMethodId = (writeOffMethods.find((m) => m.id === "A")?.id || writeOffMethods[0]?.id) ?? null;
+    const defaultWriteOffMethodId = writeOffMethods[0]?.id ?? null;
 
     return rawDiffs.map((d) => {
       const patch = localPatches.get(d.cardId);
@@ -127,7 +127,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
     } as InventoryDifferenceEntry;
 
     if (nextEntry.action === "WRITE_OFF" && !nextEntry.writeOffMethodId) {
-      nextEntry.writeOffMethodId = (writeOffMethods.find((m) => m.id === "A")?.id || writeOffMethods[0]?.id) ?? null;
+      nextEntry.writeOffMethodId = writeOffMethods[0]?.id ?? null;
     }
 
     applyPatch(cardId, { ...patch, writeOffMethodId: nextEntry.writeOffMethodId });
