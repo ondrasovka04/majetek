@@ -103,7 +103,8 @@ public final class CardSpecification {
                 .replace("%", "\\%")
                 .replace("_", "\\_");
         Expression<String> searchTerm = cb.function("unaccent", String.class, cb.literal(normalizedSearch));
-        Expression<String> paddedId = cb.function("lpad", String.class, root.get(F_ID).as(String.class), cb.literal(4), cb.literal("0"));
+        Expression<String> idAsText = root.get(F_ID).as(String.class);
+        Expression<String> paddedId = cb.function("lpad", String.class, cb.concat(idAsText, ""), cb.literal(4), cb.literal("0"));
         Expression<String> unaccentedName = cb.function("unaccent", String.class, cb.lower(root.get(F_NAME)));
         predicates.add(cb.or(
                 cb.like(unaccentedName, cb.concat("%", cb.concat(searchTerm, "%")), '\\'),

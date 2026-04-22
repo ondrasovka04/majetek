@@ -41,7 +41,7 @@ Tabulka~\ref{tab:backend-comparison} shrnuje srovnání analyzovaných backend t
 	Typová bezpečnost & silná & silná & dynamická \tabularnewline
 	ORM & JPA (Hibernate) & TypeORM / Prisma & vlastní ORM \tabularnewline
 	Bezpečnostní framework & Spring Security & Passport.js & vestavěný \tabularnewline
-	Podpora PDF/Excel/ZPL & iText 8, EasyExcel & omezená & omezená \tabularnewline
+	Podpora PDF/Excel/ZPL & iText, EasyExcel & omezená & omezená \tabularnewline
 \end{tabular}
 \caption{Srovnání backend technologií}\label{tab:backend-comparison}
 \end{table}
@@ -49,7 +49,7 @@ Tabulka~\ref{tab:backend-comparison} shrnuje srovnání analyzovaných backend t
 Pro implementaci backendu byl zvolen \textbf{Spring Boot} z~následujících důvodů:
 \begin{itemize}
 	\item Robustní ekosystém pro enterprise aplikace -- Spring Data JPA pro databázovou vrstvu, Spring Security pro autentizaci a~autorizaci.
-	\item Dostupnost kvalitních knihoven pro generování PDF (iText~8), Excelu (EasyExcel) a~ZPL etiket -- klíčová funkčnost pro tento projekt.
+	\item Dostupnost kvalitních knihoven pro generování PDF (iText), Excelu (EasyExcel) a~ZPL etiket -- klíčová funkčnost pro tento projekt.
 	\item Silná typová bezpečnost jazyka Java, která usnadňuje údržbu a~refaktoring.
 	\item Konzistence s~mobilní aplikací, která je rovněž implementována v~Javě.
 \end{itemize}

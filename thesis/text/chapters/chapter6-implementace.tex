@@ -87,7 +87,7 @@ Systém generuje tři typy exportů: PDF reporty (požadavky F-13 až F-15, viz 
 
 \subsubsection{PDF reporty}
 
-PDF dokumenty jsou generovány knihovnou iText~8 ve třídě \texttt{PdfGenerator}. Reporty jsou vytvářeny v~paměti prostřednictvím \texttt{ByteArrayOutputStream} a~vráceny jako pole bajtů. Pro správné zobrazení českých znaků je použit font Calibri a~čísla jsou formátována s~českou lokalizací.
+PDF dokumenty jsou generovány knihovnou iText ve třídě \texttt{PdfGenerator}. Reporty jsou vytvářeny v~paměti prostřednictvím \texttt{ByteArrayOutputStream} a~vráceny jako pole bajtů. Pro správné zobrazení českých znaků je použit font Calibri a~čísla jsou formátována s~českou lokalizací.
 
 Systém nabízí tři typy reportů:
 \begin{itemize}
@@ -440,10 +440,8 @@ Autentizační stav (uživatel, JWT token, expirace) je spravován knihovnou Zus
 \begin{minted}[fontsize=\small]{typescript}
 let refreshPromise: Promise<AuthResponse> | null = null;
 function refreshOnce() {
-  if (!refreshPromise) {
-    refreshPromise = refresh()
-      .finally(() => { refreshPromise = null; });
-  }
+  refreshPromise ??= refresh()
+    .finally(() => { refreshPromise = null; });
   return refreshPromise;
 }
 

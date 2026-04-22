@@ -76,9 +76,18 @@ const AttachmentModal = ({ open, onClose, cardId, onError }: Props) => {
   const renderContent = () => {
     if (uploadMutation.isPending) {
       return (
-        <Box display="flex" alignItems="center" gap={1}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}>
           <CircularProgress size={20} />
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}>
             Nahrávám soubor…
           </Typography>
         </Box>
@@ -86,7 +95,11 @@ const AttachmentModal = ({ open, onClose, cardId, onError }: Props) => {
     }
     if (attachments.length === 0) {
       return (
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}>
           Žádné přílohy
         </Typography>
       );
@@ -118,7 +131,12 @@ const AttachmentModal = ({ open, onClose, cardId, onError }: Props) => {
       <DialogTitle>Přílohy</DialogTitle>
       <DialogContent>
         <input ref={inputRef} type="file" hidden onChange={handleUpload} />
-        <Box display="flex" justifyContent="flex-end" mb={2}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            mb: 2,
+          }}>
           <Button
             startIcon={<UploadFileIcon />}
             onClick={() => inputRef.current?.click()}

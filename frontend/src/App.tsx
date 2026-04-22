@@ -4,7 +4,7 @@
  * lazy-loads all pages behind authenticated routes, and wraps
  * everything in an ErrorBoundary.
  */
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
 import PrivateRoute from "@/components/PrivateRoute";
 import { lazy, Suspense, useEffect } from "react";
 import { useAuthStore } from "@/store/authStore";

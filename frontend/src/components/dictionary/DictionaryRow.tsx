@@ -56,7 +56,11 @@ function DictionaryRowInner<T extends DictionaryEntity>({ item, onUpdate, onDele
         />
       </TableCell>
       <TableCell>
-        <Box display="flex" gap={1}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+          }}>
           {extraActions?.(item)}
           <IconButton color="error" onClick={() => onDelete(item.id)} size="small" aria-label="Smazat">
             <DeleteIcon fontSize="small" />

@@ -144,7 +144,12 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
               <MenuItem value="">(nevybráno)</MenuItem>
               {locations.map((loc) => (
                 <MenuItem key={loc.id} value={loc.id}>
-                  <Box display="flex" gap={2} width="100%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      width: "100%",
+                    }}>
                     <span style={{ minWidth: 60 }}>{loc.id}</span>
                     <span>{loc.name}</span>
                   </Box>
@@ -170,7 +175,12 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
               <MenuItem value="">(nevybráno)</MenuItem>
               {classes.map((cls) => (
                 <MenuItem key={cls.id} value={cls.id}>
-                  <Box display="flex" gap={2} width="100%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      width: "100%",
+                    }}>
                     <span style={{ minWidth: 60 }}>{cls.id}</span>
                     <span>{cls.name}</span>
                   </Box>
@@ -212,7 +222,12 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
               <MenuItem value="">(nevybráno)</MenuItem>
               {groups.map((g) => (
                 <MenuItem key={g.id} value={g.id}>
-                  <Box display="flex" gap={2} width="100%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      width: "100%",
+                    }}>
                     <span style={{ minWidth: 60 }}>{g.id}</span>
                     <span>{g.name}</span>
                   </Box>
@@ -262,7 +277,12 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
               <MenuItem value="">(nevybráno)</MenuItem>
               {purchaseMethods.map((m) => (
                 <MenuItem key={m.id} value={m.id}>
-                  <Box display="flex" gap={2} width="100%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      width: "100%",
+                    }}>
                     <span style={{ minWidth: 60 }}>{m.id}</span>
                     <span>{m.name}</span>
                   </Box>
@@ -288,7 +308,12 @@ const CardFilterModal = ({ open, onClose, onApply }: Props) => {
               <MenuItem value="">(nevybráno)</MenuItem>
               {writeOffMethods.map((m) => (
                 <MenuItem key={m.id} value={m.id}>
-                  <Box display="flex" gap={2} width="100%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      width: "100%",
+                    }}>
                     <span style={{ minWidth: 60 }}>{m.id}</span>
                     <span>{m.name}</span>
                   </Box>

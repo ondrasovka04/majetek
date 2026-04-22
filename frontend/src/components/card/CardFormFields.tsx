@@ -25,7 +25,12 @@ interface Props {
 /** Renders a select item with ID + name columns */
 const DictionaryMenuItem = ({ id, name }: { id: string; name: string | null }) => (
   <MenuItem key={id} value={id}>
-    <Box display="flex" gap={2} width="100%">
+    <Box
+      sx={{
+        display: "flex",
+        gap: 2,
+        width: "100%",
+      }}>
       <span style={{ minWidth: 60 }}>{id}</span>
       <span>{name}</span>
     </Box>

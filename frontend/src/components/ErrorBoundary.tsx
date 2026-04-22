@@ -26,17 +26,24 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          minHeight="100vh"
-          gap={2}
-          p={4}>
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            gap: 2,
+            p: 4,
+          }}>
           <Typography variant="h5" color="error">
             Něco se pokazilo
           </Typography>
-          <Typography variant="body1" color="text.secondary" textAlign="center">
+          <Typography
+            variant="body1"
+            sx={{
+              color: "text.secondary",
+              textAlign: "center",
+            }}>
             {this.state.error?.message ?? "Neočekávaná chyba."}
           </Typography>
           <Button

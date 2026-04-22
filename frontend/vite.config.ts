@@ -1,18 +1,14 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
     },
-  },
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: "./src/test/setup.ts",
   },
   server: {
     port: 3000,
@@ -23,13 +19,13 @@ export default defineConfig({
     outDir: "build",
     sourcemap: false,
     chunkSizeWarningLimit: 1000,
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks: {
-          "vendor-react": ["react", "react-dom", "react-router-dom"],
-          "vendor-mui": ["@mui/material", "@mui/icons-material", "@mui/x-date-pickers", "@mui/x-data-grid"],
-          "vendor-pdf": ["@react-pdf-viewer/core", "@react-pdf-viewer/default-layout"],
-          "vendor-query": ["@tanstack/react-query"],
+        manualChunks(id: string) {
+          if (id.includes("react-dom") || id.includes("react-router") || id.includes("/react/")) return "vendor-react";
+          if (id.includes("@mui/")) return "vendor-mui";
+          if (id.includes("@react-pdf-viewer/") || id.includes("pdfjs-dist")) return "vendor-pdf";
+          if (id.includes("@tanstack/react-query")) return "vendor-query";
         },
       },
     },

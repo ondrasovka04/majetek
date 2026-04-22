@@ -1,5 +1,5 @@
 /** Inventory audit overview — sortable table of scanned cards with real location and timestamp. */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Typography,
   Table,
@@ -23,14 +23,17 @@ import SortableHeaderCell from "@/components/inventoryAudit/SortableHeaderCell";
 const InventoryOverviewPage = () => {
   const { data: entries = [], isLoading, error } = useInventoryAudit();
   const { notifyError, NotificationBar } = useNotification();
+  const notifyErrorRef = useRef(notifyError);
+  useEffect(() => {
+    notifyErrorRef.current = notifyError;
+  }, [notifyError]);
   const [sortBy, setSortBy] = useState<keyof InventoryAuditEntry>("cardId");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
     if (error) {
-      notifyError(translateError(extractErrorMessage(error)));
+      notifyErrorRef.current(translateError(extractErrorMessage(error)));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
   const sortedEntries = useMemo(() => {
@@ -70,7 +73,7 @@ const InventoryOverviewPage = () => {
         <MenuBar />
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <Typography variant="h4">Inventura - Přehled</Typography>
+            <Typography variant="h4">Inventura — Přehled</Typography>
           </div>
 
           {NotificationBar}
@@ -121,7 +124,7 @@ const InventoryOverviewPage = () => {
                 <TableBody>
                   {sortedEntries.map((e) => (
                     <TableRow key={`${e.cardId}-${e.timestamp.getTime()}`}>
-                      <TableCell>{e.cardId}</TableCell>
+                      <TableCell>{String(e.cardId).padStart(4, "0")}</TableCell>
                       <TableCell>{e.cardName}</TableCell>
                       <TableCell>{`${e.realLocationId} - ${e.realLocationName}`}</TableCell>
                       <TableCell>

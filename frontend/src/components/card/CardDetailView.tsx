@@ -100,8 +100,7 @@ const CardDetailView = ({
       createdById: cardDetail.createdById,
       createdDate: cardDetail.createdDate,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardDetail]);
+  }, [cardDetail, methods]);
 
   const onSubmit = (data: CardFormOutput) => {
     updateMutation.mutate(
@@ -179,7 +178,7 @@ const CardDetailView = ({
           <Tooltip title="Uložit změny">
             <span>
               <IconButton
-                onClick={methods.handleSubmit(onSubmit, onInvalid)}
+                onClick={() => methods.handleSubmit(onSubmit, onInvalid)()}
                 color="primary"
                 disabled={updateMutation.isPending}>
                 {updateMutation.isPending ? <CircularProgress size={24} /> : <SaveIcon />}

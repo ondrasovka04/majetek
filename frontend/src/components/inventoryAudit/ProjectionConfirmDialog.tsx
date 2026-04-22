@@ -66,7 +66,11 @@ const ProjectionConfirmDialog: React.FC<ProjectionConfirmDialogProps> = ({
             <ListItemText primary={`Nenaskenováno: ${wrongCount}`} />
           </ListItem>
         </List>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}>
           Zkontrolujte prosím, že všechny položky mají platné akce a vyřazení obsahuje datum i způsob.
         </Typography>
       </DialogContent>

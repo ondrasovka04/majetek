@@ -60,7 +60,12 @@ const LocationReportModal = ({
             }}>
             {locations.map((location) => (
               <MenuItem key={location.id} value={location.id}>
-                <Box display="flex" gap={2} width="100%">
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 2,
+                    width: "100%",
+                  }}>
                   <span style={{ minWidth: 60 }}>{location.id}</span>
                   <span>{location.name}</span>
                 </Box>

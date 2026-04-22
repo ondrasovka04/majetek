@@ -1,6 +1,6 @@
 /** Route guard that redirects unauthenticated users to the login page. */
 import { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 import { useAuthStore } from "@/store/authStore";
 
 interface PrivateRouteProps {

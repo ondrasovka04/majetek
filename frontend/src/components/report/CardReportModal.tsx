@@ -88,10 +88,10 @@ const CardReportModal = ({ open, onClose, onGenerate, loading }: CardReportModal
             setInputValue(newInputValue);
           }}
           renderInput={(params) => {
-            params.InputProps.endAdornment = (
+            params.slotProps.input.endAdornment = (
               <>
                 {searchLoading ? <CircularProgress color="inherit" size={20} /> : null}
-                {params.InputProps.endAdornment}
+                {params.slotProps.input.endAdornment}
               </>
             );
             return <TextField {...params} label="Hledat podle inv. čísla nebo názvu" />;
