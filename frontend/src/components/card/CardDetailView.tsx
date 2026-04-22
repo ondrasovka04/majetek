@@ -100,8 +100,7 @@ const CardDetailView = ({
       createdById: cardDetail.createdById,
       createdDate: cardDetail.createdDate,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardDetail]);
+  }, [cardDetail, methods]);
 
   const onSubmit = (data: CardFormOutput) => {
     updateMutation.mutate(

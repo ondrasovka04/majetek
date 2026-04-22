@@ -5,7 +5,7 @@ REST API for asset management built on Spring Boot.
 ## Technology
 
 | Technology        | Version       | Purpose                                  |
-| ----------------- | ------------- | ---------------------------------------- |
+|-------------------|---------------|------------------------------------------|
 | Java              | 21            | Runtime                                  |
 | Spring Boot       | 3.4.13        | Framework                                |
 | PostgreSQL        | 17            | Production database                      |
@@ -29,7 +29,7 @@ REST API for asset management built on Spring Boot.
 ## Environment Variables
 
 | Variable                   | Description                           |
-| -------------------------- | ------------------------------------- |
+|----------------------------|---------------------------------------|
 | `DB_USERNAME`              | PostgreSQL user                       |
 | `DB_PASSWORD`              | PostgreSQL password                   |
 | `JWT_SECRET`               | Secret key for access tokens (HS256)  |
@@ -77,7 +77,7 @@ custom exception classes.
 ### Auth (`/api/auth`)
 
 | Method | Endpoint           | Description                               |
-| ------ | ------------------ | ----------------------------------------- |
+|--------|--------------------|-------------------------------------------|
 | POST   | `/login`           | Login (Basic Auth → JWT + refresh cookie) |
 | POST   | `/refresh`         | Access + refresh token rotation           |
 | POST   | `/register`        | User registration (ADMIN only)            |
@@ -87,7 +87,7 @@ custom exception classes.
 ### Asset Cards (`/api/card`)
 
 | Method | Endpoint               | Description                |
-| ------ | ---------------------- | -------------------------- |
+|--------|------------------------|----------------------------|
 | GET    | `/`                    | All cards                  |
 | GET    | `/{id}`                | Card by ID                 |
 | GET    | `/filter`              | Filter cards               |
@@ -103,7 +103,7 @@ custom exception classes.
 ### Attachments (`/api/card/{cardId}/attachments`)
 
 | Method | Endpoint | Description         |
-| ------ | -------- | ------------------- |
+|--------|----------|---------------------|
 | POST   | `/`      | Upload attachment   |
 | GET    | `/`      | List attachments    |
 | GET    | `/{id}`  | Download attachment |
@@ -112,7 +112,7 @@ custom exception classes.
 ### Inventory Audit (`/api/inventory-audit`)
 
 | Method | Endpoint       | Description           |
-| ------ | -------------- | --------------------- |
+|--------|----------------|-----------------------|
 | GET    | `/`            | All records           |
 | GET    | `/differences` | Inventory differences |
 | POST   | `/insert-many` | Bulk import           |
@@ -124,7 +124,7 @@ custom exception classes.
 All dictionaries have CRUD endpoints (`GET /`, `GET /{id}`, `POST /`, `PATCH /{id}`, `DELETE /{id}`):
 
 | Resource          | Prefix                  |
-| ----------------- | ----------------------- |
+|-------------------|-------------------------|
 | Asset groups      | `/api/asset-group`      |
 | Classes           | `/api/class`            |
 | Locations         | `/api/location`         |

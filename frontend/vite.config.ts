@@ -22,7 +22,7 @@ export default defineConfig({
     rolldownOptions: {
       output: {
         manualChunks(id: string) {
-          if (id.includes("react-dom") || id.includes("react-router-dom") || id.includes("/react/")) return "vendor-react";
+          if (id.includes("react-dom") || id.includes("react-router") || id.includes("/react/")) return "vendor-react";
           if (id.includes("@mui/")) return "vendor-mui";
           if (id.includes("@react-pdf-viewer/") || id.includes("pdfjs-dist")) return "vendor-pdf";
           if (id.includes("@tanstack/react-query")) return "vendor-query";

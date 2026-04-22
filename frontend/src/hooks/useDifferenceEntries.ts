@@ -34,7 +34,11 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
   const { data: writeOffMethods = [] } = useWriteOffMethods();
   const patchMutation = usePatchInventoryDifference();
   const projectMutation = useProjectInventoryDifferences();
-  const initializedRef = useRef(false);
+  const initializedIdsRef = useRef<Set<number>>(new Set());
+  const onErrorRef = useRef(onError);
+  const patchRef = useRef(patchMutation.mutateAsync);
+  useEffect(() => { onErrorRef.current = onError; }, [onError]);
+  useEffect(() => { patchRef.current = patchMutation.mutateAsync; }, [patchMutation.mutateAsync]);
 
   // Derive noRecords from the error message instead of separate useState
   const noRecords = useMemo(() => {
@@ -45,28 +49,18 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
   // Notify non-"no records" errors
   useEffect(() => {
     if (diffsError && !noRecords) {
-      onError(translateError(extractErrorMessage(diffsError)));
+      onErrorRef.current(translateError(extractErrorMessage(diffsError)));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [diffsError, noRecords]);
 
   // Derive entries from query data + local patches (no setState in effect)
-  const { entries, toInit } = useMemo(() => {
-    if (!rawDiffs || writeOffMethods.length === 0)
-      return {
-        entries: [] as InventoryDifferenceEntry[],
-        toInit: [] as { cardId: number; action: InventoryDifferenceAction }[],
-      };
+  const entries = useMemo(() => {
+    if (!rawDiffs || writeOffMethods.length === 0) return [] as InventoryDifferenceEntry[];
     const defaultWriteOffMethodId = (writeOffMethods.find((m) => m.id === "A")?.id || writeOffMethods[0]?.id) ?? null;
 
-    const pending: { cardId: number; action: InventoryDifferenceAction }[] = [];
-
-    const mapped = rawDiffs.map((d) => {
+    return rawDiffs.map((d) => {
       const patch = localPatches.get(d.cardId);
       const derivedAction = d.action ?? getDerivedAction(d.status);
-      if (d.action == null && derivedAction) {
-        pending.push({ cardId: d.cardId, action: derivedAction });
-      }
       return {
         ...d,
         action: derivedAction,
@@ -74,25 +68,34 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
         ...patch,
       };
     });
-    return { entries: mapped, toInit: pending };
   }, [rawDiffs, writeOffMethods, localPatches]);
 
   // Persist derived defaults to backend (side effect only)
   useEffect(() => {
-    if (initializedRef.current || toInit.length === 0) return;
-    initializedRef.current = true;
+    if (!entries.length) return;
+    const toInit = entries
+      .filter((e) => e.action != null && !initializedIdsRef.current.has(e.cardId))
+      .filter((e) => {
+        // Only rows where action was derived (not set by server)
+        const raw = rawDiffs?.find((d) => d.cardId === e.cardId);
+        return raw && raw.action == null;
+      })
+      .map((e) => ({ cardId: e.cardId, action: e.action! }));
+    if (toInit.length === 0) return;
+    const ids = toInit.map((i) => i.cardId);
+    ids.forEach((id) => initializedIdsRef.current.add(id));
     Promise.all(
       toInit.map((i) =>
-        patchMutation.mutateAsync({
+        patchRef.current({
           cardId: i.cardId,
           body: { action: i.action, writeOffDate: null, writeOffMethodId: null },
         }),
       ),
     ).catch((e: unknown) => {
-      onError(translateError(extractErrorMessage(e)));
+      ids.forEach((id) => initializedIdsRef.current.delete(id));
+      onErrorRef.current(translateError(extractErrorMessage(e)));
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toInit]);
+  }, [entries, rawDiffs]);
 
   /** Apply an optimistic local patch by cardId. */
   const applyPatch = (cardId: number, patch: Partial<InventoryDifferenceEntry>) => {
