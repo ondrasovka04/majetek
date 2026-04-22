@@ -22,6 +22,7 @@ public class Attachment {
     @EqualsAndHashCode.Include
     private AttachmentId id;
 
+    @Column(length = 50)
     private String name;
 
     private String filePath;
