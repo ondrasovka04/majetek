@@ -77,13 +77,9 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
   // Persist derived defaults to backend (side effect only)
   useEffect(() => {
     if (!entries.length) return;
+    const rawActionByCardId = new Map(rawDiffs?.map((d) => [d.cardId, d.action]) ?? []);
     const toInit = entries
-      .filter((e) => e.action != null && !initializedIdsRef.current.has(e.cardId))
-      .filter((e) => {
-        // Only rows where action was derived (not set by server)
-        const raw = rawDiffs?.find((d) => d.cardId === e.cardId);
-        return raw && raw.action == null;
-      })
+      .filter((e) => e.action != null && !initializedIdsRef.current.has(e.cardId) && rawActionByCardId.get(e.cardId) == null)
       .map((e) => ({ cardId: e.cardId, action: e.action! }));
     if (toInit.length === 0) return;
     const ids = toInit.map((i) => i.cardId);

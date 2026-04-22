@@ -39,6 +39,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         // ignore - stay logged out
       } finally {
         set({ hydrated: true });
+        rehydratePromise = null;
       }
     })();
     return rehydratePromise;
