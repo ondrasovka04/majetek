@@ -37,8 +37,12 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
   const initializedIdsRef = useRef<Set<number>>(new Set());
   const onErrorRef = useRef(onError);
   const patchRef = useRef(patchMutation.mutateAsync);
-  useEffect(() => { onErrorRef.current = onError; }, [onError]);
-  useEffect(() => { patchRef.current = patchMutation.mutateAsync; }, [patchMutation.mutateAsync]);
+  useEffect(() => {
+    onErrorRef.current = onError;
+  }, [onError]);
+  useEffect(() => {
+    patchRef.current = patchMutation.mutateAsync;
+  }, [patchMutation.mutateAsync]);
 
   // Derive noRecords from the error message instead of separate useState
   const noRecords = useMemo(() => {
@@ -84,16 +88,21 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
     if (toInit.length === 0) return;
     const ids = toInit.map((i) => i.cardId);
     ids.forEach((id) => initializedIdsRef.current.add(id));
-    Promise.all(
+    Promise.allSettled(
       toInit.map((i) =>
-        patchRef.current({
-          cardId: i.cardId,
-          body: { action: i.action, writeOffDate: null, writeOffMethodId: null },
-        }),
+        patchRef
+          .current({
+            cardId: i.cardId,
+            body: { action: i.action, writeOffDate: null, writeOffMethodId: null },
+          })
+          .catch((e: unknown) => {
+            initializedIdsRef.current.delete(i.cardId);
+            throw e;
+          }),
       ),
-    ).catch((e: unknown) => {
-      ids.forEach((id) => initializedIdsRef.current.delete(id));
-      onErrorRef.current(translateError(extractErrorMessage(e)));
+    ).then((results) => {
+      const failed = results.find((r) => r.status === "rejected") as PromiseRejectedResult | undefined;
+      if (failed) onErrorRef.current(translateError(extractErrorMessage(failed.reason)));
     });
   }, [entries, rawDiffs]);
 
@@ -158,7 +167,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
       {
         onError: (err: unknown) => {
           removePatch(cardId);
-          onError(translateError(extractErrorMessage(err)));
+          onErrorRef.current(translateError(extractErrorMessage(err)));
         },
       },
     );

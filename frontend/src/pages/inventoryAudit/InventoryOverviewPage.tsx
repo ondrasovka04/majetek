@@ -24,7 +24,9 @@ const InventoryOverviewPage = () => {
   const { data: entries = [], isLoading, error } = useInventoryAudit();
   const { notifyError, NotificationBar } = useNotification();
   const notifyErrorRef = useRef(notifyError);
-  useEffect(() => { notifyErrorRef.current = notifyError; }, [notifyError]);
+  useEffect(() => {
+    notifyErrorRef.current = notifyError;
+  }, [notifyError]);
   const [sortBy, setSortBy] = useState<keyof InventoryAuditEntry>("cardId");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
