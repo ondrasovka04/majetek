@@ -70,7 +70,7 @@ const InventoryOverviewPage = () => {
         <MenuBar />
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <Typography variant="h4">Inventura - Přehled</Typography>
+            <Typography variant="h4">Inventura — Přehled</Typography>
           </div>
 
           {NotificationBar}
@@ -121,7 +121,7 @@ const InventoryOverviewPage = () => {
                 <TableBody>
                   {sortedEntries.map((e) => (
                     <TableRow key={`${e.cardId}-${e.timestamp.getTime()}`}>
-                      <TableCell>{e.cardId}</TableCell>
+                      <TableCell>{String(e.cardId).padStart(4, "0")}</TableCell>
                       <TableCell>{e.cardName}</TableCell>
                       <TableCell>{`${e.realLocationId} - ${e.realLocationName}`}</TableCell>
                       <TableCell>

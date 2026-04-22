@@ -16,6 +16,8 @@ interface AuthState {
   attemptRehydrate: () => Promise<void>;
 }
 
+let rehydratePromise: Promise<void> | null = null;
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: undefined,
   token: undefined,
@@ -29,13 +31,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
   attemptRehydrate: async () => {
     if (get().hydrated) return;
-    try {
-      const data = await refresh();
-      get().setAuth(data.user, data.token, data.expiresIn);
-    } catch {
-      // ignore - stay logged out
-    } finally {
-      set({ hydrated: true });
-    }
+    rehydratePromise ??= (async () => {
+      try {
+        const data = await refresh();
+        get().setAuth(data.user, data.token, data.expiresIn);
+      } catch {
+        // ignore - stay logged out
+      } finally {
+        set({ hydrated: true });
+      }
+    })();
+    return rehydratePromise;
   },
 }));

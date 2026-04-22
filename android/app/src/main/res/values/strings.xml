@@ -29,7 +29,7 @@
     <string name="control_processing_code">Zpracovávám: %1$s</string>
     <string name="control_location_scanned">Načtena lokace: %1$s – naskenujte majetek</string>
     <string name="control_invalid_code">Neplatný kód: %1$s</string>
-    <string name="control_not_found_id">Nenalezeno ID %1$d</string>
+    <string name="control_not_found_id">Nenalezeno ID %1$s</string>
 
     <!-- Data transfer fragment -->
     <string name="title_data_transfer">Přenos dat</string>

@@ -58,13 +58,21 @@ public class LabelPrinter {
 
     private static final FontRenderContext FONT_RENDER_CONTEXT = new FontRenderContext(new AffineTransform(), true, true);
 
-    /** Maximum printable label width in mm (Zebra ZD621d, 40mm label stock). */
+    /**
+     * Maximum printable label width in mm (Zebra ZD621d, 40mm label stock).
+     */
     private static final double MAX_PRINT_WIDTH_MM = 33.6;
-    /** Zebra printer resolution in dots per inch. */
+    /**
+     * Zebra printer resolution in dots per inch.
+     */
     private static final double PRINTER_DPI = 300;
-    /** Millimeters per inch, used for DPI to mm conversion. */
+    /**
+     * Millimeters per inch, used for DPI to mm conversion.
+     */
     private static final double MM_PER_INCH = 25.4;
-    /** Font size in points matching ZPL font E (Swiss 721) at printer resolution. */
+    /**
+     * Font size in points matching ZPL font E (Swiss 721) at printer resolution.
+     */
     private static final float ZEBRA_FONT_SIZE_PT = 29.17f;
 
     static {

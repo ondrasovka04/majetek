@@ -123,7 +123,7 @@ const InventoryDifferencesPage = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: "cardId", headerName: "ID karty", width: 120 },
+    { field: "cardId", headerName: "ID karty", width: 120, valueFormatter: (value: number) => String(value).padStart(4, "0") },
     { field: "cardName", headerName: "Název", flex: 1, minWidth: 180 },
     {
       field: "realLocation",
@@ -318,7 +318,7 @@ const InventoryDifferencesPage = () => {
         <MenuBar />
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <Typography variant="h4">Inventura - Rozdíly</Typography>
+            <Typography variant="h4">Inventura — Rozdíly</Typography>
             {!noRecords && (
               <Box display="flex" gap={2}>
                 <TextField

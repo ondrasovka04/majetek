@@ -303,7 +303,13 @@ public class InventoryScanFragment extends Fragment {
         txtCardQuantity.setText("");
         txtCardOu.setText("");
         cardContainer.setBackgroundColor(0xFFFFCDD2);
-        setStatusError(getString(R.string.error_unknown_asset_id, code));
+        String displayCode = code;
+        try {
+            displayCode = String.format(Locale.getDefault(), "%04d", Integer.parseInt(code));
+        } catch (NumberFormatException ignored) {
+            // keep original code if parsing fails
+        }
+        setStatusError(getString(R.string.error_unknown_asset_id, displayCode));
         if (inputLocation.isEnabled()) {
             inputLocation.requestFocus();
         } else {

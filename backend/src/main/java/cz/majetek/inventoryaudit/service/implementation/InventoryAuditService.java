@@ -105,6 +105,7 @@ public class InventoryAuditService implements IInventoryAuditService {
                 .orElseGet(() -> {
                     InventoryAudit newAudit = new InventoryAudit();
                     newAudit.setCard(card);
+                    newAudit.setTimestamp(LocalDateTime.now());
                     return newAudit;
                 });
 

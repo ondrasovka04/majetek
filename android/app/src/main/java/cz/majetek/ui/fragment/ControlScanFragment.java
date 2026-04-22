@@ -124,7 +124,7 @@ public class ControlScanFragment extends Fragment {
             AppDatabase db = app.getDatabase();
             CardEntity card = db.cardDao().getById(finalId);
             if (card == null) {
-                postUI(() -> showNotFound(getString(R.string.control_not_found_id, finalId)));
+                postUI(() -> showNotFound(getString(R.string.control_not_found_id, String.format(Locale.getDefault(), "%04d", finalId))));
             } else {
                 postUI(() -> showCard(card));
             }

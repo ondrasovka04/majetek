@@ -440,10 +440,8 @@ Autentizační stav (uživatel, JWT token, expirace) je spravován knihovnou Zus
 \begin{minted}[fontsize=\small]{typescript}
 let refreshPromise: Promise<AuthResponse> | null = null;
 function refreshOnce() {
-  if (!refreshPromise) {
-    refreshPromise = refresh()
-      .finally(() => { refreshPromise = null; });
-  }
+  refreshPromise ??= refresh()
+    .finally(() => { refreshPromise = null; });
   return refreshPromise;
 }
 
