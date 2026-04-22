@@ -161,6 +161,9 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
     patchMutation.mutate(
       { cardId, body: payload },
       {
+        onSuccess: () => {
+          removePatch(cardId);
+        },
         onError: (err: unknown) => {
           removePatch(cardId);
           onErrorRef.current(translateError(extractErrorMessage(err)));
