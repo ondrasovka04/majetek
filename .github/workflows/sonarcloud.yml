@@ -45,11 +45,7 @@ jobs:
 
       - name: Create Android local.properties
         run: |
-          cat > android/local.properties <<EOF
-          sdk.dir=$ANDROID_HOME
-          ADMIN_USER=ci
-          ADMIN_PASS=ci
-          EOF
+          echo "sdk.dir=$ANDROID_HOME" > android/local.properties
 
       - name: Build & test Android
         run: |
