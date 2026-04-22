@@ -1,129 +1,123 @@
-# Majetek – Android aplikace pro Zebra skenery
+# Asset Management – Android App for Zebra Scanners
 
-Mobilní Android aplikace pro evidenci a inventarizaci majetku pomocí čárových kódů. Určena primárně pro ruční skenery **Zebra** s Android OS.
+Native Android application for asset management and inventory using barcode scanners. Primarily designed for **Zebra** handheld terminals running Android OS.
 
-## Funkce
+## Features
 
-| Obrazovka | Popis |
+| Screen | Description |
 |---|---|
-| **Kontrolní snímání** | Naskenování čárového kódu majetku a okamžité zobrazení detailu karty (ID, název, cena, množství, umístění). |
-| **Inventura** | Dvou-krokový proces: nejprve se naskenuje lokace (kód začínající `L`), pak se postupně skenují karty majetku. Aplikace vizuálně signalizuje, zda se majetek nachází ve správném umístění, a zobrazuje průběh inventury v kruhovém grafu. |
-| **Přenos dat** | Stažení karet a lokací ze serveru do lokální databáze, odeslání výsledků inventury zpět na server, vymazání inventurních dat a nastavení URL serveru. |
+| **Control Scan** | Scan an asset barcode and instantly display card details (ID, name, price, quantity, location). |
+| **Inventory** | Two-step process: first scan a location (code starting with `L`), then scan asset cards. The app visually indicates whether the asset is in the correct location and displays inventory progress in a circular chart. |
+| **Data Transfer** | Download cards and locations from the server to the local database, upload inventory results back to the server, clear inventory data, and configure server URL and credentials. |
 
-## Technický stack
+## Tech Stack
 
-- **Jazyk:** Java 21
+- **Language:** Java 21
 - **Min SDK:** 33 (Android 13)
 - **Target SDK:** 36
-- **Build systém:** Gradle Kotlin DSL, AGP 8.13.0
-- **Databáze:** Room 2.8.2 (SQLite) – tabulky `card`, `location`, `inventory_audit`
-- **Síťová komunikace:** OkHttp 5.2.1, Gson 2.13.2
-- **Bezpečnost:** EncryptedSharedPreferences (security-crypto) pro JWT token, network security config (cleartext zakázán), R8 obfuskace v release
-- **UI:** Material Design 1.13, ConstraintLayout, BottomNavigationView, vlastní `CircularInventoryProgressView`
+- **Build system:** Gradle Kotlin DSL, AGP 9.1.1
+- **Database:** Room 2.8.4 (SQLite) – tables `card`, `location`, `inventory_audit`
+- **Networking:** OkHttp 5.3.0, Gson 2.13.2
+- **Security:** EncryptedSharedPreferences (security-crypto 1.1.0) for JWT token and credentials, network security config (cleartext disabled), R8 obfuscation in release
+- **UI:** Material Design 1.13, ConstraintLayout, BottomNavigationView, custom `CircularInventoryProgressView`
 
-## Struktura projektu
+## Project Structure
 
 ```
 app/src/main/java/cz/majetek/
-├── MajetekApp.java                       # Application – inicializace Room databáze
+├── MajetekApp.java                       # Application – Room database initialization
 ├── data/
 │   ├── db/
-│   │   ├── AppDatabase.java              # Room databáze (singleton, verze 6)
+│   │   ├── AppDatabase.java              # Room database (singleton, version 6)
 │   │   └── dao/
-│   │       ├── CardDao.java              # CRUD pro karty majetku
-│   │       ├── LocationDao.java          # CRUD pro lokace / umístění
-│   │       └── InventoryAuditDao.java    # CRUD pro záznamy inventury
+│   │       ├── CardDao.java              # CRUD for asset cards
+│   │       ├── LocationDao.java          # CRUD for locations
+│   │       └── InventoryAuditDao.java    # CRUD for inventory audit records
 │   ├── entity/
-│   │   ├── CardEntity.java               # Karta majetku (id, název, cena, množství, lokace)
-│   │   ├── LocationEntity.java           # Umístění (id, název)
-│   │   └── InventoryAuditEntity.java     # Záznam inventury (card_id, real_location_id, timestamp)
+│   │   ├── CardEntity.java               # Asset card (id, name, price, quantity, location)
+│   │   ├── LocationEntity.java           # Location (id, name)
+│   │   └── InventoryAuditEntity.java     # Inventory record (card_id, real_location_id, timestamp)
 │   ├── network/
-│   │   ├── ApiClient.java                # HTTP klient – login, stažení karet/lokací, upload auditu
-│   │   └── LoginResult.java              # Record pro výsledek loginu (token, expirace)
+│   │   ├── ApiClient.java                # HTTP client – login, download cards/locations, upload audit
+│   │   └── LoginResult.java              # Record for login result (token, expiration)
 │   └── repository/
-│       └── DataSyncRepository.java       # Synchronizace dat (download/upload) s REST API
+│       └── DataSyncRepository.java       # Data synchronization (download/upload) with REST API
 ├── ui/
 │   ├── activity/
-│   │   └── MainActivity.java             # Hlavní aktivita s BottomNavigationView
+│   │   └── MainActivity.java             # Main activity with BottomNavigationView
 │   ├── fragment/
-│   │   ├── ControlScanFragment.java      # Kontrolní snímání – vyhledání karty podle ID
-│   │   ├── InventoryScanFragment.java    # Inventurní snímání – lokace → majetek → uložení
-│   │   └── DataTransferFragment.java     # Přenos dat – download/upload/vymazání/konfigurace URL
+│   │   ├── ControlScanFragment.java      # Control scan – look up card by ID
+│   │   ├── InventoryScanFragment.java    # Inventory scan – location → asset → save
+│   │   └── DataTransferFragment.java     # Data transfer – download/upload/clear/configure
 │   └── view/
-│       └── CircularInventoryProgressView.java  # Vlastní kruhový ukazatel průběhu inventury
+│       └── CircularInventoryProgressView.java  # Custom circular inventory progress indicator
 └── util/
-    ├── BaseUrlStorage.java               # SharedPreferences pro URL serveru
-    └── TokenStorage.java                 # EncryptedSharedPreferences pro JWT token s expirací
+    ├── BaseUrlStorage.java               # SharedPreferences for server URL
+    ├── ScanInputHelper.java              # Utility for Zebra dual-listener scan pattern
+    └── TokenStorage.java                 # EncryptedSharedPreferences for JWT token and credentials
 ```
 
-## Požadavky
+## Prerequisites
 
-- **Android Studio** Ladybug nebo novější
+- **Android Studio** Ladybug or newer
 - **JDK 21+**
-- **Zebra skener** s Android 13+ (nebo jakýkoli Android 13+ zařízení pro testování)
+- **Zebra scanner** with Android 13+ (or any Android 13+ device for testing)
 
-## Konfigurace
+## Configuration
 
-### local.properties
+### Server URL
 
-Do souboru `local.properties` v kořeni projektu přidejte přihlašovací údaje k API:
+Default API URL: `https://majetek.zs-ustavni.cz/api`
 
-```properties
-ADMIN_USER=vase_uzivatelske_jmeno
-ADMIN_PASS=vase_heslo
-```
+Can be changed in the app via **Data Transfer → Configure Connection**. The URL is stored in `SharedPreferences`.
 
-Tyto hodnoty se injektují jako `BuildConfig.ADMIN_USER` a `BuildConfig.ADMIN_PASS` a používají se pro Basic Auth přihlášení k REST API.
+### Credentials
 
-### URL serveru
+Login credentials are entered in the connection configuration dialog and stored securely in `EncryptedSharedPreferences`.
 
-Výchozí URL API: `https://majetek.zs-ustavni.cz/api`
-
-Lze změnit přímo v aplikaci přes obrazovku **Přenos dat → Nastavit server**. URL se ukládá do `SharedPreferences` a musí začínat `https://`.
-
-## Build & instalace
+## Build & Install
 
 ```bash
 # Debug build
 ./gradlew assembleDebug
 
-# Instalace na připojené zařízení
+# Install on connected device
 ./gradlew installDebug
 ```
 
-APK se vygeneruje v `app/build/outputs/apk/debug/`.
+APK is generated in `app/build/outputs/apk/debug/`.
 
-## Testy
+## Tests
 
 ```bash
-# Unit testy (běží lokálně na JVM)
+# Unit tests (run locally on JVM)
 ./gradlew testDebugUnitTest
 
-# Instrumentované testy (vyžadují připojené zařízení/emulátor)
+# Instrumented tests (require connected device/emulator)
 ./gradlew connectedDebugAndroidTest
 ```
 
-| Typ | Složka | Popis |
+| Type | Directory | Description |
 |---|---|---|
-| Unit testy | `app/src/test/` | `DataSyncRepositoryTest` (4 testy – JSON serializace), `BaseUrlStorageTest` (9 testů – validace/sanitizace URL), `ApiClientTest` (9 testů – MockWebServer: login, download, upload, chybové stavy) |
-| Instrumentované | `app/src/androidTest/` | `DaoTest` (11 testů – Room DAO s in-memory DB), `TokenStorageTest` (6 testů – EncryptedSharedPreferences, expiry, legacy cleanup) |
+| Unit tests | `app/src/test/` | `DataSyncRepositoryTest` (5 tests – JSON serialization), `BaseUrlStorageTest` (9 tests – URL validation/sanitization), `ApiClientTest` (10 tests – MockWebServer: login, download, upload, error states) |
+| Instrumented | `app/src/androidTest/` | `DaoTest` (11 tests – Room DAO with in-memory DB), `TokenStorageTest` (7 tests – EncryptedSharedPreferences, expiry, credentials) |
 
-## REST API endpointy
+## REST API Endpoints
 
-Aplikace komunikuje s backendem přes tyto endpointy:
+The app communicates with the backend via these endpoints:
 
-| Metoda | Endpoint | Popis |
+| Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/auth/login` | Přihlášení (Basic Auth) → vrací JWT token |
-| `GET` | `/card/filter?includeWriteOff=false` | Stažení seznamu karet majetku |
-| `GET` | `/location` | Stažení seznamu lokací/umístění |
-| `POST` | `/inventory-audit/insert-many` | Odeslání výsledků inventury (JSON pole) |
+| `POST` | `/auth/login` | Login (Basic Auth) → returns JWT token |
+| `GET` | `/card/filter?includeWriteOff=false` | Download asset card list |
+| `GET` | `/location` | Download location list |
+| `POST` | `/inventory-audit/insert-many` | Upload inventory results (JSON array) |
 
-## Lokalizace
+## Localization
 
-Aplikace má plnou českou lokalizaci (`values/strings.xml`). Výchozí jazyk je čeština.
+The app is fully localized in Czech (`values/strings.xml`). Default language is Czech.
 
-## Oprávnění
+## Permissions
 
-- `INTERNET` – komunikace s REST API
-- `ACCESS_NETWORK_STATE` – detekce Wi-Fi připojení před přenosem dat
+- `INTERNET` – communication with REST API
+- `ACCESS_NETWORK_STATE` – Wi-Fi connectivity detection before data transfer

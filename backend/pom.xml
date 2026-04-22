@@ -22,7 +22,7 @@
         <jjwt.version>0.13.0</jjwt.version>
     </properties>
 
-<dependencies>
+    <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

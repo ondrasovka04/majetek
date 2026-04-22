@@ -1,154 +1,159 @@
-# Majetek – Backend
+# Asset Management – Backend
 
-REST API pro správu majetku (asset management) postavené na Spring Boot.
+REST API for asset management built on Spring Boot.
 
-## Technologie
+## Technology
 
-| Technologie | Verze | Účel |
-|---|---|---|
-| Java | 21 | Runtime |
-| Spring Boot | 3.2.12 | Framework |
-| PostgreSQL | 17 | Produkční databáze |
-| H2 | — | Testovací in-memory databáze |
-| JWT (jjwt) | 0.12.6 | Autentizace (access + refresh tokeny) |
-| MapStruct | 1.6.3 | Mapování DTO ↔ Entity |
-| Lombok | — | Boilerplate redukce |
-| iText 7 | 8.0.5 | Generování PDF reportů |
-| EasyExcel + POI | 4.0.3 / 5.4.0 | Excel export |
-| SpringDoc OpenAPI | 2.5.0 | Swagger UI |
-| Caffeine | — | In-memory cache (číselníky) |
-| Actuator | — | Health check a monitoring |
-| JaCoCo | 0.8.11 | Code coverage (≥80 % line, ≥75 % branch) |
+| Technology        | Version       | Purpose                                  |
+|-------------------|---------------|------------------------------------------|
+| Java              | 21            | Runtime                                  |
+| Spring Boot       | 3.4.13        | Framework                                |
+| PostgreSQL        | 17            | Production database                      |
+| H2                | —             | In-memory test database                  |
+| JWT (jjwt)        | 0.13.0        | Authentication (access + refresh tokens) |
+| MapStruct         | 1.6.3         | DTO ↔ Entity mapping                     |
+| Lombok            | —             | Boilerplate reduction                    |
+| iText             | 9.5.0         | PDF report generation                    |
+| EasyExcel + POI   | 4.0.3 / 5.5.1 | Excel export                             |
+| SpringDoc OpenAPI | 2.8.17        | Swagger UI                               |
+| Caffeine          | —             | In-memory cache (dictionaries)           |
+| Actuator          | —             | Health check and monitoring              |
+| JaCoCo            | 0.8.14        | Code coverage (≥80% line, ≥75% branch)   |
 
-## Prerekvizity
+## Prerequisites
 
 - **Java 21+**
-- **PostgreSQL** (produkce)
-- Maven Wrapper je součástí repozitáře (`./mvnw`)
+- **PostgreSQL** (production)
+- Maven Wrapper is included (`./mvnw`)
 
-## Environmentální proměnné
+## Environment Variables
 
-| Proměnná | Popis |
-|---|---|
-| `DB_USERNAME` | Uživatel PostgreSQL |
-| `DB_PASSWORD` | Heslo PostgreSQL |
-| `JWT_SECRET` | Tajný klíč pro access tokeny (HS256) |
-| `JWT_REFRESH_SECRET` | Tajný klíč pro refresh tokeny (HS256) |
-| `ATTACHMENT_MAX_FILE_SIZE` | Max velikost přílohy (např. `10MB`) |
+| Variable                   | Description                           |
+|----------------------------|---------------------------------------|
+| `DB_USERNAME`              | PostgreSQL user                       |
+| `DB_PASSWORD`              | PostgreSQL password                   |
+| `JWT_SECRET`               | Secret key for access tokens (HS256)  |
+| `JWT_REFRESH_SECRET`       | Secret key for refresh tokens (HS256) |
+| `ATTACHMENT_MAX_FILE_SIZE` | Max attachment size (e.g. `10MB`)     |
 
-## Spuštění
+## Running
 
 ```bash
-# Kompilace + testy
+# Compile + tests
 ./mvnw clean package
 
-# Kompilace bez testů
+# Compile without tests
 ./mvnw clean package -DskipTests
 
-# Spuštění
+# Run
 java -jar target/majetek-0.0.1-SNAPSHOT.jar
 
-# Pouze testy
+# Tests only
 ./mvnw test
 ```
 
-Aplikace běží na portu **8080**. Swagger UI je dostupný na `/swagger-ui.html`.
+The application runs on port **8080**. Swagger UI is available at `/swagger-ui.html`.
 
-## Struktura projektu
+## Project Structure
 
 ```
 src/main/java/cz/majetek/
-├── auth/                  # Autentizace – login, registrace, JWT, refresh tokeny
-├── card/                  # Karty majetku – CRUD, filtrování, exporty (PDF, Excel, ZPL)
-├── attachment/            # Přílohy ke kartám – upload, download, smazání
-├── dictionary/            # Číselníky (asset group, class, location, purchase/write-off method)
-├── inventoryaudit/        # Inventarizace – hromadný import, rozdíly, projekce
-├── entity/                # JPA entity sdílené across modulů
-├── exception/             # Centralizované zpracování chyb (GlobalExceptionHandler)
-├── config/                # Konfigurace (OpenAPI)
+├── auth/                  # Authentication – login, registration, JWT, refresh tokens
+├── card/                  # Asset cards – CRUD, filtering, exports (PDF, Excel, ZPL)
+├── attachment/            # Card attachments – upload, download, deletion
+├── dictionary/            # Dictionaries (asset group, class, location, purchase/write-off method)
+├── inventoryaudit/        # Inventory audit – bulk import, differences, projection
+├── entity/                # JPA entities shared across modules
+├── exception/             # Centralized error handling (GlobalExceptionHandler)
+├── config/                # Configuration (OpenAPI)
 └── MajetekApplication.java
 ```
 
-Každý modul sleduje pattern: **controller → service (interface + impl) → repository** s MapStruct mapperem a vlastními exception třídami.
+Each module follows the pattern: **controller → service (interface + impl) → repository** with a MapStruct mapper and custom exception classes.
 
 ## REST API
 
 ### Auth (`/api/auth`)
-| Metoda | Endpoint | Popis |
-|---|---|---|
-| POST | `/login` | Přihlášení (Basic Auth → JWT + refresh cookie) |
-| POST | `/refresh` | Rotace access + refresh tokenů |
-| POST | `/register` | Registrace uživatele (pouze ADMIN) |
-| PUT | `/change-password` | Změna hesla |
-| GET | `/` | Seznam uživatelů |
 
-### Karty majetku (`/api/card`)
-| Metoda | Endpoint | Popis |
-|---|---|---|
-| GET | `/` | Všechny karty |
-| GET | `/{id}` | Karta podle ID |
-| GET | `/filter` | Filtrování karet |
-| POST | `/` | Vytvoření karty |
-| PATCH | `/{id}` | Aktualizace karty |
-| DELETE | `/{id}` | Smazání karty |
-| POST | `/print` | Tisk štítků (Zebra cloud) |
-| POST | `/export-excel` | Excel export |
-| POST | `/export-group-pdf` | PDF report skupiny |
-| POST | `/export-location-pdf` | PDF report lokace |
-| POST | `/export-card-pdf` | PDF report karty |
+| Method | Endpoint           | Description                                    |
+|--------|--------------------|------------------------------------------------|
+| POST   | `/login`           | Login (Basic Auth → JWT + refresh cookie)      |
+| POST   | `/refresh`         | Access + refresh token rotation                |
+| POST   | `/register`        | User registration (ADMIN only)                 |
+| PUT    | `/change-password` | Change password                                |
+| GET    | `/`                | List users                                     |
 
-### Přílohy (`/api/card/{cardId}/attachments`)
-| Metoda | Endpoint | Popis |
-|---|---|---|
-| POST | `/` | Upload přílohy |
-| GET | `/` | Seznam příloh |
-| GET | `/{id}` | Stažení přílohy |
-| DELETE | `/{id}` | Smazání přílohy |
+### Asset Cards (`/api/card`)
 
-### Inventarizace (`/api/inventory-audit`)
-| Metoda | Endpoint | Popis |
-|---|---|---|
-| GET | `/` | Všechny záznamy |
-| GET | `/differences` | Rozdíly inventury |
-| POST | `/insert-many` | Hromadný import |
-| POST | `/project` | Projekce rozdílů |
-| PATCH | `/{cardId}` | Aktualizace záznamu |
+| Method | Endpoint               | Description              |
+|--------|------------------------|--------------------------|
+| GET    | `/`                    | All cards                |
+| GET    | `/{id}`                | Card by ID               |
+| GET    | `/filter`              | Filter cards             |
+| POST   | `/`                    | Create card              |
+| PATCH  | `/{id}`                | Update card              |
+| DELETE | `/{id}`                | Delete card              |
+| POST   | `/print`               | Print labels (Zebra cloud) |
+| POST   | `/export-excel`        | Excel export             |
+| POST   | `/export-group-pdf`    | Group PDF report         |
+| POST   | `/export-location-pdf` | Location PDF report      |
+| POST   | `/export-card-pdf`     | Card PDF report          |
 
-### Číselníky
-Všechny číselníky mají CRUD endpointy (`GET /`, `GET /{id}`, `POST /`, `PATCH /{id}`, `DELETE /{id}`):
+### Attachments (`/api/card/{cardId}/attachments`)
 
-| Zdroj | Prefix |
-|---|---|
-| Skupiny majetku | `/api/asset-group` |
-| Třídy | `/api/class` |
-| Lokace | `/api/location` |
-| Způsoby pořízení | `/api/purchase-method` |
-| Způsoby odpisu | `/api/write-off-method` |
+| Method | Endpoint | Description       |
+|--------|----------|-------------------|
+| POST   | `/`      | Upload attachment  |
+| GET    | `/`      | List attachments   |
+| GET    | `/{id}`  | Download attachment |
+| DELETE | `/{id}`  | Delete attachment  |
 
-Lokace navíc podporuje `POST /print` pro tisk štítku.
+### Inventory Audit (`/api/inventory-audit`)
 
-## Autentizace
+| Method | Endpoint       | Description            |
+|--------|----------------|------------------------|
+| GET    | `/`            | All records            |
+| GET    | `/differences` | Inventory differences  |
+| POST   | `/insert-many` | Bulk import            |
+| POST   | `/project`     | Project differences    |
+| PATCH  | `/{cardId}`    | Update record          |
 
-Aplikace používá dvě autentizační schémata:
+### Dictionaries
 
-1. **Basic Auth** – pouze pro `/api/auth/login`
-2. **JWT Bearer** – pro všechny ostatní endpointy
+All dictionaries have CRUD endpoints (`GET /`, `GET /{id}`, `POST /`, `PATCH /{id}`, `DELETE /{id}`):
 
-Po přihlášení server vrátí access token (v response body, expirace 15 min) a refresh token (HttpOnly cookie, expirace 7 dní).
+| Resource          | Prefix                  |
+|-------------------|-------------------------|
+| Asset groups      | `/api/asset-group`      |
+| Classes           | `/api/class`            |
+| Locations         | `/api/location`         |
+| Purchase methods  | `/api/purchase-method`  |
+| Write-off methods | `/api/write-off-method` |
 
-## Testování
+Locations also support `POST /print` for label printing.
+
+## Authentication
+
+The application uses two authentication schemes:
+
+1. **Basic Auth** – only for `/api/auth/login`
+2. **JWT Bearer** – for all other endpoints
+
+After login, the server returns an access token (in response body, expires in 15 min) and a refresh token (HttpOnly cookie, expires in 7 days).
+
+## Testing
 
 ```bash
-# Všechny testy
+# All tests
 ./mvnw test
 
-# JaCoCo report (po testech)
+# JaCoCo report (after tests)
 open target/site/jacoco/index.html
 ```
 
-- **Produkční DB**: PostgreSQL
-- **Testovací DB**: H2 in-memory (`application-test.properties`, profil `test`)
-- **Unit testy**: controllery (MockMvc), services (Mockito), repository, security, exceptions
-- **Integrační testy**: end-to-end přes celý Spring context s H2
+- **Production DB**: PostgreSQL
+- **Test DB**: H2 in-memory (`application-test.properties`, profile `test`)
+- **Unit tests**: controllers (MockMvc), services (Mockito), repository, security, exceptions
+- **Integration tests**: end-to-end through the full Spring context with H2
 
-JaCoCo vyžaduje ≥80 % line coverage a ≥75 % branch coverage. Z coverage jsou vyloučeny: DTO, entity, config, mapper, `MajetekApplication`.
+JaCoCo requires ≥80% line coverage and ≥75% branch coverage. Excluded from coverage: DTOs, entities, config, mappers, `MajetekApplication`.
