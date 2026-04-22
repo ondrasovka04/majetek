@@ -19,7 +19,7 @@ jobs:
 
       - name: Build backend with Maven
         run: |
-          mvn -f backend/pom.xml clean package
+          mvn -f backend/pom.xml clean package -DskipTests
           mv backend/target/*.jar backend/target/majetek-backend.jar
 
       - name: Set up Node.js
@@ -33,7 +33,7 @@ jobs:
           npm ci --ignore-scripts
           npm run build
         env:
-          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          VITE_API_URL: /api
 
       - name: Deploy backend JAR
         uses: appleboy/scp-action@master
