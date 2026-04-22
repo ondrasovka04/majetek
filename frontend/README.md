@@ -4,19 +4,19 @@ React SPA for asset management. Communicates with the REST API backend (Spring B
 
 ## Stack
 
-| Layer | Technology |
-|-------|-----------|
-| UI framework | React 19, TypeScript 6 |
-| Components | MUI 9 (Material UI), Tailwind CSS 4 |
+| Layer        | Technology                                          |
+| ------------ | --------------------------------------------------- |
+| UI framework | React 19, TypeScript 6                              |
+| Components   | MUI 9 (Material UI), Tailwind CSS 4                 |
 | Server state | TanStack Query 5 (caching, mutations, invalidation) |
-| Client state | Zustand 5 (auth store) |
-| Forms | React Hook Form 7 + Zod 4 (validation) |
-| Routing | React Router 7 |
-| HTTP | Axios (with automatic JWT renewal) |
-| Build | Vite 8 |
-| PDF | @react-pdf-viewer |
-| Date | date-fns 4 (Czech locale) |
-| Search | Fuse.js 7 (fuzzy search) |
+| Client state | Zustand 5 (auth store)                              |
+| Forms        | React Hook Form 7 + Zod 4 (validation)              |
+| Routing      | React Router 7                                      |
+| HTTP         | Axios (with automatic JWT renewal)                  |
+| Build        | Vite 8                                              |
+| PDF          | @react-pdf-viewer                                   |
+| Date         | date-fns 4 (Czech locale)                           |
+| Search       | Fuse.js 7 (fuzzy search)                            |
 
 ## Structure
 

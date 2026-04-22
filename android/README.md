@@ -4,11 +4,11 @@ Native Android application for asset management and inventory using barcode scan
 
 ## Features
 
-| Screen | Description |
-|---|---|
-| **Control Scan** | Scan an asset barcode and instantly display card details (ID, name, price, quantity, location). |
-| **Inventory** | Two-step process: first scan a location (code starting with `L`), then scan asset cards. The app visually indicates whether the asset is in the correct location and displays inventory progress in a circular chart. |
-| **Data Transfer** | Download cards and locations from the server to the local database, upload inventory results back to the server, clear inventory data, and configure server URL and credentials. |
+| Screen            | Description                                                                                                                                                                                                           |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Control Scan**  | Scan an asset barcode and instantly display card details (ID, name, price, quantity, location).                                                                                                                       |
+| **Inventory**     | Two-step process: first scan a location (code starting with `L`), then scan asset cards. The app visually indicates whether the asset is in the correct location and displays inventory progress in a circular chart. |
+| **Data Transfer** | Download cards and locations from the server to the local database, upload inventory results back to the server, clear inventory data, and configure server URL and credentials.                                      |
 
 ## Tech Stack
 
@@ -97,21 +97,21 @@ APK is generated in `app/build/outputs/apk/debug/`.
 ./gradlew connectedDebugAndroidTest
 ```
 
-| Type | Directory | Description |
-|---|---|---|
-| Unit tests | `app/src/test/` | `DataSyncRepositoryTest` (5 tests – JSON serialization), `BaseUrlStorageTest` (9 tests – URL validation/sanitization), `ApiClientTest` (10 tests – MockWebServer: login, download, upload, error states) |
-| Instrumented | `app/src/androidTest/` | `DaoTest` (11 tests – Room DAO with in-memory DB), `TokenStorageTest` (7 tests – EncryptedSharedPreferences, expiry, credentials) |
+| Type         | Directory              | Description                                                                                                                                                                                              |
+| ------------ | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Unit tests   | `app/src/test/`        | `DataSyncRepositoryTest` (5 tests – JSON serialization), `BaseUrlStorageTest` (9 tests – URL validation/sanitization), `ApiClientTest` (10 tests – MockWebServer: login, download, upload, error states) |
+| Instrumented | `app/src/androidTest/` | `DaoTest` (11 tests – Room DAO with in-memory DB), `TokenStorageTest` (7 tests – EncryptedSharedPreferences, expiry, credentials)                                                                        |
 
 ## REST API Endpoints
 
 The app communicates with the backend via these endpoints:
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/auth/login` | Login (Basic Auth) → returns JWT token |
-| `GET` | `/card/filter?includeWriteOff=false` | Download asset card list |
-| `GET` | `/location` | Download location list |
-| `POST` | `/inventory-audit/insert-many` | Upload inventory results (JSON array) |
+| Method | Endpoint                             | Description                            |
+| ------ | ------------------------------------ | -------------------------------------- |
+| `POST` | `/auth/login`                        | Login (Basic Auth) → returns JWT token |
+| `GET`  | `/card/filter?includeWriteOff=false` | Download asset card list               |
+| `GET`  | `/location`                          | Download location list                 |
+| `POST` | `/inventory-audit/insert-many`       | Upload inventory results (JSON array)  |
 
 ## Localization
 

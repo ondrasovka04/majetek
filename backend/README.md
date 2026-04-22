@@ -5,7 +5,7 @@ REST API for asset management built on Spring Boot.
 ## Technology
 
 | Technology        | Version       | Purpose                                  |
-|-------------------|---------------|------------------------------------------|
+| ----------------- | ------------- | ---------------------------------------- |
 | Java              | 21            | Runtime                                  |
 | Spring Boot       | 3.4.13        | Framework                                |
 | PostgreSQL        | 17            | Production database                      |
@@ -29,7 +29,7 @@ REST API for asset management built on Spring Boot.
 ## Environment Variables
 
 | Variable                   | Description                           |
-|----------------------------|---------------------------------------|
+| -------------------------- | ------------------------------------- |
 | `DB_USERNAME`              | PostgreSQL user                       |
 | `DB_PASSWORD`              | PostgreSQL password                   |
 | `JWT_SECRET`               | Secret key for access tokens (HS256)  |
@@ -69,61 +69,62 @@ src/main/java/cz/majetek/
 └── MajetekApplication.java
 ```
 
-Each module follows the pattern: **controller → service (interface + impl) → repository** with a MapStruct mapper and custom exception classes.
+Each module follows the pattern: **controller → service (interface + impl) → repository** with a MapStruct mapper and
+custom exception classes.
 
 ## REST API
 
 ### Auth (`/api/auth`)
 
-| Method | Endpoint           | Description                                    |
-|--------|--------------------|------------------------------------------------|
-| POST   | `/login`           | Login (Basic Auth → JWT + refresh cookie)      |
-| POST   | `/refresh`         | Access + refresh token rotation                |
-| POST   | `/register`        | User registration (ADMIN only)                 |
-| PUT    | `/change-password` | Change password                                |
-| GET    | `/`                | List users                                     |
+| Method | Endpoint           | Description                               |
+| ------ | ------------------ | ----------------------------------------- |
+| POST   | `/login`           | Login (Basic Auth → JWT + refresh cookie) |
+| POST   | `/refresh`         | Access + refresh token rotation           |
+| POST   | `/register`        | User registration (ADMIN only)            |
+| PUT    | `/change-password` | Change password                           |
+| GET    | `/`                | List users                                |
 
 ### Asset Cards (`/api/card`)
 
-| Method | Endpoint               | Description              |
-|--------|------------------------|--------------------------|
-| GET    | `/`                    | All cards                |
-| GET    | `/{id}`                | Card by ID               |
-| GET    | `/filter`              | Filter cards             |
-| POST   | `/`                    | Create card              |
-| PATCH  | `/{id}`                | Update card              |
-| DELETE | `/{id}`                | Delete card              |
+| Method | Endpoint               | Description                |
+| ------ | ---------------------- | -------------------------- |
+| GET    | `/`                    | All cards                  |
+| GET    | `/{id}`                | Card by ID                 |
+| GET    | `/filter`              | Filter cards               |
+| POST   | `/`                    | Create card                |
+| PATCH  | `/{id}`                | Update card                |
+| DELETE | `/{id}`                | Delete card                |
 | POST   | `/print`               | Print labels (Zebra cloud) |
-| POST   | `/export-excel`        | Excel export             |
-| POST   | `/export-group-pdf`    | Group PDF report         |
-| POST   | `/export-location-pdf` | Location PDF report      |
-| POST   | `/export-card-pdf`     | Card PDF report          |
+| POST   | `/export-excel`        | Excel export               |
+| POST   | `/export-group-pdf`    | Group PDF report           |
+| POST   | `/export-location-pdf` | Location PDF report        |
+| POST   | `/export-card-pdf`     | Card PDF report            |
 
 ### Attachments (`/api/card/{cardId}/attachments`)
 
-| Method | Endpoint | Description       |
-|--------|----------|-------------------|
-| POST   | `/`      | Upload attachment  |
-| GET    | `/`      | List attachments   |
+| Method | Endpoint | Description         |
+| ------ | -------- | ------------------- |
+| POST   | `/`      | Upload attachment   |
+| GET    | `/`      | List attachments    |
 | GET    | `/{id}`  | Download attachment |
-| DELETE | `/{id}`  | Delete attachment  |
+| DELETE | `/{id}`  | Delete attachment   |
 
 ### Inventory Audit (`/api/inventory-audit`)
 
-| Method | Endpoint       | Description            |
-|--------|----------------|------------------------|
-| GET    | `/`            | All records            |
-| GET    | `/differences` | Inventory differences  |
-| POST   | `/insert-many` | Bulk import            |
-| POST   | `/project`     | Project differences    |
-| PATCH  | `/{cardId}`    | Update record          |
+| Method | Endpoint       | Description           |
+| ------ | -------------- | --------------------- |
+| GET    | `/`            | All records           |
+| GET    | `/differences` | Inventory differences |
+| POST   | `/insert-many` | Bulk import           |
+| POST   | `/project`     | Project differences   |
+| PATCH  | `/{cardId}`    | Update record         |
 
 ### Dictionaries
 
 All dictionaries have CRUD endpoints (`GET /`, `GET /{id}`, `POST /`, `PATCH /{id}`, `DELETE /{id}`):
 
 | Resource          | Prefix                  |
-|-------------------|-------------------------|
+| ----------------- | ----------------------- |
 | Asset groups      | `/api/asset-group`      |
 | Classes           | `/api/class`            |
 | Locations         | `/api/location`         |
@@ -139,7 +140,8 @@ The application uses two authentication schemes:
 1. **Basic Auth** – only for `/api/auth/login`
 2. **JWT Bearer** – for all other endpoints
 
-After login, the server returns an access token (in response body, expires in 15 min) and a refresh token (HttpOnly cookie, expires in 7 days).
+After login, the server returns an access token (in response body, expires in 15 min) and a refresh token (HttpOnly
+cookie, expires in 7 days).
 
 ## Testing
 
@@ -156,4 +158,5 @@ open target/site/jacoco/index.html
 - **Unit tests**: controllers (MockMvc), services (Mockito), repository, security, exceptions
 - **Integration tests**: end-to-end through the full Spring context with H2
 
-JaCoCo requires ≥80% line coverage and ≥75% branch coverage. Excluded from coverage: DTOs, entities, config, mappers, `MajetekApplication`.
+JaCoCo requires ≥80% line coverage and ≥75% branch coverage. Excluded from coverage: DTOs, entities, config, mappers,
+`MajetekApplication`.
