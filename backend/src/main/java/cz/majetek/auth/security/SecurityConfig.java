@@ -74,6 +74,7 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/swagger-ui/**", "/swagger-ui.html",
                                         "/v3/api-docs/**", "/v3/api-docs.yaml",
+                                        "/api-docs/**",
                                         "/swagger-resources/**", "/webjars/**", "/configuration/**"
                                 ).permitAll()
                                 .requestMatchers("/api/auth/refresh").permitAll()

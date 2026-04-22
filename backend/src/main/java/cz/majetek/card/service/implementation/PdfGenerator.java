@@ -267,7 +267,7 @@ public final class PdfGenerator {
     }
 
     private static void addReportHeader(Document doc, String title, String subtitle, LocalDate asOfDate) {
-        doc.add(new Paragraph(title).setBold().setFontSize(16));
+        doc.add(new Paragraph(title).simulateBold().setFontSize(16));
         if (subtitle != null && !subtitle.isEmpty()) {
             doc.add(new Paragraph(subtitle).setFontSize(14));
         }
@@ -322,7 +322,7 @@ public final class PdfGenerator {
 
     private static Cell createHeaderCell(String text, TextAlignment alignment) {
         return new Cell()
-                .add(new Paragraph(text).setBold().setFontSize(11))
+                .add(new Paragraph(text).simulateBold().setFontSize(11))
                 .setTextAlignment(alignment)
                 .setBorderTop(Border.NO_BORDER)
                 .setBorderLeft(Border.NO_BORDER)
@@ -353,7 +353,7 @@ public final class PdfGenerator {
     }
 
     private static Cell createTotalCell(String text, TextAlignment alignment) {
-        Paragraph p = new Paragraph(text).setBold().setFontSize(11).setMultipliedLeading(0.75f);
+        Paragraph p = new Paragraph(text).simulateBold().setFontSize(11).setMultipliedLeading(0.75f);
         return new Cell().add(p).setTextAlignment(alignment).setBorder(Border.NO_BORDER);
     }
 
@@ -363,7 +363,7 @@ public final class PdfGenerator {
 
     private static Cell createLabelCell(String text) {
         return new Cell().setBorder(Border.NO_BORDER)
-                .add(new Paragraph(text + ":").setBold().setFontSize(10));
+                .add(new Paragraph(text + ":").simulateBold().setFontSize(10));
     }
 
     private static Cell createValueCell(String text) {
@@ -403,7 +403,7 @@ public final class PdfGenerator {
                 try (Canvas canvas = new Canvas(new PdfCanvas(page.newContentStreamAfter(), page.getResources(), resultDoc), pageSize)) {
                     canvas.setFont(footerFont)
                             .setFontSize(8)
-                            .setItalic();
+                            .simulateItalic();
 
                     canvas.showTextAligned(i + "/" + totalPages, x, y, TextAlignment.RIGHT);
                     canvas.showTextAligned(formatDate(LocalDate.now()), 20, y, TextAlignment.LEFT);
