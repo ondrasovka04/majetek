@@ -8,6 +8,15 @@ import {
 } from "@/services/inventoryAuditService";
 import { InventoryDifferenceAction, InventoryDifferenceEntry } from "@/types/inventoryAudit/inventoryDifference";
 
+const resolveWriteOffDate = (
+  next: string | null | undefined,
+  previous: Date | null | undefined,
+): Date | null | undefined => {
+  if (next) return new Date(next);
+  if (next === null) return null;
+  return previous;
+};
+
 export function useInventoryAudit() {
   return useQuery({
     queryKey: ["inventoryAudit"],
@@ -44,11 +53,7 @@ export function usePatchInventoryDifference() {
             ? {
                 ...entry,
                 ...body,
-                writeOffDate: body.writeOffDate
-                  ? new Date(body.writeOffDate)
-                  : body.writeOffDate === null
-                    ? null
-                    : entry.writeOffDate,
+                writeOffDate: resolveWriteOffDate(body.writeOffDate, entry.writeOffDate),
               }
             : entry,
         );

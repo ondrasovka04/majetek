@@ -23,5 +23,6 @@ export function extractErrorMessage(error: unknown): string {
     if (obj.message) return obj.message;
   }
 
+  if (typeof error === "object" && error !== null) return "Unknown error";
   return String(error);
 }

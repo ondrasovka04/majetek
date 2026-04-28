@@ -131,8 +131,9 @@ const CardFormFields = ({
               slotProps={{
                 select: {
                   renderValue: (value: unknown) => {
-                    const loc = locations.find((l) => l.id === value);
-                    return loc ? `${value} - ${loc.name ?? ""}` : String(value);
+                    const id = String(value);
+                    const loc = locations.find((l) => l.id === id);
+                    return loc ? `${id} - ${loc.name ?? ""}` : id;
                   },
                 },
               }}>
@@ -186,8 +187,9 @@ const CardFormFields = ({
               slotProps={{
                 select: {
                   renderValue: (value: unknown) => {
-                    const group = groups.find((g) => g.id === value);
-                    return group ? `${value} - ${group.name ?? ""}` : String(value);
+                    const id = String(value);
+                    const group = groups.find((g) => g.id === id);
+                    return group ? `${id} - ${group.name ?? ""}` : id;
                   },
                 },
               }}>

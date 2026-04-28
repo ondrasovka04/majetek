@@ -1,5 +1,5 @@
 /** TanStack Query hooks for asset card CRUD, filtering, printing, and PDF/Excel export. */
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, skipToken } from "@tanstack/react-query";
 import {
   getCards,
   getCardById,
@@ -31,8 +31,7 @@ export function useCards() {
 export function useCardDetail(cardId: string | undefined) {
   return useQuery({
     queryKey: ["card", cardId],
-    queryFn: () => getCardById(cardId!),
-    enabled: !!cardId,
+    queryFn: cardId ? () => getCardById(cardId) : skipToken,
   });
 }
 
