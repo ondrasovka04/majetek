@@ -31,4 +31,8 @@ _minted/
 
 example-asssignment-include.pdf
 ctufit-thesis.pdf
+ctufit-presentation.pdf
+*.nav
+*.snm
+*.vrb
 build.sh
