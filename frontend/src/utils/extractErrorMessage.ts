@@ -23,5 +23,9 @@ export function extractErrorMessage(error: unknown): string {
     if (obj.message) return obj.message;
   }
 
-  return String(error);
+  if (typeof error === "string") return error;
+  if (typeof error === "number" || typeof error === "boolean") return error.toString();
+  if (error === null) return "null";
+  if (error === undefined) return "undefined";
+  return "Unknown error";
 }
