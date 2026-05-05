@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException() {
         return errorResponseUtils.buildErrorResponse(
                 HttpStatus.NOT_FOUND,
                 "The requested endpoint does not exist"
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException() {
         return errorResponseUtils.buildErrorResponse(
                 HttpStatus.UNAUTHORIZED,
                 "Invalid username or password"
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException() {
         return errorResponseUtils.buildErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 "Invalid JSON format in request body"
@@ -198,7 +198,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidDataAccessApiUsageException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex) {
+    public ResponseEntity<ErrorResponse> handleInvalidDataAccessApiUsageException() {
         return errorResponseUtils.buildErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 "Invalid data access operation"

@@ -47,7 +47,7 @@ public class PurchaseMethodController {
     @ApiResponse(responseCode = "200", description = "PurchaseMethod found",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = PurchaseMethod.class)))
     public ResponseEntity<PurchaseMethod> getById(
-            @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id) {
+            @PathVariable @Parameter(name = "id", required = true, in = ParameterIn.PATH) String id) {
         return ResponseEntity.ok(purchaseMethodService.getById(id));
     }
 

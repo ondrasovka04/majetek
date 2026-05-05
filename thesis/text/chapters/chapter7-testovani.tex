@@ -6,7 +6,7 @@
 
 \section{Testování backendu}
 
-Backend je testován na třech úrovních: unit testy izolovaných komponent, testy datové vrstvy nad in-memory databází a~integrační testy celého API. Celkem obsahuje 447 testovacích metod ve~44 testovacích třídách.
+Backend je testován na třech úrovních: unit testy izolovaných komponent, testy datové vrstvy nad in-memory databází a~integrační testy celého API. Celkem obsahuje 445 testovacích metod ve~44 testovacích třídách.
 
 \subsection{Unit testy}
 
@@ -77,9 +77,9 @@ Tabulka~\ref{tab:tests} shrnuje rozsah testování všech komponent systému.
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{l|r|l|l}
 	\textbf{Komponenta} & \textbf{Testů} & \textbf{Pokrytí} & \textbf{Nástroje} \tabularnewline \hline
-	Backend & 447 & $\geq$\,80\,\% ř., $\geq$\,75\,\% větví & JUnit~5, Mockito \tabularnewline
+	Backend & 445 & $\geq$\,80\,\% ř., $\geq$\,75\,\% větví & JUnit~5, Mockito \tabularnewline
 	Frontend & 54 & typová kontrola (strict) & Vitest \tabularnewline
-	Mobilní apl. & 42 & -- & JUnit~5 \tabularnewline
+	Mobilní apl. & 40 & -- & JUnit~5 \tabularnewline
 \end{tabular}
 \caption{Přehled testů jednotlivých komponent}\label{tab:tests}
 \end{table}

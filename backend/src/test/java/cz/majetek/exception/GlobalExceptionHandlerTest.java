@@ -17,13 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.core.MethodParameter;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.FieldError;
@@ -32,7 +27,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.time.Instant;
 import java.util.List;
@@ -134,9 +128,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handleBadCredentialsException_ShouldReturnUnauthorized() {
-        BadCredentialsException exception = new BadCredentialsException("Bad credentials");
-
-        ResponseEntity<ErrorResponse> response = exceptionHandler.handleBadCredentialsException(exception);
+        ResponseEntity<ErrorResponse> response = exceptionHandler.handleBadCredentialsException();
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -204,8 +196,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handleNoHandlerFoundException_ShouldReturnNotFound() {
-        NoHandlerFoundException ex = new NoHandlerFoundException("GET", "/unknown", HttpHeaders.EMPTY);
-        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleNoHandlerFoundException(ex);
+        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleNoHandlerFoundException();
         assertEquals(HttpStatus.NOT_FOUND, resp.getStatusCode());
     }
 
@@ -219,18 +210,13 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handleHttpMessageNotReadable_WithCause_ShouldReturnBadRequest() {
-        Exception cause = new RuntimeException("bad json");
-        HttpInputMessage inputMessage = mock(HttpInputMessage.class);
-        HttpMessageNotReadableException ex = new HttpMessageNotReadableException("msg", cause, inputMessage);
-        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleHttpMessageNotReadableException(ex);
+        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleHttpMessageNotReadableException();
         assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
     }
 
     @Test
     void handleHttpMessageNotReadable_NoCause_ShouldReturnBadRequest() {
-        HttpInputMessage inputMessage = mock(HttpInputMessage.class);
-        HttpMessageNotReadableException ex = new HttpMessageNotReadableException("msg", inputMessage);
-        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleHttpMessageNotReadableException(ex);
+        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleHttpMessageNotReadableException();
         assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
     }
 
@@ -341,7 +327,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handleInvalidDataAccessApiUsageException_ShouldReturnBadRequest() {
-        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleInvalidDataAccessApiUsageException(new InvalidDataAccessApiUsageException("bad query"));
+        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleInvalidDataAccessApiUsageException();
         assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
     }
 }
