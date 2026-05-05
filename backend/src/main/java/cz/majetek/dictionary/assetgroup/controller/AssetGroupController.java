@@ -48,7 +48,7 @@ public class AssetGroupController {
     @ApiResponse(responseCode = "200", description = "Asset group found",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = AssetGroup.class)))
     public ResponseEntity<AssetGroup> getById(
-            @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id) {
+            @PathVariable @Parameter(name = "id", required = true, in = ParameterIn.PATH) String id) {
         return ResponseEntity.ok(assetGroupService.getById(id));
     }
 
@@ -86,7 +86,7 @@ public class AssetGroupController {
     @Operation(summary = "Delete asset group", description = "Deletes an asset group by ID")
     @ApiResponse(responseCode = "204", description = "Asset group deleted")
     public ResponseEntity<Void> delete(
-            @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id) {
+            @PathVariable @Parameter(name = "id", required = true, in = ParameterIn.PATH) String id) {
         assetGroupService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

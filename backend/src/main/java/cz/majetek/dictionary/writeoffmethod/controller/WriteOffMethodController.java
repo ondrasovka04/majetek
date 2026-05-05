@@ -47,7 +47,7 @@ public class WriteOffMethodController {
     @ApiResponse(responseCode = "200", description = "WriteOffMethod found",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = WriteOffMethod.class)))
     public ResponseEntity<WriteOffMethod> getById(
-            @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id) {
+            @PathVariable @Parameter(name = "id", required = true, in = ParameterIn.PATH) String id) {
         return ResponseEntity.ok(writeOffMethodService.getById(id));
     }
 
@@ -85,7 +85,7 @@ public class WriteOffMethodController {
     @Operation(summary = "Delete write-off method ", description = "Deletes a write-off method by ID")
     @ApiResponse(responseCode = "204", description = "WriteOffMethod deleted")
     public ResponseEntity<Void> delete(
-            @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id) {
+            @PathVariable @Parameter(name = "id", required = true, in = ParameterIn.PATH) String id) {
         writeOffMethodService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

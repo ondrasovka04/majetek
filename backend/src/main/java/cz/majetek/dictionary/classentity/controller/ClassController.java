@@ -47,7 +47,7 @@ public class ClassController {
     @ApiResponse(responseCode = "200", description = "Class found",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClassEntity.class)))
     public ResponseEntity<ClassEntity> getById(
-            @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id) {
+            @PathVariable @Parameter(name = "id", required = true, in = ParameterIn.PATH) String id) {
         return ResponseEntity.ok(classService.getById(id));
     }
 
@@ -85,7 +85,7 @@ public class ClassController {
     @Operation(summary = "Delete class", description = "Deletes a class by ID")
     @ApiResponse(responseCode = "204", description = "Class deleted")
     public ResponseEntity<Void> delete(
-            @Parameter(name = "id", required = true, in = ParameterIn.PATH) @PathVariable("id") String id) {
+            @PathVariable @Parameter(name = "id", required = true, in = ParameterIn.PATH) String id) {
         classService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
