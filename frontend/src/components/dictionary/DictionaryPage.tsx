@@ -58,7 +58,7 @@ export default function DictionaryPage<T extends DictionaryEntity>({
   const updateMutation = useUpdate();
   const deleteMutation = useDelete();
 
-  const { sortedData, sortConfig, handleSort } = useSortableData(items, "id" as string & keyof T);
+  const { sortedData, sortConfig, handleSort } = useSortableData(items, "id");
 
   const handleCreate = (item: T): Promise<void> => {
     return new Promise<void>((resolve, reject) => {
@@ -113,12 +113,12 @@ export default function DictionaryPage<T extends DictionaryEntity>({
                   <TableHead>
                     <TableRow>
                       <TableCell
-                        onClick={() => handleSort("id" as string & keyof T)}
+                        onClick={() => handleSort("id")}
                         style={{ cursor: "pointer", fontWeight: "bold" }}>
                         ID {sortConfig.key === "id" && (sortConfig.direction === "asc" ? "▲" : "▼")}
                       </TableCell>
                       <TableCell
-                        onClick={() => handleSort("name" as string & keyof T)}
+                        onClick={() => handleSort("name")}
                         style={{ cursor: "pointer", fontWeight: "bold" }}>
                         Název {sortConfig.key === "name" && (sortConfig.direction === "asc" ? "▲" : "▼")}
                       </TableCell>
