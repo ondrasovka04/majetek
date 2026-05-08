@@ -56,9 +56,9 @@ Z~měření jsou vyloučeny třídy, které neobsahují testovatelnou logiku: DT
 
 \section{Testování frontendu}
 
-Frontend je testován knihovnou Vitest (7 testovacích souborů, 54 testovacích metod). Testy pokrývají kritickou business logiku -- utility funkce (formátování dat, české řazení, extrakce chybových hlášek), validační schémata a~vybrané React komponenty. Komponentové testy využívají \texttt{@testing-library/react} pro renderování a~simulaci uživatelských interakcí. Správnost UI komponent je dále zajištěna statickou typovou kontrolou TypeScriptu.
+Frontend je testován knihovnou Vitest (7 testovacích souborů, 54 testovacích metod). Testy pokrývají kritickou business logiku -- utility funkce (formátování dat, české řazení, extrakce chybových hlášek), validační schémata a~vybrané React komponenty. Komponentové testy využívají \texttt{@testing-library/react} pro renderování a~simulaci uživatelských interakcí. Správnost UI komponent je dále zajištěna statickou typovou kontrolou TypeScriptu v~režimu \texttt{strict}.
 
-Statická typová kontrola prostřednictvím kompilátoru TypeScriptu slouží jako doplňková vrstva ověření -- při každém buildu kompilátor zkontroluje typovou konzistenci celé aplikace.
+Statická typová kontrola prostřednictvím TypeScriptu v~režimu \texttt{strict} slouží jako doplňková vrstva ověření -- při každém buildu kompilátor zkontroluje typovou konzistenci celé aplikace.
 
 \section{Testování mobilní aplikace}
 
@@ -73,7 +73,7 @@ Uživatelské rozhraní je průběžně ověřováno manuálním testováním na
 
 \section{Souhrn testování}
 
-Tabulka~\ref{tab:tests} shrnuje rozsah testování všech komponent systému. U~frontendu doplňuje kompilační typová kontrola TypeScriptu dynamické testy o~statické ověření typové konzistence celé aplikace.
+Tabulka~\ref{tab:tests} shrnuje rozsah testování všech komponent systému. U~frontendu doplňuje kompilační typová kontrola TypeScriptu v~režimu \texttt{strict} dynamické testy o~statické ověření typové konzistence celé aplikace.
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.3}
