@@ -6,21 +6,7 @@
 
 \section{Backend}
 
-Backend je implementován jako Spring Boot aplikace s~Maven build systémem a~Javou~21. Zdrojový kód je organizován do doménových balíčků:
-
-\dirtree{%
-.1 cz.majetek.
-.2 auth\DTcomment{autentizace, JWT, Spring Security}.
-.2 card\DTcomment{CRUD karet, filtrování, exporty}.
-.2 dictionary\DTcomment{číselníky (lokace, skupiny, třídy, \ldots)}.
-.2 inventoryaudit\DTcomment{inventurní audit}.
-.2 entity\DTcomment{JPA entity sdílené napříč moduly}.
-.2 exception\DTcomment{globální zpracování chyb}.
-.2 config\DTcomment{konfigurace (OpenAPI, beans)}.
-}
-
-\medskip
-Struktura každého modulu odpovídá třívrstvému vzoru z~kapitoly~\ref{sec:backend-arch}, tedy vrstvy controller, service (rozhraní + implementace), repository a~mapper.
+Backend je implementován jako Spring Boot aplikace s~Maven build systémem a~Javou~21. Modulární struktura balíčků odpovídá architektuře z~kapitoly~\ref{sec:backend-arch} (viz obrázek~\ref{fig:package-backend}); každý modul dodržuje třívrstvý vzor controller -- service (rozhraní + implementace) -- repository, doplněný o~MapStruct mappery. Následující sekce popisují klíčové implementační detaily, které vyžadovaly netriviální řešení.
 
 \subsection{Filtrování karet majetku}
 
@@ -83,7 +69,7 @@ private static void handleAsOf(List<Predicate> predicates,
 
 \subsection{Generování exportů}
 
-Systém generuje tři typy exportů: PDF reporty (požadavky F-13 až F-15, viz tabulka~\ref{tab:freq-reports}), Excel soubory (F-16) a~ZPL etikety (požadavky F-10 až F-12, viz tabulka~\ref{tab:freq-labels}).
+Systém generuje tři typy exportů: PDF reporty (požadavky F-12 až F-14, viz tabulka~\ref{tab:freq-reports}), Excel soubory (F-15) a~ZPL etikety (požadavky F-09 až F-11, viz tabulka~\ref{tab:freq-labels}).
 
 \subsubsection{PDF reporty}
 
@@ -157,13 +143,7 @@ Metoda převádí šířku z~bodů na milimetry a~porovnává ji s~konstantou \t
 Hotové etikety jsou odeslány na tiskárnu Zebra prostřednictvím Zebra Cloud API (\texttt{POST} na \texttt{api.zebra.com}). Vzhledem k~tomu, že bezplatný tarif API umožňuje pouze 100~požadavků denně, je alternativně nabídnuto stažení ZPL souboru pro lokální tisk.
 
 \subsection{Inventurní audit}
-Inventurní audit (požadavky F-17 až F-25, viz tabulky~\ref{tab:freq-inventory-mobile} a~\ref{tab:freq-inventory-web}) je na straně backendu implementován ve~dvou fázích:
-\begin{enumerate}
-	\item Import dat z~mobilní aplikace.
-	\item Vyhodnocení s~projekcí změn.
-\end{enumerate}
-
-Celý inventurní proces od založení inventury přes skenování až po promítnutí změn je znázorněn na obrázku~\ref{fig:activity-inventory}.
+Inventurní audit (požadavky F-16 až F-24, viz tabulky~\ref{tab:freq-inventory-mobile} a~\ref{tab:freq-inventory-web}) je na straně backendu implementován ve~dvou fázích: importem dat z~mobilní aplikace a~následným vyhodnocením s~projekcí změn. Celý proces od založení inventury přes skenování až po promítnutí změn je znázorněn na obrázku~\ref{fig:activity-inventory}.
 
 \begin{figure}[H]
 	\centering
@@ -172,11 +152,7 @@ Celý inventurní proces od založení inventury přes skenování až po promí
 	\label{fig:activity-inventory}
 \end{figure}
 
-\subsubsection{Import dat}
-
 Endpoint \texttt{POST /api/inventory-audit/insert-many} přijímá hromadný zápis inventurních záznamů z~mobilní aplikace. Každý záznam obsahuje identifikátor karty, identifikátor reálného umístění a~časové razítko naskenování. Záznamy jsou vloženy do tabulky \texttt{inventory\_audit} s~vazbou na existující kartu.
-
-\subsubsection{Výpočet rozdílů}
 
 Klíčovou částí inventurního procesu je porovnání skutečného stavu (naskenovaného umístění) s~evidovaným stavem (umístění v~databázi). Toto porovnání provádí MapStruct mapper:
 
@@ -202,9 +178,7 @@ default InventoryAuditStatus mapStatus(Card entity) {
 
 Mapper vrací tři stavy: \texttt{CORRECT} (lokace souhlasí), \texttt{WARN} (lokace se liší) a~\texttt{WRONG} (karta nebyla naskenována). U~stavu \texttt{CORRECT} je automaticky zvolena akce \texttt{KEEP} (ponechat) a~uživatel ji nemůže změnit. U~stavu \texttt{WARN} může uživatel zvolit akci \texttt{RL} (real location -- přesunout na skutečnou lokaci), \texttt{EL} (expected location -- ponechat na původní lokaci) nebo \texttt{WRITE\_OFF} (vyřadit). U~stavu \texttt{WRONG} jsou dostupné akce \texttt{EL} a~\texttt{WRITE\_OFF}.
 
-\subsubsection{Projekce změn}
-
-Endpoint \texttt{POST /api/inventory-audit/project} aplikuje rozhodnutí uživatele na databázi. Pro akci \texttt{RL} je aktualizováno umístění karty, pro \texttt{WRITE\_OFF} jsou nastaveny datum a~způsob vyřazení. Po dokončení projekce jsou inventurní záznamy smazány.
+Po rozhodnutí uživatele endpoint \texttt{POST /api/inventory-audit/project} aplikuje vybrané akce na databázi -- pro akci \texttt{RL} je aktualizováno umístění karty, pro \texttt{WRITE\_OFF} jsou nastaveny datum a~způsob vyřazení. Po dokončení projekce jsou inventurní záznamy smazány.
 
 \subsection{Cachování číselníků}
 
@@ -263,9 +237,11 @@ Metoda \texttt{toDto()} převádí vnořené entity na ploché identifikátory a
 
 \section{Frontend}
 
+Frontend je vytvořen nástrojem Vite s~Reactem~19 a~TypeScriptem. Tato sekce popisuje implementaci klíčových obrazovek webové aplikace -- správu karet majetku v~master-detail rozložení, generický vzor pro číselníkové stránky, formulářovou validaci, vyhodnocení inventury a~mechanismus automatické obnovy přihlašovacího tokenu.
+
 \subsection{Struktura projektu}
 
-Frontend je vytvořen nástrojem Vite s~Reactem~19 a~TypeScriptem. Zdrojový kód je organizován následovně:
+Zdrojový kód je organizován následovně:
 
 \needspace{12\baselineskip}
 \dirtree{%
@@ -335,7 +311,7 @@ Client-side vyhledávání využívá knihovnu Fuse.js pro fuzzy matching a~Reac
 
 \subsection{Generický vzor pro číselníky}
 
-Pět číselníkových stránek (lokace, skupiny, třídy, způsoby pořízení a~vyřazení) sdílí jedinou generickou komponentu \texttt{DictionaryPage<T>}. Komponenta přijímá query a~mutační hooky jako vlastnosti a~vykresluje tabulku s~operacemi vytvoření, přejmenování a~smazání:
+Generický vzor pro číselníkové stránky byl popsán v~kapitole~\ref{chap:architecture}. Implementačně je rozhraní komponenty \texttt{DictionaryPage<T>} parametrizované typem entity:
 
 \begin{listing}[H]
 \caption{Typové rozhraní generické číselníkové komponenty}\label{lst:dictprops}
@@ -409,7 +385,7 @@ Schéma je propojeno s~formulářem prostřednictvím resolveru \texttt{zodResol
 
 \subsection{Vyhodnocení inventury}
 
-Stránka pro vyhodnocení inventury (požadavky F-22 až F-25, viz obrázek~\ref{fig:differences-page}) zobrazuje tabulku (MUI DataGrid) s~barevně odlišenými řádky podle statusu:
+Stránka pro vyhodnocení inventury (požadavky F-21 až F-24, viz obrázek~\ref{fig:differences-page}) zobrazuje tabulku (MUI DataGrid) s~barevně odlišenými řádky podle statusu:
 \begin{itemize}
 	\item zelená -- \texttt{CORRECT} (umístění souhlasí),
 	\item oranžová -- \texttt{WARN} (umístění se liší),
@@ -475,9 +451,7 @@ Všechny chráněné stránky jsou obaleny komponentou \texttt{PrivateRoute}, kt
 \needspace{8\baselineskip}
 \section{Mobilní aplikace}
 
-\subsection{Struktura projektu}
-
-Mobilní aplikace je nativní Android projekt v~Javě~21 s~build systémem Gradle (Kotlin DSL). Architektura aplikace (jedna Activity, tři fragmenty, lokální databáze) byla popsána v~kapitole~\ref{sec:mobile-arch}. Tato sekce se zaměřuje na implementační detaily.
+Mobilní aplikace je nativní Android projekt v~Javě~21 s~build systémem Gradle (Kotlin DSL). Gradle je v~ekosystému Androidu de facto standard -- nástroje Android Studio, AGP plugin i~knihovny jako Room generují konfiguraci právě pro něj, a~zvolit jiný build systém by znamenalo bojovat s~platformou. Backend naopak používá Maven, který je tradiční volbou pro Spring Boot projekty. Architektura aplikace (jedna Activity, tři fragmenty, lokální databáze) je popsána v~kapitole~\ref{sec:mobile-arch}; následující podsekce se zaměřují na implementační detaily.
 
 \subsection{Integrace se čtečkou Zebra}
 
@@ -522,7 +496,7 @@ Inventurní postup je vizualizován dvěma kruhovými ukazateli průběhu, kter�
 
 \subsection{Room databáze a~offline režim}
 
-Lokální databáze je realizována knihovnou Room se třemi entitami. Klíčová je tabulka \texttt{inventory\_audit}, kde primární klíč \texttt{card\_id} zajišťuje, že každá karta má nejvýše jeden inventurní záznam:
+Schéma lokální databáze a~strategie synchronizace jsou popsány v~kapitole~\ref{sec:mobile-arch}. Implementačně je klíčová tabulka \texttt{inventory\_audit}, jejíž primární klíč \texttt{card\_id} zajišťuje, že každá karta má nejvýše jeden inventurní záznam:
 
 \begin{listing}[H]
 \caption{Room entita inventurního záznamu}\label{lst:roomaudit}
@@ -549,20 +523,13 @@ Opakované naskenování téže karty aktualizuje existující záznam díky str
 
 \subsection{Synchronizace se serverem}
 
-Synchronizace dat probíhá na explicitní pokyn uživatele (viz obrázek~\ref{fig:data-transfer-page}). Komunikaci znázorňuje sekvenční diagram~\ref{fig:sequence-sync}. Celý proces orchestruje třída \texttt{DataSyncRepository}; databáze je implementována jako singleton sdílený napříč aplikací:
+Synchronizace dat probíhá na explicitní pokyn uživatele (viz obrázek~\ref{fig:data-transfer-page}); celkový protokol komunikace mezi aplikací, Room databází a~serverem je znázorněn v~kapitole~\ref{sec:mobile-arch} (obrázek~\ref{fig:sequence-sync}). Tato sekce se zaměřuje na klíčové implementační detaily -- proces orchestruje třída \texttt{DataSyncRepository}, databáze je implementována jako singleton sdílený napříč aplikací:
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.35\textwidth]{images/data_transfer_page.png}
 	\caption{Obrazovka přenosu dat mezi čtečkou a~serverem}
 	\label{fig:data-transfer-page}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.85\textwidth]{images/sequence-sync.pdf}
-	\caption{Sekvenční diagram -- synchronizace dat mezi mobilní aplikací a~serverem}
-	\label{fig:sequence-sync}
 \end{figure}
 
 \begin{listing}[H]
@@ -597,7 +564,7 @@ Odeslání inventury serializuje záznamy do JSON s~časovými razítky ve form�
 
 \subsection{Bezpečnost mobilní aplikace}
 
-Šifrování AES-256-GCM pro hodnoty a~AES-256-SIV pro klíče zajišťuje třída \texttt{EncryptedSharedPreferences}, ve~které jsou uloženy autentizační tokeny:
+Architektura bezpečnostního modelu je popsána v~kapitole~\ref{sec:mobile-arch}. Implementačně je šifrované úložiště pro tokeny i~přihlašovací údaje realizováno třídou Android Jetpacku, jak ukazuje výpis~\ref{lst:tokenstorage}:
 
 \begin{listing}[H]
 \caption{Inicializace šifrovaného úložiště}\label{lst:tokenstorage}
@@ -614,6 +581,6 @@ private static SharedPreferences sp(Context ctx) {
 \end{minted}
 \end{listing}
 
-Přihlašovací údaje uživatel zadá jednorázově v~dialogu nastavení připojení a~aplikace je uloží do stejného šifrovaného úložiště jako tokeny. Údaje tak nejsou součástí sestavené aplikace. Síťová konfigurace aplikace zakazuje nešifrovanou komunikaci (\texttt{cleartextTrafficPermitted=false}).
+Master klíč je odvozen z~Android Keystore, což zajišťuje, že data nejsou čitelná po přenosu úložiště mezi zařízeními. Přihlašovací údaje uživatel zadá jednorázově v~dialogu nastavení připojení a~aplikace je uloží do stejného úložiště jako tokeny -- údaje tak nejsou součástí sestavené aplikace.
 
 

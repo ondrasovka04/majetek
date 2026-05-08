@@ -38,7 +38,6 @@ Majetková karta je základní datová jednotka systému. Každá karta reprezen
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
 	F-08 & Systém umožní vytvořit, přejmenovat a~smazat položku v~každém z~pěti číselníků (umístění, skupiny, třídy, způsoby pořízení, způsoby vyřazení). \tabularnewline
-	F-09 & Systém umožní pro číselník umístění vytisknout etiketu s~identifikačním kódem místnosti. \tabularnewline
 \end{tabular}
 \caption{Funkční požadavky -- správa číselníků}\label{tab:freq-dictionaries}
 \end{table}
@@ -51,9 +50,9 @@ Etikety s~Data Matrix kódy slouží k~fyzické identifikaci majetku a~místnost
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
-	F-10 & Systém umožní generovat ZPL etikety s~Data Matrix kódem pro majetkové karty. Etiketa obsahuje identifikátor karty, název majetku a~název organizace. \tabularnewline
-	F-11 & Systém umožní hromadný tisk etiket pro vybrané karty majetku. \tabularnewline
-	F-12 & Systém umožní generovat ZPL etikety pro místnosti (číselník umístění). \tabularnewline
+	F-09 & Systém umožní generovat ZPL etikety s~Data Matrix kódem pro majetkové karty. Etiketa obsahuje identifikátor karty, název majetku a~název organizace. \tabularnewline
+	F-10 & Systém umožní hromadný tisk etiket pro vybrané karty majetku. \tabularnewline
+	F-11 & Systém umožní generovat ZPL etikety pro místnosti (číselník umístění). \tabularnewline
 \end{tabular}
 \caption{Funkční požadavky -- generování a~tisk etiket}\label{tab:freq-labels}
 \end{table}
@@ -66,10 +65,10 @@ Systém umožňuje generovat přehledy a~sestavy ve~formátu PDF a~Excel pro pot
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
-	F-13 & Systém umožní generovat PDF sestavu pro vybranou skupinu majetku (nebo všechny skupiny) k~zadanému datu. \tabularnewline
-	F-14 & Systém umožní generovat PDF sestavu majetku pro vybranou místnost. \tabularnewline
-	F-15 & Systém umožní generovat PDF sestavu pro konkrétní majetkovou kartu. \tabularnewline
-	F-16 & Systém umožní exportovat filtrované karty majetku do~formátu Excel (XLSX). \tabularnewline
+	F-12 & Systém umožní generovat PDF sestavu pro vybranou skupinu majetku (nebo všechny skupiny) k~zadanému datu. \tabularnewline
+	F-13 & Systém umožní generovat PDF sestavu majetku pro vybranou místnost. \tabularnewline
+	F-14 & Systém umožní generovat PDF sestavu pro konkrétní majetkovou kartu. \tabularnewline
+	F-15 & Systém umožní exportovat filtrované karty majetku do~formátu Excel (XLSX). \tabularnewline
 \end{tabular}
 \caption{Funkční požadavky -- reporty a~exporty}\label{tab:freq-reports}
 \end{table}
@@ -82,11 +81,11 @@ Inventura je klíčový proces, při kterém se ověřuje skutečný stav majetk
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
-	F-17 & Mobilní aplikace umožní stáhnout aktuální data karet a~lokací ze~serveru do~lokální databáze. \tabularnewline
-	F-18 & Mobilní aplikace umožní skenovat Data Matrix kódy místností a~majetkových karet pomocí hardwarové čtečky. \tabularnewline
-	F-19 & Mobilní aplikace umožní zaznamenat dvojici \uv{karta -- skutečné umístění} s~časovým razítkem. Opakované skenování téže karty aktualizuje existující záznam. \tabularnewline
-	F-20 & Mobilní aplikace umožní nahrát nasbíraná inventurní data na server. \tabularnewline
-	F-21 & Mobilní aplikace umožní ověřit evidované umístění karty naskenováním jejího kódu -- systém zobrazí detail karty a~porovná evidované umístění se~skutečným. \tabularnewline
+	F-16 & Mobilní aplikace umožní stáhnout aktuální data karet a~lokací ze~serveru do~lokální databáze. \tabularnewline
+	F-17 & Mobilní aplikace umožní skenovat Data Matrix kódy místností a~majetkových karet pomocí hardwarové čtečky. \tabularnewline
+	F-18 & Mobilní aplikace umožní zaznamenat dvojici \uv{karta -- skutečné umístění} s~časovým razítkem. Opakované skenování téže karty aktualizuje existující záznam. \tabularnewline
+	F-19 & Mobilní aplikace umožní nahrát nasbíraná inventurní data na server. \tabularnewline
+	F-20 & Mobilní aplikace umožní ověřit evidované umístění karty naskenováním jejího kódu -- systém zobrazí detail karty a~porovná evidované umístění se~skutečným. \tabularnewline
 \end{tabular}
 \caption{Funkční požadavky -- inventura (mobilní aplikace)}\label{tab:freq-inventory-mobile}
 \end{table}
@@ -95,10 +94,10 @@ Inventura je klíčový proces, při kterém se ověřuje skutečný stav majetk
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
-	F-22 & Webová aplikace umožní zobrazit přehled naskenovaných položek s~časem skenování. \tabularnewline
-	F-23 & Webová aplikace umožní zobrazit rozdíly mezi evidovaným a~skutečným umístěním majetku s~barevným rozlišením stavů (shodné, odlišné umístění, nenaskenováno). \tabularnewline
-	F-24 & Webová aplikace umožní u~každé karty s~nesouladem zvolit akci: přijmout skutečné umístění, ponechat evidované umístění, nebo majetek vyřadit. U~karet se~shodným umístěním lze rovněž zvolit vyřazení. \tabularnewline
-	F-25 & Webová aplikace umožní po~potvrzení uživatelem promítnout zvolené akce do~databáze (aktualizace umístění, vyřazení majetku). \tabularnewline
+	F-21 & Webová aplikace umožní zobrazit přehled naskenovaných položek s~časem skenování. \tabularnewline
+	F-22 & Webová aplikace umožní zobrazit rozdíly mezi evidovaným a~skutečným umístěním majetku s~barevným rozlišením stavů (shodné, odlišné umístění, nenaskenováno). \tabularnewline
+	F-23 & Webová aplikace umožní u~každé karty s~nesouladem zvolit akci: přijmout skutečné umístění, ponechat evidované umístění, nebo majetek vyřadit. U~karet se~shodným umístěním lze rovněž zvolit vyřazení. \tabularnewline
+	F-24 & Webová aplikace umožní po~potvrzení uživatelem promítnout zvolené akce do~databáze (aktualizace umístění, vyřazení majetku). \tabularnewline
 \end{tabular}
 \caption{Funkční požadavky -- inventura (vyhodnocení)}\label{tab:freq-inventory-web}
 \end{table}
@@ -110,9 +109,9 @@ Inventura je klíčový proces, při kterém se ověřuje skutečný stav majetk
 \renewcommand{\arraystretch}{1.4}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
-	F-26 & Systém umožní přihlášení uživatele pomocí uživatelského jména a~hesla. \tabularnewline
-	F-27 & Systém umožní přihlášenému uživateli změnit vlastní heslo. \tabularnewline
-	F-28 & Administrátor může vytvářet nové uživatelské účty. Běžní uživatelé tuto možnost nemají. \tabularnewline
+	F-25 & Systém umožní přihlášení uživatele pomocí uživatelského jména a~hesla. \tabularnewline
+	F-26 & Systém umožní přihlášenému uživateli změnit vlastní heslo. \tabularnewline
+	F-27 & Administrátor může vytvářet nové uživatelské účty. Běžní uživatelé tuto možnost nemají. \tabularnewline
 \end{tabular}
 \caption{Funkční požadavky -- správa uživatelů}\label{tab:freq-users}
 \end{table}
@@ -185,11 +184,15 @@ Diagram případů užití je znázorněn na obrázku~\ref{fig:use-case-diagram}
 \textbf{Cíl:} Zaznamenat skutečné umístění majetku v~terénu pomocí mobilní aplikace.
 
 \begin{enumerate}
-	\item Pracovník stáhne aktuální data ze~serveru do~lokální databáze mobilní aplikace.
-	\item Pracovník naskenuje Data Matrix kód místnosti -- systém nastaví aktuální umístění.
-	\item Pracovník postupně skenuje kódy majetku v~dané místnosti. U~každé naskenované karty systém barevně signalizuje, zda karta evidenčně patří do~aktuálního umístění (zelená), jiného umístění (oranžová), nebo nebyla v~databázi nalezena (červená).
-	\item Po dokončení místnosti pracovník přejde do~další a~opakuje kroky 2--3.
-	\item Po dokončení sběru pracovník nahraje inventurní data na server.
+	\item Pracovník vyžádá stažení aktuálních dat ze~serveru.
+	\item Systém ověří připojení, autentizuje se vůči serveru a~uloží karty a~lokace do~lokální databáze.
+	\item Pracovník naskenuje Data Matrix kód místnosti.
+	\item Systém nastaví aktuální umístění a~zobrazí jeho název.
+	\item Pracovník postupně skenuje kódy majetku v~dané místnosti.
+	\item U~každé naskenované karty systém barevně signalizuje, zda karta evidenčně patří do~aktuálního umístění (zelená), jiného umístění (oranžová), nebo nebyla v~databázi nalezena (červená), a~ukládá záznam o~naskenování do~lokální databáze.
+	\item Po dokončení místnosti pracovník přejde do~další a~opakuje kroky 3--6.
+	\item Pracovník vyžádá nahrání inventurních dat na server.
+	\item Systém odešle všechny lokální záznamy hromadným požadavkem a~potvrdí úspěch.
 \end{enumerate}
 
 \subsection{Vyhodnocení inventury}
@@ -213,9 +216,32 @@ Diagram případů užití je znázorněn na obrázku~\ref{fig:use-case-diagram}
 \textbf{Cíl:} Vygenerovat přehledovou sestavu majetku pro potřeby účetnictví.
 
 \begin{enumerate}
-	\item Uživatel zvolí typ sestavy (podle skupiny majetku, podle místnosti, nebo pro konkrétní kartu) a~vyplní parametry.
+	\item Uživatel zvolí typ sestavy (podle skupiny majetku, podle místnosti, nebo pro konkrétní kartu).
+	\item Uživatel vyplní parametry sestavy:
+		\begin{itemize}
+			\item \textit{podle skupiny majetku} -- konkrétní skupinu (nebo všechny skupiny) a~rozhodný den, ke~kterému se sestava generuje;
+			\item \textit{podle místnosti} -- konkrétní místnost (číselník umístění);
+			\item \textit{pro konkrétní kartu} -- identifikátor karty.
+		\end{itemize}
 	\item Systém vygeneruje PDF dokument a~zobrazí jej přímo v~prohlížeči.
 	\item Uživatel si může sestavu stáhnout nebo vytisknout.
 \end{enumerate}
+
+\medskip
+
+Vazba mezi případy užití a~funkčními požadavky je shrnuta v~tabulce~\ref{tab:uc-fr-mapping}.
+
+\begin{table}[H]\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{l|l}
+	\textbf{Případ užití} & \textbf{Plněné funkční požadavky} \tabularnewline \hline
+	Správa majetkové karty & F-01 -- F-07 \tabularnewline
+	Tisk etiket            & F-09 -- F-11 \tabularnewline
+	Sběr inventurních dat  & F-16 -- F-20 \tabularnewline
+	Vyhodnocení inventury  & F-21 -- F-24 \tabularnewline
+	Generování reportů     & F-12 -- F-15 \tabularnewline
+\end{tabular}
+\caption{Mapování případů užití na funkční požadavky}\label{tab:uc-fr-mapping}
+\end{table}
 
 

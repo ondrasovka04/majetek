@@ -1,0 +1,241 @@
+<mxfile host="app.diagrams.net" agent="claude">
+  <diagram name="Inventurni proces" id="activity-inventory">
+    <mxGraphModel dx="649" dy="391" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="2100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="lane_web" parent="1" style="swimlane;horizontal=1;startSize=30;fillColor=none;strokeColor=#000000;fontStyle=1;fontSize=14;swimlaneFillColor=#ffffff;" value="Webová aplikace" vertex="1">
+          <mxGeometry height="1210" width="680" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="a8" parent="lane_web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Zobrazit rozdíly&#xa;(diff evidovaného&#xa;vs. naskenovaného stavu)" vertex="1">
+          <mxGeometry height="80" width="240" x="240" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="a9" parent="lane_web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Odvodit výchozí akce" vertex="1">
+          <mxGeometry height="50" width="240" x="240" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="lane_web" source="a8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="a9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m3" parent="lane_web" style="rhombus;fillColor=#ffffff;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="340" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="lane_web" source="a9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="m3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d5" parent="lane_web" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Další karta&#xa;ke zpracování?" vertex="1">
+          <mxGeometry height="90" width="160" x="280" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="lane_web" source="m3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="d5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" parent="lane_web" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Status karty?" vertex="1">
+          <mxGeometry height="80" width="160" x="280" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="lane_web" source="d5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;fontSize=11;" target="d3" value="[Ano]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a11" parent="lane_web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" value="Zvolit akci:&#xa;Skutečné umístění /&#xa;Očekávané umístění /&#xa;Vyřadit" vertex="1">
+          <mxGeometry height="80" width="200" x="260" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="e21" edge="1" parent="lane_web" source="d3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;fontSize=11;" target="a11" value="[WARN]">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m4" parent="lane_web" style="rhombus;fillColor=#ffffff;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="340" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="e24" edge="1" parent="lane_web" source="a11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="m4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" parent="lane_web" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Akce = Vyřadit?" vertex="1">
+          <mxGeometry height="80" width="160" x="280" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="e26" edge="1" parent="lane_web" source="m4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="d4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e28" edge="1" parent="lane_web" source="d4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;fontSize=11;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" target="m3" value="[Ne]">
+          <mxGeometry relative="1" x="-0.9417" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="50" y="980" />
+              <mxPoint x="50" y="470" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a12" parent="lane_web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" value="Zvolit akci:&#xa;Očekávané umístění /&#xa;Vyřadit" vertex="1">
+          <mxGeometry height="80" width="140" x="475" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="e22" edge="1" parent="lane_web" source="d3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;fontSize=11;exitX=1;exitY=0.5;" target="a12" value="[WRONG]">
+          <mxGeometry relative="1" x="-0.6757" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a13" parent="lane_web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Vyplnit datum&lt;br&gt;a způsob vyřazení" vertex="1">
+          <mxGeometry height="60" width="160" x="500" y="950" as="geometry" />
+        </mxCell>
+        <mxCell id="e27" edge="1" parent="lane_web" source="d4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;fontSize=11;exitX=1;exitY=0.5;" target="a13" value="[Ano]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e29" edge="1" parent="lane_web" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;entryX=1;entryY=0.5;" target="m3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="630" y="470" />
+            </Array>
+            <mxPoint x="630" y="950" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a14" parent="lane_web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Promítnout změny&#xa;do databáze" vertex="1">
+          <mxGeometry height="60" width="240" x="235" y="1030" as="geometry" />
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="lane_web" source="d5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;fontSize=11;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="a14" value="[Ne]">
+          <mxGeometry relative="1" x="-0.9529" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="80" y="565" />
+              <mxPoint x="80" y="1060" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a10" parent="lane_web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" value="Akce = KEEP&#xa;(zamčeno)" vertex="1">
+          <mxGeometry height="60" width="120" x="95" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="e20" edge="1" parent="lane_web" source="d3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;fontSize=11;exitX=0;exitY=0.5;" target="a10" value="[CORRECT]">
+          <mxGeometry relative="1" x="-0.6098" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e23" edge="1" parent="lane_web" source="a10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="m4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="155" y="890" />
+            </Array>
+            <mxPoint x="100" y="830" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e25" edge="1" parent="lane_web" source="a12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="m4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="545" y="890" />
+            </Array>
+            <mxPoint x="510" y="850" as="sourcePoint" />
+            <mxPoint x="410" y="880" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e30" edge="1" parent="lane_web" source="a14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="1140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="start" parent="lane_web" style="ellipse;fillColor=#000000;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="345" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" parent="lane_web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Založit novou inventuru" vertex="1">
+          <mxGeometry height="50" width="240" x="240" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="lane_web" source="start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="a1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="P7OCb93M1THP0F7GnONY-8" parent="lane_web" style="ellipse;html=1;shape=endState;fillColor=strokeColor;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="340" y="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="lane_mobile" parent="1" style="swimlane;horizontal=1;startSize=30;fillColor=none;strokeColor=#000000;fontStyle=1;fontSize=14;swimlaneFillColor=#ffffff;" value="Mobilní aplikace" vertex="1">
+          <mxGeometry height="1210" width="440" x="680" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" parent="lane_mobile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Přihlásit se k serveru" vertex="1">
+          <mxGeometry height="50" width="240" x="100" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" parent="lane_mobile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Stáhnout karty a lokace&lt;br&gt;do lokální Room databáze" vertex="1">
+          <mxGeometry height="60" width="240" x="100" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="lane_mobile" source="a2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="a3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m1" parent="lane_mobile" style="rhombus;fillColor=#ffffff;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="200" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="lane_mobile" source="a3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="m1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" parent="lane_mobile" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Další místnost&#xa;ke skenování?" vertex="1">
+          <mxGeometry height="90" width="160" x="140" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="lane_mobile" source="m1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="d1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" parent="lane_mobile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Naskenovat čárový kód umístění" vertex="1">
+          <mxGeometry height="50" width="240" x="100" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="lane_mobile" source="d1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;fontSize=11;" target="a4" value="[Ano]">
+          <mxGeometry relative="1" x="-0.5" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m2" parent="lane_mobile" style="rhombus;fillColor=#ffffff;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="200" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="lane_mobile" source="a4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="m2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" parent="lane_mobile" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Další majetek&#xa;v této místnosti?" vertex="1">
+          <mxGeometry height="90" width="160" x="140" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="lane_mobile" source="m2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="d2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="lane_mobile" source="d2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;fontSize=11;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="m1" value="[Ne]">
+          <mxGeometry relative="1" x="-0.9304" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="70" y="765" />
+              <mxPoint x="70" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a5" parent="lane_mobile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Naskenovat čárový kód majetku" vertex="1">
+          <mxGeometry height="50" width="240" x="100" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="lane_mobile" source="d2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;fontSize=11;" target="a5" value="[Ano]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" parent="lane_mobile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Uložit záznam auditu&#xa;(karta, umístění, čas)&#xa;do Room databáze" vertex="1">
+          <mxGeometry height="70" width="240" x="100" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="lane_mobile" source="a5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="a6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="lane_mobile" source="a6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="m2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="965" />
+              <mxPoint x="350" y="670" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a7" parent="lane_mobile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Nahrát inventurní data&#xa;na server (POST)" vertex="1">
+          <mxGeometry height="60" width="240" x="100" y="1070" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="lane_mobile" source="d1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="a7" value="[Ne]">
+          <mxGeometry relative="1" x="-0.9456" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="380" y="485" />
+              <mxPoint x="380" y="1100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="a1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;" target="a2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="a7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=open;endSize=8;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="a8">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="1140" />
+              <mxPoint x="710" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

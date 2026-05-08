@@ -14,19 +14,19 @@ Backend aplikace zajišťuje veškerou business logiku, komunikaci s~databází,
 
 Spring Boot je framework postavený nad platformou Spring, který podle oficiální dokumentace \uv{pomáhá vytvářet samostatné, produkčně kvalitní aplikace založené na Springu s~minimálním úsilím} (překlad vlastní)~\cite{springboot}. Framework zastává tzv. opinionated přístup -- poskytuje rozumné výchozí konfigurace, které lze v~případě potřeby přepsat.
 
-Mezi hlavní přednosti Spring Boot patří rozsáhlý ekosystém. Spring Data JPA~\cite{springdatajpa} nabízí abstrakci nad databázovou vrstvou pomocí Jakarta Persistence API, Spring Security~\cite{springsecurity} poskytuje komplexní řešení autentizace a~autorizace včetně podpory JWT tokenů a~OAuth2. Framework dále disponuje vestavěným webovým serverem (Tomcat), automatickou konfigurací na základě přítomných závislostí a~robustní podporou pro testování prostřednictvím JUnit~5 a~Mockito.
+Mezi hlavní přednosti Spring Boot patří rozsáhlý ekosystém. Spring Data JPA~\cite{springdatajpa} nabízí abstrakci nad databázovou vrstvou pomocí Jakarta Persistence API, Spring Security~\cite{springsecurity} poskytuje komplexní řešení autentizace a~autorizace včetně podpory JWT tokenů a~OAuth2. Framework dále disponuje vestavěným webovým serverem (ve~výchozí konfiguraci Tomcat, volitelně Jetty nebo Undertow), automatickou konfigurací na základě přítomných závislostí a~robustní podporou pro testování prostřednictvím JUnit~5 a~Mockito.
 
 Nevýhodou Spring Boot je vyšší paměťová náročnost typická pro aplikace běžící na JVM a~delší doba studeného startu oproti interpretovaným jazykům. Pro aplikace s~nízkou frekvencí změn v~nasazení, jako je tento projekt, však tato nevýhoda není podstatná.
 
 \subsection{NestJS (TypeScript)}
 
-NestJS~\cite{nestjs} je Node.js framework nabízející modulární architekturu inspirovanou Angularem, vestavěný systém Dependency Injection a~podporu TypeScriptu jako prvotřídního jazyka. Je postaven nad minimalistickým Express.js~\cite{expressjs}, ale na rozdíl od něj poskytuje kompletní strukturu aplikace. Pro práci s~databází lze využít TypeORM nebo Prisma.
+NestJS~\cite{nestjs} je Node.js framework nabízející modulární architekturu inspirovanou Angularem a~podporu TypeScriptu jako prvotřídního jazyka. Je postaven nad minimalistickým Express.js~\cite{expressjs}, ale na rozdíl od něj poskytuje kompletní strukturu aplikace. Pro práci s~databází lze využít TypeORM nebo Prisma.
 
 Hlavní výhodou je možnost sdílení TypeScriptových typů mezi backendem a~frontendem. Pro tento projekt je nevýhodou absence knihoven srovnatelných s~iText (generování PDF) a~EasyExcel (export do XLSX) v~ekosystému Node.js -- dostupné alternativy (např.\ PDFKit, ExcelJS) nenabízejí stejnou úroveň podpory pro složitější tabulkové reporty a~lokalizaci.
 
 \subsection{Django (Python)}
 
-Django~\cite{django} je plnohodnotný webový framework pro Python, zastávající filozofii \uv{batteries included} -- součástí je vestavěný ORM, administrační rozhraní, systém autentizace i~ochrana proti běžným bezpečnostním hrozbám (CSRF, SQL injection).
+Django~\cite{django} je plnohodnotný webový framework pro Python, zastávající filozofii \uv{batteries included} -- součástí je vestavěný ORM, administrační rozhraní a~systém autentizace.
 
 Automaticky generované administrační rozhraní je výhodou pro projekty vyžadující rychlý prototyping. Nevýhodou Djanga je dynamický typový systém Pythonu, který oproti Javě nenabízí statickou kontrolu typů v~době kompilace, což může vést k~obtížněji odhalitelným chybám. Ekosystém knihoven pro generování PDF a~ZPL etiket je v~Pythonu rovněž méně rozvinutý než v~prostředí JVM.
 
@@ -95,6 +95,8 @@ Tabulka~\ref{tab:frontend-comparison} shrnuje srovnání analyzovaných frontend
 \caption{Srovnání frontend technologií}\label{tab:frontend-comparison}
 \end{table}
 
+Řádek \emph{Přístup} v~tabulce vyjadřuje, do~jaké míry technologie diktuje strukturu aplikace a~výběr doplňkových knihoven. \emph{Neopinionated} (React) ponechává volbu routingu, správy stavu i~formulářů na vývojáři, což přináší flexibilitu i~odpovědnost za integraci. \emph{Opinionated} (Angular) poskytuje kompletní sadu nástrojů přímo v~základním balíčku a~očekává jejich používání. \emph{Progresivní} (Vue.js) představuje kompromis -- minimalistické jádro lze postupně rozšiřovat o~oficiálně doporučené knihovny.
+
 Pro implementaci frontendu byla zvolena knihovna \textbf{React} společně s~jazykem
 \textbf{TypeScript}~\cite{typescript} z~následujících důvodů:
 \begin{itemize}
@@ -144,7 +146,7 @@ Tabulka~\ref{tab:mobile-comparison} shrnuje srovnání analyzovaných mobilních
 \caption{Srovnání mobilních technologií}\label{tab:mobile-comparison}
 \end{table}
 
-Pro implementaci mobilní aplikace byl zvolen \textbf{nativní Android v~Javě} z~následujících důvodů:
+Pro implementaci mobilní aplikace byl zvolen jazyk \textbf{Java} a~nativní Android SDK z~následujících důvodů:
 \begin{itemize}
 	\item Přímý přístup k~hardwarovému skeneru Zebra -- vstup přichází jako klávesnicové události, které je nutné zpracovat prostřednictvím nativních listenerů.
 	\item Plná kontrola nad lifecycle komponent -- aplikace pracuje offline s~lokální Room databází a~vyžaduje přesnou správu synchronizace dat.
@@ -163,7 +165,7 @@ PostgreSQL~\cite{postgresql} je objektově-relační databázový systém s~víc
 
 \subsection{MySQL / MariaDB}
 
-MySQL~\cite{mysql} je nejrozšířenější open-source relační databáze s~širokou podporou u~hostingových poskytovatelů. MariaDB~\cite{mariadb} je komunitní fork MySQL se zpětnou kompatibilitou, který MySQL v~open-source prostředí postupně nahrazuje. Pro účely tohoto projektu by oba systémy poskytovaly dostatečnou funkčnost. PostgreSQL byl zvolen díky podpoře funkce \texttt{unaccent} pro vyhledávání bez diakritiky a~předchozí zkušenosti autora.
+MySQL~\cite{mysql} je nejrozšířenější open-source relační databáze s~širokou podporou u~hostingových poskytovatelů. MariaDB~\cite{mariadb} je komunitní fork MySQL se zpětnou kompatibilitou, který MySQL v~open-source prostředí postupně nahrazuje. Pro účely tohoto projektu by oba systémy poskytovaly dostatečnou funkčnost.
 
 \subsection{H2 a~Room}
 
@@ -173,7 +175,7 @@ Na mobilním zařízení je využita knihovna \textbf{Room}~\cite{androidroom} j
 
 \subsection{Zdůvodnění volby}
 
-Pro produkční nasazení byl zvolen \textbf{PostgreSQL} díky zralosti, spolehlivosti a~výborné integraci se Spring Data JPA. Všechny zvažované databázové systémy jsou open-source a~bezplatné, takže náklady na licence nebyly rozhodovacím faktorem. Kombinace PostgreSQL (produkce), H2 (testy) a~Room/SQLite (mobilní zařízení) pokrývá potřeby všech tří prostředí.
+Pro produkční nasazení byl zvolen \textbf{PostgreSQL} díky zralosti, spolehlivosti, výborné integraci se Spring Data JPA, podpoře funkce \texttt{unaccent} pro vyhledávání bez diakritiky a~předchozí zkušenosti autora. Všechny zvažované databázové systémy jsou open-source a~bezplatné, takže náklady na licence nebyly rozhodovacím faktorem. Kombinace PostgreSQL (produkce), H2 (testy) a~Room/SQLite (mobilní zařízení) pokrývá potřeby všech tří prostředí.
 
 
 \section{Další klíčové knihovny}

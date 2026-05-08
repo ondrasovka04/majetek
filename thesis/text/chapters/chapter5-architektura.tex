@@ -27,7 +27,7 @@ Backend je organizován jako modulární monolitická aplikace -- každá domén
 
 \subsection{Vrstvená architektura}
 
-Každý modul dodržuje konzistentní třívrstvý vzor:
+Každý modul dodržuje konzistentní třívrstvý vzor odpovídající klasické enterprise architektuře~\cite{fowler-eaa}:
 
 \begin{enumerate}
 	\item \textbf{Controller} (\texttt{@RestController}) -- přijímá HTTP požadavky, provádí vstupní validaci prostřednictvím anotace \texttt{@Valid} a~deleguje zpracování na service vrstvu. Vrací \texttt{ResponseEntity} s~příslušným HTTP kódem.
@@ -35,7 +35,7 @@ Každý modul dodržuje konzistentní třívrstvý vzor:
 	\item \textbf{Repository} -- rozhraní rozšiřující \texttt{JpaRepository}, které poskytuje přístup k~databázi. Dotazy jsou buď odvozeny z~názvu metody, nebo definovány explicitně anotací \texttt{@Query}.
 \end{enumerate}
 
-Mezi vrstvami je zajištěna separace dat prostřednictvím vzoru DTO (Data Transfer Object). Mapování mezi entitami a~DTO zajišťuje knihovna MapStruct, která generuje mapovací kód v~době kompilace. Kontrolery nikdy nepracují přímo s~JPA entitami -- vždy přijímají a~vracejí DTO objekty.
+Mezi vrstvami je zajištěna separace dat prostřednictvím vzoru DTO (Data Transfer Object)~\cite{fowler-eaa}. Mapování mezi entitami a~DTO zajišťuje knihovna MapStruct, která generuje mapovací kód v~době kompilace. Kontrolery nikdy nepracují přímo s~JPA entitami -- vždy přijímají a~vracejí DTO objekty.
 
 \subsection{Modulární struktura}
 
@@ -92,11 +92,13 @@ Frontend je jednostránková aplikace (SPA) v~Reactu a~TypeScriptu. Architektura
 
 \subsection{Správa stavu}
 
-Aplikace rozlišuje dva typy stavu:
+Webová aplikace pracuje se dvěma kategoricky odlišnými typy stavu, které vyžadují odlišné řešení. \textbf{Serverový stav} odpovídá datům uloženým v~databázi (karty majetku, číselníky, inventurní záznamy) -- aplikace si jeho aktuální podobu pouze cachuje a~musí řešit zastarávání cache, opětovné načtení po~mutaci a~konzistenci napříč obrazovkami. \textbf{Klientský stav} se naopak týká informací existujících pouze v~prohlížeči (přihlášený uživatel, otevřená modalní okna, lokální UI volby) a~vyžaduje synchronizaci pouze v~rámci jedné aplikační instance.
+
+Vzhledem k~odlišné povaze obou typů stavu byly zvoleny dvě specializované knihovny:
 
 \begin{itemize}
-	\item \textbf{Serverový stav} je spravován knihovnou TanStack Query. Veškerá data z~API (karty, číselníky, inventurní záznamy) jsou cachována s~dobou platnosti dvě minuty. Mutace po úspěchu buď invalidují příslušné cache klíče (plný refetch), nebo optimisticky aktualizují cache přímo.
-	\item \textbf{Klientský stav} je omezen na autentizační údaje (přihlášený uživatel, JWT token, expirace). Tyto údaje spravuje jediný Zustand store. Axios interceptor automaticky obnovuje vypršelý token prostřednictvím refresh endpointu před odesláním požadavku.
+	\item \textbf{Serverový stav} je spravován knihovnou TanStack Query. Veškerá data z~API jsou cachována s~dobou platnosti dvě minuty. Mutace po úspěchu buď invalidují příslušné cache klíče (plný refetch), nebo optimisticky aktualizují cache přímo.
+	\item \textbf{Klientský stav} je omezen na autentizační údaje (přihlášený uživatel, JWT token, expirace) a~spravuje jej jediný Zustand store. Axios interceptor automaticky obnovuje vypršelý token prostřednictvím refresh endpointu před odesláním požadavku.
 \end{itemize}
 
 Všechny chráněné stránky jsou obaleny komponentou \texttt{PrivateRoute}, která ověřuje přítomnost platného JWT tokenu v~Zustand store a~nepřihlášeného uživatele přesměruje na přihlašovací stránku. Chráněné stránky jsou načítány líně (\texttt{React.lazy}) -- jejich kód se stáhne až při prvním přístupu, což zkracuje počáteční dobu načtení.
@@ -130,7 +132,12 @@ Synchronizace probíhá výhradně na explicitní pokyn uživatele:
 	\item \textbf{Odeslání inventury} -- aplikace načte všechny lokální inventurní záznamy, serializuje je do formátu JSON a~odešle hromadným požadavkem na server (\texttt{POST /api/inventory-audit/insert-many}).
 \end{itemize}
 
-Stažení nových dat je zablokováno, pokud v~lokální databázi existují neodeslaná inventurní data -- tím je zabráněno nechtěné ztrátě práce. Autentizační tokeny i~přihlašovací údaje jsou uloženy v~šifrovaném úložišti \texttt{EncryptedSharedPreferences} (AES-256-GCM). Síťová konfigurace zakazuje nešifrovanou komunikaci (\texttt{cleartext traffic}).
+Stažení nových dat je zablokováno, pokud v~lokální databázi existují neodeslaná inventurní data -- tím je zabráněno nechtěné ztrátě práce. Autentizační tokeny i~přihlašovací údaje jsou uloženy v~šifrovaném úložišti \texttt{EncryptedSharedPreferences} (AES-256-GCM). Síťová konfigurace zakazuje nešifrovanou komunikaci (\texttt{cleartext traffic}). Celý protokol synchronizace mezi mobilní aplikací, lokální Room databází a~serverem znázorňuje obrázek~\ref{fig:sequence-sync}.
+
+\begin{figure}[H]\centering
+	\includegraphics[width=\textwidth]{images/sequence-sync.pdf}
+	\caption{Sekvenční diagram synchronizace dat mezi mobilní aplikací a~serverem}\label{fig:sequence-sync}
+\end{figure}
 
 \section{Datový model}
 
