@@ -1,29 +1,30 @@
 \chapter{Závěr}\label{chap:conclusion}
 
-Cílem práce bylo navrhnout a~implementovat systém pro správu majetku zahrnující webovou aplikaci, serverové REST API a~mobilní aplikaci pro offline inventarizaci. Systém byl vyvinut ve spolupráci s~konkrétní základní školou a~je nasazen v~produkčním prostředí.
+Cílem práce bylo navrhnout a~implementovat kompletní systém pro správu majetku, který nahradí dosavadní excelovou evidenci v~konkrétní základní škole, umožní inventarizaci pomocí průmyslové čtečky čárových kódů a~zjednoduší tvorbu reportů pro účetnictví. Všechny stanovené cíle byly naplněny -- rešerše ukázala, že žádné z~analyzovaných řešení nepokrývá kombinaci požadavků za přijatelnou cenu, na základě konzultací s~budoucími uživateli bylo definováno 27 funkčních a~11 obecných požadavků a~vyvinutý systém je v~současné době nasazen v~produkčním prostředí.
 
-\section*{Splnění cílů zadání}
+\section*{Hlavní výsledky práce}
 
-\textbf{Rešerše existujících řešení} (kapitola~\ref{chap:research}) analyzovala tři kategorie přístupů: tabulkové procesory, komerční systémy (EVIDEI, Správce Majetku) a~open-source řešení (Snipe-IT). Analýza ukázala, že žádné z~existujících řešení nepokrývá všechny potřeby cílové organizace, a~zdůvodnila vývoj vlastního systému.
+Systém se skládá ze~tří integrovaných komponent: serverového REST API ve Spring Bootu nad PostgreSQL, webové aplikace v~Reactu s~TypeScriptem a~nativní Android aplikace pro inventuru v~terénu. Backend je organizován jako modulární monolit s~bezpečnostním modelem založeným na JWT tokenech s~rotací refresh tokenů, frontend využívá moderní React ekosystém (TanStack Query, React Hook Form, Zod), mobilní aplikace pracuje plně offline s~lokální Room databází a~je integrována s~hardwarovou čtečkou Zebra TC22 prostřednictvím duálního zachycení vstupu.
 
-\textbf{Analýza požadavků} (kapitola~\ref{chap:requirements}) definovala 28 funkčních a~11 obecných požadavků rozdělených do logických skupin. Pro klíčové scénáře byly vytvořeny případy užití. Požadavky vycházely z~konzultací s~budoucími uživateli systému.
+Systém je nasazen na produkčním VPS serveru a~je veřejně dostupný na adrese \url{https://majetek.zs-ustavni.cz}; deployment pipeline je automatizována prostřednictvím GitHub Actions. Kvalita kódu je průběžně ověřována 445~backendovými testy (s~vynuceným pokrytím alespoň 80~\% řádků a~75~\% větví prostřednictvím nástroje JaCoCo), 54~frontendovými testy a~40~testy mobilní aplikace; statickou analýzu zajišťuje SonarCloud nad všemi třemi moduly.
 
-\textbf{Návrh a~implementace} (kapitoly~\ref{chap:technologies}--\ref{chap:implementation}) popisují volbu technologií (Spring Boot, React, nativní Android v~Javě, PostgreSQL), architekturu systému a~klíčové implementační detaily. Backend je organizován jako modulární monolitická aplikace s~bezpečnostním modelem založeným na JWT tokenech s~rotací. Frontend využívá knihovnu React s~TypeScriptem a~TanStack Query pro správu serverového stavu. Mobilní aplikace pracuje offline s~lokální Room databází a~integruje se s~průmyslovou čtečkou Zebra TC22.
-
-\textbf{Testování a~nasazení} (kapitola~\ref{chap:testing}) popisuje testovací strategii zahrnující 445 backendových testů (unit, datová vrstva, integrační), 54 frontendových testů a~testy mobilní aplikace. Pokrytí kódu backendu dosahuje alespoň 80\,\% řádků a~75\,\% větví. Systém je nasazen na VPS serveru s~automatizovaným deployment pipeline prostřednictvím GitHub Actions.
-
-\section*{Limity práce}
-
-Systém je navržen pro jednu organizaci s~jedním zařízením Zebra -- nepodporuje souběžnou inventuru více pracovníky. Mobilní aplikace je distribuována ručně prostřednictvím USB, což je pro jedno zařízení dostačující. Frontendové testy pokrývají především utility funkce a~validační logiku; UI komponenty jsou ověřovány typovou kontrolou TypeScriptu a~manuálním testováním. Projekt neobsahuje end-to-end testy (např.\ Cypress nebo Playwright), které by ověřovaly celý uživatelský flow od rozhraní přes API až po databázi.
+Praktickým přínosem práce je nasazení do reálného prostředí konkrétní organizace -- škola nyní disponuje plnohodnotným systémem evidence majetku včetně tisku ZPL etiket s~Data~Matrix kódy na termotiskárně Zebra ZD621d. Systém řeší konkrétní problém, který komerční řešení buď nepokrývají vůbec (offline inventura na průmyslové čtečce), nebo pokrývají za cenu, která přesahuje možnosti rozpočtu cílové organizace.
 
 \section*{Možnosti dalšího rozvoje}
 
-Systém nabízí prostor pro rozšíření v~několika směrech:
+Systém byl navržen tak, aby pokryl současné potřeby cílové organizace, a~ponechává prostor pro rozšíření v~několika směrech, které by zvýšily jeho použitelnost pro širší okruh organizací.
 
-\begin{itemize}
-	\item \textbf{Import dat} -- možnost hromadného importu majetkových karet z~existujících tabulek (CSV, Excel) pro usnadnění migrace z~tabulkových procesorů.
-	\item \textbf{Historie změn} -- zaznamenávání všech operací nad kartami majetku pro účely auditu.
-	\item \textbf{Podpora RFID} -- rozšíření identifikace majetku o~RFID technologii pro rychlejší hromadné skenování.
-	\item \textbf{Plánování údržby} -- evidence revizí a~plánování pravidelné údržby majetku s~automatickými připomínkami.
-	\item \textbf{Vzdálená správa zařízení} -- při nasazení na více zařízeních by distribuce APK prostřednictvím MDM nahradila ruční instalaci přes USB.
-\end{itemize}
+\paragraph{Hromadný import existujících dat.}
+Migrace z~tabulkových procesorů na vyvinutý systém probíhá v~současnosti ručním zadáním každé majetkové karty. Pro organizace s~rozsáhlejší existující evidencí by bylo vhodné doplnit funkci pro hromadný import z~CSV nebo Excel souborů s~mapováním sloupců na atributy karty a~validací číselníkových hodnot. Návrhem řešení je dialog s~průvodcem -- uživatel nahraje soubor, systém detekuje sloupce, uživatel je namapuje na atributy karty a~potvrdí import; chybné řádky jsou reportovány v~přehledu před skutečným zápisem do databáze.
+
+\paragraph{Historie změn a~auditní stopa.}
+Současná evidence neuchovává historii změn jednotlivých karet -- po úpravě atributu (např.\ změně umístění) se původní hodnota přepisuje. Pro účetní účely a~kontrolní orgány by bylo přínosné zaznamenávat všechny modifikace s~časovým razítkem a~identifikací uživatele. Implementačně to lze řešit knihovnou Hibernate Envers, která automaticky verzuje JPA entity do~paralelních historizačních tabulek, případně vlastním audit listenerem psaným ad hoc nad existujícím datovým modelem.
+
+\paragraph{Souběžná inventura více pracovníky.}
+Současná architektura předpokládá jednu inventuru s~jedním zařízením -- před zahájením se data stáhnou na zařízení, po dokončení se nahrají zpět. Při větším rozsahu majetku by bylo žádoucí umožnit více pracovníkům skenovat paralelně a~výsledky průběžně synchronizovat. To vyžaduje konfliktní strategii pro situace, kdy dva pracovníci naskenují stejnou kartu (typicky last-write-wins s~časovým razítkem) a~uzamykání místností proti dvojímu zpracování.
+
+\paragraph{Podpora RFID identifikace.}
+Identifikace pomocí Data~Matrix kódů vyžaduje přímou viditelnost etikety, což u~zaplněných regálů zpomaluje skenování. RFID technologie umožňuje hromadné čtení desítek položek na vzdálenost několika metrů. Rozšíření by spočívalo v~doplnění RFID identifikátoru jako alternativy k~Data~Matrix kódu na úrovni datového modelu a~v~integraci RFID čtečky (Zebra nabízí kombinované zařízení Zebra MC3300xR) do mobilní aplikace.
+
+\paragraph{Centralizovaná správa mobilních zařízení.}
+Při nasazení na více zařízeních (např.\ pro souběžnou inventuru) se ruční instalace APK přes USB stává neudržitelnou. Řešením je nasazení Mobile Device Management platformy (např.\ Google Workspace nebo Microsoft Intune), která umožňuje vzdáleně instalovat a~aktualizovat aplikaci, vynucovat bezpečnostní politiky a~v~případě ztráty zařízení jej dálkově zablokovat.

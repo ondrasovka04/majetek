@@ -1,67 +1,66 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.1">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36">
   <diagram name="Package Diagram" id="pkg">
-    <mxGraphModel dx="1131" dy="1377" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="700" math="0" shadow="0">
+    <mxGraphModel dx="1184" dy="1413" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="700" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="root" parent="1" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=20;tabPosition=left;fontSize=14;verticalAlign=top;" value="&#xa;cz.majetek" vertex="1">
           <mxGeometry height="540" width="1060" x="20" y="-10" as="geometry" />
         </mxCell>
-        <mxCell id="auth" parent="1" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=18;tabPosition=left;fontSize=11;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="auth&#xa;autentizace, JWT, Spring Security" vertex="1">
-          <mxGeometry height="70" width="220" x="40" y="60" as="geometry" />
-        </mxCell>
-        <mxCell id="card" parent="1" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=18;tabPosition=left;fontSize=11;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="card&#xa;CRUD karet, filtrování, exporty (PDF, Excel, ZPL)" vertex="1">
-          <mxGeometry height="70" width="260" x="280" y="60" as="geometry" />
-        </mxCell>
         <mxCell id="att" parent="1" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=18;tabPosition=left;fontSize=11;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="attachment&#xa;souborové přílohy ke kartám" vertex="1">
-          <mxGeometry height="70" width="220" x="560" y="60" as="geometry" />
+          <mxGeometry height="70" width="220" x="440" y="225" as="geometry" />
         </mxCell>
         <mxCell id="inv" parent="1" style="shape=folder;fontStyle=0;tabWidth=100;tabHeight=18;tabPosition=left;fontSize=11;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="inventoryaudit&#xa;import dat, výpočet rozdílů, projekce" vertex="1">
-          <mxGeometry height="70" width="260" x="800" y="60" as="geometry" />
+          <mxGeometry height="70" width="260" x="440" y="315" as="geometry" />
         </mxCell>
         <mxCell id="ent" parent="1" style="shape=folder;fontStyle=0;tabWidth=60;tabHeight=18;tabPosition=left;fontSize=11;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" value="entity&#xa;sdílené JPA entity" vertex="1">
-          <mxGeometry height="70" width="200" x="170" y="200" as="geometry" />
+          <mxGeometry height="70" width="200" x="80" y="180" as="geometry" />
         </mxCell>
         <mxCell id="exc" parent="1" style="shape=folder;fontStyle=0;tabWidth=70;tabHeight=18;tabPosition=left;fontSize=11;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" value="exception&#xa;globální zpracování chyb" vertex="1">
-          <mxGeometry height="70" width="220" x="520" y="210" as="geometry" />
+          <mxGeometry height="70" width="220" x="820" y="180" as="geometry" />
         </mxCell>
         <mxCell id="cfg" parent="1" style="shape=folder;fontStyle=0;tabWidth=60;tabHeight=18;tabPosition=left;fontSize=11;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" value="config&#xa;OpenAPI, kódování hesel" vertex="1">
-          <mxGeometry height="70" width="210" x="790" y="210" as="geometry" />
+          <mxGeometry height="70" width="210" x="835" y="400" as="geometry" />
         </mxCell>
-        <mxCell id="dep1" edge="1" parent="1" source="auth" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;entryX=0;entryY=0;entryDx=30;entryDy=0;entryPerimeter=0;" target="ent">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="dep1" edge="1" parent="1" source="auth" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;exitX=0;exitY=0;exitDx=0;exitDy=44;exitPerimeter=0;entryX=0.56;entryY=0.267;entryDx=0;entryDy=0;entryPerimeter=0;" target="ent">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="192" y="84" />
+            </Array>
+            <mxPoint x="210" y="120" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="dep1l" connectable="0" parent="dep1" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="dep2" edge="1" parent="1" source="card" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;entryX=0;entryY=0;entryDx=130;entryDy=18;entryPerimeter=0;" target="ent">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="dep2l" connectable="0" parent="dep2" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="dep3" edge="1" parent="1" source="att" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;entryX=0.795;entryY=0.241;entryDx=0;entryDy=0;entryPerimeter=0;" target="ent">
+        <mxCell id="dep3" edge="1" parent="1" source="att" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;entryX=0;entryY=0;entryDx=200;entryDy=44;entryPerimeter=0;exitX=0;exitY=0;exitDx=0;exitDy=44;exitPerimeter=0;" target="ent">
           <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="269" />
+              <mxPoint x="380" y="224" />
+            </Array>
+            <mxPoint x="440" y="243" as="sourcePoint" />
             <mxPoint x="300" y="220" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="dep3l" connectable="0" parent="dep3" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="dep4" edge="1" parent="1" source="inv" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;" target="ent">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="dep4" edge="1" parent="1" source="inv" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;exitX=0;exitY=0;exitDx=260;exitDy=31;exitPerimeter=0;entryX=0.085;entryY=1.013;entryDx=0;entryDy=0;entryPerimeter=0;" target="exc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="346" />
+            </Array>
+            <mxPoint x="900" y="240" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="dep4l" connectable="0" parent="dep4" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="dep5" edge="1" parent="1" source="dict" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;exitX=0.262;exitY=0.147;exitDx=0;exitDy=0;exitPerimeter=0;" target="ent">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="dep5l" connectable="0" parent="dep5" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="15" y="-4" as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="shbdUqOLYV2EVyYxip2S-1" connectable="0" parent="1" style="group" value="" vertex="1">
-          <mxGeometry height="130" width="720" x="80" y="370" as="geometry" />
+          <mxGeometry height="130" width="720" x="80" y="385" as="geometry" />
         </mxCell>
         <mxCell id="dict" parent="shbdUqOLYV2EVyYxip2S-1" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=18;tabPosition=left;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;" value="&#xa;dictionary" vertex="1">
           <mxGeometry height="130" width="720" as="geometry" />
@@ -80,6 +79,103 @@
         </mxCell>
         <mxCell id="wm" parent="shbdUqOLYV2EVyYxip2S-1" style="shape=folder;fontStyle=0;tabWidth=90;tabHeight=16;tabPosition=left;fontSize=10;fillColor=#d5e8d4;strokeColor=#82b366;" value="writeoffmethod" vertex="1">
           <mxGeometry height="50" width="120" x="590" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-4" edge="1" parent="1" source="card" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;entryX=0;entryY=0;entryDx=35;entryDy=0;entryPerimeter=0;exitX=0;exitY=0;exitDx=260;exitDy=44;exitPerimeter=0;" target="exc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="174" />
+              <mxPoint x="760" y="150" />
+              <mxPoint x="855" y="150" />
+            </Array>
+            <mxPoint x="480" y="220" as="sourcePoint" />
+            <mxPoint x="513" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-5" connectable="0" parent="qiiMdKcGVVi_BMjXwD9h-4" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-12" edge="1" parent="1" source="auth" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;entryX=0.6;entryY=0.267;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0;exitDx=220;exitDy=44;exitPerimeter=0;" target="exc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="952" y="84" />
+            </Array>
+            <mxPoint x="1065" y="100" as="sourcePoint" />
+            <mxPoint x="730" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-13" connectable="0" parent="qiiMdKcGVVi_BMjXwD9h-12" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="auth" parent="1" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=18;tabPosition=left;fontSize=11;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="auth&#xa;autentizace, JWT, Spring Security" vertex="1">
+          <mxGeometry height="70" width="220" x="440" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-20" edge="1" parent="1" source="att" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;entryX=0;entryY=0;entryDx=0;entryDy=44;entryPerimeter=0;exitX=0;exitY=0;exitDx=220;exitDy=44;exitPerimeter=0;" target="exc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="269" />
+              <mxPoint x="710" y="224" />
+            </Array>
+            <mxPoint x="830" y="396" as="sourcePoint" />
+            <mxPoint x="700" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-21" connectable="0" parent="qiiMdKcGVVi_BMjXwD9h-20" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="8" y="6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-22" edge="1" parent="1" source="dict" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;exitX=0.191;exitY=0.152;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.688;entryY=0.981;entryDx=0;entryDy=0;entryPerimeter=0;" target="ent" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="218" y="390" as="sourcePoint" />
+            <mxPoint x="625" y="105" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-23" connectable="0" parent="qiiMdKcGVVi_BMjXwD9h-22" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="card" parent="1" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=18;tabPosition=left;fontSize=11;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="card&#xa;CRUD karet, filtrování, exporty (PDF, Excel, ZPL)" vertex="1">
+          <mxGeometry height="70" width="260" x="440" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-24" edge="1" parent="1" source="inv" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;entryX=0.899;entryY=0.997;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0;exitDx=0;exitDy=44;exitPerimeter=0;" target="ent">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="260" y="360" />
+            </Array>
+            <mxPoint x="540" y="289" as="sourcePoint" />
+            <mxPoint x="380" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-25" connectable="0" parent="qiiMdKcGVVi_BMjXwD9h-24" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-26" edge="1" parent="1" source="card" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;exitX=0;exitY=0;exitDx=0;exitDy=44;exitPerimeter=0;entryX=0.882;entryY=0.251;entryDx=0;entryDy=0;entryPerimeter=0;" target="ent">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="174" />
+              <mxPoint x="380" y="140" />
+              <mxPoint x="256" y="140" />
+            </Array>
+            <mxPoint x="567" y="110" as="sourcePoint" />
+            <mxPoint x="256" y="195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-27" connectable="0" parent="qiiMdKcGVVi_BMjXwD9h-26" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-28" edge="1" parent="1" source="dict" style="endArrow=open;endSize=12;dashed=1;strokeColor=#999999;exitX=0.947;exitY=0.122;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.57;entryY=0.997;entryDx=0;entryDy=0;entryPerimeter=0;" target="exc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="762" y="370" />
+              <mxPoint x="950" y="370" />
+            </Array>
+            <mxPoint x="890" y="425" as="sourcePoint" />
+            <mxPoint x="1029" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qiiMdKcGVVi_BMjXwD9h-29" connectable="0" parent="qiiMdKcGVVi_BMjXwD9h-28" style="edgeLabel;fontSize=9;fontColor=#999999;" value="«use»" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="15" y="-4" as="offset" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

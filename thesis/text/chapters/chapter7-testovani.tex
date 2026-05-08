@@ -69,16 +69,18 @@ Mobilní aplikace obsahuje dva typy testů:
 	\item \textbf{Instrumentované testy} (2 soubory) -- běží na emulátoru nebo fyzickém zařízení. Testují Room DAO operace (\texttt{DaoTest}: vkládání, dotazování, mazání, upsert) a~šifrované úložiště (\texttt{TokenStorageTest}: ukládání a~čtení tokenů, migrace z~nešifrovaného úložiště).
 \end{itemize}
 
-Rozsah testů odpovídá jednoduchosti aplikace (jedna Activity, tři fragmenty). Uživatelské rozhraní je průběžně ověřováno manuálním testováním na cílovém zařízení Zebra TC22.
+Uživatelské rozhraní je průběžně ověřováno manuálním testováním na cílovém zařízení Zebra TC22.
 
-Tabulka~\ref{tab:tests} shrnuje rozsah testování všech komponent systému.
+\section{Souhrn testování}
+
+Tabulka~\ref{tab:tests} shrnuje rozsah testování všech komponent systému. U~frontendu doplňuje kompilační typová kontrola TypeScriptu v~režimu \texttt{strict} dynamické testy o~statické ověření typové konzistence celé aplikace.
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{l|r|l|l}
-	\textbf{Komponenta} & \textbf{Testů} & \textbf{Pokrytí} & \textbf{Nástroje} \tabularnewline \hline
+	\textbf{Komponenta} & \textbf{Testů} & \textbf{Pokrytí kódu} & \textbf{Nástroje} \tabularnewline \hline
 	Backend & 445 & $\geq$\,80\,\% ř., $\geq$\,75\,\% větví & JUnit~5, Mockito \tabularnewline
-	Frontend & 54 & typová kontrola (strict) & Vitest \tabularnewline
+	Frontend & 54 & -- & Vitest \tabularnewline
 	Mobilní apl. & 40 & -- & JUnit~5 \tabularnewline
 \end{tabular}
 \caption{Přehled testů jednotlivých komponent}\label{tab:tests}
@@ -129,33 +131,47 @@ jobs:
 
 \section{Nasazení}
 
-Pro provoz systému byl zvolen pronajatý VPS server s~operačním systémem Ubuntu. Oproti cloudovým platformám (AWS, Azure) toto řešení nabízí nižší provozní náklady a~plnou kontrolu nad konfigurací, což odpovídá rozsahu projektu i~technickým možnostem cílové organizace. Architekturu nasazení znázorňuje obrázek~\ref{fig:system-architecture}.
+Tato sekce popisuje produkční prostředí systému: zvolenou serverovou infrastrukturu, deployment pipeline, monitoring a~způsob distribuce mobilní aplikace.
 
-Nasazení je realizováno dvěma způsoby: automatizovaně prostřednictvím GitHub Actions workflow \texttt{deploy.yml} (spouštěného manuálně tlačítkem v~rozhraní GitHubu), nebo ručně přímým připojením na server přes SSH.
+Pro provoz systému byl zvolen pronajatý VPS server s~operačním systémem Ubuntu. Oproti cloudovým platformám (AWS, Azure) toto řešení nabízí nižší provozní náklady a~plnou kontrolu nad konfigurací, což odpovídá rozsahu projektu i~technickým možnostem cílové organizace. Webová aplikace je veřejně dostupná na adrese \url{https://majetek.zs-ustavni.cz}. Architekturu nasazení znázorňuje obrázek~\ref{fig:system-architecture}.
 
 \subsection{Serverová infrastruktura}
 
-Na serveru běží tři služby:
+Serverovou infrastrukturou jsou míněny všechny komponenty běžící na VPS, které dohromady umožňují obsluhu HTTPS požadavku od uživatele -- reverse proxy, backendová aplikace, databáze a~doplňková provozní opatření (zálohy, zabezpečení vzdáleného přístupu). Architektura odpovídá běžnému třívrstvému uspořádání webové aplikace: požadavek z~prohlížeče dorazí na reverse proxy, ta obslouží statické soubory frontendu nebo přesměruje API volání na backend, který přistupuje k~datům v~databázi. Konkrétně na serveru běží tyto tři služby:
 
 \begin{itemize}
 	\item \textbf{Nginx} -- reverse proxy, která obsluhuje HTTPS požadavky. Statické soubory frontendu jsou obsluhovány přímo z~adresáře \texttt{/var/www/majetek} s~SPA fallback (\texttt{try\_files}). Požadavky na \texttt{/api/} jsou přesměrovány na backend (\texttt{proxy\_pass http://localhost:8080}). SSL certifikát je vydán autoritou Let's Encrypt s~automatickou obnovou.
-	\item \textbf{Spring Boot backend} -- běží jako systemd služba na portu 8080. Komunikuje s~databází prostřednictvím JDBC.
-	\item \textbf{PostgreSQL} -- databázový server s~automatickým denním zálohováním prostřednictvím cron úlohy.
+	\item \textbf{Spring Boot backend} -- běží jako systemd služba na portu 8080 a~komunikuje s~databází prostřednictvím JDBC. Při výpadku ji systemd automaticky restartuje.
+	\item \textbf{PostgreSQL} -- databázový server s~automatickým denním zálohováním prostřednictvím cron úlohy. Zálohy jsou uchovávány lokálně po dobu 30 dnů.
 \end{itemize}
 
-Přístup k~serveru je zabezpečen SSH na nestandardním portu s~autentizací výhradně klíčem (heslo zakázáno). Přímý přístup přes IP adresu vrací HTTP kód 404.
+Přístup k~serveru přes SSH je zabezpečen nestandardním portem s~autentizací výhradně klíčem (heslo zakázáno). Nginx je nakonfigurován jako \uv{default server}, který pro požadavky bez očekávaného hostname (typicky při přístupu přímo přes IP adresu) vrací HTTP kód 404, čímž neúmyslně zabraňuje skenovacím botům v~indexaci aplikace.
+
+\subsection{Monitoring a~provozní dohled}
+
+Vzhledem k~rozsahu projektu (jedna organizace, řádově desítky uživatelských akcí denně) nebyl nasazen plnohodnotný monitorovací nástroj typu Grafana nebo Prometheus. Provozní dohled zajišťují:
+
+\begin{itemize}
+	\item \textbf{systemd journal} -- standardní výstup backendu je archivován s~rotací podle data, přístupný příkazem \texttt{journalctl}.
+	\item \textbf{Nginx access a~error logy} -- ve~standardním adresáři \texttt{/var/log/nginx/} pro analýzu HTTP požadavků a~chyb.
+	\item \textbf{automatický restart} -- backend se po pádu sám obnoví díky systemd nastavení.
+	\item \textbf{denní zálohy databáze} -- pravidelná cron úloha vytváří dump databáze a~uchovává jej lokálně po dobu 30 dnů.
+\end{itemize}
 
 \subsection{Proces nasazení}
 
-Deployment workflow provede následující kroky:
+Backend a~frontend jsou nasazovány společně, ale odlišnými kroky -- backend je dlouhoběžný proces, který je nutné zastavit a~znovu spustit, zatímco frontend je sada statických souborů, kterou stačí synchronizovat do adresáře obsluhovaného Nginxem. Deployment workflow \texttt{deploy.yml} (spouštěný manuálně z~rozhraní GitHubu) provede následující kroky:
 
 \begin{enumerate}
 	\item Sestaví backend JAR soubor příkazem \texttt{mvn clean package}.
 	\item Sestaví frontend příkazem \texttt{npm run build}.
-	\item Nahraje JAR na server prostřednictvím SCP.
-	\item Synchronizuje frontendové soubory na server prostřednictvím rsync.
-	\item Restartuje backendovou systemd službu.
+	\item Nahraje JAR na server prostřednictvím SCP a~restartuje backendovou systemd službu.
+	\item Synchronizuje frontendové soubory na server prostřednictvím rsync (přepíše obsah \texttt{/var/www/majetek}); restart Nginxu není nutný, protože soubory jsou obslouženy přímo.
 \end{enumerate}
+
+V~případě potřeby zásahu mimo workflow lze server obsloužit ručně přes SSH (např.\ pro úpravu konfigurace nebo obnovu ze~zálohy).
+
+\subsection{Distribuce mobilní aplikace}
 
 Mobilní aplikace je distribuována odděleně jako APK soubor, který se na cílové zařízení Zebra TC22 nahrává ručně prostřednictvím USB. Jedná se o~interní nástroj určený pro jedno konkrétní zařízení, publikace na Google Play proto není nutná.
 
