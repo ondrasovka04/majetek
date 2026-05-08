@@ -99,7 +99,7 @@ APK is generated in `app/build/outputs/apk/debug/`.
 
 | Type         | Directory              | Description                                                                                                                                                                                              |
 | ------------ | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unit tests   | `app/src/test/`        | `DataSyncRepositoryTest` (5 tests – JSON serialization), `BaseUrlStorageTest` (9 tests – URL validation/sanitization), `ApiClientTest` (10 tests – MockWebServer: login, download, upload, error states) |
+| Unit tests   | `app/src/test/`        | `DataSyncRepositoryTest` (4 tests – JSON serialization), `BaseUrlStorageTest` (9 tests – URL validation/sanitization), `ApiClientTest` (9 tests – MockWebServer: login, download, upload, error states)  |
 | Instrumented | `app/src/androidTest/` | `DaoTest` (11 tests – Room DAO with in-memory DB), `TokenStorageTest` (7 tests – EncryptedSharedPreferences, expiry, credentials)                                                                        |
 
 ## REST API Endpoints

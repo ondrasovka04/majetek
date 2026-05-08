@@ -107,7 +107,7 @@ The APK is located at `android/app/build/outputs/apk/debug/`.
 ## Running Tests
 
 ```bash
-# Backend (447 tests)
+# Backend (445 tests)
 cd backend && mvn test
 
 # Frontend (54 tests)
@@ -121,10 +121,11 @@ cd android && ./gradlew testDebugUnitTest
 
 ```
 majetek/
-├── backend/     # Spring Boot REST API
-├── frontend/    # React web application
-├── android/     # Android mobile application
-└── thesis/      # Bachelor's thesis (LaTeX)
+├── .github/workflows/  # GitHub Actions CI/CD workflows
+├── backend/            # Spring Boot REST API
+├── frontend/           # React web application
+├── android/            # Android mobile application
+└── thesis/             # Bachelor's thesis (LaTeX) and defense slides
 ```
 
 ## Deployment
