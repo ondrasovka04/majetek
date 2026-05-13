@@ -35,6 +35,7 @@ Automaticky generované administrační rozhraní je výhodou pro projekty vyža
 Tabulka~\ref{tab:backend-comparison} shrnuje srovnání analyzovaných backend technologií.
 
 \begin{table}[htbp]\centering\footnotesize
+\caption{Srovnání backend technologií}\label{tab:backend-comparison}
 \begin{tabular}{l|c|c|c}
 	\textbf{Kritérium} & \textbf{Spring Boot} & \textbf{NestJS} & \textbf{Django} \tabularnewline \hline
 	Jazyk & Java & TypeScript & Python \tabularnewline
@@ -43,7 +44,6 @@ Tabulka~\ref{tab:backend-comparison} shrnuje srovnání analyzovaných backend t
 	Bezpečnostní framework & Spring Security & Passport.js & vestavěný \tabularnewline
 	Podpora PDF/Excel/ZPL & iText, EasyExcel & omezená & omezená \tabularnewline
 \end{tabular}
-\caption{Srovnání backend technologií}\label{tab:backend-comparison}
 \end{table}
 
 Pro implementaci backendu byl zvolen \textbf{Spring Boot} z~následujících důvodů:
@@ -84,6 +84,7 @@ Vue nabízí dvě API rozhraní: Options API (přívětivější pro začátečn
 Tabulka~\ref{tab:frontend-comparison} shrnuje srovnání analyzovaných frontend technologií.
 
 \begin{table}[htbp]\centering\footnotesize
+\caption{Srovnání frontend technologií}\label{tab:frontend-comparison}
 \begin{tabular}{l|c|c|c}
 	\textbf{Kritérium} & \textbf{React} & \textbf{Angular} & \textbf{Vue.js} \tabularnewline \hline
 	Typ & knihovna & framework & framework \tabularnewline
@@ -92,7 +93,6 @@ Tabulka~\ref{tab:frontend-comparison} shrnuje srovnání analyzovaných frontend
 	UI knihovny & MUI, shadcn & Angular Material & Vuetify, Quasar \tabularnewline
 	Přístup & neopinionated & opinionated & progresivní \tabularnewline
 \end{tabular}
-\caption{Srovnání frontend technologií}\label{tab:frontend-comparison}
 \end{table}
 
 Řádek \emph{Přístup} v~tabulce vyjadřuje, do~jaké míry technologie diktuje strukturu aplikace a~výběr doplňkových knihoven. \emph{Neopinionated} (React) ponechává volbu routingu, správy stavu i~formulářů na vývojáři, což přináší flexibilitu i~odpovědnost za integraci. \emph{Opinionated} (Angular) poskytuje kompletní sadu nástrojů přímo v~základním balíčku a~očekává jejich používání. \emph{Progresivní} (Vue.js) představuje kompromis -- minimalistické jádro lze postupně rozšiřovat o~oficiálně doporučené knihovny.
@@ -136,6 +136,7 @@ Obě technologie nabízejí multiplatformní vývoj, který však v~tomto projek
 Tabulka~\ref{tab:mobile-comparison} shrnuje srovnání analyzovaných mobilních technologií.
 
 \begin{table}[htbp]\centering\footnotesize
+\caption{Srovnání mobilních technologií}\label{tab:mobile-comparison}
 \begin{tabular}{l|c|c|c}
 	\textbf{Kritérium} & \textbf{Java (nativní)} & \textbf{Kotlin} & \textbf{Flutter / RN} \tabularnewline \hline
 	Platformy & Android & Android (+ KMP) & Android + iOS \tabularnewline
@@ -143,7 +144,6 @@ Tabulka~\ref{tab:mobile-comparison} shrnuje srovnání analyzovaných mobilních
 	Offline DB & Room (SQLite) & Room (SQLite) & SQLite plugin \tabularnewline
 	Složitost & nízká & nízká & střední \tabularnewline
 \end{tabular}
-\caption{Srovnání mobilních technologií}\label{tab:mobile-comparison}
 \end{table}
 
 Pro implementaci mobilní aplikace byl zvolen jazyk \textbf{Java} a~nativní Android SDK z~následujících důvodů:
