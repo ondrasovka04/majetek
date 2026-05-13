@@ -106,6 +106,10 @@
 \usepackage[style=iso-numeric]{biblatex}
 \addbibresource{text/bib-database.bib}
 \usepackage{xurl}
+% Force URL breaks only at / and punctuation, never mid-letter/digit
+\setcounter{biburllcpenalty}{10000}
+\setcounter{biburlucpenalty}{10000}
+\setcounter{biburlnumpenalty}{10000}
 \usepackage{listings} % typesetting of sources
 \AddToHook{begindocument/end}{%
   \lstset{

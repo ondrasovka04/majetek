@@ -77,13 +77,13 @@ Tabulka~\ref{tab:tests} shrnuje rozsah testování všech komponent systému. U~
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.3}
+\caption{Přehled testů jednotlivých komponent}\label{tab:tests}
 \begin{tabular}{l|r|l|l}
 	\textbf{Komponenta} & \textbf{Testů} & \textbf{Pokrytí kódu} & \textbf{Nástroje} \tabularnewline \hline
 	Backend & 445 & $\geq$\,80\,\% ř., $\geq$\,75\,\% větví & JUnit~5, Mockito \tabularnewline
 	Frontend & 54 & -- & Vitest \tabularnewline
 	Mobilní apl. & 40 & -- & JUnit~5 \tabularnewline
 \end{tabular}
-\caption{Přehled testů jednotlivých komponent}\label{tab:tests}
 \end{table}
 
 \section{Průběžná integrace}
@@ -149,12 +149,12 @@ Přístup k~serveru přes SSH je zabezpečen nestandardním portem s~autentizac�
 
 \subsection{Monitoring a~provozní dohled}
 
-Vzhledem k~rozsahu projektu (jedna organizace, řádově desítky uživatelských akcí denně) nebyl nasazen plnohodnotný monitorovací nástroj typu Grafana nebo Prometheus. Provozní dohled zajišťují:
+Vzhledem k~rozsahu projektu (jedna organizace, řádově desítky uživatelských akcí denně) nebyl nasazen metrický monitoring (typicky kombinace Prometheus pro sběr metrik a~Grafana pro jejich vizualizaci). Provozní dohled zajišťují:
 
 \begin{itemize}
 	\item \textbf{systemd journal} -- standardní výstup backendu je archivován s~rotací podle data, přístupný příkazem \texttt{journalctl}.
 	\item \textbf{Nginx access a~error logy} -- ve~standardním adresáři \texttt{/var/log/nginx/} pro analýzu HTTP požadavků a~chyb.
-	\item \textbf{automatický restart} -- backend se po pádu sám obnoví díky systemd nastavení.
+	\item \textbf{automatický restart} -- všechny tři systemd služby (backend, PostgreSQL, Nginx) se po pádu samy obnoví díky direktivě \texttt{Restart=on-failure}.
 	\item \textbf{denní zálohy databáze} -- pravidelná cron úloha vytváří dump databáze a~uchovává jej lokálně po dobu 30 dnů.
 \end{itemize}
 

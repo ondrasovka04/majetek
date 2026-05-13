@@ -16,6 +16,7 @@ Majetková karta je základní datová jednotka systému. Každá karta reprezen
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
+\caption{Funkční požadavky -- evidence majetkových karet}\label{tab:freq-cards}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
 	F-01 & Systém umožní vytvořit novou majetkovou kartu s~atributy: název, cena, počet kusů, sériové číslo, umístění, třída, skupina majetku, způsob pořízení, faktura, datum pořízení, zodpovědná osoba a~poznámka. \tabularnewline
@@ -26,7 +27,6 @@ Majetková karta je základní datová jednotka systému. Každá karta reprezen
 	F-06 & Systém umožní nahrávat, stahovat a~mazat souborové přílohy ke~kartám majetku. \tabularnewline
 	F-07 & Systém umožní vyřadit majetkovou kartu zadáním data a~způsobu vyřazení. \tabularnewline
 \end{tabular}
-\caption{Funkční požadavky -- evidence majetkových karet}\label{tab:freq-cards}
 \end{table}
 
 \subsection{Správa číselníků}
@@ -35,11 +35,11 @@ Majetková karta je základní datová jednotka systému. Každá karta reprezen
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
+\caption{Funkční požadavky -- správa číselníků}\label{tab:freq-dictionaries}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
 	F-08 & Systém umožní vytvořit, přejmenovat a~smazat položku v~každém z~pěti číselníků (umístění, skupiny, třídy, způsoby pořízení, způsoby vyřazení). \tabularnewline
 \end{tabular}
-\caption{Funkční požadavky -- správa číselníků}\label{tab:freq-dictionaries}
 \end{table}
 
 \subsection{Generování a~tisk etiket}
@@ -48,13 +48,13 @@ Etikety s~Data Matrix kódy slouží k~fyzické identifikaci majetku a~místnost
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
+\caption{Funkční požadavky -- generování a~tisk etiket}\label{tab:freq-labels}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
 	F-09 & Systém umožní generovat ZPL etikety s~Data Matrix kódem pro majetkové karty. Etiketa obsahuje identifikátor karty, název majetku a~název organizace. \tabularnewline
 	F-10 & Systém umožní hromadný tisk etiket pro vybrané karty majetku. \tabularnewline
 	F-11 & Systém umožní generovat ZPL etikety pro místnosti (číselník umístění). \tabularnewline
 \end{tabular}
-\caption{Funkční požadavky -- generování a~tisk etiket}\label{tab:freq-labels}
 \end{table}
 
 \subsection{Reporty a~exporty}
@@ -63,6 +63,7 @@ Systém umožňuje generovat přehledy a~sestavy ve~formátu PDF a~Excel pro pot
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
+\caption{Funkční požadavky -- reporty a~exporty}\label{tab:freq-reports}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
 	F-12 & Systém umožní generovat PDF sestavu pro vybranou skupinu majetku (nebo všechny skupiny) k~zadanému datu. \tabularnewline
@@ -70,7 +71,6 @@ Systém umožňuje generovat přehledy a~sestavy ve~formátu PDF a~Excel pro pot
 	F-14 & Systém umožní generovat PDF sestavu pro konkrétní majetkovou kartu. \tabularnewline
 	F-15 & Systém umožní exportovat filtrované karty majetku do~formátu Excel (XLSX). \tabularnewline
 \end{tabular}
-\caption{Funkční požadavky -- reporty a~exporty}\label{tab:freq-reports}
 \end{table}
 
 \subsection{Inventura}
@@ -79,6 +79,7 @@ Inventura je klíčový proces, při kterém se ověřuje skutečný stav majetk
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
+\caption{Funkční požadavky -- inventura (mobilní aplikace)}\label{tab:freq-inventory-mobile}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
 	F-16 & Mobilní aplikace umožní stáhnout aktuální data karet a~lokací ze~serveru do~lokální databáze. \tabularnewline
@@ -87,11 +88,11 @@ Inventura je klíčový proces, při kterém se ověřuje skutečný stav majetk
 	F-19 & Mobilní aplikace umožní nahrát nasbíraná inventurní data na server. \tabularnewline
 	F-20 & Mobilní aplikace umožní ověřit evidované umístění karty naskenováním jejího kódu -- systém zobrazí detail karty a~porovná evidované umístění se~skutečným. \tabularnewline
 \end{tabular}
-\caption{Funkční požadavky -- inventura (mobilní aplikace)}\label{tab:freq-inventory-mobile}
 \end{table}
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
+\caption{Funkční požadavky -- inventura (vyhodnocení)}\label{tab:freq-inventory-web}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
 	F-21 & Webová aplikace umožní zobrazit přehled naskenovaných položek s~časem skenování. \tabularnewline
@@ -99,7 +100,6 @@ Inventura je klíčový proces, při kterém se ověřuje skutečný stav majetk
 	F-23 & Webová aplikace umožní u~každé karty s~nesouladem zvolit akci: přijmout skutečné umístění, ponechat evidované umístění, nebo majetek vyřadit. U~karet se~shodným umístěním lze rovněž zvolit vyřazení. \tabularnewline
 	F-24 & Webová aplikace umožní po~potvrzení uživatelem promítnout zvolené akce do~databáze (aktualizace umístění, vyřazení majetku). \tabularnewline
 \end{tabular}
-\caption{Funkční požadavky -- inventura (vyhodnocení)}\label{tab:freq-inventory-web}
 \end{table}
 
 \needspace{6\baselineskip}
@@ -107,13 +107,13 @@ Inventura je klíčový proces, při kterém se ověřuje skutečný stav majetk
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
+\caption{Funkční požadavky -- správa uživatelů}\label{tab:freq-users}
 \begin{tabular}{l|p{10cm}}
 	\textbf{ID} & \textbf{Popis požadavku} \tabularnewline \hline
 	F-25 & Systém umožní přihlášení uživatele pomocí uživatelského jména a~hesla. \tabularnewline
 	F-26 & Systém umožní přihlášenému uživateli změnit vlastní heslo. \tabularnewline
 	F-27 & Administrátor může vytvářet nové uživatelské účty. Běžní uživatelé tuto možnost nemají. \tabularnewline
 \end{tabular}
-\caption{Funkční požadavky -- správa uživatelů}\label{tab:freq-users}
 \end{table}
 
 \clearpage
@@ -123,6 +123,7 @@ Obecné požadavky definují kvalitativní vlastnosti systému -- jak se systém
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.4}
+\caption{Obecné požadavky}\label{tab:nfreq}
 \begin{tabular}{l|l|p{8.4cm}}
 	\textbf{ID} & \textbf{Kategorie} & \textbf{Popis požadavku} \tabularnewline \hline
 	O-01 & Bezpečnost & Komunikace mezi klientem a~serverem je šifrována prostřednictvím HTTPS. \tabularnewline
@@ -137,7 +138,6 @@ Obecné požadavky definují kvalitativní vlastnosti systému -- jak se systém
 	O-10 & Udržovatelnost & Projekt využívá průběžnou integraci (CI) se~statickou analýzou kódu. \tabularnewline
 	O-11 & Nasaditelnost & Backend, frontend i~databáze jsou nasaditelné na~linuxovém VPS serveru. Android aplikace je distribuována jako APK soubor. \tabularnewline
 \end{tabular}
-\caption{Obecné požadavky}\label{tab:nfreq}
 \end{table}
 
 \section{Případy užití}
@@ -233,6 +233,7 @@ Vazba mezi případy užití a~funkčními požadavky je shrnuta v~tabulce~\ref{
 
 \begin{table}[H]\centering
 \renewcommand{\arraystretch}{1.3}
+\caption{Mapování případů užití na funkční požadavky}\label{tab:uc-fr-mapping}
 \begin{tabular}{l|l}
 	\textbf{Případ užití} & \textbf{Plněné funkční požadavky} \tabularnewline \hline
 	Správa majetkové karty & F-01 -- F-07 \tabularnewline
@@ -241,7 +242,6 @@ Vazba mezi případy užití a~funkčními požadavky je shrnuta v~tabulce~\ref{
 	Vyhodnocení inventury  & F-21 -- F-24 \tabularnewline
 	Generování reportů     & F-12 -- F-15 \tabularnewline
 \end{tabular}
-\caption{Mapování případů užití na funkční požadavky}\label{tab:uc-fr-mapping}
 \end{table}
 
 
