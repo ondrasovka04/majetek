@@ -10,7 +10,7 @@
 \ctufittitle{Software pro evidenci majetku}
 \ctufitsubtitle{Bakalářská práce \\[0.3em] {\small Vedoucí práce: Ing.\,Jiří Mlejnek}}
 \ctufitauthor{Ondřej Kopáč}
-\ctufitdate{\today}
+\ctufitdate{17. června 2026}
 \ctufitinstitute{FIT ČVUT v Praze}
 
 \begin{document}
@@ -196,5 +196,30 @@
 \begin{plainFrame}[colourbg]
 	\plainFrameText{Děkuji za pozornost}
 \end{plainFrame}
+
+% --------------------------------------------------------------------
+% 11. Otázky oponenta
+% --------------------------------------------------------------------
+\section{Otázky oponenta}
+
+\begin{frame}
+	\frametitle{Otázky oponenta}
+	\begin{block}{Auditní stopa}
+		Jak rozšířit systém pro organizaci vyžadující historii změn?
+	\end{block}
+	\begin{itemize}
+		\item Vyřazení (\texttt{WRITE\_OFF}) je soft delete – karta zůstane s~\texttt{writeOffDate}
+		\item Změna umístění a~hard delete historii nemají
+		\item Řešení: auditní tabulka přes \texttt{@EntityListener} (\texttt{@PreUpdate}/\texttt{@PreRemove}),\\nebo Hibernate Envers (\texttt{@Audited}) – historizaci vytvoří automaticky
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{block}{Souběžná inventura}
+		Jaká strategie při skenování stejné karty dvěma pracovníky?
+	\end{block}
+	\begin{itemize}
+		\item \textbf{Last-write-wins} s~časovým razítkem – server při upsert zachová záznam s~pozdějším časem
+		\item Identifikováno jako budoucí rozvoj v~závěru práce
+	\end{itemize}
+\end{frame}
 
 \end{document}
