@@ -13,34 +13,44 @@ import {
 import { translateError } from "@/utils/errorTranslations";
 import { extractErrorMessage } from "@/utils/extractErrorMessage";
 
-const LocationPage = () => {
-  const printMutation = usePrintLocation();
+type RowHelpers = {
+  notify: (msg: string, severity?: "success" | "error") => void;
+  notifyError: (msg: string) => void;
+};
 
+const LocationPrintAction = ({ locId, notify, notifyError }: { locId: string } & RowHelpers) => {
+  const printMutation = usePrintLocation();
   return (
-    <DictionaryPage<Location>
-      title="Umístění"
-      addDialogTitle="Nové umístění"
-      useItems={useLocations}
-      useCreate={useCreateLocation}
-      useUpdate={useUpdateLocation}
-      useDelete={useDeleteLocation}
-      extraRowActions={(loc, { notify, notifyError }) => (
-        <IconButton
-          onClick={() =>
-            printMutation.mutate(loc.id, {
-              onSuccess: (msg) => notify(msg, "success"),
-              onError: (err: unknown) => {
-                notifyError(translateError(extractErrorMessage(err)));
-              },
-            })
-          }
-          size="small"
-          aria-label="Tisknout">
-          <PrintIcon fontSize="small" />
-        </IconButton>
-      )}
-    />
+    <IconButton
+      onClick={() =>
+        printMutation.mutate(locId, {
+          onSuccess: (msg) => notify(msg, "success"),
+          onError: (err: unknown) => {
+            notifyError(translateError(extractErrorMessage(err)));
+          },
+        })
+      }
+      size="small"
+      aria-label="Tisknout">
+      <PrintIcon fontSize="small" />
+    </IconButton>
   );
 };
+
+const locationExtraRowActions = (loc: Location, helpers: RowHelpers) => (
+  <LocationPrintAction locId={loc.id} {...helpers} />
+);
+
+const LocationPage = () => (
+  <DictionaryPage<Location>
+    title="Umístění"
+    addDialogTitle="Nové umístění"
+    useItems={useLocations}
+    useCreate={useCreateLocation}
+    useUpdate={useUpdateLocation}
+    useDelete={useDeleteLocation}
+    extraRowActions={locationExtraRowActions}
+  />
+);
 
 export default LocationPage;
