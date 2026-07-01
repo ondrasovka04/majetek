@@ -1,5 +1,7 @@
 package cz.majetek.auth.security;
 
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -21,90 +23,59 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
 
-    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-                          JwtAuthenticationFilter jwtAuthenticationFilter,
-                          CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint) {
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.customBasicAuthenticationEntryPoint = customBasicAuthenticationEntryPoint;
-    }
-
-    /**
-     * Configures a security filter chain for Basic Auth.
-     *
-     * @param http HttpSecurity
-     * @return SecurityFilterChain
-     * @throws Exception if configuration fails
-     */
     @Bean
     @Order(1)
-    public SecurityFilterChain basicAuthFilterChain(HttpSecurity http) throws Exception {
-        http
+    @SneakyThrows
+    @SuppressWarnings("java:S4502") // Stateless REST API with JWT — CSRF not applicable
+    public SecurityFilterChain basicAuthFilterChain(HttpSecurity http) {
+        return http
                 .securityMatcher("/api/auth/login")
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-                .httpBasic(customizer -> customizer.authenticationEntryPoint(customBasicAuthenticationEntryPoint));
-
-        return http.build();
+                .httpBasic(customizer -> customizer.authenticationEntryPoint(customBasicAuthenticationEntryPoint))
+                .build();
     }
 
-    /**
-     * Configures a security filter chain for Bearer.
-     *
-     * @param http HttpSecurity
-     * @return SecurityFilterChain
-     * @throws Exception if configuration fails
-     */
     @Bean
     @Order(2)
-    public SecurityFilterChain jwtFilterChain(HttpSecurity http) throws Exception {
-        http
+    @SneakyThrows
+    @SuppressWarnings("java:S4502") // Stateless REST API with JWT — CSRF not applicable
+    public SecurityFilterChain jwtFilterChain(HttpSecurity http) {
+        return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth ->
-                        auth
-                                .requestMatchers(
-                                        "/swagger-ui/**", "/swagger-ui.html",
-                                        "/v3/api-docs/**", "/v3/api-docs.yaml",
-                                        "/api-docs/**",
-                                        "/swagger-resources/**", "/webjars/**", "/configuration/**"
-                                ).permitAll()
-                                .requestMatchers("/api/auth/refresh").permitAll()
-                                .requestMatchers("/api/auth/register").hasRole("ADMIN")
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/swagger-ui/**", "/swagger-ui.html",
+                                "/v3/api-docs/**", "/v3/api-docs.yaml",
+                                "/api-docs/**",
+                                "/swagger-resources/**", "/webjars/**", "/configuration/**"
+                        ).permitAll()
+                        .requestMatchers("/api/auth/refresh").permitAll()
+                        .requestMatchers("/api/auth/register").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
-    /**
-     * Creates AuthenticationManager bean.
-     *
-     * @param authConfig AuthenticationConfiguration
-     * @return AuthenticationManager
-     * @throws Exception if configuration fails
-     */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    @SneakyThrows
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) {
         return authConfig.getAuthenticationManager();
     }
 
-    /**
-     * Creates PasswordEncoder bean.
-     *
-     * @return BCryptPasswordEncoder instance
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-} 
+}

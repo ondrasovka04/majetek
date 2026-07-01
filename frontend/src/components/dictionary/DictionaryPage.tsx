@@ -112,14 +112,10 @@ export default function DictionaryPage<T extends DictionaryEntity>({
                 <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell
-                        onClick={() => handleSort("id")}
-                        style={{ cursor: "pointer", fontWeight: "bold" }}>
+                      <TableCell onClick={() => handleSort("id")} style={{ cursor: "pointer", fontWeight: "bold" }}>
                         ID {sortConfig.key === "id" && (sortConfig.direction === "asc" ? "▲" : "▼")}
                       </TableCell>
-                      <TableCell
-                        onClick={() => handleSort("name")}
-                        style={{ cursor: "pointer", fontWeight: "bold" }}>
+                      <TableCell onClick={() => handleSort("name")} style={{ cursor: "pointer", fontWeight: "bold" }}>
                         Název {sortConfig.key === "name" && (sortConfig.direction === "asc" ? "▲" : "▼")}
                       </TableCell>
                       <TableCell style={{ fontWeight: "bold" }}>Akce</TableCell>

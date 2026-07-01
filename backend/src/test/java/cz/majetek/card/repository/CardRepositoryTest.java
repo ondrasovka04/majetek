@@ -6,26 +6,29 @@ import cz.majetek.entity.ClassEntity;
 import cz.majetek.entity.Location;
 import cz.majetek.entity.user.User;
 import cz.majetek.entity.user.UserRole;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@TestPropertySource(locations = "classpath:application-test.properties")
+@SpringBootTest
+@ActiveProfiles("test")
+@Transactional
 class CardRepositoryTest {
 
     @Autowired
-    private TestEntityManager entityManager;
+    private EntityManager entityManager;
 
     @Autowired
     private ICardRepository cardRepository;
@@ -145,8 +148,8 @@ class CardRepositoryTest {
         card.setLocation(testLocation);
         card.setAssetClass(testClass);
         card.setGroup(testGroup);
-        card.setPurchaseDate(LocalDate.now());
-        card.setCreatedDate(LocalDateTime.now());
+        card.setPurchaseDate(LocalDate.of(2025, Month.JUNE, 15));
+        card.setCreatedDate(LocalDateTime.of(2025, Month.JUNE, 15, 10, 0));
         card.setCreatedBy(testUser);
         return card;
     }

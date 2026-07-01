@@ -79,7 +79,9 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
     if (!entries.length) return;
     const rawActionByCardId = new Map(rawDiffs?.map((d) => [d.cardId, d.action]) ?? []);
     const toInit = entries
-      .filter((e) => e.action != null && !initializedIdsRef.current.has(e.cardId) && rawActionByCardId.get(e.cardId) == null)
+      .filter(
+        (e) => e.action != null && !initializedIdsRef.current.has(e.cardId) && rawActionByCardId.get(e.cardId) == null,
+      )
       .map((e) => ({ cardId: e.cardId, action: e.action! }));
     if (toInit.length === 0) return;
     const ids = toInit.map((i) => i.cardId);
@@ -124,7 +126,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
     const nextEntry: InventoryDifferenceEntry = {
       ...prevEntry,
       ...patch,
-    } as InventoryDifferenceEntry;
+    };
 
     if (nextEntry.action === "WRITE_OFF" && !nextEntry.writeOffMethodId) {
       nextEntry.writeOffMethodId = writeOffMethods[0]?.id ?? null;

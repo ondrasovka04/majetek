@@ -57,7 +57,7 @@ class GlobalExceptionHandlerTest {
                             status.getReasonPhrase(),
                             message,
                             List.of(),
-                            Instant.now()
+                            Instant.parse("2030-01-01T12:00:00Z")
                     );
                     return ResponseEntity.status(status).body(errorResponse);
                 });
@@ -67,7 +67,7 @@ class GlobalExceptionHandlerTest {
                     String message = invocation.getArgument(1);
                     List<ErrorFieldResponse> errors = invocation.getArgument(2);
                     return ResponseEntity.status(status).body(
-                            new ErrorResponse(status.value(), status.getReasonPhrase(), message, errors, Instant.now()));
+                            new ErrorResponse(status.value(), status.getReasonPhrase(), message, errors, Instant.parse("2030-01-01T12:00:00Z")));
                 });
     }
 
@@ -180,8 +180,8 @@ class GlobalExceptionHandlerTest {
 
         ResponseEntity<ErrorResponse> response = exceptionHandler.handleMaxUploadSizeExceededException(exception);
 
-        assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, response.getStatusCode());
-        verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.PAYLOAD_TOO_LARGE), anyString());
+        assertEquals(HttpStatus.CONTENT_TOO_LARGE, response.getStatusCode());
+        verify(errorResponseUtils).buildErrorResponse(eq(HttpStatus.CONTENT_TOO_LARGE), anyString());
     }
 
     @Test
@@ -210,12 +210,6 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handleHttpMessageNotReadable_WithCause_ShouldReturnBadRequest() {
-        ResponseEntity<ErrorResponse> resp = exceptionHandler.handleHttpMessageNotReadableException();
-        assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
-    }
-
-    @Test
-    void handleHttpMessageNotReadable_NoCause_ShouldReturnBadRequest() {
         ResponseEntity<ErrorResponse> resp = exceptionHandler.handleHttpMessageNotReadableException();
         assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
     }

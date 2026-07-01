@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -29,6 +30,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Card Controller", description = "Handles card filtering and cloud/local printing")
 public class CardController {
+
+    private static final ZoneId ZONE_PRAGUE = ZoneId.of("Europe/Prague");
 
     private final ICardService cardService;
 
@@ -124,7 +127,7 @@ public class CardController {
     public ResponseEntity<InputStreamResource> exportGroupReport(
             @Valid @RequestBody @Parameter(description = "Request body containing group ID, flag for all groups and the date to which the report relates") GroupReportRequest req
     ) {
-        LocalDate asOf = req.getAsOf() != null ? req.getAsOf() : LocalDate.now();
+        LocalDate asOf = req.getAsOf() != null ? req.getAsOf() : LocalDate.now(ZONE_PRAGUE);
 
         InputStreamResource resource = req.isAllGroups() ? cardService.exportAllGroupsReport(asOf)
                 : cardService.exportGroupReport(req.getGroupId(), asOf);
@@ -146,7 +149,7 @@ public class CardController {
     public ResponseEntity<InputStreamResource> exportLocationReport(
             @Valid @RequestBody @Parameter(description = "Request body containing location ID and the date to which the report relates") LocationReportRequest req
     ) {
-        LocalDate asOf = req.getAsOf() != null ? req.getAsOf() : LocalDate.now();
+        LocalDate asOf = req.getAsOf() != null ? req.getAsOf() : LocalDate.now(ZONE_PRAGUE);
 
         InputStreamResource resource = cardService.exportLocationReport(req.getLocationId(), asOf);
 

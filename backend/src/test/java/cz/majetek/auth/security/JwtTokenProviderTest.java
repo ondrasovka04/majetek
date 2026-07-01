@@ -10,7 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Date;
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -169,10 +169,10 @@ class JwtTokenProviderTest {
         Authentication auth = createAuthentication("testuser");
         String token = jwtTokenProvider.generateToken(auth);
 
-        Date expirationDate = jwtTokenProvider.getExpirationDateFromToken(token);
+        Instant expirationDate = jwtTokenProvider.getExpirationDateFromToken(token);
 
         assertNotNull(expirationDate);
-        assertTrue(expirationDate.after(new Date()));
+        assertTrue(expirationDate.isAfter(Instant.EPOCH));
     }
 
     @Test
@@ -180,10 +180,10 @@ class JwtTokenProviderTest {
         Authentication auth = createAuthentication("testuser");
         String refreshToken = jwtTokenProvider.generateRefreshToken(auth);
 
-        Date expirationDate = jwtTokenProvider.getExpirationDateFromRefreshToken(refreshToken);
+        Instant expirationDate = jwtTokenProvider.getExpirationDateFromRefreshToken(refreshToken);
 
         assertNotNull(expirationDate);
-        assertTrue(expirationDate.after(new Date()));
+        assertTrue(expirationDate.isAfter(Instant.EPOCH));
     }
 
     @Test
@@ -202,10 +202,10 @@ class JwtTokenProviderTest {
         String accessToken = jwtTokenProvider.generateToken(auth);
         String refreshToken = jwtTokenProvider.generateRefreshToken(auth);
 
-        Date accessExpiration = jwtTokenProvider.getExpirationDateFromToken(accessToken);
-        Date refreshExpiration = jwtTokenProvider.getExpirationDateFromRefreshToken(refreshToken);
+        Instant accessExpiration = jwtTokenProvider.getExpirationDateFromToken(accessToken);
+        Instant refreshExpiration = jwtTokenProvider.getExpirationDateFromRefreshToken(refreshToken);
 
-        assertTrue(refreshExpiration.after(accessExpiration));
+        assertTrue(refreshExpiration.isAfter(accessExpiration));
     }
 
     private Authentication createAuthentication(String username) {

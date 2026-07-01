@@ -26,7 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -67,7 +67,7 @@ class AuthControllerTest {
         objectMapper = new ObjectMapper();
 
         testUserDto = new UserDto("U1", "Test User", "testuser", UserRole.USER);
-        testLoginResponse = new LoginResponse("jwt-token", testUserDto, new Date());
+        testLoginResponse = new LoginResponse("jwt-token", testUserDto, Instant.parse("2030-01-01T12:00:00Z"));
     }
 
     @AfterEach
@@ -84,8 +84,8 @@ class AuthControllerTest {
 
         when(authService.login()).thenReturn(testLoginResponse);
         when(tokenProvider.generateRefreshToken(any(Authentication.class))).thenReturn("refresh-token");
-        when(tokenProvider.getExpirationDateFromRefreshToken("refresh-token")).thenReturn(new Date());
-        when(refreshTokenCookieFactory.build(anyString(), any(Date.class))).thenReturn(new Cookie("refreshToken", "refresh-token"));
+        when(tokenProvider.getExpirationDateFromRefreshToken("refresh-token")).thenReturn(Instant.parse("2030-01-01T12:00:00Z"));
+        when(refreshTokenCookieFactory.build(anyString(), any(Instant.class))).thenReturn(new Cookie("refreshToken", "refresh-token"));
 
         mockMvc.perform(post("/api/auth/login"))
                 .andExpect(status().isOk())
@@ -97,8 +97,8 @@ class AuthControllerTest {
         when(authService.refresh("old-refresh")).thenReturn(testLoginResponse);
         when(tokenProvider.getUsernameFromRefreshToken("old-refresh")).thenReturn("testuser");
         when(tokenProvider.generateRefreshTokenFromUsername("testuser")).thenReturn("new-refresh");
-        when(tokenProvider.getExpirationDateFromRefreshToken("new-refresh")).thenReturn(new Date());
-        when(refreshTokenCookieFactory.build(anyString(), any(Date.class))).thenReturn(new Cookie("refreshToken", "new-refresh"));
+        when(tokenProvider.getExpirationDateFromRefreshToken("new-refresh")).thenReturn(Instant.parse("2030-01-01T12:00:00Z"));
+        when(refreshTokenCookieFactory.build(anyString(), any(Instant.class))).thenReturn(new Cookie("refreshToken", "new-refresh"));
 
         mockMvc.perform(post("/api/auth/refresh")
                         .cookie(new Cookie("refreshToken", "old-refresh")))

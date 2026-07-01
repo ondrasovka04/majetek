@@ -47,6 +47,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
@@ -124,8 +125,8 @@ class CardServiceTest {
         testCard.setAssetClass(classEntity);
         testCard.setGroup(group);
         testCard.setCreatedBy(testUser);
-        testCard.setCreatedDate(LocalDateTime.now());
-        testCard.setPurchaseDate(LocalDate.now());
+        testCard.setCreatedDate(LocalDateTime.of(2025, Month.JUNE, 15, 10, 0));
+        testCard.setPurchaseDate(LocalDate.of(2025, Month.JUNE, 15));
         testCard.setQuantity(BigDecimal.ONE);
         testCard.setResponsiblePerson(testUser);
 
@@ -355,8 +356,8 @@ class CardServiceTest {
         cardWithNulls.setWriteOffMethod(null);
         cardWithNulls.setResponsiblePerson(null);
         cardWithNulls.setCreatedBy(testUser);
-        cardWithNulls.setCreatedDate(LocalDateTime.now());
-        cardWithNulls.setPurchaseDate(LocalDate.now());
+        cardWithNulls.setCreatedDate(LocalDateTime.of(2025, Month.JUNE, 15, 10, 0));
+        cardWithNulls.setPurchaseDate(LocalDate.of(2025, Month.JUNE, 15));
 
         when(cardRepository.findAll(any(Specification.class), any(Sort.class))).thenReturn(List.of(cardWithNulls));
 
@@ -376,14 +377,14 @@ class CardServiceTest {
         when(assetGroupRepository.findById("GRP1")).thenReturn(Optional.of(grp));
         when(cardRepository.findAll(any(Specification.class), any(Sort.class))).thenReturn(List.of(testCard));
 
-        InputStreamResource result = cardService.exportGroupReport("GRP1", LocalDate.now());
+        InputStreamResource result = cardService.exportGroupReport("GRP1", LocalDate.of(2025, Month.JUNE, 15));
         assertNotNull(result);
     }
 
     @Test
     void exportGroupReport_GroupNotFound_ShouldThrow() {
         when(assetGroupRepository.findById("INVALID")).thenReturn(Optional.empty());
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.of(2025, Month.JUNE, 15);
         assertThrows(AssetGroupException.class, () -> cardService.exportGroupReport("INVALID", now));
     }
 
@@ -398,7 +399,7 @@ class CardServiceTest {
         when(assetGroupRepository.findAll(any(Sort.class))).thenReturn(List.of(grp));
         when(cardRepository.findAll(any(Specification.class))).thenReturn(List.of(testCard));
 
-        InputStreamResource result = cardService.exportAllGroupsReport(LocalDate.now());
+        InputStreamResource result = cardService.exportAllGroupsReport(LocalDate.of(2025, Month.JUNE, 15));
         assertNotNull(result);
     }
 
@@ -416,7 +417,7 @@ class CardServiceTest {
         when(assetGroupRepository.findAll(any(Sort.class))).thenReturn(List.of(grp));
         when(cardRepository.findAll(any(Specification.class))).thenReturn(List.of(cardNull));
 
-        InputStreamResource result = cardService.exportAllGroupsReport(LocalDate.now());
+        InputStreamResource result = cardService.exportAllGroupsReport(LocalDate.of(2025, Month.JUNE, 15));
         assertNotNull(result);
     }
 
@@ -431,14 +432,14 @@ class CardServiceTest {
         when(locationRepository.findById("LOC1")).thenReturn(Optional.of(loc));
         when(cardRepository.findAll(any(Specification.class), any(Sort.class))).thenReturn(List.of(testCard));
 
-        InputStreamResource result = cardService.exportLocationReport("LOC1", LocalDate.now());
+        InputStreamResource result = cardService.exportLocationReport("LOC1", LocalDate.of(2025, Month.JUNE, 15));
         assertNotNull(result);
     }
 
     @Test
     void exportLocationReport_NotFound_ShouldThrow() {
         when(locationRepository.findById("INVALID")).thenReturn(Optional.empty());
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.of(2025, Month.JUNE, 15);
         assertThrows(LocationException.class, () -> cardService.exportLocationReport("INVALID", now));
     }
 

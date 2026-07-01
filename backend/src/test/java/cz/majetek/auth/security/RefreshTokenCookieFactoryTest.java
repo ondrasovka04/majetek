@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Date;
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,9 +21,7 @@ class RefreshTokenCookieFactoryTest {
 
     @Test
     void build_ShouldCreateCookieWithCorrectName() {
-        Date expiry = new Date(System.currentTimeMillis() + 3600_000);
-
-        Cookie cookie = cookieFactory.build("token123", expiry);
+        Cookie cookie = cookieFactory.build("token123", Instant.parse("2030-01-01T12:00:00Z"));
 
         assertEquals("refreshToken", cookie.getName());
         assertEquals("token123", cookie.getValue());
@@ -31,9 +29,7 @@ class RefreshTokenCookieFactoryTest {
 
     @Test
     void build_ShouldSetHttpOnlyAndSecure() {
-        Date expiry = new Date(System.currentTimeMillis() + 3600_000);
-
-        Cookie cookie = cookieFactory.build("token123", expiry);
+        Cookie cookie = cookieFactory.build("token123", Instant.parse("2030-01-01T12:00:00Z"));
 
         assertTrue(cookie.isHttpOnly());
         assertTrue(cookie.getSecure());
@@ -41,27 +37,21 @@ class RefreshTokenCookieFactoryTest {
 
     @Test
     void build_ShouldSetCorrectPath() {
-        Date expiry = new Date(System.currentTimeMillis() + 3600_000);
-
-        Cookie cookie = cookieFactory.build("token123", expiry);
+        Cookie cookie = cookieFactory.build("token123", Instant.parse("2030-01-01T12:00:00Z"));
 
         assertEquals("/api/auth", cookie.getPath());
     }
 
     @Test
     void build_ShouldSetPositiveMaxAge() {
-        Date expiry = new Date(System.currentTimeMillis() + 3600_000);
-
-        Cookie cookie = cookieFactory.build("token123", expiry);
+        Cookie cookie = cookieFactory.build("token123", Instant.parse("2030-01-01T12:00:00Z"));
 
         assertTrue(cookie.getMaxAge() > 0);
     }
 
     @Test
     void build_WithPastExpiry_ShouldSetZeroMaxAge() {
-        Date expiry = new Date(System.currentTimeMillis() - 1000);
-
-        Cookie cookie = cookieFactory.build("token123", expiry);
+        Cookie cookie = cookieFactory.build("token123", Instant.EPOCH);
 
         assertEquals(0, cookie.getMaxAge());
     }
@@ -69,18 +59,14 @@ class RefreshTokenCookieFactoryTest {
     @Test
     void build_WithSecureFalse_ShouldCreateNonSecureCookie() {
         ReflectionTestUtils.setField(cookieFactory, "secure", false);
-        Date expiry = new Date(System.currentTimeMillis() + 3600_000);
-
-        Cookie cookie = cookieFactory.build("token123", expiry);
+        Cookie cookie = cookieFactory.build("token123", Instant.parse("2030-01-01T12:00:00Z"));
 
         assertFalse(cookie.getSecure());
     }
 
     @Test
     void build_ShouldSetSameSiteStrict() {
-        Date expiry = new Date(System.currentTimeMillis() + 3600_000);
-
-        Cookie cookie = cookieFactory.build("token123", expiry);
+        Cookie cookie = cookieFactory.build("token123", Instant.parse("2030-01-01T12:00:00Z"));
 
         assertEquals("Strict", cookie.getAttribute("SameSite"));
     }

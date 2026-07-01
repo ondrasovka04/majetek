@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -101,7 +102,7 @@ class CardControllerTest {
         CardChangeDto changeDto = new CardChangeDto();
         changeDto.setName("New Card");
         changeDto.setLocationId("LOC1");
-        changeDto.setPurchaseDate(LocalDate.now());
+        changeDto.setPurchaseDate(LocalDate.of(2025, Month.JUNE, 15));
 
         when(cardService.createCard(any(CardChangeDto.class))).thenReturn(testCardDto);
 
@@ -117,7 +118,7 @@ class CardControllerTest {
         CardChangeDto changeDto = new CardChangeDto();
         changeDto.setName("Updated Card");
         changeDto.setLocationId("LOC1");
-        changeDto.setPurchaseDate(LocalDate.now());
+        changeDto.setPurchaseDate(LocalDate.of(2025, Month.JUNE, 15));
 
         when(cardService.updateCard(eq(1), any(CardChangeDto.class))).thenReturn(testCardDto);
 

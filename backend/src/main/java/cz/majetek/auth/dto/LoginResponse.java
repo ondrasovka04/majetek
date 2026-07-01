@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * DTO for login response containing JWT token and user info.
@@ -17,5 +17,5 @@ import java.util.Date;
 public class LoginResponse {
     private String token;
     private UserDto user;
-    private Date expiresIn;
-} 
+    private Instant expiresIn;
+}

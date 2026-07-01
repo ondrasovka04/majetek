@@ -22,19 +22,11 @@ interface Props {
   showReadOnlyFields?: boolean;
 }
 
-/** Renders a select item with ID + name columns */
-const DictionaryMenuItem = ({ id, name }: { id: string; name: string | null }) => (
-  <MenuItem key={id} value={id}>
-    <Box
-      sx={{
-        display: "flex",
-        gap: 2,
-        width: "100%",
-      }}>
-      <span style={{ minWidth: 60 }}>{id}</span>
-      <span>{name}</span>
-    </Box>
-  </MenuItem>
+const idNameItem = (id: string, name: string | null) => (
+  <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
+    <span style={{ minWidth: 60 }}>{id}</span>
+    <span>{name}</span>
+  </Box>
 );
 
 /**
@@ -138,7 +130,9 @@ const CardFormFields = ({
                 },
               }}>
               {locations.map((l) => (
-                <DictionaryMenuItem key={l.id} id={l.id} name={l.name} />
+                <MenuItem key={l.id} value={l.id}>
+                  {idNameItem(l.id, l.name)}
+                </MenuItem>
               ))}
             </TextField>
           )}
@@ -163,7 +157,9 @@ const CardFormFields = ({
               }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {classes.map((c) => (
-                <DictionaryMenuItem key={c.id} id={c.id} name={c.name} />
+                <MenuItem key={c.id} value={c.id}>
+                  {idNameItem(c.id, c.name)}
+                </MenuItem>
               ))}
             </TextField>
           )}
@@ -194,7 +190,9 @@ const CardFormFields = ({
                 },
               }}>
               {groups.map((g) => (
-                <DictionaryMenuItem key={g.id} id={g.id} name={g.name} />
+                <MenuItem key={g.id} value={g.id}>
+                  {idNameItem(g.id, g.name)}
+                </MenuItem>
               ))}
             </TextField>
           )}
@@ -219,7 +217,9 @@ const CardFormFields = ({
               }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {purchaseMethods.map((m) => (
-                <DictionaryMenuItem key={m.id} id={m.id} name={m.name} />
+                <MenuItem key={m.id} value={m.id}>
+                  {idNameItem(m.id, m.name)}
+                </MenuItem>
               ))}
             </TextField>
           )}
@@ -299,7 +299,9 @@ const CardFormFields = ({
               }}>
               <MenuItem value="">(nevybráno)</MenuItem>
               {writeOffMethods.map((m) => (
-                <DictionaryMenuItem key={m.id} id={m.id} name={m.name} />
+                <MenuItem key={m.id} value={m.id}>
+                  {idNameItem(m.id, m.name)}
+                </MenuItem>
               ))}
             </TextField>
           )}

@@ -271,7 +271,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
                 .andReturn();
 
         String tempToken = objectMapper.readTree(result.getResponse().getContentAsString())
-                .get("token").asText();
+                .get("token").asString();
 
         // Change password
         String changeJson = objectMapper.writeValueAsString(
