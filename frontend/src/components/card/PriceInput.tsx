@@ -44,7 +44,7 @@ export const PriceInput = ({ value, label, onChange }: PriceInputProps) => {
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    if (/^\d*[.,]?\d*$/.test(val) || val === "") {
+    if (/^\d*([.,]\d*)?$/.test(val) || val === "") {
       setEditingValue(val);
     }
   }, []);
