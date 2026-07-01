@@ -3,27 +3,29 @@ package cz.majetek.attachment.repository;
 import cz.majetek.entity.Attachment;
 import cz.majetek.entity.Attachment.AttachmentId;
 import cz.majetek.entity.Card;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 class AttachmentRepositoryTest {
 
     @Autowired
     private IAttachmentRepository attachmentRepository;
 
     @Autowired
-    private TestEntityManager entityManager;
+    private EntityManager entityManager;
 
     private Card card1;
     private Card card2;
@@ -65,7 +67,8 @@ class AttachmentRepositoryTest {
         Card card3 = new Card();
         card3.setId(3);
         card3.setName("Empty Card");
-        entityManager.persistAndFlush(card3);
+        entityManager.persist(card3);
+        entityManager.flush();
 
         List<Attachment> result = attachmentRepository.findAllByIdCardId(card3.getId());
 
@@ -100,7 +103,8 @@ class AttachmentRepositoryTest {
         Card card3 = new Card();
         card3.setId(3);
         card3.setName("Empty Card");
-        entityManager.persistAndFlush(card3);
+        entityManager.persist(card3);
+        entityManager.flush();
 
         int nextId = attachmentRepository.findNextIdForCard(card3.getId());
 

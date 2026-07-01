@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
@@ -86,7 +87,7 @@ class CardIntegrationTest extends BaseIntegrationTest {
                     "purchaseDate": "%s",
                     "note": "Integration test card"
                 }
-                """, LocalDate.now());
+                """, LocalDate.of(2025, Month.JUNE, 15));
 
         var result = mockMvc.perform(post("/api/card")
                         .header("Authorization", bearerAdmin())
@@ -171,7 +172,7 @@ class CardIntegrationTest extends BaseIntegrationTest {
                     "purchaseDate": "%s",
                     "note": "Updated note"
                 }
-                """, LocalDate.now());
+                """, LocalDate.of(2025, Month.JUNE, 15));
 
         mockMvc.perform(patch("/api/card/" + createdCardId)
                         .header("Authorization", bearerAdmin())
@@ -196,7 +197,7 @@ class CardIntegrationTest extends BaseIntegrationTest {
     // ===================== Validation =====================
 
     static Stream<Arguments> invalidCardPayloads() {
-        String date = LocalDate.now().toString();
+        String date = "2025-06-15";
         return Stream.of(
                 Arguments.of("""
                         {"price": 1000.00, "locationId": "CLOC1", "purchaseDate": "%s"}
@@ -226,7 +227,7 @@ class CardIntegrationTest extends BaseIntegrationTest {
     void card_create_withNonExistentLocation_shouldReturn404() throws Exception {
         String json = String.format("""
                 {"name": "Bad Location Card", "locationId": "XXXXX", "purchaseDate": "%s"}
-                """, LocalDate.now());
+                """, LocalDate.of(2025, Month.JUNE, 15));
 
         mockMvc.perform(post("/api/card")
                         .header("Authorization", bearerAdmin())
@@ -249,7 +250,7 @@ class CardIntegrationTest extends BaseIntegrationTest {
                     "groupId": "CGRP1",
                     "purchaseDate": "%s"
                 }
-                """, LocalDate.now().minusDays(30));
+                """, LocalDate.of(2025, Month.MAY, 16));
 
         mockMvc.perform(post("/api/card")
                         .header("Authorization", bearerAdmin())

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -35,6 +36,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class InventoryAuditService implements IInventoryAuditService {
+
+    private static final ZoneId ZONE_PRAGUE = ZoneId.of("Europe/Prague");
 
     private final IInventoryAuditRepository inventoryAuditRepository;
     private final ILocationRepository locationRepository;
@@ -84,7 +87,7 @@ public class InventoryAuditService implements IInventoryAuditService {
             InventoryAudit entity = inventoryAuditRepository.findById(dto.getCardId()).orElse(new InventoryAudit());
             entity.setCard(card);
             entity.setRealLocation(location);
-            entity.setTimestamp(dto.getTimestamp() != null ? dto.getTimestamp() : LocalDateTime.now());
+            entity.setTimestamp(dto.getTimestamp() != null ? dto.getTimestamp() : LocalDateTime.now(ZONE_PRAGUE));
             entity.setAction(null);
             entity.setWriteOffDate(null);
             entity.setWriteOffMethod(null);
@@ -105,7 +108,7 @@ public class InventoryAuditService implements IInventoryAuditService {
                 .orElseGet(() -> {
                     InventoryAudit newAudit = new InventoryAudit();
                     newAudit.setCard(card);
-                    newAudit.setTimestamp(LocalDateTime.now());
+                    newAudit.setTimestamp(LocalDateTime.now(ZONE_PRAGUE));
                     return newAudit;
                 });
 

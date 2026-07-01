@@ -29,6 +29,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -77,7 +78,7 @@ class InventoryAuditServiceTest {
         testAudit.setCardId(1);
         testAudit.setCard(testCard);
         testAudit.setRealLocation(realLocation);
-        testAudit.setTimestamp(LocalDateTime.now());
+        testAudit.setTimestamp(LocalDateTime.of(2025, Month.JUNE, 15, 10, 0));
 
         testCard.setInventoryAudit(testAudit);
 
@@ -140,7 +141,7 @@ class InventoryAuditServiceTest {
         InventoryAuditInsertDto insertDto = new InventoryAuditInsertDto();
         insertDto.setCardId(1);
         insertDto.setRealLocationId("LOC2");
-        insertDto.setTimestamp(LocalDateTime.now());
+        insertDto.setTimestamp(LocalDateTime.of(2025, Month.JUNE, 15, 10, 0));
 
         when(locationRepository.findById("LOC2")).thenReturn(Optional.of(realLocation));
         when(cardRepository.findById(1)).thenReturn(Optional.of(testCard));
@@ -183,7 +184,7 @@ class InventoryAuditServiceTest {
         InventoryAuditInsertDto insertDto = new InventoryAuditInsertDto();
         insertDto.setCardId(1);
         insertDto.setRealLocationId("LOC2");
-        insertDto.setTimestamp(LocalDateTime.now());
+        insertDto.setTimestamp(LocalDateTime.of(2025, Month.JUNE, 15, 10, 0));
 
         when(locationRepository.findById("LOC2")).thenReturn(Optional.of(realLocation));
         when(cardRepository.findById(1)).thenReturn(Optional.of(testCard));
@@ -241,7 +242,7 @@ class InventoryAuditServiceTest {
     void patch_WithWriteOffAction_ShouldSetWriteOffFields() {
         InventoryAuditPatchDto patchDto = new InventoryAuditPatchDto();
         patchDto.setAction(InventoryAuditAction.WRITE_OFF);
-        patchDto.setWriteOffDate(LocalDate.now());
+        patchDto.setWriteOffDate(LocalDate.of(2025, Month.JUNE, 15));
         patchDto.setWriteOffMethodId("WO1");
 
         WriteOffMethod method = new WriteOffMethod("WO1", "Test Method");
@@ -343,7 +344,7 @@ class InventoryAuditServiceTest {
     void project_WithWriteOffAction_ShouldSetWriteOffFields() {
         WriteOffMethod method = new WriteOffMethod("WO1", "Test Method");
         testAudit.setAction(InventoryAuditAction.WRITE_OFF);
-        testAudit.setWriteOffDate(LocalDate.of(2026, 1, 1));
+        testAudit.setWriteOffDate(LocalDate.of(2026, Month.JANUARY, 1));
         testAudit.setWriteOffMethod(method);
         testCard.setInventoryAudit(testAudit);
 
@@ -352,7 +353,7 @@ class InventoryAuditServiceTest {
 
         inventoryAuditService.project();
 
-        assertEquals(LocalDate.of(2026, 1, 1), testCard.getWriteOffDate());
+        assertEquals(LocalDate.of(2026, Month.JANUARY, 1), testCard.getWriteOffDate());
         assertEquals(method, testCard.getWriteOffMethod());
     }
 

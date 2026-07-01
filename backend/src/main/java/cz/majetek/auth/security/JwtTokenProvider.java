@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -59,13 +60,12 @@ public class JwtTokenProvider {
      * @return JWT token
      */
     public String generateToken(Authentication authentication) {
-        String subject = authentication.getName();
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+        Instant now = Instant.now();
+        Instant expiry = now.plusMillis(jwtExpirationInMs);
         return Jwts.builder()
-                .subject(subject)
-                .issuedAt(now)
-                .expiration(expiryDate)
+                .subject(authentication.getName())
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiry))
                 .signWith(accessKey)
                 .compact();
     }
@@ -110,13 +110,13 @@ public class JwtTokenProvider {
     }
 
     public String generateRefreshTokenFromUsername(String username) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + refreshExpirationInMs);
+        Instant now = Instant.now();
+        Instant expiry = now.plusMillis(refreshExpirationInMs);
         return Jwts.builder()
                 .subject(username)
                 .id(UUID.randomUUID().toString())
-                .issuedAt(now)
-                .expiration(expiryDate)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiry))
                 .signWith(refreshKey)
                 .compact();
     }
@@ -158,27 +158,27 @@ public class JwtTokenProvider {
     }
 
     /**
-     * Gets expiration date from refresh token.
+     * Gets expiration instant from refresh token.
      */
-    public Date getExpirationDateFromRefreshToken(String token) {
+    public Instant getExpirationDateFromRefreshToken(String token) {
         return Jwts.parser()
                 .verifyWith(refreshKey)
                 .build()
                 .parseSignedClaims(token)
-                .getPayload().getExpiration();
+                .getPayload().getExpiration().toInstant();
     }
 
     /**
-     * Gets expiration date from JWT token.
+     * Gets expiration instant from JWT token.
      *
      * @param token JWT token
-     * @return Expiration date
+     * @return Expiration instant
      */
-    public Date getExpirationDateFromToken(String token) {
+    public Instant getExpirationDateFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(accessKey)
                 .build()
                 .parseSignedClaims(token)
-                .getPayload().getExpiration();
+                .getPayload().getExpiration().toInstant();
     }
-} 
+}

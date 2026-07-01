@@ -4,7 +4,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Month;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -76,7 +76,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                     "locationId": "ALOC1",
                     "purchaseDate": "%s"
                 }
-                """, LocalDate.now());
+                """, LocalDate.of(2025, Month.JUNE, 15));
 
         var result = mockMvc.perform(post("/api/card")
                         .header("Authorization", bearerAdmin())
@@ -116,7 +116,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
     void inventoryAudit_insertMany_shouldCreateRecords() throws Exception {
         assertNotNull(testCardId, "Card must be created first");
 
-        String timestamp = LocalDateTime.now().toString();
+        String timestamp = "2025-06-15T10:00:00";
         String json = String.format("""
                 [
                     {
@@ -159,7 +159,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                     "locationId": "ALOC1",
                     "purchaseDate": "%s"
                 }
-                """, LocalDate.now());
+                """, LocalDate.of(2025, Month.JUNE, 15));
 
         var result = mockMvc.perform(post("/api/card")
                         .header("Authorization", bearerAdmin())
@@ -172,7 +172,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                 .get("id").asInt();
 
         // Insert audit with different location (should create difference)
-        String timestamp = LocalDateTime.now().toString();
+        String timestamp = "2025-06-15T10:00:00";
         String auditJson = String.format("""
                 [
                     {
@@ -195,7 +195,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(120)
     void inventoryAudit_insertMany_withNonExistentCard_shouldReturn404() throws Exception {
-        String timestamp = LocalDateTime.now().toString();
+        String timestamp = "2025-06-15T10:00:00";
         String json = String.format("""
                 [
                     {
@@ -216,7 +216,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
     @Test
     @Order(121)
     void inventoryAudit_insertMany_withNonExistentLocation_shouldReturn404() throws Exception {
-        String timestamp = LocalDateTime.now().toString();
+        String timestamp = "2025-06-15T10:00:00";
         String json = String.format("""
                 [
                     {
@@ -285,7 +285,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                     "writeOffDate": "%s",
                     "writeOffMethodId": "AWO01"
                 }
-                """, LocalDate.now());
+                """, LocalDate.of(2025, Month.JUNE, 15));
 
         mockMvc.perform(patch("/api/inventory-audit/" + testCardId)
                         .header("Authorization", bearerAdmin())
@@ -324,7 +324,7 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
                     "locationId": "ALOC1",
                     "purchaseDate": "%s"
                 }
-                """, LocalDate.now());
+                """, LocalDate.of(2025, Month.JUNE, 15));
 
         mockMvc.perform(post("/api/card")
                         .header("Authorization", bearerAdmin())

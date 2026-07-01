@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +47,7 @@ import java.util.function.Function;
  */
 public final class PdfGenerator {
 
+    private static final ZoneId ZONE_PRAGUE = ZoneId.of("Europe/Prague");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final NumberFormat NUMBER_FORMAT;
     private static final String FONT_PATH = "fonts/calibri.ttf";
@@ -406,7 +408,7 @@ public final class PdfGenerator {
                             .simulateItalic();
 
                     canvas.showTextAligned(i + "/" + totalPages, x, y, TextAlignment.RIGHT);
-                    canvas.showTextAligned(formatDate(LocalDate.now()), 20, y, TextAlignment.LEFT);
+                    canvas.showTextAligned(formatDate(LocalDate.now(ZONE_PRAGUE)), 20, y, TextAlignment.LEFT);
                 }
             }
         }

@@ -1,7 +1,5 @@
 package cz.majetek.integration;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.majetek.auth.repository.IUserRepository;
 import cz.majetek.entity.user.User;
 import cz.majetek.entity.user.UserRole;
@@ -11,15 +9,19 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Base64;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,13 +30,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Sets up test users (admin and regular user) and provides authentication helpers.
  */
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class BaseIntegrationTest {
 
     @Autowired
+    private WebApplicationContext webApplicationContext;
+
     protected MockMvc mockMvc;
 
     @Autowired
@@ -61,6 +64,10 @@ public abstract class BaseIntegrationTest {
 
     @BeforeAll
     void setUpBase() throws Exception {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(springSecurity())
+                .build();
+
         // Create ADMIN user if not exists
         if (!userRepository.existsById(ADMIN_ID)) {
             User admin = new User(ADMIN_ID, ADMIN_USERNAME, passwordEncoder.encode(ADMIN_PASSWORD), "Integration Admin", UserRole.ADMIN);
@@ -86,7 +93,7 @@ public abstract class BaseIntegrationTest {
 
         String body = result.getResponse().getContentAsString();
         JsonNode json = objectMapper.readTree(body);
-        adminAccessToken = json.get("token").asText();
+        adminAccessToken = json.get("token").asString();
         adminRefreshCookie = result.getResponse().getCookie("refreshToken");
     }
 
@@ -98,7 +105,7 @@ public abstract class BaseIntegrationTest {
 
         String body = result.getResponse().getContentAsString();
         JsonNode json = objectMapper.readTree(body);
-        userAccessToken = json.get("token").asText();
+        userAccessToken = json.get("token").asString();
     }
 
     protected String basicAuth(String username, String password) {

@@ -2,22 +2,24 @@ package cz.majetek.auth.repository;
 
 import cz.majetek.entity.user.User;
 import cz.majetek.entity.user.UserRole;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@TestPropertySource(locations = "classpath:application-test.properties")
+@SpringBootTest
+@ActiveProfiles("test")
+@Transactional
 class UserRepositoryTest {
 
     @Autowired
-    private TestEntityManager entityManager;
+    private EntityManager entityManager;
 
     @Autowired
     private IUserRepository userRepository;
@@ -97,7 +99,9 @@ class UserRepositoryTest {
 
         var users = userRepository.findAll();
 
-        assertEquals(2, users.size());
+        assertTrue(users.size() >= 2);
+        assertTrue(users.stream().anyMatch(u -> u.getUsername().equals("user1")));
+        assertTrue(users.stream().anyMatch(u -> u.getUsername().equals("user2")));
     }
 }
 

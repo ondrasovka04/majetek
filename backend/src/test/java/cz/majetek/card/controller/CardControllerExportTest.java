@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
+import java.time.Month;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -102,7 +103,7 @@ class CardControllerExportTest {
         GroupReportRequest req = new GroupReportRequest();
         req.setGroupId("GRP1");
         req.setAllGroups(false);
-        req.setAsOf(LocalDate.of(2024, 1, 1));
+        req.setAsOf(LocalDate.of(2024, Month.JANUARY, 1));
 
         mockMvc.perform(post("/api/card/export-group-pdf")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +120,7 @@ class CardControllerExportTest {
         GroupReportRequest req = new GroupReportRequest();
         req.setGroupId("GRP1");
         req.setAllGroups(true);
-        req.setAsOf(LocalDate.of(2024, 1, 1));
+        req.setAsOf(LocalDate.of(2024, Month.JANUARY, 1));
 
         mockMvc.perform(post("/api/card/export-group-pdf")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -150,7 +151,7 @@ class CardControllerExportTest {
 
         LocationReportRequest req = new LocationReportRequest();
         req.setLocationId("LOC1");
-        req.setAsOf(LocalDate.of(2024, 6, 1));
+        req.setAsOf(LocalDate.of(2024, Month.JUNE, 1));
 
         mockMvc.perform(post("/api/card/export-location-pdf")
                         .contentType(MediaType.APPLICATION_JSON)

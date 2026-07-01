@@ -25,8 +25,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Implementation of the AuthService interface.
@@ -62,10 +63,10 @@ public class AuthService implements IAuthService {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AuthException("User is not authenticated");
         }
-        User user = ((UserPrincipal) authentication.getPrincipal()).user();
+        User user = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).user();
         UserDto userDto = userMapper.toDto(user);
         String accessToken = tokenProvider.generateToken(authentication);
-        Date accessExpiration = tokenProvider.getExpirationDateFromToken(accessToken);
+        Instant accessExpiration = tokenProvider.getExpirationDateFromToken(accessToken);
         return new LoginResponse(accessToken, userDto, accessExpiration);
     }
 
@@ -85,7 +86,7 @@ public class AuthService implements IAuthService {
         UserPrincipal principal = UserPrincipal.create(user);
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
         String newAccess = tokenProvider.generateToken(authentication);
-        Date newAccessExp = tokenProvider.getExpirationDateFromToken(newAccess);
+        Instant newAccessExp = tokenProvider.getExpirationDateFromToken(newAccess);
         UserDto userDto = userMapper.toDto(user);
         return new LoginResponse(newAccess, userDto, newAccessExp);
     }
@@ -127,7 +128,7 @@ public class AuthService implements IAuthService {
         }
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        User user = userRepository.findByUsername(userPrincipal.getUsername())
+        User user = userRepository.findByUsername(Objects.requireNonNull(userPrincipal).getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {

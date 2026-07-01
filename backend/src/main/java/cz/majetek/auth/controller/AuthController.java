@@ -26,8 +26,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
@@ -58,10 +59,11 @@ public class AuthController {
     )
     public ResponseEntity<LoginResponse> login(HttpServletResponse response) {
         LoginResponse loginResponse = authService.login();
-        String refreshToken = tokenProvider.generateRefreshToken(getContext().getAuthentication());
+        var auth = Objects.requireNonNull(getContext().getAuthentication());
+        String refreshToken = tokenProvider.generateRefreshToken(auth);
         String jti = tokenProvider.getJtiFromRefreshToken(refreshToken);
-        authService.saveRefreshJti(getContext().getAuthentication().getName(), jti);
-        Date refreshExp = tokenProvider.getExpirationDateFromRefreshToken(refreshToken);
+        authService.saveRefreshJti(auth.getName(), jti);
+        Instant refreshExp = tokenProvider.getExpirationDateFromRefreshToken(refreshToken);
         Cookie cookie = refreshTokenCookieFactory.build(refreshToken, refreshExp);
         response.addCookie(cookie);
         return ResponseEntity.ok(loginResponse);
@@ -83,7 +85,7 @@ public class AuthController {
         String newRefresh = tokenProvider.generateRefreshTokenFromUsername(username);
         String newJti = tokenProvider.getJtiFromRefreshToken(newRefresh);
         authService.saveRefreshJti(username, newJti);
-        Date refreshExp = tokenProvider.getExpirationDateFromRefreshToken(newRefresh);
+        Instant refreshExp = tokenProvider.getExpirationDateFromRefreshToken(newRefresh);
         Cookie cookie = refreshTokenCookieFactory.build(newRefresh, refreshExp);
         response.addCookie(cookie);
         return ResponseEntity.ok(newAccess);

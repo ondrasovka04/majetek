@@ -98,7 +98,7 @@ const CardPage = () => {
           ref={listRef}
           selectedCardId={selection?.type === "existing" ? selection.id : undefined}
           onSelectCard={(id) => setSelection(id ? { type: "existing", id } : undefined)}
-          onNewCard={() => setSelection({ type: "new" })}
+          onNewCard={() => { setDuplicatedCard(undefined); setSelection({ type: "new" }); }}
           onNotify={notify}
           onError={notifyError}
         />

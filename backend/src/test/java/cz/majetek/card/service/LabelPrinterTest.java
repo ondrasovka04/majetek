@@ -1,6 +1,5 @@
 package cz.majetek.card.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.majetek.card.service.implementation.LabelPrinter;
 import cz.majetek.entity.Card;
 import cz.majetek.entity.Location;
@@ -8,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 

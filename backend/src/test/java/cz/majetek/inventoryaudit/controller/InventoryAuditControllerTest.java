@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -58,7 +59,7 @@ class InventoryAuditControllerTest {
         testAuditDto.setCardId(1);
         testAuditDto.setCardName("Test Card");
         testAuditDto.setRealLocationId("LOC1");
-        testAuditDto.setTimestamp(LocalDateTime.now());
+        testAuditDto.setTimestamp(LocalDateTime.of(2025, Month.JUNE, 15, 10, 0));
 
         testDiffDto = new InventoryAuditDiffDto();
         testDiffDto.setCardId(1);
@@ -92,7 +93,7 @@ class InventoryAuditControllerTest {
         InventoryAuditInsertDto insertDto = new InventoryAuditInsertDto();
         insertDto.setCardId(1);
         insertDto.setRealLocationId("LOC1");
-        insertDto.setTimestamp(LocalDateTime.now());
+        insertDto.setTimestamp(LocalDateTime.of(2025, Month.JUNE, 15, 10, 0));
 
         List<InventoryAuditInsertDto> request = List.of(insertDto);
         when(auditService.insertMany(any(List.class))).thenReturn(request);

@@ -30,7 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,7 +115,7 @@ class AuthServiceTest {
         when(securityContext.getAuthentication()).thenReturn(auth);
         when(userMapper.toDto(testUser)).thenReturn(testUserDto);
         when(tokenProvider.generateToken(auth)).thenReturn("accessToken");
-        when(tokenProvider.getExpirationDateFromToken("accessToken")).thenReturn(new Date());
+        when(tokenProvider.getExpirationDateFromToken("accessToken")).thenReturn(Instant.parse("2030-01-01T12:00:00Z"));
 
         LoginResponse response = authService.login();
 
@@ -151,7 +151,7 @@ class AuthServiceTest {
         when(tokenProvider.getUsernameFromRefreshToken(refreshToken)).thenReturn("testuser");
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
         when(tokenProvider.generateToken(any(Authentication.class))).thenReturn("newAccessToken");
-        when(tokenProvider.getExpirationDateFromToken("newAccessToken")).thenReturn(new Date());
+        when(tokenProvider.getExpirationDateFromToken("newAccessToken")).thenReturn(Instant.parse("2030-01-01T12:00:00Z"));
         when(userMapper.toDto(testUser)).thenReturn(testUserDto);
 
         LoginResponse response = authService.refresh(refreshToken);

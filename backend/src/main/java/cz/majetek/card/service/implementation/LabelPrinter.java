@@ -1,7 +1,5 @@
 package cz.majetek.card.service.implementation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.majetek.entity.Card;
 import cz.majetek.entity.Location;
 import cz.majetek.exception.card.CardException;
@@ -16,6 +14,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -121,10 +121,10 @@ public class LabelPrinter {
 
         try {
             if ("FAILURE".equals(objectMapper.readTree(response.getBody())
-                    .get("responses").get(0).get("status").asText())) {
+                    .get("responses").get(0).get("status").asString())) {
                 throw new CardException("Failed to send to cloud printer");
             }
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new CardException("Cannot parse ZPL response");
         }
     }
@@ -142,8 +142,8 @@ public class LabelPrinter {
      */
     public String[] getLines(String text) {
         String[] words = text.split(" ");
-        java.util.List<String> firstRow = new ArrayList<>();
-        java.util.List<String> secondRow = new ArrayList<>(java.util.List.of(words));
+        List<String> firstRow = new ArrayList<>();
+        List<String> secondRow = new ArrayList<>(List.of(words));
 
         String tmp = "";
 

@@ -46,9 +46,11 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,6 +63,8 @@ import static com.alibaba.excel.EasyExcelFactory.write;
 @Service
 @RequiredArgsConstructor
 public class CardService implements ICardService {
+
+    private static final ZoneId ZONE_PRAGUE = ZoneId.of("Europe/Prague");
 
     private final ICardRepository cardRepository;
     private final ILocationRepository locationRepository;
@@ -132,11 +136,11 @@ public class CardService implements ICardService {
         validateReferencesExist(dto.getLocationId(), dto.getClassId(), dto.getGroupId(),
                 dto.getPurchaseMethodId(), dto.getWriteOffMethodId(), dto.getCreatedById(), dto.getResponsiblePersonId());
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = ((UserPrincipal) authentication.getPrincipal()).user();
+        Authentication authentication = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication());
+        User user = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).user();
         Card card = cardMapper.toEntity(dto);
         card.setId(cardRepository.findMaxId() + 1);
-        card.setCreatedDate(LocalDateTime.now());
+        card.setCreatedDate(LocalDateTime.now(ZONE_PRAGUE));
         card.setCreatedBy(user);
         Card saved = cardRepository.save(card);
         return cardMapper.toDto(saved);

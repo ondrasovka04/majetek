@@ -1,6 +1,7 @@
 package cz.majetek.auth.security;
 
 import cz.majetek.entity.user.User;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +25,7 @@ public record UserPrincipal(User user) implements UserDetails {
     }
 
     @Override
+    @NullMarked
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
@@ -34,6 +36,7 @@ public record UserPrincipal(User user) implements UserDetails {
     }
 
     @Override
+    @NullMarked
     public String getUsername() {
         return user.getUsername();
     }

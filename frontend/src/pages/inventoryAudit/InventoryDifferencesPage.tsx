@@ -200,7 +200,7 @@ const InventoryDifferencesPage = () => {
             }}
             renderValue={(value) => {
               if (!value && entry.status === "WRONG") return "(zvolit)";
-              return actionLabel[value as Exclude<InventoryDifferenceAction, null>];
+              return actionLabel[value];
             }}>
             {entry.status === "WRONG" && <MenuItem value="">(zvolit)</MenuItem>}
             {actions.map((a) => (

@@ -9,19 +9,22 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DataJpaTest
+@SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 class CardSpecificationIntegrationTest {
 
     @Autowired
@@ -85,11 +88,11 @@ class CardSpecificationIntegrationTest {
         card1.setLocation(locationA);
         card1.setAssetClass(classA);
         card1.setGroup(groupA);
-        card1.setPurchaseDate(LocalDate.of(2024, 1, 15));
+        card1.setPurchaseDate(LocalDate.of(2024, Month.JANUARY, 15));
         card1.setPurchaseMethod(purchaseMethodA);
         card1.setPurchaseInvoice("INV-001");
         card1.setCreatedBy(userA);
-        card1.setCreatedDate(LocalDateTime.of(2024, 1, 15, 10, 0));
+        card1.setCreatedDate(LocalDateTime.of(2024, Month.JANUARY, 15, 10, 0));
         card1.setResponsiblePerson(userA);
         card1.setNote("First notebook for development");
         entityManager.persist(card1);
@@ -102,10 +105,10 @@ class CardSpecificationIntegrationTest {
         card2.setLocation(locationA);
         card2.setAssetClass(classB);
         card2.setGroup(groupA);
-        card2.setPurchaseDate(LocalDate.of(2024, 3, 20));
+        card2.setPurchaseDate(LocalDate.of(2024, Month.MARCH, 20));
         card2.setPurchaseInvoice("INV-002");
         card2.setCreatedBy(userA);
-        card2.setCreatedDate(LocalDateTime.of(2024, 3, 20, 14, 30));
+        card2.setCreatedDate(LocalDateTime.of(2024, Month.MARCH, 20, 14, 30));
         card2.setResponsiblePerson(userB);
         card2.setNote("Two monitors for office");
         entityManager.persist(card2);
@@ -118,9 +121,9 @@ class CardSpecificationIntegrationTest {
         card3.setLocation(locationB);
         card3.setAssetClass(classA);
         card3.setGroup(groupB);
-        card3.setPurchaseDate(LocalDate.of(2024, 6, 10));
+        card3.setPurchaseDate(LocalDate.of(2024, Month.JUNE, 10));
         card3.setCreatedBy(userB);
-        card3.setCreatedDate(LocalDateTime.of(2024, 6, 10, 9, 0));
+        card3.setCreatedDate(LocalDateTime.of(2024, Month.JUNE, 10, 9, 0));
         card3.setNote("Keyboards for new employees");
         entityManager.persist(card3);
 
@@ -132,10 +135,10 @@ class CardSpecificationIntegrationTest {
         cardWrittenOff.setLocation(locationB);
         cardWrittenOff.setAssetClass(classB);
         cardWrittenOff.setGroup(groupB);
-        cardWrittenOff.setPurchaseDate(LocalDate.of(2020, 1, 1));
-        cardWrittenOff.setWriteOffDate(LocalDate.of(2024, 6, 1));
+        cardWrittenOff.setPurchaseDate(LocalDate.of(2020, Month.JANUARY, 1));
+        cardWrittenOff.setWriteOffDate(LocalDate.of(2024, Month.JUNE, 1));
         cardWrittenOff.setCreatedBy(userA);
-        cardWrittenOff.setCreatedDate(LocalDateTime.of(2020, 1, 1, 8, 0));
+        cardWrittenOff.setCreatedDate(LocalDateTime.of(2020, Month.JANUARY, 1, 8, 0));
         entityManager.persist(cardWrittenOff);
 
         entityManager.flush();
@@ -291,7 +294,7 @@ class CardSpecificationIntegrationTest {
     @Test
     void filter_ByPurchasedAfter_ShouldReturnCardsAfterDate() {
         CardFilterQuery q = new CardFilterQuery();
-        q.setPurchasedAfter(LocalDate.of(2024, 3, 1));
+        q.setPurchasedAfter(LocalDate.of(2024, Month.MARCH, 1));
 
         List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
 
@@ -301,7 +304,7 @@ class CardSpecificationIntegrationTest {
     @Test
     void filter_ByPurchasedBefore_ShouldReturnCardsBeforeDate() {
         CardFilterQuery q = new CardFilterQuery();
-        q.setPurchasedBefore(LocalDate.of(2024, 2, 1));
+        q.setPurchasedBefore(LocalDate.of(2024, Month.FEBRUARY, 1));
 
         List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
 
@@ -311,8 +314,8 @@ class CardSpecificationIntegrationTest {
     @Test
     void filter_ByPurchaseDateRange_ShouldReturnCardsInRange() {
         CardFilterQuery q = new CardFilterQuery();
-        q.setPurchasedAfter(LocalDate.of(2024, 1, 1));
-        q.setPurchasedBefore(LocalDate.of(2024, 4, 1));
+        q.setPurchasedAfter(LocalDate.of(2024, Month.JANUARY, 1));
+        q.setPurchasedBefore(LocalDate.of(2024, Month.APRIL, 1));
 
         List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
 
@@ -362,7 +365,7 @@ class CardSpecificationIntegrationTest {
     @Test
     void filter_ByCreatedAfter_ShouldReturnCardsCreatedAfterDate() {
         CardFilterQuery q = new CardFilterQuery();
-        q.setCreatedAfter(LocalDate.of(2024, 3, 1));
+        q.setCreatedAfter(LocalDate.of(2024, Month.MARCH, 1));
 
         List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
 
@@ -372,8 +375,8 @@ class CardSpecificationIntegrationTest {
     @Test
     void filter_ByCreatedDateRange_ShouldReturnCardsInRange() {
         CardFilterQuery q = new CardFilterQuery();
-        q.setCreatedAfter(LocalDate.of(2024, 1, 1));
-        q.setCreatedBefore(LocalDate.of(2024, 4, 1));
+        q.setCreatedAfter(LocalDate.of(2024, Month.JANUARY, 1));
+        q.setCreatedBefore(LocalDate.of(2024, Month.APRIL, 1));
 
         List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
 
@@ -482,8 +485,8 @@ class CardSpecificationIntegrationTest {
     @Test
     void filter_ByWriteOffDateRange_ShouldReturnCardsInRange() {
         CardFilterQuery q = new CardFilterQuery();
-        q.setWriteOffAfter(LocalDate.of(2024, 1, 1));
-        q.setWriteOffBefore(LocalDate.of(2024, 12, 31));
+        q.setWriteOffAfter(LocalDate.of(2024, Month.JANUARY, 1));
+        q.setWriteOffBefore(LocalDate.of(2024, Month.DECEMBER, 31));
 
         List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
 
@@ -526,7 +529,7 @@ class CardSpecificationIntegrationTest {
         CardFilterQuery q = new CardFilterQuery();
         q.setLocationId("LOC_A");
         q.setCreatedBy("U1");
-        q.setPurchasedAfter(LocalDate.of(2024, 1, 1));
+        q.setPurchasedAfter(LocalDate.of(2024, Month.JANUARY, 1));
         q.setIncludeWriteOff(false);
 
         List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
@@ -560,7 +563,7 @@ class CardSpecificationIntegrationTest {
     @Test
     void filter_ByAsOfDate_ShouldReturnCardsCreatedBeforeDate() {
         CardFilterQuery q = new CardFilterQuery();
-        q.setAsOfDate(LocalDate.of(2024, 2, 1));
+        q.setAsOfDate(LocalDate.of(2024, Month.FEBRUARY, 1));
 
         List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
 
@@ -570,7 +573,7 @@ class CardSpecificationIntegrationTest {
     @Test
     void filter_ByAsOfDate_ExcludesWrittenOffBeforeDate() {
         CardFilterQuery q = new CardFilterQuery();
-        q.setAsOfDate(LocalDate.of(2024, 7, 1));
+        q.setAsOfDate(LocalDate.of(2024, Month.JULY, 1));
         q.setIncludeWriteOff(false);
 
         List<Card> result = cardRepository.findAll(CardSpecification.filter(q));
