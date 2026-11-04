@@ -6,7 +6,7 @@ A full-stack asset management system with a web application, REST API, and a mob
 
 | Component  | Technologies                                |
 | ---------- | ------------------------------------------- |
-| Backend    | Java 21, Spring Boot 3.4, Maven, PostgreSQL |
+| Backend    | Java 21, Spring Boot 4.1, Maven, PostgreSQL |
 | Frontend   | React 19, TypeScript 6, Vite 8, MUI 9       |
 | Android    | Java 21, Gradle, Room 2.8, OkHttp 5.3       |
 | Deployment | Nginx, Ubuntu VPS, GitHub Actions           |
