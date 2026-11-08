@@ -67,7 +67,7 @@ const CardPage = () => {
         <CardDetailView
           cardId={selection.id}
           onChange={() => {
-            queryClient.invalidateQueries({ queryKey: ["cards"] });
+            void queryClient.invalidateQueries({ queryKey: ["cards"] });
             notify("Změny byly úspěšně uloženy.", "success");
           }}
           onDeleted={() => {

@@ -86,7 +86,7 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
     if (toInit.length === 0) return;
     const ids = toInit.map((i) => i.cardId);
     ids.forEach((id) => initializedIdsRef.current.add(id));
-    Promise.allSettled(
+    void Promise.allSettled(
       toInit.map((i) =>
         patchRef
           .current({

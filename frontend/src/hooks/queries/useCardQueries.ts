@@ -50,7 +50,7 @@ export function useCreateCard() {
   return useMutation({
     mutationFn: (card: CardFormOutput) => createCard(card),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: CARDS_KEY });
+      void qc.invalidateQueries({ queryKey: CARDS_KEY });
     },
   });
 }
@@ -60,8 +60,8 @@ export function useUpdateCard() {
   return useMutation({
     mutationFn: ({ id, card }: { id: string; card: CardFormOutput }) => updateCard(id, card),
     onSuccess: (_data, { id }) => {
-      qc.invalidateQueries({ queryKey: CARDS_KEY });
-      qc.invalidateQueries({ queryKey: ["card", id] });
+      void qc.invalidateQueries({ queryKey: CARDS_KEY });
+      void qc.invalidateQueries({ queryKey: ["card", id] });
     },
   });
 }

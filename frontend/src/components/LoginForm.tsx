@@ -29,7 +29,7 @@ const LoginForm = () => {
     try {
       const { user, token, expiresIn } = await login(data.username, data.password);
       setAuth(user, token, expiresIn);
-      navigate("/card");
+      void navigate("/card");
     } catch (err: unknown) {
       setError(translateError(extractErrorMessage(err)));
     } finally {

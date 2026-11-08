@@ -46,7 +46,7 @@ function App() {
   const hydrated = useAuthStore((s) => s.hydrated);
 
   useEffect(() => {
-    attemptRehydrate();
+    void attemptRehydrate();
   }, [attemptRehydrate]);
 
   return (
