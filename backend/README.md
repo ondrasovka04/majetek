@@ -22,7 +22,7 @@ REST API for asset management built on Spring Boot.
 
 ## Prerequisites
 
-- **Java 21+**
+- **Java 25+**
 - **PostgreSQL** (production)
 - Maven Wrapper is included (`./mvnw`)
 

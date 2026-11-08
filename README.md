@@ -6,14 +6,14 @@ A full-stack asset management system with a web application, REST API, and a mob
 
 | Component  | Technologies                                |
 | ---------- | ------------------------------------------- |
-| Backend    | Java 21, Spring Boot 4.1, Maven, PostgreSQL |
+| Backend    | Java 25, Spring Boot 4.1, Maven, PostgreSQL |
 | Frontend   | React 19, TypeScript 7, Vite+, MUI 9        |
 | Android    | Java 25, Gradle, Room 2.8, OkHttp 5.5       |
 | Deployment | Nginx, Ubuntu VPS, GitHub Actions           |
 
 ## Prerequisites
 
-- **Java 21** (JDK)
+- **Java 25** (JDK)
 - **Node.js 24+** and pnpm
 - **PostgreSQL 15+**
 - **Nginx** (reverse proxy for local development)
