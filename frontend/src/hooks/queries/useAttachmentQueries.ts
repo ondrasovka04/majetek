@@ -14,7 +14,7 @@ export function useUploadAttachment(cardId: string) {
   return useMutation({
     mutationFn: (file: File) => uploadAttachment(cardId, file),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["attachments", cardId] });
+      void qc.invalidateQueries({ queryKey: ["attachments", cardId] });
     },
   });
 }
@@ -24,7 +24,7 @@ export function useDeleteAttachment(cardId: string) {
   return useMutation({
     mutationFn: (id: number) => deleteAttachment(cardId, id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["attachments", cardId] });
+      void qc.invalidateQueries({ queryKey: ["attachments", cardId] });
     },
   });
 }

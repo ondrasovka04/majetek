@@ -25,7 +25,7 @@ const ReportPage = () => {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [pdfUrl, setPdfUrl] = useState<string | undefined>();
   const [activeModal, setActiveModal] = useState<ActiveModal>();
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(() => new Date());
 
   const { notifyError, NotificationBar } = useNotification();
 
@@ -41,6 +41,8 @@ const ReportPage = () => {
 
   const loading = groupPdfMutation.isPending || locationPdfMutation.isPending || cardPdfMutation.isPending;
 
+  // Toolbar slots of @react-pdf-viewer are typed as methods, but they are standalone components (no `this`)
+  /* oxlint-disable typescript/unbound-method */
   const defaultLayoutPluginInstance = defaultLayoutPlugin({
     renderToolbar: (Toolbar) => (
       <Toolbar>
@@ -109,6 +111,7 @@ const ReportPage = () => {
     ),
     sidebarTabs: () => [],
   });
+  /* oxlint-enable typescript/unbound-method */
 
   const resetModalState = () => {
     setSelectedGroup("");

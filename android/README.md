@@ -12,14 +12,14 @@ Native Android application for asset management and inventory using barcode scan
 
 ## Tech Stack
 
-- **Language:** Java 21
+- **Language:** Java 25
 - **Min SDK:** 33 (Android 13)
-- **Target SDK:** 36
-- **Build system:** Gradle Kotlin DSL, AGP 9.1.1
-- **Database:** Room 2.8.4 (SQLite) – tables `card`, `location`, `inventory_audit`
-- **Networking:** OkHttp 5.3.0, Gson 2.13.2
+- **Target SDK:** 37
+- **Build system:** Gradle Kotlin DSL, AGP 9.5.1, Gradle 9.9
+- **Database:** Room 2.8.5 (SQLite) – tables `card`, `location`, `inventory_audit`
+- **Networking:** OkHttp 5.5.1, Gson 2.15.0
 - **Security:** EncryptedSharedPreferences (security-crypto 1.1.0) for JWT token and credentials, network security config (cleartext disabled), R8 obfuscation in release
-- **UI:** Material Design 1.13, ConstraintLayout, BottomNavigationView, custom `CircularInventoryProgressView`
+- **UI:** Material Design 1.14, ConstraintLayout, BottomNavigationView, custom `CircularInventoryProgressView`
 
 ## Project Structure
 
@@ -60,7 +60,7 @@ app/src/main/java/cz/majetek/
 ## Prerequisites
 
 - **Android Studio** Ladybug or newer
-- **JDK 21+**
+- **JDK 25+** (Gradle daemon toolchain is auto-provisioned)
 - **Zebra scanner** with Android 13+ (or any Android 13+ device for testing)
 
 ## Configuration

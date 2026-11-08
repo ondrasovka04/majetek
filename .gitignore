@@ -17,6 +17,7 @@ frontend/node_modules
 ### build ###
 frontend/build
 frontend/scripts
+frontend/.vitest/
 
 .DS_Store
 copilot-instructions.md

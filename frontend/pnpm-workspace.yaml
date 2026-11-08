@@ -1,0 +1,29 @@
+# Balíčky žijí v globálním úložišti pnpm – node_modules obsahuje jen symlinky (nesynchronizuje se do Google Drive)
+enableGlobalVirtualStore: true
+
+# S globálním virtual store vidí balíček jen své deklarované závislosti – tyto nedeklarují @types/react
+packageExtensions:
+  "@mui/x-date-pickers":
+    peerDependencies:
+      "@types/react": "*"
+  "@mui/x-data-grid":
+    peerDependencies:
+      "@types/react": "*"
+  "@react-pdf-viewer/core":
+    peerDependencies:
+      "@types/react": "*"
+  "@react-pdf-viewer/default-layout":
+    peerDependencies:
+      "@types/react": "*"
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@1.5.0
+  vite-plus: 1.5.0
+overrides:
+  vite@*: "catalog:"
+  # Volitelná závislost pdfjs-dist jen pro Node.js (v prohlížeči se nepoužívá) – táhne zranitelný tar
+  canvas: "-"
+peerDependencyRules:
+  allowAny:
+    - vite
+  allowedVersions:
+    vite: "*"

@@ -44,14 +44,14 @@ const MenuBar = () => {
           <Button
             color="inherit"
             onClick={() => {
-              navigate("/card");
+              void navigate("/card");
             }}>
             Majetkové karty
           </Button>
           <Button
             color="inherit"
             onClick={() => {
-              navigate("/report");
+              void navigate("/report");
             }}>
             Sestavy
           </Button>
@@ -78,7 +78,7 @@ const MenuBar = () => {
             color="inherit"
             onClick={() => {
               clearAuth();
-              navigate("/");
+              void navigate("/");
             }}>
             Odhlásit se
           </Button>

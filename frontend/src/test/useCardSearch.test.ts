@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "vite-plus/test";
 import { renderHook } from "@testing-library/react";
 import { useCardSearch } from "@/hooks/useCardSearch";
 import { Card } from "@/types/card/card";

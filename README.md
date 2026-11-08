@@ -6,15 +6,15 @@ A full-stack asset management system with a web application, REST API, and a mob
 
 | Component  | Technologies                                |
 | ---------- | ------------------------------------------- |
-| Backend    | Java 21, Spring Boot 4.1, Maven, PostgreSQL |
-| Frontend   | React 19, TypeScript 6, Vite 8, MUI 9       |
-| Android    | Java 21, Gradle, Room 2.8, OkHttp 5.3       |
+| Backend    | Java 25, Spring Boot 4.1, Maven, PostgreSQL |
+| Frontend   | React 19, TypeScript 7, Vite+, MUI 9        |
+| Android    | Java 25, Gradle, Room 2.8, OkHttp 5.5       |
 | Deployment | Nginx, Ubuntu VPS, GitHub Actions           |
 
 ## Prerequisites
 
-- **Java 21** (JDK)
-- **Node.js 20+** and npm
+- **Java 25** (JDK)
+- **Node.js 24+** and pnpm
 - **PostgreSQL 15+**
 - **Nginx** (reverse proxy for local development)
 - **Android SDK 36** (for mobile app only)
@@ -59,8 +59,8 @@ cd frontend
 echo "VITE_API_URL=/api" > .env
 
 # Install and start
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 The frontend dev server runs at `http://localhost:3000`.
@@ -111,7 +111,7 @@ The APK is located at `android/app/build/outputs/apk/debug/`.
 cd backend && mvn test
 
 # Frontend (54 tests)
-cd frontend && npm test
+cd frontend && pnpm test
 
 # Android unit tests
 cd android && ./gradlew testDebugUnitTest

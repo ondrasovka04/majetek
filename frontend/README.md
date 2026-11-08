@@ -6,14 +6,14 @@ React SPA for asset management. Communicates with the REST API backend (Spring B
 
 | Layer        | Technology                                          |
 | ------------ | --------------------------------------------------- |
-| UI framework | React 19, TypeScript 6                              |
+| UI framework | React 19, TypeScript 7                              |
 | Components   | MUI 9 (Material UI), Tailwind CSS 4                 |
 | Server state | TanStack Query 5 (caching, mutations, invalidation) |
 | Client state | Zustand 5 (auth store)                              |
 | Forms        | React Hook Form 7 + Zod 4 (validation)              |
-| Routing      | React Router 7                                      |
+| Routing      | React Router 8                                      |
 | HTTP         | Axios (with automatic JWT renewal)                  |
-| Build        | Vite 8                                              |
+| Toolchain    | Vite+ (Vite, Vitest, Oxlint, Oxfmt), pnpm           |
 | PDF          | @react-pdf-viewer                                   |
 | Date         | date-fns 4 (Czech locale)                           |
 | Search       | Fuse.js 7 (fuzzy search)                            |
@@ -39,10 +39,12 @@ src/
 ## Running
 
 ```bash
-npm install
-npm run dev       # dev server at http://localhost:3000
-npm run build     # production build to build/
-npm run preview   # preview production build
+pnpm install
+pnpm dev          # dev server at http://localhost:3000
+pnpm build        # production build to build/
+pnpm preview      # preview production build
+pnpm check        # format, lint and type checks (Oxfmt, Oxlint)
+pnpm test         # tests (Vitest)
 ```
 
 Backend must be running on port 8080. In production, nginx proxies `/api/` to the backend.
