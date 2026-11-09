@@ -57,8 +57,9 @@ public class InventoryAuditService implements IInventoryAuditService {
     @Override
     @Transactional(readOnly = true)
     public List<InventoryAuditDiffDto> getDiffs() {
+        // No scans uploaded yet – the audit has not started, which is a valid state
         if (!inventoryAuditRepository.existsByRealLocationIsNotNull()) {
-            throw new InventoryAuditException("No inventory audit records found.");
+            return List.of();
         }
 
         CardFilterQuery cardFilterQuery = new CardFilterQuery();

@@ -23,7 +23,8 @@ public interface IInventoryAuditService {
     /**
      * Computes differences between registered and scanned locations for all cards.
      *
-     * @return list of diff records with status (CORRECT, WARN, WRONG) and suggested action
+     * @return list of diff records with status (CORRECT, WARN, WRONG) and suggested action;
+     *         empty if no scans have been uploaded yet
      */
     List<InventoryAuditDiffDto> getDiffs();
 

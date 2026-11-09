@@ -112,10 +112,11 @@ class InventoryAuditServiceTest {
     }
 
     @Test
-    void getDiffs_WithNoAuditRecords_ShouldThrowException() {
+    void getDiffs_WithNoAuditRecords_ShouldReturnEmptyList() {
         when(inventoryAuditRepository.existsByRealLocationIsNotNull()).thenReturn(false);
 
-        assertThrows(InventoryAuditException.class, () -> inventoryAuditService.getDiffs());
+        assertTrue(inventoryAuditService.getDiffs().isEmpty());
+        verify(cardRepository, never()).findAll(any(Specification.class));
     }
 
     @Test
