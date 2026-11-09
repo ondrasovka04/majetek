@@ -47,7 +47,7 @@ public class InventoryAuditController {
      * Get inventory audit differences.
      */
     @GetMapping("/differences")
-    @Operation(summary = "Get all inventory audit differences", description = "Returns a list of all inventory audit differences")
+    @Operation(summary = "Get all inventory audit differences", description = "Returns a list of all inventory audit differences, or an empty list if no scans have been uploaded yet")
     @ApiResponse(responseCode = "200", description = "List of inventory audit differences",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = InventoryAuditDiffDto.class)))

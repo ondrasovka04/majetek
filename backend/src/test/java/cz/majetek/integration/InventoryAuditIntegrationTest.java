@@ -102,11 +102,11 @@ class InventoryAuditIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @Order(101)
-    void inventoryAudit_getDifferences_withNoData_shouldReturn400() throws Exception {
-        // getDiffs throws exception when no audit records exist
+    void inventoryAudit_getDifferences_withNoData_shouldReturnEmptyList() throws Exception {
         mockMvc.perform(get("/api/inventory-audit/differences")
                         .header("Authorization", bearerAdmin()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
     }
 
     // ===================== Insert Many =====================

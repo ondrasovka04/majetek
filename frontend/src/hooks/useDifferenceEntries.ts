@@ -44,18 +44,14 @@ export function useDifferenceEntries(onError: (msg: string) => void) {
     patchRef.current = patchMutation.mutateAsync;
   }, [patchMutation.mutateAsync]);
 
-  // Derive noRecords from the error message instead of separate useState
-  const noRecords = useMemo(() => {
-    if (!diffsError) return false;
-    return extractErrorMessage(diffsError) === "No inventory audit records found.";
-  }, [diffsError]);
+  // Backend returns an empty list until the first scans are uploaded
+  const noRecords = rawDiffs?.length === 0;
 
-  // Notify non-"no records" errors
   useEffect(() => {
-    if (diffsError && !noRecords) {
+    if (diffsError) {
       onErrorRef.current(translateError(extractErrorMessage(diffsError)));
     }
-  }, [diffsError, noRecords]);
+  }, [diffsError]);
 
   // Derive entries from query data + local patches (no setState in effect)
   const entries = useMemo(() => {
