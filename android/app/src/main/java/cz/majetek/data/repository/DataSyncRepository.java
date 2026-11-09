@@ -12,7 +12,7 @@ import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,8 @@ public class DataSyncRepository {
         void onError(String msg);
     }
 
-    private static final DateTimeFormatter TS_FMT_BASE = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").withZone(ZoneOffset.UTC);
+    // Backend stores the scan time as LocalDateTime in Europe/Prague – send local Prague time without offset
+    private static final DateTimeFormatter TS_FMT_BASE = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").withZone(ZoneId.of("Europe/Prague"));
 
     /**
      * Downloads locations + cards from the API and saves them to Room DB in a transaction.
@@ -158,7 +159,7 @@ public class DataSyncRepository {
     }
 
     /**
-     * Serializes inventory audit records to JSON with ISO timestamps (UTC).
+     * Serializes inventory audit records to JSON with ISO timestamps in Europe/Prague local time.
      */
     String buildAuditJson(List<InventoryAuditEntity> audits) {
         JsonArray arr = new JsonArray();

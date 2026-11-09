@@ -17,10 +17,12 @@ const resolveWriteOffDate = (
   return previous;
 };
 
+// Audit data are uploaded from the scanners outside of this app – refetch on every visit
 export function useInventoryAudit() {
   return useQuery({
     queryKey: ["inventoryAudit"],
     queryFn: getInventoryAudit,
+    staleTime: 0,
   });
 }
 
@@ -28,6 +30,7 @@ export function useInventoryDifferences() {
   return useQuery({
     queryKey: ["inventoryDifferences"],
     queryFn: getInventoryDifferences,
+    staleTime: 0,
   });
 }
 

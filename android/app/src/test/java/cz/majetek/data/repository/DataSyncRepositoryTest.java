@@ -11,8 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,9 +49,8 @@ public class DataSyncRepositoryTest {
         assertEquals("LOC-7", obj.get("realLocationId").getAsString());
         assertTrue(obj.has("timestamp"));
 
-        // Verify the timestamp value matches expected UTC ISO format
-        String expectedTs = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").withZone(ZoneOffset.UTC).format(Instant.ofEpochMilli(ts));
-        assertEquals(expectedTs, obj.get("timestamp").getAsString());
+        // 2023-11-14T22:13:20 UTC is 23:13:20 in Prague (CET, UTC+1)
+        assertEquals("2023-11-14T23:13:20.000", obj.get("timestamp").getAsString());
     }
 
     @Test
@@ -80,8 +77,8 @@ public class DataSyncRepositoryTest {
     }
 
     @Test
-    public void buildAuditJson_timestampFormat_isUtcIso() {
-        // 2024-06-15T08:30:45.123 UTC
+    public void buildAuditJson_timestampFormat_isPragueLocalIso() {
+        // 2024-06-15T08:30:45.123 UTC = 10:30:45.123 in Prague (CEST, UTC+2)
         long ts = Instant.parse("2024-06-15T08:30:45.123Z").toEpochMilli();
         InventoryAuditEntity audit = new InventoryAuditEntity(99, "X", ts);
 
@@ -90,8 +87,8 @@ public class DataSyncRepositoryTest {
         JsonArray arr = JsonParser.parseString(json).getAsJsonArray();
         String timestamp = arr.get(0).getAsJsonObject().get("timestamp").getAsString();
 
-        // Must be exactly "2024-06-15T08:30:45.123" (no Z suffix, millisecond precision)
-        assertEquals("2024-06-15T08:30:45.123", timestamp);
+        // Must be exactly "2024-06-15T10:30:45.123" (no Z suffix, millisecond precision)
+        assertEquals("2024-06-15T10:30:45.123", timestamp);
 
         // Verify the format matches the pattern yyyy-MM-dd'T'HH:mm:ss.SSS
         assertTrue("Timestamp should contain 'T' separator", timestamp.contains("T"));
