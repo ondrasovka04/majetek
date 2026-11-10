@@ -10,4 +10,8 @@
     <color name="statusWarn">#FF9800</color>
     <color name="statusOk">#4CAF50</color>
     <color name="statusNeutral">#455A64</color>
+    <color name="cardBgOk">#C8E6C9</color>
+    <color name="cardBgWarn">#FFE0B2</color>
+    <color name="cardBgError">#FFCDD2</color>
+    <color name="cardBgNeutral">#EEEEEE</color>
 </resources>

@@ -41,6 +41,7 @@
     <string name="common_no">Ne</string>
     <string name="common_set">Nastavit</string>
     <string name="common_cancel">Zrušit</string>
+    <string name="common_close">Zavřít</string>
     <string name="status_clearing_inventory">Mažu inventuru…</string>
     <string name="status_inventory_cleared">Inventurní data vymazána</string>
     <string name="status_wifi_disconnected">Není připojení k Wi-Fi</string>
@@ -73,6 +74,11 @@
     <string name="error_unknown_asset_id">Neznámé ID majetku: %1$s</string>
     <string name="status_record_deleted">Záznam odstraněn</string>
     <string name="format_su_with_name">SU: %1$s – %2$s</string>
+    <string name="format_location_with_name">%1$s – %2$s</string>
+    <string name="dialog_location_cards_title">Majetek v místnosti %1$s</string>
+    <string name="location_cards_empty">Místnost nemá žádný evidovaný ani naskenovaný majetek</string>
+    <string name="location_card_belongs_to">Patří do: %1$s</string>
+    <string name="location_card_found_in">Nalezeno v: %1$s</string>
 
     <!-- Status common -->
     <string name="status_ready">Připraveno</string>

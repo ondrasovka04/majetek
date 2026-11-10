@@ -3,15 +3,19 @@ package cz.majetek.ui.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,10 +32,12 @@ import java.util.concurrent.Executors;
 import cz.majetek.MajetekApp;
 import cz.majetek.R;
 import cz.majetek.data.db.AppDatabase;
+import cz.majetek.data.db.LocationCardRow;
 import cz.majetek.data.entity.CardEntity;
 import cz.majetek.data.entity.InventoryAuditEntity;
 import cz.majetek.data.entity.LocationEntity;
 import cz.majetek.ui.view.CircularInventoryProgressView;
+import cz.majetek.util.LocationFormat;
 import cz.majetek.util.ScanInputHelper;
 
 /**
@@ -134,6 +142,8 @@ public class InventoryScanFragment extends Fragment {
     }
 
     private void setupButtons() {
+        progressCircle.setOnClickListener(v -> showLocationCards());
+
         btnDelete.setOnClickListener(v -> {
             if (lastScannedCardId <= 0) {
                 setStatusWarn(getString(R.string.warn_no_card_to_delete));
@@ -240,10 +250,15 @@ public class InventoryScanFragment extends Fragment {
         io.execute(() -> {
             AppDatabase db = app.getDatabase();
             CardEntity card = db.cardDao().getById(cardId);
+            LocationEntity expectedLocation = null;
             if (card != null) {
                 long now = System.currentTimeMillis();
                 db.inventoryAuditDao().upsert(new InventoryAuditEntity(cardId, currentLocationId, now));
+                if (card.getLocationId() != null) {
+                    expectedLocation = db.locationDao().getById(card.getLocationId());
+                }
             }
+            final String expectedLocationName = expectedLocation != null ? expectedLocation.getName() : null;
 
             int scannedInLoc = db.inventoryAuditDao().countCardsInLocation(currentLocationId);
             int totalInLoc = db.cardDao().countByLocation(currentLocationId);
@@ -258,7 +273,7 @@ public class InventoryScanFragment extends Fragment {
                 });
             } else {
                 postUI(() -> {
-                    showCard(card);
+                    showCard(card, expectedLocationName);
                     updateLocationProgressUI(scannedInLoc, totalInLoc);
                     updateTotalProgressUI(scannedTotal, totalAll);
                 });
@@ -266,7 +281,7 @@ public class InventoryScanFragment extends Fragment {
         });
     }
 
-    private void showCard(CardEntity c) {
+    private void showCard(CardEntity c, @Nullable String locationName) {
         if (!isAdded()) return;
         lastScannedCardId = c.getId();
 
@@ -275,17 +290,17 @@ public class InventoryScanFragment extends Fragment {
         txtCardName.setText(c.getName() != null ? c.getName() : "");
         txtCardPrice.setText(String.format(CZECH_LOCALE, "%,.2f", c.getPrice()));
         txtCardQuantity.setText(String.valueOf((int) c.getQuantity()));
-        txtCardOu.setText(c.getLocationId() != null ? c.getLocationId() : "");
+        txtCardOu.setText(LocationFormat.format(requireContext(), c.getLocationId(), locationName));
 
         if (currentLocationId != null) {
             if (c.getLocationId() == null) {
-                cardContainer.setBackgroundColor(0xFFFFCDD2);
+                cardContainer.setBackgroundColor(color(R.color.cardBgError));
                 setStatusError(getString(R.string.error_asset_expected_elsewhere));
             } else if (c.getLocationId().equals(currentLocationId)) {
-                cardContainer.setBackgroundColor(0xFFC8E6C9);
+                cardContainer.setBackgroundColor(color(R.color.cardBgOk));
                 setStatusOk(getString(R.string.status_saved));
             } else {
-                cardContainer.setBackgroundColor(0xFFFFE0B2);
+                cardContainer.setBackgroundColor(color(R.color.cardBgWarn));
                 setStatusWarn(getString(R.string.error_asset_expected_elsewhere));
             }
         } else {
@@ -302,7 +317,7 @@ public class InventoryScanFragment extends Fragment {
         txtCardPrice.setText("");
         txtCardQuantity.setText("");
         txtCardOu.setText("");
-        cardContainer.setBackgroundColor(0xFFFFCDD2);
+        cardContainer.setBackgroundColor(color(R.color.cardBgError));
         String displayCode = code;
         try {
             displayCode = String.format(Locale.getDefault(), "%04d", Integer.parseInt(code));
@@ -370,13 +385,92 @@ public class InventoryScanFragment extends Fragment {
         });
     }
 
+    /**
+     * Shows cards of the current location – scanned correctly (green), location mismatch (orange), not found yet (red).
+     */
+    private void showLocationCards() {
+        if (currentLocationId == null) {
+            setStatusWarn(getString(R.string.warn_no_location_selected));
+            return;
+        }
+        final String locId = currentLocationId;
+        MajetekApp app = (MajetekApp) requireActivity().getApplication();
+        io.execute(() -> {
+            List<LocationCardRow> rows = app.getDatabase().inventoryAuditDao().listCardsForLocation(locId);
+            rows.sort(Comparator.comparing((LocationCardRow row) -> row.statusFor(locId)).thenComparingInt(row -> row.cardId));
+            postUI(() -> showLocationCardsDialog(locId, rows));
+        });
+    }
+
+    private void showLocationCardsDialog(String locId, List<LocationCardRow> rows) {
+        if (!isAdded()) return;
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext()).setTitle(getString(R.string.dialog_location_cards_title, locId)).setPositiveButton(R.string.common_close, null).setOnDismissListener(d -> inputAsset.requestFocus());
+        if (rows.isEmpty()) {
+            builder.setMessage(R.string.location_cards_empty);
+        } else {
+            ListView list = new ListView(requireContext());
+            int padH = dp(20);
+            list.setPadding(padH, dp(12), padH, 0);
+            list.setClipToPadding(false);
+            list.setDivider(new ColorDrawable(Color.TRANSPARENT));
+            list.setDividerHeight(dp(4));
+            list.setAdapter(new LocationCardAdapter(locId, rows));
+            builder.setView(list);
+        }
+        builder.show();
+    }
+
+    private class LocationCardAdapter extends ArrayAdapter<LocationCardRow> {
+        private final String locId;
+
+        LocationCardAdapter(String locId, List<LocationCardRow> rows) {
+            super(requireContext(), 0, rows);
+            this.locId = locId;
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            View view = convertView != null ? convertView : LayoutInflater.from(getContext()).inflate(R.layout.item_location_card, parent, false);
+            LocationCardRow row = getItem(position);
+            if (row == null) return view;
+
+            TextView title = view.findViewById(R.id.txt_row_title);
+            TextView detail = view.findViewById(R.id.txt_row_detail);
+            title.setText(String.format(Locale.US, "%04d – %s", row.cardId, row.name != null ? row.name : ""));
+
+            String detailText = null;
+            switch (row.statusFor(locId)) {
+                case OK -> view.setBackgroundColor(color(R.color.cardBgOk));
+                case MISSING -> view.setBackgroundColor(color(R.color.cardBgError));
+                case MISPLACED -> {
+                    view.setBackgroundColor(color(R.color.cardBgWarn));
+                    detailText = locId.equals(row.realLocationId)
+                            ? getString(R.string.location_card_belongs_to, LocationFormat.format(requireContext(), row.expectedLocationId, row.expectedLocationName))
+                            : getString(R.string.location_card_found_in, LocationFormat.format(requireContext(), row.realLocationId, row.realLocationName));
+                }
+            }
+            detail.setText(detailText);
+            detail.setVisibility(detailText != null ? View.VISIBLE : View.GONE);
+            return view;
+        }
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    private int color(int resId) {
+        return ContextCompat.getColor(requireContext(), resId);
+    }
+
     private void resetCardDisplay() {
         txtCardId.setText("");
         txtCardName.setText("");
         txtCardPrice.setText("");
         txtCardQuantity.setText("");
         txtCardOu.setText("");
-        cardContainer.setBackgroundColor(0xFFEEEEEE);
+        cardContainer.setBackgroundColor(color(R.color.cardBgNeutral));
     }
 
     private void postUI(Runnable r) {

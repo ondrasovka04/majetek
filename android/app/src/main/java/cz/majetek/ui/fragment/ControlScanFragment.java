@@ -24,6 +24,8 @@ import cz.majetek.MajetekApp;
 import cz.majetek.R;
 import cz.majetek.data.db.AppDatabase;
 import cz.majetek.data.entity.CardEntity;
+import cz.majetek.data.entity.LocationEntity;
+import cz.majetek.util.LocationFormat;
 import cz.majetek.util.ScanInputHelper;
 
 /**
@@ -126,18 +128,20 @@ public class ControlScanFragment extends Fragment {
             if (card == null) {
                 postUI(() -> showNotFound(getString(R.string.control_not_found_id, String.format(Locale.getDefault(), "%04d", finalId))));
             } else {
-                postUI(() -> showCard(card));
+                LocationEntity location = card.getLocationId() != null ? db.locationDao().getById(card.getLocationId()) : null;
+                String locationName = location != null ? location.getName() : null;
+                postUI(() -> showCard(card, locationName));
             }
         });
     }
 
-    private void showCard(CardEntity c) {
+    private void showCard(CardEntity c, @Nullable String locationName) {
         if (!isAdded()) return;
         txtId.setText(String.format(Locale.getDefault(), "%04d", c.getId()));
         txtName.setText(c.getName());
         txtPrice.setText(String.format(CZECH_LOCALE, "%,.2f", c.getPrice()));
         txtQuantity.setText(String.valueOf((int) c.getQuantity()));
-        txtLocation.setText(String.valueOf(c.getLocationId()));
+        txtLocation.setText(LocationFormat.format(requireContext(), c.getLocationId(), locationName));
         txtStatus.setText(getString(R.string.status_ok));
         txtStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.statusOk));
 
