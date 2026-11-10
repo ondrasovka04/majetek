@@ -208,4 +208,30 @@ public class DaoTest {
         assertEquals("L2", list.getFirst().getRealLocationId());
         assertEquals(2000L, list.getFirst().getTimestamp());
     }
+
+    // ── listCardsForLocation ──
+
+    @Test
+    public void listCardsForLocation_returnsOwnAndForeignCardsWithStatus() {
+        locationDao.insertAll(Arrays.asList(new LocationEntity("L1", "Učebna"), new LocationEntity("L2", "Sborovna")));
+        cardDao.insertAll(Arrays.asList(
+                new CardEntity(1, "Scanned here", 1.0, 1.0, "L1"),
+                new CardEntity(2, "Not found", 1.0, 1.0, "L1"),
+                new CardEntity(3, "Found in L2", 1.0, 1.0, "L1"),
+                new CardEntity(4, "Belongs to L2", 1.0, 1.0, "L2"),
+                new CardEntity(5, "Unrelated", 1.0, 1.0, "L2")));
+        inventoryAuditDao.upsert(new InventoryAuditEntity(1, "L1", 1L));
+        inventoryAuditDao.upsert(new InventoryAuditEntity(3, "L2", 2L));
+        inventoryAuditDao.upsert(new InventoryAuditEntity(4, "L1", 3L));
+
+        List<LocationCardRow> rows = inventoryAuditDao.listCardsForLocation("L1");
+
+        assertEquals(4, rows.size());
+        assertEquals(LocationCardRow.Status.OK, rows.get(0).statusFor("L1"));
+        assertEquals(LocationCardRow.Status.MISSING, rows.get(1).statusFor("L1"));
+        assertEquals(LocationCardRow.Status.MISPLACED, rows.get(2).statusFor("L1"));
+        assertEquals("Sborovna", rows.get(2).realLocationName);
+        assertEquals(LocationCardRow.Status.MISPLACED, rows.get(3).statusFor("L1"));
+        assertEquals("Sborovna", rows.get(3).expectedLocationName);
+    }
 }
